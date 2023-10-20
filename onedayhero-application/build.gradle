@@ -1,0 +1,17 @@
+dependencies {
+    implementation project(':onedayhero-domain')
+    implementation project(':onedayhero-infra-querydsl')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
