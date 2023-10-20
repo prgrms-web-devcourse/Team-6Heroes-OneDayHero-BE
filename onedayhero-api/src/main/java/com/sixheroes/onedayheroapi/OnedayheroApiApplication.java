@@ -1,4 +1,4 @@
-package com.sixheroes;
+package com.sixheroes.onedayheroapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
