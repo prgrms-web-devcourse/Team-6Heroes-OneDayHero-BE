@@ -1,5 +1,6 @@
 dependencies {
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.hibernate:hibernate-spatial:6.2.13.Final'
     api 'com.h2database:h2'
 }
 
