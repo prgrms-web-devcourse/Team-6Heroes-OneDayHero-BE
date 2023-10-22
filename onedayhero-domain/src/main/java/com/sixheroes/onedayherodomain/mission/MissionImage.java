@@ -16,7 +16,7 @@ public class MissionImage {
     private Long id;
 
     @Column(name = "mission_id", nullable = false)
-    private Long mission_id;
+    private Long missionId;
 
     @Column(name = "original_name", nullable = false)
     private String originalName;
