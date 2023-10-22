@@ -15,15 +15,15 @@ public class ReviewImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "review_id")
+    @Column(name = "review_id", nullable = false)
     private Long reviewId;
 
     @Column(name = "original_name", nullable = false)
-    private String original_name;
+    private String originalName;
 
     @Column(name = "unique_name", nullable = false)
-    private String unique_name;
+    private String uniqueName;
 
-    @Column(name = "paths", nullable = false)
+    @Column(name = "path", nullable = false)
     private String path;
 }

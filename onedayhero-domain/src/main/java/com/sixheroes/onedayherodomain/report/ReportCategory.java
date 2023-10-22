@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "report_category")
+@Table(name = "report_categories")
 @Entity
 public class ReportCategory {
 

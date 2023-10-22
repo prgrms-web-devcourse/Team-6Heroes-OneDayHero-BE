@@ -15,16 +15,16 @@ public class ReportHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "reporter_id")
+    @Column(name = "reporter_id", nullable = false)
     private Long reporterId;
 
-    @Column(name = "report_category_id")
+    @Column(name = "report_category_id", nullable = false)
     private Long reportCategoryId;
 
-    @Column(name = "reported_id")
+    @Column(name = "reported_id", nullable = false)
     private Long reportedId;
 
     @Lob
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 }
