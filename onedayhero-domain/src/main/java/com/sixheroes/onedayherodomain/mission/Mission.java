@@ -51,7 +51,5 @@ public class Mission {
     private LocalTime deadlineTime;
 
     @Column(name = "is_match", nullable = false)
-    private boolean isMatch;
-
-
+    private Boolean isMatch;
 }
