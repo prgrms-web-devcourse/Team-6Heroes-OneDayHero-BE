@@ -1,6 +1,8 @@
 dependencies {
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     api 'org.hibernate:hibernate-spatial:6.2.13.Final'
+    api 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.0'
+    api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
     api 'com.h2database:h2'
 }
 
