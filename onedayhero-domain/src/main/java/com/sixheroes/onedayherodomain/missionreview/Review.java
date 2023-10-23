@@ -16,7 +16,7 @@ public class Review {
     private Long id;
 
     @Column(name = "sender_id", nullable = false)
-    private Long starId;	    private Long senderId;
+    private Long senderId;
 
     @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
