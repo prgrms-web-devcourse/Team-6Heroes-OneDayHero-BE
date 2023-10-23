@@ -15,8 +15,18 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "star_id", nullable = false)
-    private Long starId;
+    @Column(name = "sender_id", nullable = false)
+    private Long starId;	    private Long senderId;
+
+    @Column(name = "receiver_id", nullable = false)
+    private Long receiverId;
+
+    @Column(name = "star_score", nullable = false)
+    private Integer starScore;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reviewer_type", nullable = false)
+    private ReviewerType reviewerType;
 
     @Lob
     @Column(name = "content", nullable = false)
