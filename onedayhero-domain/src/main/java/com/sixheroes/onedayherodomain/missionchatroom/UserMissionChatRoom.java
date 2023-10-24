@@ -25,4 +25,7 @@ public class UserMissionChatRoom {
 
     @Column(name = "mission_chat_room_id", nullable = false)
     private Long missionChatRoomId;
+
+    @Column(name = "is_joined", nullable = false)
+    private Boolean isJoined;
 }
