@@ -21,14 +21,9 @@ public class Review {
     @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
 
-    @Column(name = "star_score", nullable = false)
+    @Column(name = "star_score", columnDefinition = "SMALLINT", nullable = false)
     private Integer starScore;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "reviewer_type", nullable = false)
-    private ReviewerType reviewerType;
-
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 500, nullable = false)
     private String content;
 }

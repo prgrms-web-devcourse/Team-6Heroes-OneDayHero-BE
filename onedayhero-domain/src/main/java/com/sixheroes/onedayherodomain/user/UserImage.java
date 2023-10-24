@@ -1,11 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +18,12 @@ public class UserImage {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "original_name", nullable = false)
+    @Column(name = "original_name", length = 260, nullable = false)
     private String originalName;
 
-    @Column(name = "unique_name", nullable = false)
+    @Column(name = "unique_name", length = 100, nullable = false)
     private String uniqueName;
 
-    @Column(name = "path", nullable = false)
+    @Column(name = "path", length = 250, nullable = false)
     private String path;
 }

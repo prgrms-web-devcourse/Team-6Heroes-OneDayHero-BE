@@ -31,8 +31,7 @@ public class Mission {
     @Column(name = "location", nullable = false)
     private Point location;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 1000, nullable = false)
     private String content;
 
     @Column(name = "mission_date", nullable = false)
@@ -44,8 +43,11 @@ public class Mission {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    @Column(name = "bookmark_count", nullable = false)
+    private Integer bookmarkCount;
+
     @Column(name = "price", nullable = false)
-    private Long price;
+    private Integer price;
 
     @Column(name = "deadline_time", nullable = false)
     private LocalTime deadlineTime;
