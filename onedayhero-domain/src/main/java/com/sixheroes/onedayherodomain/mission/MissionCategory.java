@@ -19,6 +19,6 @@ public class MissionCategory {
     @Column(name = "code", length = 20, nullable = false)
     private MissionCategoryCode missionCategoryCode;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", length = 20, nullable = false)
     private String name;
 }
