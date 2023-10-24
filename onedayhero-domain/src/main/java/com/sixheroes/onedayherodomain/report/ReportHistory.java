@@ -24,7 +24,6 @@ public class ReportHistory {
     @Column(name = "reported_id", nullable = false)
     private Long reportedId;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 500, nullable = false)
     private String content;
 }

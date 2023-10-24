@@ -1,22 +1,11 @@
 package com.sixheroes.onedayherodomain.user;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,29 +17,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", length = 255, nullable = false)
     private String email;
 
     @Column(name = "birth", nullable = false)
     private LocalDate birth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "social_type", nullable = false)
+    @Column(name = "social_type", length = 20, nullable = false)
     private UserSocialType userSocialType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", length = 20, nullable = false)
     private UserRole userRole;
 
-    @Column(name = "introduce", nullable = false)
+    @Column(name = "introduce", length = 200, nullable = false)
     private String introduce;
 
-    @Column(name = "hero_score", nullable = false)
+    @Column(name = "hero_score", columnDefinition = "SMALLINT", nullable = false)
     private Integer heroScore;
 
-    @Type(JsonType.class)
-    @Column(name = "favorite_date", columnDefinition = "json", nullable = false)
-    private Map<String, Week[]> favoriteDate = new HashMap<>();
+    @Column(name = "favorite_date", length = 45, nullable = false)
+    private String favoriteDate;
 
     @Column(name = "is_hero_mode", nullable = false)
     private Boolean isHeroMode;

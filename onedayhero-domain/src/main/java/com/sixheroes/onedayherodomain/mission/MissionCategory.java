@@ -15,6 +15,10 @@ public class MissionCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "code", length = 20, nullable = false)
+    private MissionCategoryCode missionCategoryCode;
+
     @Column(name = "name", nullable = false)
     private String name;
 }

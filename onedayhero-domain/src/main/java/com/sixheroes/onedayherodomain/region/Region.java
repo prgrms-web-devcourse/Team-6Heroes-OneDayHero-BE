@@ -15,12 +15,12 @@ public class Region {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "si", nullable = false)
+    @Column(name = "si", length = 10, nullable = false)
     private String si;
 
-    @Column(name = "gu", nullable = false)
+    @Column(name = "gu", length = 10, nullable = false)
     private String gu;
 
-    @Column(name = "dong", nullable = false)
+    @Column(name = "dong", length = 10, nullable = false)
     private String dong;
 }
