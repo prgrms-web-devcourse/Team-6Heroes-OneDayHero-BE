@@ -1,4 +1,4 @@
-package com.sixheroes;
+package com.sixheroes.onedayheroapplication;
 
 import org.springframework.stereotype.Component;
 
