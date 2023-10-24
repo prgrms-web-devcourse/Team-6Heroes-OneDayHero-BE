@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapi.global.response;
+package com.sixheroes.onedayherocommon.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

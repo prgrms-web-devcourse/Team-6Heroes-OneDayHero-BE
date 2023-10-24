@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapi.global.handler;
 
-import com.sixheroes.onedayheroapi.global.response.ErrorCode;
 import com.sixheroes.onedayheroapi.global.response.ErrorResponse;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

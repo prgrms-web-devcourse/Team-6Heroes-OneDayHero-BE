@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapi.global.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.Builder;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
