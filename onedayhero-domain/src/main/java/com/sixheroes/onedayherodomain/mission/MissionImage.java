@@ -18,12 +18,12 @@ public class MissionImage {
     @Column(name = "mission_id", nullable = false)
     private Long missionId;
 
-    @Column(name = "original_name", nullable = false)
+    @Column(name = "original_name", length = 260, nullable = false)
     private String originalName;
 
-    @Column(name = "unique_name", nullable = false)
+    @Column(name = "unique_name", length = 100, nullable = false)
     private String uniqueName;
 
-    @Column(name = "path", nullable = false)
+    @Column(name = "path", length = 250, nullable = false)
     private String path;
 }

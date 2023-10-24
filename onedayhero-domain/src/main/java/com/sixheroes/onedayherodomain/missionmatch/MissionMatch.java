@@ -22,6 +22,6 @@ public class MissionMatch {
     private Long heroId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", length = 20, nullable = false)
     private MissionMatchStatus missionMatchStatus;
 }
