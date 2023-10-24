@@ -14,15 +14,15 @@ public record ApiResponse<T>(
         LocalDateTime serverDateTime
 ) {
 
-    public ApiResponse<T> ok(T data) {
+    public static <T> ApiResponse<T> ok(T data) {
         return new ApiResponse<>(HttpStatus.OK.value(), data, LocalDateTime.now());
     }
 
-    public ApiResponse<T> created(T data) {
+    public static <T> ApiResponse<T> created(T data) {
         return new ApiResponse<>(HttpStatus.CREATED.value(), data, LocalDateTime.now());
     }
 
-    public ApiResponse<T> noContent(T data) {
+    public static <T> ApiResponse<T> noContent(T data) {
         return new ApiResponse<>(HttpStatus.NO_CONTENT.value(), data, LocalDateTime.now());
     }
 }
