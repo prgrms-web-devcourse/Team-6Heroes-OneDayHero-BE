@@ -1,7 +1,6 @@
 package com.sixheroes.onedayherodomain.mission;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,8 +11,38 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @ActiveProfiles("test")
 class MissionInfoTest {
+
+    @DisplayName("미션에 대한 미션 정보를 생성 할 수 있다.")
+    @Test
+    void createMissionInfo() {
+        // given
+        var content = "내용";
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+        var price = 1000;
+
+        var missionInfo = MissionInfo.builder()
+                .content("내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(1000)
+                .build();
+
+        // when & then
+        assertThat(missionInfo).isNotNull();
+        assertThat(missionInfo)
+                .extracting("content", "missionDate", "startTime", "endTime", "deadlineTime", "price")
+                .containsExactly(content, missionDate, startTime, endTime, deadlineTime, price);
+    }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 내용은 공백 일 수 없다.")
     @ParameterizedTest
@@ -21,7 +50,7 @@ class MissionInfoTest {
     void MissionInfoWithEmptyContent(String content) {
 
         // when & then
-        Assertions.assertThatThrownBy(() -> createMissionInfo(content))
+        assertThatThrownBy(() -> createMissionInfo(content))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_001.name());
     }
@@ -33,7 +62,7 @@ class MissionInfoTest {
         var content = new String(new char[1001]).replace('\0', 'a');
 
         // when & then
-        Assertions.assertThatThrownBy(() -> createMissionInfo(content))
+        assertThatThrownBy(() -> createMissionInfo(content))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_002.name());
     }
@@ -52,7 +81,7 @@ class MissionInfoTest {
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_003.name());
     }
@@ -71,7 +100,7 @@ class MissionInfoTest {
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_004.name());
     }
@@ -90,7 +119,7 @@ class MissionInfoTest {
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_005.name());
     }
