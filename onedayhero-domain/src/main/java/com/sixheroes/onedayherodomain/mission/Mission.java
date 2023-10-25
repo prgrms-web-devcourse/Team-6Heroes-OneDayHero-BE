@@ -1,29 +1,31 @@
 package com.sixheroes.onedayherodomain.mission;
 
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.geo.Point;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "missions")
 @Entity
-public class Mission {
+public class Mission extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private MissionCategory missionCategory;
+
     @Column(name = "citizen_id", nullable = false)
     private Long citizenId;
-
-    @Column(name = "category_id", nullable = false)
-    private Long categoryId;
 
     @Column(name = "region_id", nullable = false)
     private Long regionId;
@@ -31,30 +33,39 @@ public class Mission {
     @Column(name = "location", nullable = false)
     private Point location;
 
-    @Column(name = "content", length = 1000, nullable = false)
-    private String content;
-
-    @Column(name = "mission_date", nullable = false)
-    private LocalDate missionDate;
-
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
-
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    @Embedded
+    private MissionInfo missionInfo;
 
     @Column(name = "bookmark_count", nullable = false)
     private Integer bookmarkCount;
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
-
-    @Column(name = "deadline_time", nullable = false)
-    private LocalTime deadlineTime;
-
-    // MissionStatus
-    // MATCHING, MATCHING_COMPLETE, COMPLETE, EXPIRE
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
     private MissionStatus missionStatus;
+
+    @Builder
+    private Mission(
+            MissionCategory missionCategory,
+            Long citizenId,
+            Long regionId,
+            Point location,
+            MissionInfo missionInfo,
+            Integer bookmarkCount,
+            MissionStatus missionStatus
+    ) {
+        requireNonNull(missionCategory);
+        requireNonNull(citizenId);
+        requireNonNull(regionId);
+        requireNonNull(location);
+        requireNonNull(missionInfo);
+        requireNonNull(bookmarkCount);
+        requireNonNull(missionStatus);
+        this.missionCategory = missionCategory;
+        this.citizenId = citizenId;
+        this.regionId = regionId;
+        this.location = location;
+        this.missionInfo = missionInfo;
+        this.bookmarkCount = bookmarkCount;
+        this.missionStatus = missionStatus;
+    }
 }
