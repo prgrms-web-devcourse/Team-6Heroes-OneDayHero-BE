@@ -38,7 +38,7 @@ public class Email {
     ) {
         if (email.length() > 255) {
             log.debug("email 길이가 255자를 초과했습니다. email.length() : {}", email.length());
-            throw new IllegalArgumentException(ErrorCode.U_001.name());
+            throw new IllegalArgumentException(ErrorCode.EU_002.name());
         }
     }
 
@@ -47,7 +47,7 @@ public class Email {
     ) {
         if (!email.matches(EMAIL_REGEX)) {
             log.debug("email 형식이 올바르지 않습니다.");
-            throw new IllegalArgumentException(ErrorCode.U_001.name());
+            throw new IllegalArgumentException(ErrorCode.EU_001.name());
         }
     }
 }
