@@ -47,7 +47,9 @@ public class MissionInfo {
             LocalTime deadlineTime,
             Integer price
     ) {
-        validMissionInfoConstructValue(content, price);
+        validMissionContent(content);
+        validPriceIsPositive(price);
+
         this.content = content;
         this.missionDate = missionDate;
         this.startTime = startTime;
@@ -55,16 +57,6 @@ public class MissionInfo {
         this.deadlineTime = deadlineTime;
         this.price = price;
     }
-
-    private void validMissionInfoConstructValue(
-            String content,
-            Integer price
-    ) {
-        validContentIsBlank(content);
-        validContentInRange(content);
-        validPriceIsPositive(price);
-    }
-
 
     public void validMissionDateTimeInRange(
             LocalDateTime now
@@ -87,6 +79,13 @@ public class MissionInfo {
             log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadLineDateTime);
             throw new IllegalArgumentException(ErrorCode.EM_005.name());
         }
+    }
+
+    private void validMissionContent(
+            String content
+    ) {
+        validContentIsBlank(content);
+        validContentInRange(content);
     }
 
     private void validContentIsBlank(String content) {
