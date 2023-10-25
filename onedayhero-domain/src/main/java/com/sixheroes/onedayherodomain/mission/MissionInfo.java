@@ -7,14 +7,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static java.util.Objects.requireNonNull;
-
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
@@ -47,13 +47,7 @@ public class MissionInfo {
             LocalTime deadlineTime,
             Integer price
     ) {
-        requireNonNull(content);
-        requireNonNull(missionDate);
-        requireNonNull(startTime);
-        requireNonNull(endTime);
-        requireNonNull(deadlineTime);
-        requireNonNull(price);
-        validMissionInfoConstructType(content, missionDate, startTime, endTime, deadlineTime, price);
+        validMissionInfoConstructValue(content, missionDate, startTime, endTime, deadlineTime, price);
         this.content = content;
         this.missionDate = missionDate;
         this.startTime = startTime;
@@ -62,7 +56,7 @@ public class MissionInfo {
         this.price = price;
     }
 
-    private void validMissionInfoConstructType(
+    private void validMissionInfoConstructValue(
             String content,
             LocalDate missionDate,
             LocalTime startTime,
@@ -72,39 +66,55 @@ public class MissionInfo {
     ) {
         validContentIsBlank(content);
         validContentInRange(content);
-        validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime);
-        validPriceInPositive(price);
+        validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, LocalDateTime.now());
+        validPriceIsPositive(price);
     }
 
     private void validContentIsBlank(String content) {
         if (!StringUtils.hasText(content)) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("미션의 콘텐츠는 null 이거나 공백 일 수 없습니다. content : {}", content);
+            throw new IllegalArgumentException(ErrorCode.EM_001.name());
         }
     }
 
     private void validContentInRange(String content) {
         if (content.length() > 1000) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("미션의 콘텐츠의 길이는 1000자 이하여야합니다. contentSize : {}", content.length());
+            throw new IllegalArgumentException(ErrorCode.EM_002.name());
         }
     }
 
-    private void validMissionDateTimeInRange(LocalDate missionDate, LocalTime startTime, LocalTime endTime, LocalTime deadlineTime) {
-        LocalDateTime startDateTime = LocalDateTime.of(missionDate, startTime);
-        LocalDateTime endDateTime = LocalDateTime.of(missionDate, endTime);
-        LocalDateTime deadLineDateTime = LocalDateTime.of(missionDate, deadlineTime);
+    public void validMissionDateTimeInRange(
+            LocalDate missionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalTime deadlineTime,
+            LocalDateTime now
+    ) {
+        var startDateTime = LocalDateTime.of(missionDate, startTime);
+        var endDateTime = LocalDateTime.of(missionDate, endTime);
+        var deadLineDateTime = LocalDateTime.of(missionDate, deadlineTime);
+
+        if (missionDate.isBefore(now.toLocalDate())) {
+            log.warn("미션의 수행 날짜가 현재 날짜보다 이전 일 수 없습니다. 수행 일 : {}, 현재 날짜 : {}", missionDate, now.toLocalDate());
+            throw new IllegalArgumentException(ErrorCode.EM_003.name());
+        }
 
         if (endDateTime.isBefore(startDateTime)) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("미션의 종료 시간이 시작 시간보다 이전 일 수 없습니다. 시작 시간 : {}, 종료 시간 : {}", startDateTime, endDateTime);
+            throw new IllegalArgumentException(ErrorCode.EM_004.name());
         }
 
         if (deadLineDateTime.isAfter(startDateTime)) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadLineDateTime);
+            throw new IllegalArgumentException(ErrorCode.EM_005.name());
         }
     }
 
-    private void validPriceInPositive(Integer price) {
+    private void validPriceIsPositive(Integer price) {
         if (price < 0) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("미션의 포상금은 0원 이상이어야 합니다. price : {}", price);
+            throw new IllegalArgumentException(ErrorCode.EM_006.name());
         }
     }
 }
