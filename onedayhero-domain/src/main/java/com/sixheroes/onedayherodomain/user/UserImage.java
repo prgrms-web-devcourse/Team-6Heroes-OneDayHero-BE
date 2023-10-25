@@ -3,6 +3,7 @@ package com.sixheroes.onedayherodomain.user;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class UserImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -40,7 +41,7 @@ public class UserImage {
     private String path;
 
     @Builder
-    public UserImage(
+    private UserImage(
         User user,
         String originalName,
         String uniqueName,

@@ -22,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 public class User {
 
-    private static final String EMAIL_REGEX = "\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\b";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +53,7 @@ public class User {
     private Boolean isActive;
 
     @Builder
-    public User(
+    private User(
         Email email,
         UserBasicInfo userBasicInfo,
         UserFavoriteWorkingDay userFavoriteWorkingDay,
