@@ -52,6 +52,9 @@ public class Mission {
     @Column(name = "deadline_time", nullable = false)
     private LocalTime deadlineTime;
 
-    @Column(name = "is_match", nullable = false)
-    private Boolean isMatch;
+    // MissionStatus
+    // MATCHING, MATCHING_COMPLETE, COMPLETE, EXPIRE
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20, nullable = false)
+    private MissionStatus missionStatus;
 }

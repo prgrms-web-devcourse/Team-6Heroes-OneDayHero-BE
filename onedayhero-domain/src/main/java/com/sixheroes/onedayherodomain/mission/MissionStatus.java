@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MissionCategoryCode {
-    C_001("청소");
+public enum MissionStatus {
+    MATCHING("매칭 중"),
+    MATCHING_COMPLETED("매칭 완료"),
+    MISSION_COMPLETED("미션 완료"),
+    EXPIRED("마감된 미션");
 
     private final String description;
 }
