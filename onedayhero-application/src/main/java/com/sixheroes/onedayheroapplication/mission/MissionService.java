@@ -22,7 +22,7 @@ public class MissionService {
     private final MissionCategoryRepository missionCategoryRepository;
     private final MissionRepository missionRepository;
 
-    public MissionResponse createMission(MissionCreateServiceRequest request) {
+    public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
         var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
                 .orElseThrow(() -> {
                     log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
@@ -30,7 +30,7 @@ public class MissionService {
                 });
 
         var mission = request.toEntity(missionCategory);
-        mission.validRangeOfMissionTime(LocalDateTime.now());
+        mission.validRangeOfMissionTime(dateTime);
 
         var savedMission = missionRepository.save(mission);
 
