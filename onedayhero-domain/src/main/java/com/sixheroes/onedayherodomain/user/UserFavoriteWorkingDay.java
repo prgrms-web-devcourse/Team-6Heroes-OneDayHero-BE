@@ -30,7 +30,7 @@ public class UserFavoriteWorkingDay {
     private LocalTime favoriteEndDate;
 
     @Builder
-    public UserFavoriteWorkingDay(
+    private UserFavoriteWorkingDay(
         List<Week> favoriteDate,
         LocalTime favoriteStartDate,
         LocalTime favoriteEndDate

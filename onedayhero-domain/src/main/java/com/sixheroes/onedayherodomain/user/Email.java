@@ -8,18 +8,20 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.regex.Pattern;
+
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Email {
 
-    private static final String EMAIL_REGEX = "\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\b";
+    private static final Pattern EMAIL_REGEX = Pattern.compile("\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\b");
 
     @Column(name = "email", length = 255, nullable = false)
     private String email;
 
     @Builder
-    public Email(
+    private Email(
         String email
     ) {
         validCreateEmail(email);
@@ -45,7 +47,8 @@ public class Email {
     private void validEmailRegex(
         String email
     ) {
-        if (!email.matches(EMAIL_REGEX)) {
+        var matcher = EMAIL_REGEX.matcher(email);
+        if (!matcher.matches()) {
             log.debug("email 형식이 올바르지 않습니다.");
             throw new IllegalArgumentException(ErrorCode.EU_001.name());
         }
