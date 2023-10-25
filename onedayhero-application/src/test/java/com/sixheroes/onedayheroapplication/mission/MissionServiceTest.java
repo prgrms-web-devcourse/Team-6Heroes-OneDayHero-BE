@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +44,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void createMission() {
         // given
+        var today = LocalDateTime.of(2023, 10, 10, 0, 0);
+
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
@@ -52,7 +55,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
 
         // when
-        var result = missionService.createMission(missionCreateServiceRequest);
+        var result = missionService.createMission(missionCreateServiceRequest, today);
 
         // then
         assertThat(result).isNotNull();
