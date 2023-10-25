@@ -16,7 +16,7 @@ public class ReportCategory {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "code", length = 10, nullable = false)
+    @Column(name = "code", length = 20, nullable = false)
     private ReportCategoryCode reportCategoryCode;
 
     @Column(name = "name", length = 50, nullable = false)
