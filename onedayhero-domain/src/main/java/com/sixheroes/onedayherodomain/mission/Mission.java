@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.geo.Point;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "missions")
@@ -58,5 +60,9 @@ public class Mission extends BaseEntity {
         this.missionInfo = missionInfo;
         this.bookmarkCount = 0;
         this.missionStatus = MissionStatus.MATCHING;
+    }
+
+    public void validRangeOfMissionTime(LocalDateTime dateTime) {
+        missionInfo.validMissionDateTimeInRange(dateTime);
     }
 }
