@@ -67,21 +67,21 @@ public class UserImage {
     private void validOriginalNameLength(String originalName) {
         if (originalName.length() > 260) {
             log.debug("original name이 260자를 초과했습니다. originalName.length() : {}", originalName.length());
-            throw new IllegalArgumentException(ErrorCode.U_001.name());
+            throw new IllegalArgumentException(ErrorCode.EI_001.name());
         }
     }
 
     private void validUniqueNameLength(String uniqueName) {
         if (uniqueName.length() > 100) {
             log.debug("unique name이 100자를 초과했습니다. uniqueName.length() : {}", uniqueName.length());
-            throw new IllegalArgumentException(ErrorCode.U_001.name());
+            throw new IllegalArgumentException(ErrorCode.EI_002.name());
         }
     }
 
     private void validPathLength(String path) {
         if (path.length() > 250) {
             log.debug("path가 250자를 초과했습니다. path.length() : {}", path.length());
-            throw new IllegalArgumentException(ErrorCode.U_001.name());
+            throw new IllegalArgumentException(ErrorCode.EI_003.name());
         }
     }
 }
