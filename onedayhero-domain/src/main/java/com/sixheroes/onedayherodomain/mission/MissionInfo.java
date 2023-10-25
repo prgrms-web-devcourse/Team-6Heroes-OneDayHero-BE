@@ -47,7 +47,7 @@ public class MissionInfo {
             LocalTime deadlineTime,
             Integer price
     ) {
-        validMissionInfoConstructValue(content, missionDate, startTime, endTime, deadlineTime, price);
+        validMissionInfoConstructValue(content, price);
         this.content = content;
         this.missionDate = missionDate;
         this.startTime = startTime;
@@ -58,37 +58,15 @@ public class MissionInfo {
 
     private void validMissionInfoConstructValue(
             String content,
-            LocalDate missionDate,
-            LocalTime startTime,
-            LocalTime endTime,
-            LocalTime deadlineTime,
             Integer price
     ) {
         validContentIsBlank(content);
         validContentInRange(content);
-        validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, LocalDateTime.now());
         validPriceIsPositive(price);
     }
 
-    private void validContentIsBlank(String content) {
-        if (!StringUtils.hasText(content)) {
-            log.warn("미션의 콘텐츠는 null 이거나 공백 일 수 없습니다. content : {}", content);
-            throw new IllegalArgumentException(ErrorCode.EM_001.name());
-        }
-    }
-
-    private void validContentInRange(String content) {
-        if (content.length() > 1000) {
-            log.warn("미션의 콘텐츠의 길이는 1000자 이하여야합니다. contentSize : {}", content.length());
-            throw new IllegalArgumentException(ErrorCode.EM_002.name());
-        }
-    }
 
     public void validMissionDateTimeInRange(
-            LocalDate missionDate,
-            LocalTime startTime,
-            LocalTime endTime,
-            LocalTime deadlineTime,
             LocalDateTime now
     ) {
         var startDateTime = LocalDateTime.of(missionDate, startTime);
@@ -108,6 +86,20 @@ public class MissionInfo {
         if (deadLineDateTime.isAfter(startDateTime)) {
             log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadLineDateTime);
             throw new IllegalArgumentException(ErrorCode.EM_005.name());
+        }
+    }
+
+    private void validContentIsBlank(String content) {
+        if (!StringUtils.hasText(content)) {
+            log.warn("미션의 콘텐츠는 null 이거나 공백 일 수 없습니다. content : {}", content);
+            throw new IllegalArgumentException(ErrorCode.EM_001.name());
+        }
+    }
+
+    private void validContentInRange(String content) {
+        if (content.length() > 1000) {
+            log.warn("미션의 콘텐츠의 길이는 1000자 이하여야합니다. contentSize : {}", content.length());
+            throw new IllegalArgumentException(ErrorCode.EM_002.name());
         }
     }
 
