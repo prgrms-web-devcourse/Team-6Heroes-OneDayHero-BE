@@ -31,7 +31,9 @@ public enum ErrorCode {
 
     T_001(400, "입력 값에서 오류가 발생했습니다."),
 
-    S_001(500, "서버에서 알 수 없는 오류가 발생했습니다.");
+    S_001(500, "서버에서 알 수 없는 오류가 발생했습니다."),
+
+    U_001(400, "유저에서 필드 값에 대한 오류가 발생했습니다.");
 
     private final int status;
     private final String message;
