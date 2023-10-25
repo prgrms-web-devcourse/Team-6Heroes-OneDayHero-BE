@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,38 +15,27 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user_activity_statistics")
+@Table(name = "user_regions")
 @Entity
-public class UserActivityStatistic {
+public class UserRegion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "complete_count", nullable = false)
-    private Integer completeCount;
-
-    @Column(name = "no_show_count", nullable = false)
-    private Integer noShowCount;
-
-    @Column(name = "give_up_count", nullable = false)
-    private Integer giveUpCount;
-
-    @Column(name = "withdraw_count", nullable = false)
-    private Integer withdrawCount;
+    @Column(name = "region_id", nullable = false)
+    private Long regionId;
 
     @Builder
-    public UserActivityStatistic(
-        User user
+    public UserRegion(
+        User user,
+        Long regionId
     ) {
         this.user = user;
-        this.completeCount = 0;
-        this.noShowCount = 0;
-        this.giveUpCount = 0;
-        this.withdrawCount = 0;
+        this.regionId = regionId;
     }
 }
