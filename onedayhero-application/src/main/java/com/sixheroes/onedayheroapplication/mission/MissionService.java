@@ -22,6 +22,7 @@ public class MissionService {
     private final MissionCategoryRepository missionCategoryRepository;
     private final MissionRepository missionRepository;
 
+    @Transactional
     public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
         var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
                 .orElseThrow(() -> {
