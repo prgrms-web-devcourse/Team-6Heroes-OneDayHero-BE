@@ -65,7 +65,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {
         return MissionCreateServiceRequest.builder()
-                .missionCategoryId(1L)
+                .missionCategoryId(createMissionCategory().getId())
                 .citizenId(1L)
                 .regionId(1L)
                 .latitude(1234252.23)
@@ -89,5 +89,14 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .deadlineTime(deadlineTime)
                 .price(10000)
                 .build();
+    }
+
+    private MissionCategory createMissionCategory() {
+        var missionCategory = MissionCategory.builder()
+                .missionCategoryCode(MissionCategoryCode.MC_001)
+                .name("서빙")
+                .build();
+
+        return missionCategoryRepository.save(missionCategory);
     }
 }
