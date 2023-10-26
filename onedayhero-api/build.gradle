@@ -1,9 +1,50 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    asciidoctorExt
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation project(':onedayhero-application')
+
+    // RESTDOCS
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// 전역 변수 설정
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+
+    // 특정 파일만 html로 생성
+    sources {
+        include("**/index.adoc")
+    }
+
+    baseDirFollowsSourceFile() // 다른 adoc 파일 include 시 경로를 baseDir로 맞춘다.
+    dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }
