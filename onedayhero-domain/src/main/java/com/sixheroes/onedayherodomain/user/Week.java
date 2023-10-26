@@ -1,7 +1,11 @@
 package com.sixheroes.onedayherodomain.user;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,4 +19,11 @@ public enum Week {
     SUN("일요일");
 
     private final String description;
+
+    public static Week from(String week) {
+        return Arrays.stream(Week.values())
+            .filter(w -> week.equals(w.name()))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EU_008.name()));
+    }
 }
