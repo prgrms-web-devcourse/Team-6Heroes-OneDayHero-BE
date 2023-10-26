@@ -47,27 +47,6 @@ configurations {
     }
 }
 
-project(':onedayhero-api') {
-    dependencies {
-        compileOnly project(':onedayhero-application')
-        compileOnly project(':onedayhero-common')
-    }
-}
-
-project(':onedayhero-application') {
-    dependencies {
-        compileOnly project(':onedayhero-domain')
-        compileOnly project(':onedayhero-infra-querydsl')
-        compileOnly project(':onedayhero-common')
-    }
-}
-
-project(':onedayhero-domain') {
-    dependencies {
-        compileOnly project(':onedayhero-common')
-    }
-}
-
 bootJar.enabled = false
 
 tasks.named('test') {
