@@ -12,7 +12,7 @@ class UserImageTest {
 
     @DisplayName("원본 이름의 길이가 260자 이하면 유저 이미지가 생성된다.")
     @Test
-    void validOriginalNameLengthTest() {
+    void validOriginalNameLength() {
         // given
         var random = new Random();
         var originalName = random.ints('a', 'z' + 1)
@@ -32,7 +32,7 @@ class UserImageTest {
 
     @DisplayName("이미지 원본 이름의 길이가 260자 초과하면 예외가 발생한다.")
     @Test
-    void validOriginalNameLengthExTest() {
+    void invalidOutOfRangeOriginalNameLength() {
         // given
         var random = new Random();
         var originalName = random.ints('a', 'z' + 1)
@@ -51,7 +51,7 @@ class UserImageTest {
 
     @DisplayName("고유 이름의 길이가 100자 이하면 유저 이미지가 생성된다.")
     @Test
-    void validUniqueNameLengthTest() {
+    void validUniqueNameLength() {
         // given
         var random = new Random();
         var uniqueName = random.ints('a', 'z' + 1)
@@ -71,7 +71,7 @@ class UserImageTest {
 
     @DisplayName("고유 이름의 길이가 100자 초과하면 예외가 발생한다.")
     @Test
-    void validUniqueNameLengthExTest() {
+    void invalidOutOfRangeUniqueNameLength() {
         // given
         var random = new Random();
         var uniqueName = random.ints('a', 'z' + 1)
@@ -90,7 +90,7 @@ class UserImageTest {
 
     @DisplayName("경로 이름의 길이가 250자 이하면 유저 이미지가 생성된다.")
     @Test
-    void validPathLengthTest() {
+    void validPathLength() {
         // given
         var random = new Random();
         var path = random.ints('a', 'z' + 1)
@@ -110,7 +110,7 @@ class UserImageTest {
 
     @DisplayName("경로 이름의 길이가 250자 초과하면 예외가 발생한다.")
     @Test
-    void validPathLengthExTest() {
+    void invalidOutOfRangePathLength() {
         // given
         var random = new Random();
         var path = random.ints('a', 'z' + 1)
