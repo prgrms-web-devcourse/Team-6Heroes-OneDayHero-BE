@@ -46,10 +46,18 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         // given
         var bookmarkUserId = 1L;
         var citizenId = 2L;
-        var mission = createMissionWithMissionStatus(citizenId, MissionStatus.MATCHING);
+        var mission = createMissionWithMissionStatus(
+                citizenId,
+                MissionStatus.MATCHING
+        );
 
         // when
-        var response = missionBookmarkService.createMissionBookmark(createMissionBookmarkCreateRequest(mission, bookmarkUserId));
+        var response = missionBookmarkService.createMissionBookmark(
+                createMissionBookmarkCreateRequest(
+                        mission,
+                        bookmarkUserId
+                )
+        );
 
         // then
         assertSoftly(soft -> {
@@ -58,14 +66,19 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         });
     }
 
-    private MissionBookmarkCreateRequest createMissionBookmarkCreateRequest(Mission mission, long bookmarkUserId) {
+    private MissionBookmarkCreateRequest createMissionBookmarkCreateRequest(
+            Mission mission,
+            long bookmarkUserId) {
         return MissionBookmarkCreateRequest.builder()
                 .missionId(mission.getId())
                 .userId(bookmarkUserId)
                 .build();
     }
 
-    private Mission createMissionWithMissionStatus(Long citizenId, MissionStatus missionStatus) {
+    private Mission createMissionWithMissionStatus(
+            Long citizenId,
+            MissionStatus missionStatus
+    ) {
         var mission = Mission.builder()
                 .missionStatus(missionStatus)
                 .missionInfo(createMissionInfo())
