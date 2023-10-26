@@ -69,4 +69,12 @@ public class User {
         this.isHeroMode = false;
         this.isActive = true;
     }
+
+    public void updateUser(
+        UserBasicInfo userBasicInfo,
+        UserFavoriteWorkingDay userFavoriteWorkingDay
+    ) {
+        this.userBasicInfo = userBasicInfo;
+        this.userFavoriteWorkingDay = userFavoriteWorkingDay;
+    }
 }
