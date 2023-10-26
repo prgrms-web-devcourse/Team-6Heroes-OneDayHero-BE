@@ -15,7 +15,7 @@ class EmailTest {
 
     @DisplayName("이메일 형식은 올바르면 이메일이 생성된다")
     @Test
-    void validEmailRegexTest() {
+    void validEmailRegex() {
         // given
         var email = "123@abc.com";
 
@@ -31,7 +31,7 @@ class EmailTest {
     @DisplayName("이메일 형식이 올바르지 않으면 예외가 발생한다.")
     @CsvSource(value = { "123@abc", "@abc", "123@", "abc", "123@abc.", "123@.com", "123@." })
     @ParameterizedTest
-    void validEmailRegexExTest(String email) {
+    void invalidEmailRegex(String email) {
         // given
 
         // when & then
@@ -44,7 +44,7 @@ class EmailTest {
 
     @DisplayName("이메일 길이가 255자 이하이면 이메일이 생성된다.")
     @Test
-    void validEmailLengthTest() {
+    void validEmailLength() {
         // given
         var random = new Random();
         var email = "%s@abc.com".formatted(random.ints('a', 'z' + 1)
@@ -66,7 +66,7 @@ class EmailTest {
 
     @DisplayName("이메일 길이가 255자를 초과하면 예외가 발생한다.")
     @Test
-    void validEmailLengthExTest() {
+    void invalidOutOfRangeEmailLength() {
         // given
         var random = new Random();
         var email = "%s@abc.com".formatted(random.ints('a', 'z' + 1)

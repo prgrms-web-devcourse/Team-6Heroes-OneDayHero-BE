@@ -14,7 +14,7 @@ class UserBasicInfoTest {
 
     @DisplayName("닉네임 길이가 30자 이하면 유저 기본 정보가 생성된다.")
     @Test
-    void validNicknameLengthTest() {
+    void validNicknameLength() {
         // given
         var random = new Random();
         String nickname = random.ints('a', 'z' + 1)
@@ -34,7 +34,7 @@ class UserBasicInfoTest {
 
     @DisplayName("닉네임 길이가 30자를 초과하면 예외가 발생한다.")
     @Test
-    void validNicknameLengthExTest() {
+    void invalidOutofRangeNicknameLength() {
         // given
         var random = new Random();
         var nickname = random.ints('a', 'z' + 1)
@@ -53,7 +53,7 @@ class UserBasicInfoTest {
 
     @DisplayName("자기소개 길이가 200자 이하면 유저 기본 정보가 생성된다.")
     @Test
-    void validIntroduceLengthTest() {
+    void validIntroduceLength() {
         // given
         var random = new Random();
         var introduce = random.ints('a', 'z' + 1)
@@ -73,7 +73,7 @@ class UserBasicInfoTest {
 
     @DisplayName("자기소개 길이가 200자 초과하면 예외가 발생한다.")
     @Test
-    void validIntroduceLengthExTest() {
+    void invalidOutOfRangeIntroduceLength() {
         // given
         var random = new Random();
         var introduce = random.ints('a', 'z' + 1)
