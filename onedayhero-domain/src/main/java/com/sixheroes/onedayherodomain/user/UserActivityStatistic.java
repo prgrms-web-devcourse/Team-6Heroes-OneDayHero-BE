@@ -1,5 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_activity_statistics")
 @Entity
-public class UserActivityStatistic {
+public class UserActivityStatistic extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
