@@ -14,7 +14,7 @@ class UserFavoriteWorkingDayTest {
 
     @DisplayName("희망 근무 시작 시간이 종료 시간보다 과거라면 희망 근무 날짜가 생성된다.")
     @Test
-    void validStartAndEndDateTest() {
+    void validFavoriteStartBeforeThanEndTime() {
         // given
         var startTime = LocalTime.of(12, 0, 0);
         var endTime = LocalTime.of(12, 0, 1);
@@ -33,7 +33,7 @@ class UserFavoriteWorkingDayTest {
 
     @DisplayName("희망 근무 시작 시간이 종료 시간보다 미래라면 예외가 발생한다.")
     @Test
-    void validStartAndEndDateExTest() {
+    void invalidFavoriteStartAfterThanEndDateExTest() {
         // given
         var startTime = LocalTime.of(12, 0, 1);
         var endTime = LocalTime.of(12, 0, 0);

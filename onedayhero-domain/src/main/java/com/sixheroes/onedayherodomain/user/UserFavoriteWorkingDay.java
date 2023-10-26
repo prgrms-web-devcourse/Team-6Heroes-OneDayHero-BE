@@ -35,14 +35,14 @@ public class UserFavoriteWorkingDay {
         LocalTime favoriteStartTime,
         LocalTime favoriteEndTime
     ) {
-        validStartAndEndDate(favoriteStartTime, favoriteEndTime);
+        validFavoriteStartBeforeThanEndTime(favoriteStartTime, favoriteEndTime);
 
         this.favoriteDate = favoriteDate;
         this.favoriteStartTime = favoriteStartTime;
         this.favoriteEndTime = favoriteEndTime;
     }
 
-    private void validStartAndEndDate(
+    private void validFavoriteStartBeforeThanEndTime(
         LocalTime favoriteStartTime,
         LocalTime favoriteEndTime
     ) {
