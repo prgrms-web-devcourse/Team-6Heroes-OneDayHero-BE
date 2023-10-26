@@ -105,7 +105,7 @@ class MissionInfoTest {
                 .hasMessage(ErrorCode.EM_004.name());
     }
 
-    @DisplayName("미션 정보를 입력 받을 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
+    @DisplayName("미션 정보를 입력 받을 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
     @Test
     void MissionInfoWithDeadLineTimeAfterStartTime() {
         // given
