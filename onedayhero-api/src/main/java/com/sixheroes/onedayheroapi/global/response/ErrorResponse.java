@@ -1,11 +1,13 @@
 package com.sixheroes.onedayheroapi.global.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.Builder;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,7 +25,10 @@ public record ErrorResponse(
         String message,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        List<ValidationError> errors
+        List<ValidationError> errors,
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+        LocalDateTime serverDateTime
 ) {
 
     public static ErrorResponse from(final ErrorCode errorCode) {
@@ -31,6 +36,7 @@ public record ErrorResponse(
                 .code(errorCode.name())
                 .status(errorCode.getStatus())
                 .message(errorCode.getMessage())
+                .serverDateTime(LocalDateTime.now())
                 .build();
     }
 
@@ -43,6 +49,7 @@ public record ErrorResponse(
                 .status(errorCode.getStatus())
                 .message(errorCode.getMessage())
                 .errors(ValidationError.of(e.getBindingResult().getFieldErrors()))
+                .serverDateTime(LocalDateTime.now())
                 .build();
     }
 

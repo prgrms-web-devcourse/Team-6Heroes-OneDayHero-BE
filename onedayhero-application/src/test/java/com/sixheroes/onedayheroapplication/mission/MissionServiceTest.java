@@ -5,8 +5,11 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
+import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +23,18 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Transactional
 class MissionServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private MissionService missionService;
 
+    @BeforeAll
+    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
+        var missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
+        missionCategoryRepository.save(missionCategory);
+    }
+
+    @Transactional
     @DisplayName("시민은 미션을 생성 할 수 있다.")
     @Test
     void createMission() {
@@ -69,6 +78,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 );
     }
 
+    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 수행 날짜가 생성 날짜보다 이전 일 수 없다.")
     @Test
     void createMissionWithMissionDateBeforeToday() {
@@ -89,6 +99,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_003.name());
     }
 
+    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
     @Test
     void createMissionWithEndTimeBeforeStartTime() {
@@ -109,6 +120,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_004.name());
     }
 
+    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
     @Test
     void createMissionWithDeadLineTimeAfterStartTime() {
