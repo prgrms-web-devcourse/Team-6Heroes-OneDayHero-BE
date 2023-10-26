@@ -23,31 +23,31 @@ public class UserFavoriteWorkingDay {
     @Column(name = "favorite_date", length = 45, nullable = true)
     private List<Week> favoriteDate;
 
-    @Column(name = "favorite_start_date", nullable = true)
-    private LocalTime favoriteStartDate;
+    @Column(name = "favorite_start_time", nullable = true)
+    private LocalTime favoriteStartTime;
 
-    @Column(name = "favorite_end_date", nullable = true)
-    private LocalTime favoriteEndDate;
+    @Column(name = "favorite_end_time", nullable = true)
+    private LocalTime favoriteEndTime;
 
     @Builder
     private UserFavoriteWorkingDay(
         List<Week> favoriteDate,
-        LocalTime favoriteStartDate,
-        LocalTime favoriteEndDate
+        LocalTime favoriteStartTime,
+        LocalTime favoriteEndTime
     ) {
-        validStartAndEndDate(favoriteStartDate, favoriteEndDate);
+        validStartAndEndDate(favoriteStartTime, favoriteEndTime);
 
         this.favoriteDate = favoriteDate;
-        this.favoriteStartDate = favoriteStartDate;
-        this.favoriteEndDate = favoriteEndDate;
+        this.favoriteStartTime = favoriteStartTime;
+        this.favoriteEndTime = favoriteEndTime;
     }
 
     private void validStartAndEndDate(
-        LocalTime favoriteStartDate,
-        LocalTime favoriteEndDate
+        LocalTime favoriteStartTime,
+        LocalTime favoriteEndTime
     ) {
-        if (favoriteStartDate.isAfter(favoriteEndDate)) {
-            log.debug("시작 시간은 종료 시간보다 미래이면 안됩니다. startDate = {}, endDate = {}", favoriteStartDate, favoriteEndDate);
+        if (favoriteStartTime.isAfter(favoriteEndTime)) {
+            log.debug("시작 시간은 종료 시간보다 미래이면 안됩니다. startDate = {}, endDate = {}", favoriteStartTime, favoriteEndTime);
             throw new IllegalArgumentException(ErrorCode.EU_005.name());
         }
     }
