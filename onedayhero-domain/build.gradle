@@ -4,6 +4,7 @@ dependencies {
     api 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.0'
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
     api 'com.h2database:h2'
+    implementation project(':onedayhero-common')
 }
 
 tasks.named('test') {
