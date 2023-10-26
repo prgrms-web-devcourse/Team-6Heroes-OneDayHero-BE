@@ -1,10 +1,12 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateRequest;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +34,10 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
     @Autowired
     private MissionRepository missionRepository;
 
-    @BeforeEach
-    void setUp() {
-        missionRepository.deleteAll();
-        missionCategoryRepository.deleteAll();
+    @BeforeAll
+    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
+        MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
+        missionCategoryRepository.save(missionCategory);
     }
 
     @DisplayName("시민은 매칭중인 미션을 찜 할 수 있다.")
@@ -52,7 +54,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         // when
         var response = missionBookmarkService.createMissionBookmark(
                 createMissionBookmarkCreateRequest(
-                        mission,
+                        mission.getId(),
                         bookmarkUserId
                 )
         );
@@ -64,12 +66,55 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         });
     }
 
+    @DisplayName("시민은 찜했던 미션에 대해 찜 취소를 할 수 있다.")
+    @Test
+    void cancelMissionBookmark() {
+        // given
+        var bookmarkUserId = 1L;
+        var citizenId = 2L;
+        var mission = createMissionWithMissionStatus(
+                citizenId,
+                MissionStatus.MATCHING
+        );
+        missionBookmarkService.createMissionBookmark(
+                createMissionBookmarkCreateRequest(
+                        mission.getId(),
+                        bookmarkUserId
+                )
+        );
+
+        // when
+        var response = missionBookmarkService.cancelMissionBookmark(
+                crerateMissionBookmarkCanelRequest(
+                        mission.getId(),
+                        bookmarkUserId
+                )
+        );
+
+        // then
+        assertSoftly(soft -> {
+            soft.assertThat(response).isNotNull();
+            soft.assertThat(mission.getBookmarkCount()).isEqualTo(0);
+        });
+    }
+
     private MissionBookmarkCreateRequest createMissionBookmarkCreateRequest(
-            Mission mission,
-            long bookmarkUserId) {
+            Long missionId,
+            Long bookmarkUserId
+    ) {
         return MissionBookmarkCreateRequest.builder()
-                .missionId(mission.getId())
+                .missionId(missionId)
                 .userId(bookmarkUserId)
+                .build();
+    }
+
+    private MissionBookmarkCancelRequest crerateMissionBookmarkCanelRequest(
+            Long missionId,
+            Long userId
+    ) {
+        return MissionBookmarkCancelRequest.builder()
+                .missionId(missionId)
+                .userId(userId)
                 .build();
     }
 
@@ -80,7 +125,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         var mission = Mission.builder()
                 .missionStatus(missionStatus)
                 .missionInfo(createMissionInfo())
-                .missionCategory(createMissionCategory())
+                .missionCategory(missionCategoryRepository.findById(1L).get())
                 .citizenId(citizenId)
                 .regionId(1L)
                 .location(new Point(1234, 5678))
@@ -98,14 +143,5 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .price(10000)
                 .content("서빙 도와주기")
                 .build();
-    }
-
-    private MissionCategory createMissionCategory() {
-        var missionCategory = MissionCategory.builder()
-                .missionCategoryCode(MissionCategoryCode.MC_001)
-                .name("서빙")
-                .build();
-
-        return missionCategoryRepository.save(missionCategory);
     }
 }
