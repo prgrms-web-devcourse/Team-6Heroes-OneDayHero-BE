@@ -16,10 +16,10 @@ public record MissionCreateRequest(
         @NotNull(message = "지역 아이디는 필수 값 입니다.")
         Long regionId,
 
-        @NotNull(message = "경도는 필수 값 입니다.")
+        @NotNull(message = "위도는 필수 값 입니다.")
         Double latitude,
 
-        @NotNull(message = "위도는 필수 값 입니다.")
+        @NotNull(message = "경도는 필수 값 입니다.")
         Double longitude,
 
         @Valid

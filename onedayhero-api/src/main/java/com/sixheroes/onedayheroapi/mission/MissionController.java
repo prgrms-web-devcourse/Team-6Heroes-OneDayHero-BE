@@ -26,7 +26,8 @@ public class MissionController {
     public ResponseEntity<ApiResponse<MissionResponse>> createMission(
             @Valid @RequestBody MissionCreateRequest request
     ) {
-        var result = missionService.createMission(request.toService(), LocalDateTime.now());
+        var registerDateTime = LocalDateTime.now();
+        var result = missionService.createMission(request.toService(), registerDateTime);
 
         return ResponseEntity.created(URI.create("/api/v1/missions/" + result.id()))
                 .body(ApiResponse.created(result));

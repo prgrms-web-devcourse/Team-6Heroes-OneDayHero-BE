@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
+import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
@@ -21,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,10 +53,9 @@ class MissionControllerTest {
 
         var missionCategoryResponse = createMissionCategoryResponse();
         var missionInfoResponse = createMissionInfoResponse(missionInfoRequest);
-
         var missionResponse = createMissionResponse(missionCategoryResponse, missionCreateRequest, missionInfoResponse);
 
-        given(missionService.createMission(eq(missionCreateRequest.toService()), any(LocalDateTime.class)))
+        given(missionService.createMission(any(MissionCreateServiceRequest.class), any(LocalDateTime.class)))
                 .willReturn(missionResponse);
 
         // when & then
@@ -89,7 +88,11 @@ class MissionControllerTest {
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
-    private MissionResponse createMissionResponse(MissionCategoryResponse missionCategoryResponse, MissionCreateRequest missionCreateRequest, MissionResponse.MissionInfoResponse missionInfoResponse) {
+    private MissionResponse createMissionResponse(
+            MissionCategoryResponse missionCategoryResponse,
+            MissionCreateRequest missionCreateRequest,
+            MissionResponse.MissionInfoResponse missionInfoResponse
+    ) {
         return MissionResponse.builder()
                 .id(1L)
                 .missionCategory(missionCategoryResponse)
@@ -111,7 +114,8 @@ class MissionControllerTest {
     }
 
     private MissionResponse.MissionInfoResponse createMissionInfoResponse(
-            MissionInfoRequest missionInfoRequest) {
+            MissionInfoRequest missionInfoRequest
+    ) {
         return MissionResponse.MissionInfoResponse.builder()
                 .content(missionInfoRequest.content())
                 .missionDate(missionInfoRequest.missionDate())
