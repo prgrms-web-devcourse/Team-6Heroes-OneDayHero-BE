@@ -65,9 +65,13 @@ public class Mission extends BaseEntity {
         this.missionStatus = MissionStatus.MATCHING;
     }
 
-    public void addBookmarkCount(MissionStatus missionStatus) {
-        validateBookmarkCountAddable(missionStatus);
+    public void addBookmarkCount() {
+        validateBookmarkCountAddable(this.missionStatus);
         this.bookmarkCount += 1;
+    }
+
+    public void subBookmarkCount() {
+        this.bookmarkCount -= 1;
     }
 
     private void validateBookmarkCountAddable(MissionStatus missionStatus) {
