@@ -5,17 +5,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Pattern;
 
 @Slf4j
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Email {
 
-    private static final Pattern EMAIL_REGEX = Pattern.compile("\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\b");
+    private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
     @Column(name = "email", length = 255, nullable = false)
     private String email;
