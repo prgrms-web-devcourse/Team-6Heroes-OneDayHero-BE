@@ -39,7 +39,7 @@ public class UserBasicInfo {
         LocalDate birth,
         String introduce
     ) {
-        validCreateUserBasicInfo(nickname, introduce);
+        validCreateUserBasicInfo(nickname, introduce, birth);
 
         this.nickname = nickname;
         this.gender = gender;
@@ -49,10 +49,12 @@ public class UserBasicInfo {
 
     private void validCreateUserBasicInfo(
         String nickname,
-        String introduce
+        String introduce,
+        LocalDate birth
     ) {
         validNicknameLength(nickname);
         validIntroduceLength(introduce);
+        validBirthBeforeToday(birth);
     }
 
     private void validNicknameLength(String nickname) {
@@ -66,6 +68,13 @@ public class UserBasicInfo {
         if (introduce.length() > 200) {
             log.debug("introduce 길이가 200을 초과했습니다. introduce.length() : {}", introduce.length());
             throw new IllegalArgumentException(ErrorCode.EU_004.name());
+        }
+    }
+
+    private void validBirthBeforeToday(LocalDate birth) {
+        if (!birth.isBefore(LocalDate.now())) {
+            log.debug("태어난 날짜는 오늘보다 과거여야 합니다. birth : {}", birth);
+            throw new IllegalArgumentException(ErrorCode.EU_006.name());
         }
     }
 }

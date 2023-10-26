@@ -90,6 +90,31 @@ class UserBasicInfoTest {
             .hasMessage(ErrorCode.EU_004.name());
     }
 
+    @DisplayName("태어난 날짜가 오늘보다 과거면 유저 기본 정보가 생성된다.")
+    @Test
+    void validBirthBeforeToday() {
+        // given
+        var birth = LocalDate.now().minusDays(1);
+
+        // when
+        var userBasicInfo = createUserBasicInfoWithBirth(birth);
+
+        // then
+        assertThat(userBasicInfo.getBirth()).isEqualTo(birth);
+    }
+
+    @DisplayName("태어난 날짜가 오늘이거나 오늘보다 미래라면 예외가 발생한다.")
+    @Test
+    void invalidBirthSameAndAfterToday() {
+        // given
+        var birth = LocalDate.now();
+
+        // when & then
+        assertThatThrownBy(() -> createUserBasicInfoWithBirth(birth))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ErrorCode.EU_006.name());
+    }
+
     private UserBasicInfo createUserBasicInfoWithNickname(
         String nickname
     ) {
@@ -109,6 +134,17 @@ class UserBasicInfoTest {
             .birth(LocalDate.of(1990, 1, 1))
             .gender(UserGender.MALE)
             .introduce(introduce)
+            .build();
+    }
+
+    private UserBasicInfo createUserBasicInfoWithBirth(
+        LocalDate birth
+    ) {
+        return UserBasicInfo.builder()
+            .nickname("이름")
+            .birth(birth)
+            .gender(UserGender.MALE)
+            .introduce("자기소개")
             .build();
     }
 }
