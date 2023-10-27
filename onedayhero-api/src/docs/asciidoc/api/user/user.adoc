@@ -1,0 +1,12 @@
+[[user-update]]
+=== 유저 정보 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
