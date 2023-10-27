@@ -39,6 +39,20 @@ class MissionTest {
                 .hasMessage(ErrorCode.EM_007.name());
     }
 
+    @DisplayName("미션에 대한 접근은 본인만 가능하다.")
+    @Test
+    void deleteMissionWithNotOwn() {
+        // given
+        var mission = createMission(1L);
+
+        var unknownCitizenId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> mission.validOwn(unknownCitizenId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_009.name());
+    }
+
     private Mission createMission(MissionStatus missionStatus) {
         return Mission.builder()
                 .missionCategory(
@@ -59,6 +73,29 @@ class MissionTest {
                 .citizenId(1L)
                 .location(new Point(123456.78, 123456.78))
                 .missionStatus(missionStatus)
+                .build();
+    }
+
+    private Mission createMission(Long citizenId) {
+        return Mission.builder()
+                .missionCategory(
+                        MissionCategory.builder()
+                                .missionCategoryCode(MissionCategoryCode.MC_001)
+                                .name(MissionCategoryCode.MC_001.getDescription())
+                                .build())
+                .missionInfo(
+                        MissionInfo.builder()
+                                .content("content")
+                                .missionDate(LocalDate.now())
+                                .startTime(LocalTime.now())
+                                .endTime(LocalTime.now())
+                                .deadlineTime(LocalTime.now())
+                                .price(1000)
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
                 .build();
     }
 }

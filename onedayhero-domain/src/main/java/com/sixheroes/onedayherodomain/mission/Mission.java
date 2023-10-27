@@ -7,12 +7,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE missions SET is_deleted = true WHERE id = ?")
@@ -87,6 +89,13 @@ public class Mission extends BaseEntity {
                 .bookmarkCount(0)
                 .missionStatus(MissionStatus.MATCHING)
                 .build();
+    }
+
+    public void validOwn(Long citizenId) {
+        if (!this.citizenId.equals(citizenId)) {
+            log.warn("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
+            throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
     }
 
     public void validAbleDeleteStatus() {
