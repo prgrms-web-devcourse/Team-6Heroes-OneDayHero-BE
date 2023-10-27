@@ -91,6 +91,14 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
+    public void update(Mission mission) {
+        validOwn(mission.getCitizenId());
+        this.missionCategory = mission.missionCategory;
+        this.missionInfo = mission.missionInfo;
+        this.regionId = mission.regionId;
+        this.location = mission.location;
+    }
+
     public void validAbleDelete(Long citizenId) {
         validOwn(citizenId);
 
