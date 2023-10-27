@@ -191,10 +191,6 @@ public class MissionControllerTest extends RestDocsSupport {
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
-                        ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("HTTP 응답 코드"),
