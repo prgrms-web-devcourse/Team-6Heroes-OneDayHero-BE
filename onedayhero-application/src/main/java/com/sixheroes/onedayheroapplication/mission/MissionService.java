@@ -47,8 +47,7 @@ public class MissionService {
         var mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_007.name()));
 
-        mission.validAbleDeleteStatus();
-        mission.validOwn(citizenId);
+        mission.validAbleDelete(citizenId);
 
         deleteUserBookMarkByMissionId(missionId);
         missionRepository.delete(mission);

@@ -23,7 +23,7 @@ class MissionTest {
         var mission = createMission(missionStatus);
 
         // when & then
-        assertThatCode(mission::validAbleDeleteStatus)
+        assertThatCode(() -> mission.validAbleDelete(mission.getCitizenId()))
                 .doesNotThrowAnyException();
     }
 
@@ -34,7 +34,7 @@ class MissionTest {
         var mission = createMission(MissionStatus.MATCHING_COMPLETED);
 
         // when & then
-        assertThatThrownBy(mission::validAbleDeleteStatus)
+        assertThatThrownBy(() -> mission.validAbleDelete(mission.getCitizenId()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
     }
@@ -48,7 +48,7 @@ class MissionTest {
         var unknownCitizenId = 2L;
 
         // when & then
-        assertThatThrownBy(() -> mission.validOwn(unknownCitizenId))
+        assertThatThrownBy(() -> mission.validAbleDelete(unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_009.name());
     }
