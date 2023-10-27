@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapi.docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sixheroes.onedayheroapi.global.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 public abstract class RestDocsSupport {
 
     protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    protected ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
