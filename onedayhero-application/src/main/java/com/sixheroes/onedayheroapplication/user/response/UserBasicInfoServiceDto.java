@@ -1,16 +1,15 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sixheroes.onedayherodomain.user.UserGender;
 import lombok.Builder;
 
 import java.time.LocalDate;
 
 @Builder
-public record UserBasicInfoDto(
+public record UserBasicInfoServiceDto(
     String nickname,
 
-    UserGender gender,
+    String gender,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     LocalDate birth,
