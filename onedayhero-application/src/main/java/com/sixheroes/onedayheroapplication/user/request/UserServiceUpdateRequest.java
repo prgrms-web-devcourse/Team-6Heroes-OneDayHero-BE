@@ -15,7 +15,7 @@ public record UserServiceUpdateRequest(
     UserFavoriteWorkingDay userFavoriteWorkingDay
 ) {
 
-    public static UserServiceUpdateRequest toService(
+    public static UserServiceUpdateRequest from(
         Long userId,
         String nickname,
         String gender,
