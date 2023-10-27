@@ -8,6 +8,7 @@ import com.sixheroes.onedayherodomain.user.Week;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public record UserServiceUpdateRequest(
     Long userId,
@@ -32,9 +33,11 @@ public record UserServiceUpdateRequest(
             .introduce(introduce)
             .build();
 
-        var weeks = favoriteDate.stream()
-            .map(Week::from)
-            .toList();
+        var weeks = Optional.ofNullable(favoriteDate)
+            .map(fd -> fd.stream()
+                .map(Week::from)
+                .toList())
+            .orElse(null);
 
         var userFavoriteWorkingDay = UserFavoriteWorkingDay.builder()
             .favoriteDate(weeks)

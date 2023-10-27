@@ -6,7 +6,7 @@ import com.sixheroes.onedayherodomain.user.Week;
 
 public record UserUpdateResponse(
     Long userId,
-    UserBasicInfoServiceDto userBasicInfo,
+    UserBasicInfoServiceDto basicInfo,
     UserFavoriteWorkingDayServiceDto favoriteWorkingDay
 ) {
 

@@ -61,7 +61,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // then
         assertThat(userUpdateResponse.userId()).isEqualTo(savedUser.getId());
-        assertThat(userUpdateResponse.userBasicInfo())
+        assertThat(userUpdateResponse.basicInfo())
             .extracting("nickname", "gender", "birth", "introduce")
             .contains(nickname, gender, birth, introduce);
         assertThat(userUpdateResponse.favoriteWorkingDay())
