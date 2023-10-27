@@ -39,22 +39,20 @@ class UserServiceTest extends IntegrationApplicationTest {
         var savedUser = userRepository.save(user);
 
         var nickname = "바뀐 이름";
-        var gender = UserGender.FEMALE;
+        var gender = "FEMALE";
         var birth = LocalDate.of(2000, 1, 1);
         var introduce = "바뀐 자기 소개";
-        var favoriteDate = List.of(Week.MON, Week.THU);
+        var favoriteDate = List.of("MON", "TUE");
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userServiceUpdateRequest = UserServiceUpdateRequest.toService(
+        var userServiceUpdateRequest = UserServiceUpdateRequest.from(
             savedUser.getId(),
             nickname,
-            gender.name(),
+            gender,
             birth,
             introduce,
-            favoriteDate.stream()
-                .map(Week::name)
-                .toList(),
+            favoriteDate,
             favoriteStartTime,
             favoriteEndTime);
 
@@ -86,7 +84,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userServiceUpdateRequest = UserServiceUpdateRequest.toService(
+        var userServiceUpdateRequest = UserServiceUpdateRequest.from(
             2L,
             nickname,
             gender.name(),
