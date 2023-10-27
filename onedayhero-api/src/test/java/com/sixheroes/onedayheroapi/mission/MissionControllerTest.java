@@ -2,7 +2,6 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
@@ -182,14 +181,9 @@ public class MissionControllerTest extends RestDocsSupport {
         // given
         Long missionId = 1L;
 
-        var request = MissionDeleteRequest.builder()
-                .userId(1L)
-                .build();
-
         // when & then
         mockMvc.perform(delete("/api/v1/missions/{missionId}", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent())
