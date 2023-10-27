@@ -91,14 +91,9 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
-    public void validOwn(Long citizenId) {
-        if (!this.citizenId.equals(citizenId)) {
-            log.warn("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
-            throw new IllegalStateException(ErrorCode.EM_009.name());
-        }
-    }
+    public void validAbleDelete(Long citizenId) {
+        validOwn(citizenId);
 
-    public void validAbleDeleteStatus() {
         if (missionStatus.isMatchingCompleted()) {
             throw new IllegalStateException(ErrorCode.EM_007.name());
         }
@@ -106,5 +101,12 @@ public class Mission extends BaseEntity {
 
     public void validRangeOfMissionTime(LocalDateTime dateTime) {
         missionInfo.validMissionDateTimeInRange(dateTime);
+    }
+
+    private void validOwn(Long citizenId) {
+        if (!this.citizenId.equals(citizenId)) {
+            log.warn("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
+            throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
     }
 }
