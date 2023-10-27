@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.bookmark.UserBookMarkMission;
@@ -58,5 +59,13 @@ public class MissionService {
                 .toList();
 
         userBookMarkMissionRepository.deleteByIdIn(userBookMarkIds);
+
+    public MissionResponse updateMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
+        return null;
+    }
+
+    @Transactional
+    public MissionResponse extendMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
+        return null;
     }
 }

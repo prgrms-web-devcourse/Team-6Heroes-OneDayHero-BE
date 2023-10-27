@@ -71,6 +71,24 @@ public class Mission extends BaseEntity {
         this.isDeleted = false;
     }
 
+    public static Mission createMission(
+            MissionCategory missionCategory,
+            Long citizenId,
+            Long regionId,
+            Point location,
+            MissionInfo missionInfo
+    ) {
+        return Mission.builder().
+                missionCategory(missionCategory)
+                .citizenId(citizenId)
+                .regionId(regionId)
+                .location(location)
+                .missionInfo(missionInfo)
+                .bookmarkCount(0)
+                .missionStatus(MissionStatus.MATCHING)
+                .build();
+    }
+
     public void validAbleDeleteStatus() {
         if (missionStatus.isMatchingCompleted()) {
             throw new IllegalStateException(ErrorCode.EM_007.name());
