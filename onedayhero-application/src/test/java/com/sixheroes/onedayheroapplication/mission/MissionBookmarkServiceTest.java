@@ -1,13 +1,12 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelRequest;
-import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
         // when
         var response = missionBookmarkService.createMissionBookmark(
-                createMissionBookmarkCreateRequest(
+                createMissionBookmarkCreateServiceRequest(
                         mission.getId(),
                         bookmarkUserId
                 )
@@ -77,7 +76,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 MissionStatus.MATCHING
         );
         missionBookmarkService.createMissionBookmark(
-                createMissionBookmarkCreateRequest(
+                createMissionBookmarkCreateServiceRequest(
                         mission.getId(),
                         bookmarkUserId
                 )
@@ -85,7 +84,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
         // when
         var response = missionBookmarkService.cancelMissionBookmark(
-                crerateMissionBookmarkCanelRequest(
+                createMissionBookmarkCancelServiceRequest(
                         mission.getId(),
                         bookmarkUserId
                 )
@@ -98,21 +97,21 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         });
     }
 
-    private MissionBookmarkCreateRequest createMissionBookmarkCreateRequest(
+    private MissionBookmarkCreateServiceRequest createMissionBookmarkCreateServiceRequest(
             Long missionId,
             Long bookmarkUserId
     ) {
-        return MissionBookmarkCreateRequest.builder()
+        return MissionBookmarkCreateServiceRequest.builder()
                 .missionId(missionId)
                 .userId(bookmarkUserId)
                 .build();
     }
 
-    private MissionBookmarkCancelRequest crerateMissionBookmarkCanelRequest(
+    private MissionBookmarkCancelServiceRequest createMissionBookmarkCancelServiceRequest(
             Long missionId,
             Long userId
     ) {
-        return MissionBookmarkCancelRequest.builder()
+        return MissionBookmarkCancelServiceRequest.builder()
                 .missionId(missionId)
                 .userId(userId)
                 .build();
