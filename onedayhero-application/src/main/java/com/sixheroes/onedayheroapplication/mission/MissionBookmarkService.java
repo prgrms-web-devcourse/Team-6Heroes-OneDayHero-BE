@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 
-import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateRequest;
-import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateApplicationRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelApplicationRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
@@ -28,7 +28,7 @@ public class MissionBookmarkService {
     private final UserRepository userRepository;
     private final MissionBookmarkRepository missionBookmarkRepository;
 
-    public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateRequest request) {
+    public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateApplicationRequest request) {
         var mission = missionRepository.findById(request.missionId())
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
@@ -53,7 +53,7 @@ public class MissionBookmarkService {
         return new MissionBookmarkCreateResponse(savedMission);
     }
 
-    public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelRequest request) {
+    public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelApplicationRequest request) {
         var mission = missionRepository.findById(request.missionId())
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());

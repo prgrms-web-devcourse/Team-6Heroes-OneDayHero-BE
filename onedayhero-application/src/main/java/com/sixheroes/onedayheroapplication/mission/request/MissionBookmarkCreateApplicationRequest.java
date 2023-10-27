@@ -3,8 +3,9 @@ package com.sixheroes.onedayheroapplication.mission.request;
 import lombok.Builder;
 
 @Builder
-public record MissionBookmarkCreateRequest(
+public record MissionBookmarkCreateApplicationRequest(
         Long missionId,
         Long userId
+
 ) {
 }
