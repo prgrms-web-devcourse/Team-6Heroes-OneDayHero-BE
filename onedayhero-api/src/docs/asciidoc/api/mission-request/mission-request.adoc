@@ -1,0 +1,12 @@
+[[mission-request-create]]
+=== 미션 제안 생성
+
+==== HTTP Request
+
+include::{snippets}/mission-request-create/http-request.adoc[]
+include::{snippets}/mission-request-create/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-request-create/http-response.adoc[]
+include::{snippets}/mission-request-create/response-fields.adoc[]
