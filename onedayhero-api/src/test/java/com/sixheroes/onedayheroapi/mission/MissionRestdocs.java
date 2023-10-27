@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
@@ -24,7 +25,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -57,7 +59,7 @@ public class MissionRestdocs extends RestDocsSupport {
                 .willReturn(missionResponse);
 
         // when & then
-        mockMvc.perform(post("/api/v1/missions")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/missions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(missionCreateRequest))
                 )
@@ -165,6 +167,36 @@ public class MissionRestdocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(0))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+    }
+
+    @DisplayName("유저는 미션을 삭제 할 수 있다.")
+    @Test
+    void deleteMission() throws Exception {
+        // given
+        Long missionId = 1L;
+
+        // when & then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/missions/{missionId}", missionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent())
+                .andDo(document("mission-delete",
+                        pathParameters(
+                                parameterWithName("missionId").description("미션 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL)
+                                        .description("응답 데이터"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .description("서버 응답 시간")
+                                        .attributes(getDateTimeFormat())
+                        )))
+                .andExpect(jsonPath("$.status").value(204))
+                .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 

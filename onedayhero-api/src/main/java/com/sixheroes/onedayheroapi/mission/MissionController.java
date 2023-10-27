@@ -6,11 +6,9 @@ import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -31,5 +29,12 @@ public class MissionController {
 
         return ResponseEntity.created(URI.create("/api/v1/missions/" + result.id()))
                 .body(ApiResponse.created(result));
+    }
+
+    @DeleteMapping("/{missionId}")
+    public ResponseEntity<ApiResponse<Void>> deleteMission(
+            @PathVariable Long missionId
+    ) {
+        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
 }
