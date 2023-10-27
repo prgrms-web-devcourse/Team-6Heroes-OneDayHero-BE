@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapi.mission;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
@@ -10,36 +10,39 @@ import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MissionController.class)
-class MissionControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class MissionControllerTest extends RestDocsSupport {
 
     @MockBean
     private MissionService missionService;
 
-    @DisplayName("시민은 미션을 작성 할 수 있다.")
+    @Override
+    protected Object setController() {
+        return new MissionController(missionService);
+    }
+
+    @DisplayName("유저는 미션을 만들 수 있다.")
     @Test
     void createMission() throws Exception {
         // given
@@ -59,13 +62,95 @@ class MissionControllerTest {
                 .willReturn(missionResponse);
 
         // when & then
-        mockMvc.perform(post("/api/v1/missions")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/missions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(missionCreateRequest))
                 )
                 .andDo(print())
                 .andExpect(header().string("Location", "/api/v1/missions/" + missionResponse.id()))
                 .andExpect(status().isCreated())
+                .andDo(document("mission-create",
+                        requestFields(
+                                fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
+                                        .description("카테고리 아이디"),
+                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
+                                        .description("시민 아이디"),
+                                fieldWithPath("regionId").type(JsonFieldType.NUMBER)
+                                        .description("지역 아이디"),
+                                fieldWithPath("latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
+                                fieldWithPath("longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("missionInfo").type(JsonFieldType.OBJECT)
+                                        .description("미션 상세 정보 객체"),
+                                fieldWithPath("missionInfo.content").type(JsonFieldType.STRING)
+                                        .description("미션 상세 내용"),
+                                fieldWithPath("missionInfo.missionDate").type(JsonFieldType.STRING)
+                                        .description("미션 수행 일")
+                                        .attributes(getDateFormat()),
+                                fieldWithPath("missionInfo.startTime").type(JsonFieldType.STRING)
+                                        .description("미션 시작 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("missionInfo.endTime").type(JsonFieldType.STRING)
+                                        .description("미션 종료 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("missionInfo.deadlineTime").type(JsonFieldType.STRING)
+                                        .description("미션 마감 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("missionInfo.price").type(JsonFieldType.NUMBER)
+                                        .description("미션 포상금")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                        .description("생성된 미션 아이디"),
+                                fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
+                                        .description("미션 카테고리 정보 객체"),
+                                fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
+                                        .description("시민 아이디"),
+                                fieldWithPath("data.regionId").type(JsonFieldType.NUMBER)
+                                        .description("지역 아이디"),
+                                fieldWithPath("data.missionCategory.categoryId").type(JsonFieldType.NUMBER)
+                                        .description("미션 카테고리 아이디"),
+                                fieldWithPath("data.missionCategory.code").type(JsonFieldType.STRING)
+                                        .description("미션 카테고리 코드"),
+                                fieldWithPath("data.missionCategory.name").type(JsonFieldType.STRING)
+                                        .description("미션 카테고리 내용 ex) 청소"),
+                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
+                                        .description("위도, 경도 정보 객체"),
+                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
+                                        .description("경도 (longitude)"),
+                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
+                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
+                                        .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionInfo.content").type(JsonFieldType.STRING)
+                                        .description("미션 상세 내용"),
+                                fieldWithPath("data.missionInfo.missionDate").type(JsonFieldType.STRING)
+                                        .description("미션 수행 일")
+                                        .attributes(getDateFormat()),
+                                fieldWithPath("data.missionInfo.startTime").type(JsonFieldType.STRING)
+                                        .description("미션 시작 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("data.missionInfo.endTime").type(JsonFieldType.STRING)
+                                        .description("미션 종료 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("data.missionInfo.deadlineTime").type(JsonFieldType.STRING)
+                                        .description("미션 마감 시간")
+                                        .attributes(getTimeFormat()),
+                                fieldWithPath("data.missionInfo.price").type(JsonFieldType.NUMBER)
+                                        .description("미션 포상금"),
+                                fieldWithPath("data.bookmarkCount").type(JsonFieldType.NUMBER)
+                                        .description("미션 찜 개수"),
+                                fieldWithPath("data.missionStatus").type(JsonFieldType.STRING)
+                                        .description("미션 진행 상태 (MATCHING)"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .description("서버 응답 시간")
+                                        .attributes(getDateTimeFormat())
+                        )))
                 .andExpect(jsonPath("$.status").value(201))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.id").value(1))
@@ -85,6 +170,36 @@ class MissionControllerTest {
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(0))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+    }
+
+    @DisplayName("유저는 미션을 삭제 할 수 있다.")
+    @Test
+    void deleteMission() throws Exception {
+        // given
+        Long missionId = 1L;
+
+        // when & then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/missions/{missionId}", missionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent())
+                .andDo(document("mission-delete",
+                        pathParameters(
+                                parameterWithName("missionId").description("미션 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.NULL)
+                                        .description("응답 데이터"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .description("서버 응답 시간")
+                                        .attributes(getDateTimeFormat())
+                        )))
+                .andExpect(jsonPath("$.status").value(204))
+                .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
