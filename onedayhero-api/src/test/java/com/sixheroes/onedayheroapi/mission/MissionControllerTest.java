@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
@@ -25,6 +26,7 @@ import java.time.LocalTime;
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -180,16 +182,28 @@ public class MissionControllerTest extends RestDocsSupport {
     void deleteMission() throws Exception {
         // given
         Long missionId = 1L;
+        Long citizenId = 1L;
+
+        var request = MissionDeleteRequest.builder()
+                .citizenId(citizenId)
+                .build();
+
+
+        willDoNothing().given(missionService).deleteMission(any(Long.class), any(Long.class));
 
         // when & then
         mockMvc.perform(delete("/api/v1/missions/{missionId}", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent())
                 .andDo(document("mission-delete",
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("citizenId").description("시민 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
