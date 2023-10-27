@@ -473,7 +473,6 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
-
     private MissionResponse createMissionResponse(
             MissionCategoryResponse missionCategoryResponse,
             MissionCreateRequest missionCreateRequest,
