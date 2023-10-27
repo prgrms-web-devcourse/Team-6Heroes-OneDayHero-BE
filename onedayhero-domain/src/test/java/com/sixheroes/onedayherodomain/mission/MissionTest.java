@@ -49,7 +49,7 @@ class MissionTest {
         // when & then
         assertThatThrownBy(() -> mission.validAbleDelete(unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_009.name());
+                .hasMessage(ErrorCode.EM_100.name());
     }
 
     @DisplayName("시민은 미션을 수정 할 수 있다.")
@@ -133,6 +133,40 @@ class MissionTest {
 
         var unknownCitizenId = 2L;
         var newMission = createMission(unknownCitizenId, missionCategory, missionInfo);
+
+        // when & then
+        assertThatThrownBy(() -> mission.update(newMission))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+    @DisplayName("미션이 매칭 중인 상태가 아니라면 수정이 불가능하다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING")
+    @ParameterizedTest
+    void updateMissionWithNotMatching(MissionStatus missionStatus) {
+        // given
+        var mission = createMission(missionStatus);
+
+        var missionCategory = MissionCategory.builder()
+                .missionCategoryCode(MissionCategoryCode.MC_002)
+                .name(MissionCategoryCode.MC_002.name())
+                .build();
+
+        var missionDate = LocalDate.of(2023, 10, 20);
+        var startTime = LocalTime.of(10, 0, 0);
+        var endTime = LocalTime.of(10, 30, 0);
+        var deadlineTime = LocalTime.of(10, 10, 0);
+
+        var missionInfo = MissionInfo.builder()
+                .content("수정하는 내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(15000)
+                .build();
+        
+        var newMission = createMission(mission.getCitizenId(), missionCategory, missionInfo);
 
         // when & then
         assertThatThrownBy(() -> mission.update(newMission))

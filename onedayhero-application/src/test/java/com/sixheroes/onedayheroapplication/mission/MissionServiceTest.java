@@ -213,7 +213,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_009.name());
+                .hasMessage(ErrorCode.EM_100.name());
     }
 
 
