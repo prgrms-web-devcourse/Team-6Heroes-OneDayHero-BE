@@ -13,3 +13,8 @@ endif::[]
 == Mission API
 
 include::api/mission/mission.adoc[]
+
+[[Mission-Request-API]]
+== Mission Request API
+
+include::api/mission-request/mission-request.adoc[]
