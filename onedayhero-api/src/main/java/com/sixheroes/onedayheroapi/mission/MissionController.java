@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import jakarta.validation.Valid;
@@ -29,6 +30,16 @@ public class MissionController {
 
         return ResponseEntity.created(URI.create("/api/v1/missions/" + result.id()))
                 .body(ApiResponse.created(result));
+    }
+
+    @PatchMapping("/{missionId}")
+    public ResponseEntity<ApiResponse<MissionResponse>> updateMission(
+            @Valid @RequestBody MissionUpdateRequest request
+    ) {
+        var modifiedDateTime = LocalDateTime.now();
+        var result = missionService.updateMission(request.toService(), modifiedDateTime);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @DeleteMapping("/{missionId}")
