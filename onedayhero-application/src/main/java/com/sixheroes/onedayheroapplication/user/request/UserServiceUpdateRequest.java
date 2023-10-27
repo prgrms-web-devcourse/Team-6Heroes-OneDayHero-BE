@@ -1,47 +1,45 @@
 package com.sixheroes.onedayheroapplication.user.request;
 
+import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
+import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
 import com.sixheroes.onedayherodomain.user.UserGender;
 import com.sixheroes.onedayherodomain.user.Week;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public record UserServiceUpdateRequest(
     Long userId,
-    UserBasicInfo userBasicInfo,
-    UserFavoriteWorkingDay userFavoriteWorkingDay
+    UserBasicInfoServiceDto userBasicInfo,
+    UserFavoriteWorkingDayServiceDto userFavoriteWorkingDay
 ) {
 
-    public static UserServiceUpdateRequest from(
-        Long userId,
-        String nickname,
-        String gender,
-        LocalDate birth,
-        String introduce,
-        List<String> favoriteDate,
-        LocalTime favoriteStartTime,
-        LocalTime favoriteEndTime
-    ) {
-        var userBasicInfo = UserBasicInfo.builder()
-            .nickname(nickname)
-            .gender(UserGender.from(gender))
-            .birth(birth)
-            .introduce(introduce)
+    public UserBasicInfo toUserBasicInfo() {
+        return UserBasicInfo.builder()
+            .nickname(userBasicInfo().nickname())
+            .gender(UserGender.from(userBasicInfo().gender()))
+            .birth(userBasicInfo.birth())
+            .introduce(userBasicInfo().introduce())
             .build();
+    }
 
-        var weeks = favoriteDate.stream()
+    public UserFavoriteWorkingDay toUserFavoriteWorkingDay() {
+        var weeks = Optional.ofNullable(userFavoriteWorkingDay.favoriteDate())
+            .map(this::toWeeks)
+            .orElse(null);
+
+        return UserFavoriteWorkingDay.builder()
+            .favoriteDate(weeks)
+            .favoriteStartTime(userFavoriteWorkingDay.favoriteStartTime())
+            .favoriteEndTime(userFavoriteWorkingDay.favoriteEndTime())
+            .build();
+    }
+
+    private List<Week> toWeeks(List<String> week) {
+        return week.stream()
             .map(Week::from)
             .toList();
-
-        var userFavoriteWorkingDay = UserFavoriteWorkingDay.builder()
-            .favoriteDate(weeks)
-            .favoriteStartTime(favoriteStartTime)
-            .favoriteEndTime(favoriteEndTime)
-            .build();
-
-        return new UserServiceUpdateRequest(userId, userBasicInfo, userFavoriteWorkingDay);
     }
 }
