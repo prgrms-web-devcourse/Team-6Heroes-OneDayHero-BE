@@ -43,10 +43,12 @@ public class MissionService {
     }
 
     @Transactional
-    public void deleteMission(Long missionId) {
+    public void deleteMission(Long missionId, Long citizenId) {
         var mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_007.name()));
+
         mission.validAbleDeleteStatus();
+        mission.validOwn(citizenId);
 
         deleteUserBookMarkByMissionId(missionId);
         missionRepository.delete(mission);
@@ -59,6 +61,7 @@ public class MissionService {
                 .toList();
 
         userBookMarkMissionRepository.deleteByIdIn(userBookMarkIds);
+    }
 
     public MissionResponse updateMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
         return null;

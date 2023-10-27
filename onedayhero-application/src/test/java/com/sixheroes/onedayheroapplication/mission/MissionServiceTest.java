@@ -172,7 +172,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         */
 
         // when
-        missionService.deleteMission(savedMission.getId());
+        missionService.deleteMission(savedMission.getId(), citizenId);
 
         var findMission = missionRepository.findById(savedMission.getId());
         var findUserBookMarkMission = userBookMarkMissionRepository.findByMissionId(savedMission.getId());
@@ -193,9 +193,27 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var savedMission = missionRepository.save(mission);
 
         // when & then
-        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId()))
+        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), citizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
+    }
+
+    @DisplayName("미션을 생성한 시민이 아니라면 삭제를 할 수 없다.")
+    @Test
+    void deleteMissionWithInValidUser() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var citizenId = 1L;
+        var mission = createMission(missionCategory, citizenId, MissionStatus.MATCHING);
+
+        var savedMission = missionRepository.save(mission);
+
+        var unknownCitizenId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), unknownCitizenId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_009.name());
     }
 
 
