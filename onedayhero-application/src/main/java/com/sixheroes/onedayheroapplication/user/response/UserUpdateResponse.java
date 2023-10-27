@@ -2,11 +2,12 @@ package com.sixheroes.onedayheroapplication.user.response;
 
 import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
+import com.sixheroes.onedayherodomain.user.Week;
 
 public record UserUpdateResponse(
     Long userId,
-    UserBasicInfoDto userBasicInfo,
-    UserFavoriteWorkingDayDto favoriteWorkingDay
+    UserBasicInfoServiceDto userBasicInfo,
+    UserFavoriteWorkingDayServiceDto favoriteWorkingDay
 ) {
 
     public static UserUpdateResponse from(
@@ -14,15 +15,17 @@ public record UserUpdateResponse(
         UserBasicInfo userBasicInfo,
         UserFavoriteWorkingDay userFavoriteWorkingDay
     ) {
-        var userBasicInfoDto = new UserBasicInfoDto(
+        var userBasicInfoDto = new UserBasicInfoServiceDto(
             userBasicInfo.getNickname(),
-            userBasicInfo.getGender(),
+            userBasicInfo.getGender().name(),
             userBasicInfo.getBirth(),
             userBasicInfo.getIntroduce()
         );
 
-        var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayDto(
-            userFavoriteWorkingDay.getFavoriteDate(),
+        var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayServiceDto(
+            userFavoriteWorkingDay.getFavoriteDate().stream()
+                .map(Week::name)
+                .toList(),
             userFavoriteWorkingDay.getFavoriteStartTime(),
             userFavoriteWorkingDay.getFavoriteEndTime()
         );
