@@ -27,7 +27,10 @@ public class UserService {
                                 return new NoSuchElementException(ErrorCode.EUC_001.name());
                             });
 
-        user.updateUser(userServiceUpdateRequest.userBasicInfo(), userServiceUpdateRequest.userFavoriteWorkingDay());
+        var userBasicInfo = userServiceUpdateRequest.toUserBasicInfo();
+        var userFavoriteWorkingDay = userServiceUpdateRequest.toUserFavoriteWorkingDay();
+
+        user.updateUser(userBasicInfo, userFavoriteWorkingDay);
 
         return UserUpdateResponse.from(
             user.getId(),

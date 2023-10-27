@@ -22,8 +22,12 @@ public enum Week {
 
     public static Week from(String week) {
         return Arrays.stream(Week.values())
-            .filter(w -> week.equals(w.name()))
+            .filter(w -> w.isEqual(week))
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException(ErrorCode.EU_008.name()));
+    }
+
+    private boolean isEqual(String week) {
+        return week.equals(this.name());
     }
 }

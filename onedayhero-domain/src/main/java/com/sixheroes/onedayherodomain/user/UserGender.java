@@ -17,8 +17,12 @@ public enum UserGender {
 
     public static UserGender from(String userGender) {
         return Arrays.stream(UserGender.values())
-                    .filter(ug -> userGender.equals(ug.name()))
+                    .filter(ug -> ug.isEqual(userGender))
                     .findFirst()
                     .orElseThrow(() -> new NoSuchElementException(ErrorCode.EU_007.name()));
+    }
+
+    private boolean isEqual(String userGender) {
+        return userGender.equals(this.name());
     }
 }
