@@ -42,6 +42,16 @@ public class MissionController {
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
+    @PatchMapping("/{missionId}/extend")
+    public ResponseEntity<ApiResponse<MissionResponse>> extendMission(
+            @Valid @RequestBody MissionUpdateRequest request
+    ) {
+        var modifiedDateTime = LocalDateTime.now();
+        var result = missionService.extendMission(request.toService(), modifiedDateTime);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
     @DeleteMapping("/{missionId}")
     public ResponseEntity<ApiResponse<Void>> deleteMission(
             @PathVariable Long missionId

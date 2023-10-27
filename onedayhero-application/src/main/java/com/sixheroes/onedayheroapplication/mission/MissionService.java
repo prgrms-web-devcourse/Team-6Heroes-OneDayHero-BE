@@ -41,7 +41,11 @@ public class MissionService {
 
     @Transactional
     public MissionResponse updateMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
+        return null;
+    }
 
+    @Transactional
+    public MissionResponse extendMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
         return null;
     }
 }
