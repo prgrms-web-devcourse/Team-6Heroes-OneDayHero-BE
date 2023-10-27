@@ -172,10 +172,10 @@ class MissionServiceTest extends IntegrationApplicationTest {
         */
 
         // when
-        missionService.deleteMission(savedMission.getId(), citizenId);
+        missionService.deleteMission(savedMission.getId());
 
         var findMission = missionRepository.findById(savedMission.getId());
-        var findUserBookMarkMission = userBookMarkMissionRepository.findByMissionIdAndUserId(savedMission.getId(), citizenId);
+        var findUserBookMarkMission = userBookMarkMissionRepository.findByMissionId(savedMission.getId());
 
         // then
         assertThat(findMission).isEmpty();
@@ -193,7 +193,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var savedMission = missionRepository.save(mission);
 
         // when & then
-        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), citizenId))
+        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
     }

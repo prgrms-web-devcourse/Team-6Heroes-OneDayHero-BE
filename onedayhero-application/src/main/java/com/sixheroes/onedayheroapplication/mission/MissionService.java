@@ -42,17 +42,17 @@ public class MissionService {
     }
 
     @Transactional
-    public void deleteMission(Long missionId, Long userId) {
+    public void deleteMission(Long missionId) {
         var mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_007.name()));
         mission.validAbleDeleteStatus();
 
-        deleteUserBookMarkByMissionIdAndUserId(missionId, userId);
+        deleteUserBookMarkByMissionId(missionId);
         missionRepository.delete(mission);
     }
 
-    private void deleteUserBookMarkByMissionIdAndUserId(Long missionId, Long userId) {
-        var userBookMarks = userBookMarkMissionRepository.findByMissionIdAndUserId(missionId, userId);
+    private void deleteUserBookMarkByMissionId(Long missionId) {
+        var userBookMarks = userBookMarkMissionRepository.findByMissionId(missionId);
         var userBookMarkIds = userBookMarks.stream()
                 .map(UserBookMarkMission::getId)
                 .toList();

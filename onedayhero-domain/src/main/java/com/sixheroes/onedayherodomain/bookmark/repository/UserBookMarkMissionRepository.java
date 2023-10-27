@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserBookMarkMissionRepository extends JpaRepository<UserBookMarkMission, Long> {
 
-    List<UserBookMarkMission> findByMissionIdAndUserId(Long missionId, Long userId);
+    List<UserBookMarkMission> findByMissionId(Long missionId);
 
     void deleteByIdIn(List<Long> userBookmarkIds);
 }
