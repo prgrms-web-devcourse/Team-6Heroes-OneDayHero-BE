@@ -1,5 +1,7 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
+import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
+import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
 import com.sixheroes.onedayherodomain.user.Week;

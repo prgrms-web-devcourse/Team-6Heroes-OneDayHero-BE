@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.user.response;
+package com.sixheroes.onedayheroapplication.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
