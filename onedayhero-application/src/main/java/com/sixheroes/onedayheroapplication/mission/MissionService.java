@@ -3,6 +3,8 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.bookmark.UserBookMarkMission;
+import com.sixheroes.onedayherodomain.bookmark.repository.UserBookMarkMissionRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class MissionService {
 
     private final MissionCategoryRepository missionCategoryRepository;
     private final MissionRepository missionRepository;
+    private final UserBookMarkMissionRepository userBookMarkMissionRepository;
 
     @Transactional
     public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
@@ -36,5 +39,24 @@ public class MissionService {
         var savedMission = missionRepository.save(mission);
 
         return new MissionResponse(savedMission);
+    }
+
+    @Transactional
+    public void deleteMission(Long missionId, Long userId) {
+        var mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_007.name()));
+        mission.validAbleDeleteStatus();
+
+        deleteUserBookMarkByMissionIdAndUserId(missionId, userId);
+        missionRepository.delete(mission);
+    }
+
+    private void deleteUserBookMarkByMissionIdAndUserId(Long missionId, Long userId) {
+        var userBookMarks = userBookMarkMissionRepository.findByMissionIdAndUserId(missionId, userId);
+        var userBookMarkIds = userBookMarks.stream()
+                .map(UserBookMarkMission::getId)
+                .toList();
+
+        userBookMarkMissionRepository.deleteByIdIn(userBookMarkIds);
     }
 }

@@ -5,13 +5,15 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.mission.MissionCategory;
-import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
-import com.sixheroes.onedayherodomain.mission.MissionStatus;
+import com.sixheroes.onedayherodomain.bookmark.repository.UserBookMarkMissionRepository;
+import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
+import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MissionServiceTest extends IntegrationApplicationTest {
+
+    @Autowired
+    private UserBookMarkMissionRepository userBookMarkMissionRepository;
+
+    @Autowired
+    private MissionCategoryRepository missionCategoryRepository;
+
+    @Autowired
+    private MissionRepository missionRepository;
 
     @Autowired
     private MissionService missionService;
@@ -141,6 +152,53 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_005.name());
     }
 
+    @Transactional
+    @DisplayName("시민은 미션을 삭제 할 수 있다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING_COMPLETED")
+    @ParameterizedTest
+    void deleteMission(MissionStatus missionStatus) {
+        // given
+        var citizenId = 1L;
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var mission = createMission(missionCategory, citizenId, missionStatus);
+
+        var savedMission = missionRepository.save(mission);
+
+        /*
+        TODO
+        userBookMarkMissionRepository.saveAll(List.of(
+            createUserBookMarkMission(citizenId, savedMissionId);
+        ))
+        */
+
+        // when
+        missionService.deleteMission(savedMission.getId(), citizenId);
+
+        var findMission = missionRepository.findById(savedMission.getId());
+        var findUserBookMarkMission = userBookMarkMissionRepository.findByMissionIdAndUserId(savedMission.getId(), citizenId);
+
+        // then
+        assertThat(findMission).isEmpty();
+        assertThat(findUserBookMarkMission).isEmpty();
+    }
+
+    @DisplayName("미션 매칭이 완료 된 상태에서는 미션을 삭제 할 수 없다.")
+    @Test
+    void deleteMissionWithMatchingCompleteStatus() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var citizenId = 1L;
+        var mission = createMission(missionCategory, citizenId, MissionStatus.MATCHING_COMPLETED);
+
+        var savedMission = missionRepository.save(mission);
+
+        // when & then
+        assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), citizenId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_007.name());
+    }
+
+
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {
@@ -168,6 +226,26 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(10000)
+                .build();
+    }
+
+    private Mission createMission(MissionCategory missionCategory, Long citizenId, MissionStatus missionStatus) {
+        return Mission.builder()
+                .missionCategory(missionCategory)
+                .missionInfo(
+                        MissionInfo.builder()
+                                .content("content")
+                                .missionDate(LocalDate.now())
+                                .startTime(LocalTime.now())
+                                .endTime(LocalTime.now())
+                                .deadlineTime(LocalTime.now())
+                                .price(1000)
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .bookmarkCount(0)
+                .missionStatus(missionStatus)
                 .build();
     }
 }
