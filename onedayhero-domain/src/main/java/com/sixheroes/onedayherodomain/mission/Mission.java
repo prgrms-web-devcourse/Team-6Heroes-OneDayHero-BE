@@ -1,17 +1,22 @@
 package com.sixheroes.onedayherodomain.mission;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE missions SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 @Table(name = "missions")
 @Entity
 public class Mission extends BaseEntity {
@@ -43,6 +48,9 @@ public class Mission extends BaseEntity {
     @Column(name = "status", length = 20, nullable = false)
     private MissionStatus missionStatus;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
     @Builder
     private Mission(
             MissionCategory missionCategory,
@@ -58,8 +66,15 @@ public class Mission extends BaseEntity {
         this.regionId = regionId;
         this.location = location;
         this.missionInfo = missionInfo;
-        this.bookmarkCount = 0;
-        this.missionStatus = MissionStatus.MATCHING;
+        this.bookmarkCount = bookmarkCount;
+        this.missionStatus = missionStatus;
+        this.isDeleted = false;
+    }
+
+    public void validAbleDeleteStatus() {
+        if (missionStatus.isMatchingCompleted()) {
+            throw new IllegalStateException(ErrorCode.EM_007.name());
+        }
     }
 
     public void validRangeOfMissionTime(LocalDateTime dateTime) {
