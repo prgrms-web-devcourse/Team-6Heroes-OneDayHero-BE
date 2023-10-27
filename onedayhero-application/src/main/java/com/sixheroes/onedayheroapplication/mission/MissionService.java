@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
@@ -36,5 +37,11 @@ public class MissionService {
         var savedMission = missionRepository.save(mission);
 
         return new MissionResponse(savedMission);
+    }
+
+    @Transactional
+    public MissionResponse updateMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
+
+        return null;
     }
 }

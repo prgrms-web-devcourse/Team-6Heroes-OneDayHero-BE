@@ -1,5 +1,5 @@
 [[mission-create]]
-=== 미션 생성
+=== 시민은 미션을 생성 할 수 있다.
 
 ==== HTTP Request
 
@@ -11,8 +11,22 @@ include::{snippets}/mission-create/request-fields.adoc[]
 include::{snippets}/mission-create/http-response.adoc[]
 include::{snippets}/mission-create/response-fields.adoc[]
 
+[[mission-update]]
+=== 시민은 미션을 수정 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-update/path-parameters.adoc[]
+include::{snippets}/mission-update/http-request.adoc[]
+include::{snippets}/mission-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-update/http-response.adoc[]
+include::{snippets}/mission-update/response-fields.adoc[]
+
 [[mission-delete]]
-=== 미션 삭제
+=== 시민은 미션을 삭제 할 수 있다.
 
 ==== Http Request
 
