@@ -71,7 +71,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                                 .build(),
                         missionCreateServiceRequest.citizenId(),
                         missionCreateServiceRequest.regionId(),
-                        new Point(missionCreateServiceRequest.latitude(), missionCreateServiceRequest.longitude()),
+                        new Point(missionCreateServiceRequest.longitude(), missionCreateServiceRequest.latitude()),
                         result.missionInfo(),
                         0,
                         MissionStatus.MATCHING.name()
