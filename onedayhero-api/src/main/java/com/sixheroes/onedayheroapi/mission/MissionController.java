@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -54,8 +55,10 @@ public class MissionController {
 
     @DeleteMapping("/{missionId}")
     public ResponseEntity<ApiResponse<Void>> deleteMission(
-            @PathVariable Long missionId
+            @PathVariable Long missionId,
+            @Valid @RequestBody MissionDeleteRequest request
     ) {
+//        missionService.deleteMission(request.userId(), missionId);
         return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
 }
