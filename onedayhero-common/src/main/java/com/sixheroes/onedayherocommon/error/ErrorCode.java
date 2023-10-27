@@ -3,6 +3,8 @@ package com.sixheroes.onedayherocommon.error;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 /**
  * <pre><b>code</b>는 프론트와 정한 에러 코드를 넣어준다.</pre>
  * <pre><b>status</b>는 값에 따라 백엔드에서 넣어준다.</pre>
@@ -28,4 +30,8 @@ public enum ErrorCode {
 
     private final int status;
     private final String message;
+
+    public static Optional<ErrorCode> findByName(String name) {
+        return Optional.of(ErrorCode.valueOf(name));
+    }
 }

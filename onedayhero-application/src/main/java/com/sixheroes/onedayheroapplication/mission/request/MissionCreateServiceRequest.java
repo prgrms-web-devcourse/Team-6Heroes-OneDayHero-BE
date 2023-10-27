@@ -20,7 +20,7 @@ public record MissionCreateServiceRequest(
                 .missionCategory(missionCategory)
                 .citizenId(citizenId)
                 .regionId(regionId)
-                .location(new Point(latitude, longitude))
+                .location(new Point(longitude, latitude))
                 .missionInfo(missionInfo.toVo())
                 .build();
     }
