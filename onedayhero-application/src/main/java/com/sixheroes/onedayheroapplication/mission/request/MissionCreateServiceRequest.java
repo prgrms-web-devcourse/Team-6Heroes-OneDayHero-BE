@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapplication.mission.request;
 
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import lombok.Builder;
 import org.springframework.data.geo.Point;
 
@@ -22,6 +23,8 @@ public record MissionCreateServiceRequest(
                 .regionId(regionId)
                 .location(new Point(longitude, latitude))
                 .missionInfo(missionInfo.toVo())
+                .bookmarkCount(0)
+                .missionStatus(MissionStatus.MATCHING)
                 .build();
     }
 }
