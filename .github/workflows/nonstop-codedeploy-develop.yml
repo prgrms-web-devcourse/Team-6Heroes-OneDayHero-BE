@@ -1,0 +1,63 @@
+# workflow의 이름
+name: nonstop-codedeploy-develop
+
+# 해당 workflow가 언제 실행될 것인지에 대한 트리거 지정
+# workflow 수동 실행
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: '개발 서버 배포를 수행하기 위하여 승인을 해주세요.'
+        required: true
+        default: '개발 서버 무중단 배포를 수행하기 위한 워크플로우 입니다.'
+
+# workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
+jobs:
+  build:
+    name: nonstop-codedeploy-develop
+    runs-on: ubuntu-latest
+
+    steps:
+      # 작업에서 액세스 할 수 있도록 저장소를 체크아웃 해줌.
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      # ./gradlew 명령어를 수행 할 수 있도록 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      # ./gradlew build 수행
+      - name: Build with Gradle
+        run: ./gradlew clean build
+        shell: bash
+
+      # user의 jar 파일과 appspec을압축
+      - name: Make zip file
+        # 1. zip에 포함시킬 파일들을 담을 디렉토리 생성
+        # 2. jar 파일 넘기기
+        # 3. before-deploy-develop 으로 이동후 전체 압축 (폴더 이름은 원하는 이름으로 가능)
+        # 4. 상위 디렉토리로 이동후 deploy-develop 디렉토리 생성
+        # 5. before-deploy에 있던 알집 파일을 deploy-develop으로 이동
+        run: |
+          mkdir -p before-deploy-develop 
+          cp onedayhero-api/build/libs/*.jar before-deploy-develop/   
+          cd before-deploy-develop && zip -r before-deploy-develop * 
+          cd ../ && mkdir -p deploy-develop 
+          mv before-deploy/before-deploy-develop.zip deploy-develop/$GITHUB_SHA.zip
+
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-action/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{secrets.AWS_REGION}}
+
+      - name: Upload to S3
+        run: aws s3 cp --region ${{secrets.AWS_REGION}} deploy-develop/$GITHUB_SHA.zip s3://${{secrets.S3_BUCKET_NAME}}/deploy-develop/$GITHUB_SHA.zip
