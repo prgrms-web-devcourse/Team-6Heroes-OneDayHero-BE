@@ -41,8 +41,8 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
     @Test
     void createMissionMatching() {
         // given
-        Long citizenId = 1L;
-        Long heroId = 2L;
+        var citizenId = 1L;
+        var heroId = 2L;
         var mission = createMission(citizenId);
 
         // when
@@ -50,7 +50,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 mission,
                 heroId
         );
-        var response = missionMatchService.createMissionMatch(request);
+        var response = missionMatchService.createMissionMatch(
+                citizenId,
+                request
+        );
 
         // then
         assertSoftly(soft -> {
@@ -63,21 +66,45 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         });
     }
 
-    @DisplayName("미션이 매칭 중 상태가 아니라면 매칭 완료 상태로 설정할 수 없다.")
+    @DisplayName("본인이 작성한 미션이 아니라면 매칭 완료 상태로 설정할 수 없다.")
     @Test
-    void createMissionMatchingFail() {
+    void createMissionMatchingFailWithInvalidOwn() {
         // given
-        Long citizenId = 1L;
-        Long heroId = 2L;
+        var citizenId = 1L;
+        var heroId = 2L;
         var mission = createMission(citizenId);
-        mission.matchingCompleted();
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request))
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                heroId,
+                request)
+        )
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_008.name());
+    }
+
+    @DisplayName("미션이 매칭 중 상태가 아니라면 매칭 완료 상태로 설정할 수 없다.")
+    @Test
+    void createMissionMatchingFailWithInvalidStatus() {
+        // given
+        var citizenId = 1L;
+        var heroId = 2L;
+        var mission = createMission(citizenId);
+        mission.missionMatchingCompleted(citizenId);
+
+        // when & then
+        var request = createMissionMatchCreateServiceRequest(
+                mission,
+                heroId
+        );
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                citizenId,
+                request)
+        )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
     }

@@ -24,7 +24,10 @@ public class MissionMatchService {
     private final UserRepository userRepository;
     private final MissionMatchRepository missionMatchRepository;
 
-    public MissionMatchCreateResponse createMissionMatch(MissionMatchCreateServiceRequest request) {
+    public MissionMatchCreateResponse createMissionMatch(
+            Long userId,
+            MissionMatchCreateServiceRequest request
+    ) {
         var mission = missionRepository.findById(request.missionId())
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
@@ -42,7 +45,7 @@ public class MissionMatchService {
                 request.heroId()
         );
 
-        mission.matchingCompleted();
+        mission.missionMatchingCompleted(userId);
         var savedMissionMatch = missionMatchRepository.save(missionMatch);
 
         return MissionMatchCreateResponse.from(savedMissionMatch);

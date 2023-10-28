@@ -65,9 +65,10 @@ public class Mission extends BaseEntity {
         this.missionStatus = MissionStatus.MATCHING;
     }
 
-    public void matchingCompleted() {
+    public void missionMatchingCompleted(Long userId) {
+        validateMissionOwnerIsValid(userId);
         validateCurrentMissionStatusIsMatching();
-        changeMissionStatus(MissionStatus.MATCHING_COMPLETED);
+        this.missionStatus = MissionStatus.MATCHING_COMPLETED;
     }
 
     public void addBookmarkCount() {
@@ -79,8 +80,10 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    private void changeMissionStatus(MissionStatus missionStatus) {
-        this.missionStatus = missionStatus;
+    private void validateMissionOwnerIsValid(Long userId) {
+        if (!this.citizenId.equals(userId)) {
+            throw new IllegalStateException(ErrorCode.EM_008.name());
+        }
     }
 
     private void validateCurrentMissionStatusIsMatching() {
