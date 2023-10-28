@@ -1,7 +1,9 @@
 package com.sixheroes.onedayherodomain.missionmatch;
 
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,4 +26,26 @@ public class MissionMatch {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
     private MissionMatchStatus missionMatchStatus;
+
+    @Builder
+    private MissionMatch(
+            Long missionId,
+            Long heroId,
+            MissionMatchStatus missionMatchStatus
+    ) {
+        this.missionId = missionId;
+        this.heroId = heroId;
+        this.missionMatchStatus = missionMatchStatus;
+    }
+
+    public static MissionMatch createMissionMatch(
+            Long missionId,
+            Long heroId
+    ) {
+        return MissionMatch.builder()
+                .missionId(missionId)
+                .heroId(heroId)
+                .missionMatchStatus(MissionMatchStatus.MATCHED)
+                .build();
+    }
 }

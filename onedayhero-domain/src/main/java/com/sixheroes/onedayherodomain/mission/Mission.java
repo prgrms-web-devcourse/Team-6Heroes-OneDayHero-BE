@@ -65,8 +65,13 @@ public class Mission extends BaseEntity {
         this.missionStatus = MissionStatus.MATCHING;
     }
 
+    public void matchingCompleted() {
+        validateCurrentMissionStatusIsMatching();
+        changeMissionStatus(MissionStatus.MATCHING_COMPLETED);
+    }
+
     public void addBookmarkCount() {
-        validateBookmarkCountAddable(this.missionStatus);
+        validateBookmarkCountAddable();
         this.bookmarkCount += 1;
     }
 
@@ -74,9 +79,20 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    private void validateBookmarkCountAddable(MissionStatus missionStatus) {
-        if (missionStatus != MissionStatus.MATCHING) {
-            log.warn("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", missionStatus);
+    private void changeMissionStatus(MissionStatus missionStatus) {
+        this.missionStatus = missionStatus;
+    }
+
+    private void validateCurrentMissionStatusIsMatching() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_007.name());
+        }
+    }
+
+    private void validateBookmarkCountAddable() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
             throw new IllegalStateException(ErrorCode.EMC_002.name());
         }
     }
