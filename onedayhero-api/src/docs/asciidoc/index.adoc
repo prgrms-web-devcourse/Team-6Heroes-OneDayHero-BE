@@ -1,0 +1,20 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= OneDayHero REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Mission-API]]
+== Mission API
+
+include::api/mission/mission.adoc[]
+
+[[Mission-Bookmark-API]]
+== Mission Bookmark API
+
+include::api/mission/missionboomark.adoc[]

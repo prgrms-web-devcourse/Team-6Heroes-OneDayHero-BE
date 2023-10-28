@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.snippet.Attributes;
 
+import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -119,7 +120,8 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.userId").type(JsonFieldType.NUMBER)
                                         .description("찜 취소한 유저 아이디"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
-                                        .description("서버 응답 시간").attributes(Attributes.key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                                        .description("서버 응답 시간")
+                                        .attributes(getDateTimeFormat())
                         )
                 ));
     }
