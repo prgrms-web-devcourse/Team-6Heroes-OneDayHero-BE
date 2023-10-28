@@ -55,7 +55,7 @@ class UserControllerTest extends RestDocsSupport {
         var userFavoriteWorkingDayServiceDto = new UserFavoriteWorkingDayServiceDto(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userUpdateResponse = new UserUpdateResponse(userId, userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto);
 
-        given(userService.upadeUser(any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
+        given(userService.updateUser(any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me")

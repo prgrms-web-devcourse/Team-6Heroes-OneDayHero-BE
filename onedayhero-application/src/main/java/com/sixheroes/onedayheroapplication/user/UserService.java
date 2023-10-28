@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserUpdateResponse upadeUser(UserServiceUpdateRequest userServiceUpdateRequest) {
+    public UserUpdateResponse updateUser(UserServiceUpdateRequest userServiceUpdateRequest) {
         var userId = userServiceUpdateRequest.userId();
         var user = userRepository.findById(userId)
                             .orElseThrow(() -> {
