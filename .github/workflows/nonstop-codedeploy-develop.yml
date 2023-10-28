@@ -48,7 +48,7 @@ jobs:
           cp onedayhero-api/build/libs/*.jar before-deploy-develop/   
           cd before-deploy-develop && zip -r before-deploy-develop * 
           cd ../ && mkdir -p deploy-develop 
-          mv before-deploy/before-deploy-develop.zip deploy-develop/$GITHUB_SHA.zip
+          mv before-deploy-develop/before-deploy-develop.zip deploy-develop/$GITHUB_SHA.zip
 
         shell: bash
 
