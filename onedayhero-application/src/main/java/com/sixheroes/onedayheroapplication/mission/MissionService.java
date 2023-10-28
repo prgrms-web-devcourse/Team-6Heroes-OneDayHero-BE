@@ -27,7 +27,10 @@ public class MissionService {
     private final UserBookMarkMissionRepository userBookMarkMissionRepository;
 
     @Transactional
-    public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
+    public MissionResponse createMission(
+            MissionCreateServiceRequest request,
+            LocalDateTime dateTime
+    ) {
         var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
                 .orElseThrow(() -> {
                     log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
@@ -43,9 +46,12 @@ public class MissionService {
     }
 
     @Transactional
-    public void deleteMission(Long missionId, Long citizenId) {
+    public void deleteMission(
+            Long missionId,
+            Long citizenId
+    ) {
         var mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_007.name()));
+                .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_008.name()));
 
         mission.validAbleDelete(citizenId);
 
@@ -53,21 +59,30 @@ public class MissionService {
         missionRepository.delete(mission);
     }
 
-    private void deleteUserBookMarkByMissionId(Long missionId) {
+    @Transactional
+    public MissionResponse updateMission(
+            MissionUpdateServiceRequest request,
+            LocalDateTime dateTime
+    ) {
+        return null;
+    }
+
+    @Transactional
+    public MissionResponse extendMission(
+            MissionUpdateServiceRequest request,
+            LocalDateTime dateTime
+    ) {
+        return null;
+    }
+
+    private void deleteUserBookMarkByMissionId(
+            Long missionId
+    ) {
         var userBookMarks = userBookMarkMissionRepository.findByMissionId(missionId);
         var userBookMarkIds = userBookMarks.stream()
                 .map(UserBookMarkMission::getId)
                 .toList();
 
         userBookMarkMissionRepository.deleteByIdIn(userBookMarkIds);
-    }
-
-    public MissionResponse updateMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
-        return null;
-    }
-
-    @Transactional
-    public MissionResponse extendMission(MissionUpdateServiceRequest request, LocalDateTime dateTime) {
-        return null;
     }
 }
