@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
+import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.Email;
@@ -46,15 +48,24 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userServiceUpdateRequest = UserServiceUpdateRequest.from(
-            savedUser.getId(),
-            nickname,
-            gender,
-            birth,
-            introduce,
-            favoriteDate,
-            favoriteStartTime,
-            favoriteEndTime);
+        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .introduce(introduce)
+            .build();
+
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+            .favoriteDate(favoriteDate)
+            .favoriteStartTime(favoriteStartTime)
+            .favoriteEndTime(favoriteEndTime)
+            .build();
+
+        var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
+            .userId(savedUser.getId())
+            .userBasicInfo(userBasicInfoServiceDto)
+            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+            .build();
 
         // when
         var userUpdateResponse = userService.upadeUser(userServiceUpdateRequest);
@@ -77,24 +88,31 @@ class UserServiceTest extends IntegrationApplicationTest {
         userRepository.save(user);
 
         var nickname = "바뀐 이름";
-        var gender = UserGender.FEMALE;
+        var gender = "FEMALE";
         var birth = LocalDate.of(2000, 1, 1);
         var introduce = "바뀐 자기 소개";
-        var favoriteDate = List.of(Week.MON, Week.THU);
+        var favoriteDate = List.of("MON", "THU");
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userServiceUpdateRequest = UserServiceUpdateRequest.from(
-            2L,
-            nickname,
-            gender.name(),
-            birth,
-            introduce,
-            favoriteDate.stream()
-                .map(Week::name)
-                .toList(),
-            favoriteStartTime,
-            favoriteEndTime);
+        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .introduce(introduce)
+            .build();
+
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+            .favoriteDate(favoriteDate)
+            .favoriteStartTime(favoriteStartTime)
+            .favoriteEndTime(favoriteEndTime)
+            .build();
+
+        var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
+            .userId(2L)
+            .userBasicInfo(userBasicInfoServiceDto)
+            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+            .build();
 
         // when & then
         assertThatThrownBy(() -> userService.upadeUser(userServiceUpdateRequest))
