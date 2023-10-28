@@ -10,3 +10,29 @@ include::{snippets}/mission-request-create/request-fields.adoc[]
 
 include::{snippets}/mission-request-create/http-response.adoc[]
 include::{snippets}/mission-request-create/response-fields.adoc[]
+
+[[mission-request-approve]]
+=== 미션 제안 승낙
+
+==== HTTP Request
+
+include::{snippets}/mission-request-approve/http-request.adoc[]
+include::{snippets}/mission-request-approve/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-request-approve/http-response.adoc[]
+include::{snippets}/mission-request-approve/response-fields.adoc[]
+
+[[mission-request-reject]]
+=== 미션 제안 거절
+
+==== HTTP Request
+
+include::{snippets}/mission-request-reject/http-request.adoc[]
+include::{snippets}/mission-request-reject/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-request-reject/http-response.adoc[]
+include::{snippets}/mission-request-reject/response-fields.adoc[]
