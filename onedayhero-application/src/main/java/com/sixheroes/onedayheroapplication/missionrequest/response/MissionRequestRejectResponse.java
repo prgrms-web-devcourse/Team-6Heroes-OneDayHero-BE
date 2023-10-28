@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.missionrequest.response;
 
-public record MissionRequestCreateResponse(
+public record MissionRequestRejectResponse(
     Long missionRequestId,
     Long missionId,
     Long heroId,
