@@ -42,7 +42,7 @@ public class MissionService {
 
         var savedMission = missionRepository.save(mission);
 
-        return new MissionResponse(savedMission);
+        return MissionResponse.from(savedMission);
     }
 
     @Transactional
@@ -51,7 +51,10 @@ public class MissionService {
             Long citizenId
     ) {
         var mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.EM_008.name()));
+                .orElseThrow(() -> {
+                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
+                    return new NoSuchElementException(ErrorCode.EM_008.name());
+                });
 
         mission.validAbleDelete(citizenId);
 
@@ -61,10 +64,27 @@ public class MissionService {
 
     @Transactional
     public MissionResponse updateMission(
+            Long missionId,
             MissionUpdateServiceRequest request,
-            LocalDateTime dateTime
+            LocalDateTime modifiedDateTime
     ) {
-        return null;
+        var mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> {
+                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
+                    return new NoSuchElementException(ErrorCode.EM_008.name());
+                });
+
+        var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
+                .orElseThrow(() -> {
+                    log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
+                    return new NoSuchElementException(ErrorCode.EMC_001.name());
+                });
+
+        var requestMission = request.toEntity(missionCategory);
+        requestMission.validRangeOfMissionTime(modifiedDateTime);
+
+        mission.update(requestMission);
+        return MissionResponse.from(mission);
     }
 
     @Transactional
