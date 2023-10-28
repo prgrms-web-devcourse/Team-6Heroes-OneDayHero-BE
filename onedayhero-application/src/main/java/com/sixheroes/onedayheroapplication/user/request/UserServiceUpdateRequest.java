@@ -6,10 +6,12 @@ import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
 import com.sixheroes.onedayherodomain.user.UserGender;
 import com.sixheroes.onedayherodomain.user.Week;
+import lombok.Builder;
 
 import java.util.List;
 import java.util.Optional;
 
+@Builder
 public record UserServiceUpdateRequest(
     Long userId,
     UserBasicInfoServiceDto userBasicInfo,
