@@ -68,7 +68,7 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         // when
-        var userUpdateResponse = userService.upadeUser(userServiceUpdateRequest);
+        var userUpdateResponse = userService.updateUser(userServiceUpdateRequest);
 
         // then
         assertThat(userUpdateResponse.userId()).isEqualTo(savedUser.getId());
@@ -115,7 +115,7 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         // when & then
-        assertThatThrownBy(() -> userService.upadeUser(userServiceUpdateRequest))
+        assertThatThrownBy(() -> userService.updateUser(userServiceUpdateRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EUC_001.name());
     }
