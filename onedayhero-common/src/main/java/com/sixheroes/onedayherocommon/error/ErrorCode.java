@@ -13,6 +13,9 @@ import java.util.Optional;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // User Service
+    EUC_000(400, "존재하지 않는 유저입니다."),
+
     // Mission 도메인
     EM_001(400, "미션 내용의 내용은 필수 값이며 공백 일 수 없습니다."),
     EM_002(400, "미션 내용의 길이는 1000자 이하로만 가능합니다."),
@@ -22,7 +25,9 @@ public enum ErrorCode {
     EM_006(400, "미션의 포상금은 0 이상이어야 합니다."),
 
     // Mission Service
+    EMC_000(400, "존재하지 않는 미션입니다."),
     EMC_001(400, "존재하지 않는 미션 카테고리 아이디를 요청하였습니다."),
+    EMC_002(400, "매칭중인 미션만 찜 할 수 있습니다."),
 
     T_001(400, "입력 값에서 오류가 발생했습니다."),
 

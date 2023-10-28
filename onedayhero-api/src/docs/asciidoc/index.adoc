@@ -13,3 +13,8 @@ endif::[]
 == Mission API
 
 include::api/mission/mission.adoc[]
+
+[[Mission-Bookmark-API]]
+== Mission Bookmark API
+
+include::api/mission/missionboomark.adoc[]
