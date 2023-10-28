@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
         @Valid @RequestBody UserUpadateRequest userUpadateRequest
     ) {
-        var userUpdateResponse = userService.upadeUser(userUpadateRequest.toService());
+        var userUpdateResponse = userService.updateUser(userUpadateRequest.toService());
 
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
