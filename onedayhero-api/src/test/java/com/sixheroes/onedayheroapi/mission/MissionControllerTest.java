@@ -236,7 +236,7 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionInfoResponse = createMissionInfoResponse(missionInfoRequest);
         var missionResponse = createMissionResponse(missionCategoryResponse, missionUpdateRequest, missionInfoResponse);
 
-        given(missionService.updateMission(any(MissionUpdateServiceRequest.class), any(LocalDateTime.class)))
+        given(missionService.updateMission(any(Long.class), any(MissionUpdateServiceRequest.class), any(LocalDateTime.class)))
                 .willReturn(missionResponse);
 
         // when & then

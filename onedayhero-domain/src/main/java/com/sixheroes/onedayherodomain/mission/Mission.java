@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 @SQLDelete(sql = "UPDATE missions SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 @Table(name = "missions")
@@ -91,6 +94,15 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
+    public void update(Mission mission) {
+        validOwn(mission.citizenId);
+        validAbleUpdate();
+        this.missionCategory = mission.missionCategory;
+        this.missionInfo = mission.missionInfo;
+        this.regionId = mission.regionId;
+        this.location = mission.location;
+    }
+
     public void validAbleDelete(Long citizenId) {
         validOwn(citizenId);
 
@@ -106,6 +118,13 @@ public class Mission extends BaseEntity {
     private void validOwn(Long citizenId) {
         if (!this.citizenId.equals(citizenId)) {
             log.warn("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
+            throw new IllegalStateException(ErrorCode.EM_100.name());
+        }
+    }
+
+    private void validAbleUpdate() {
+        if (!missionStatus.isMatching()) {
+            log.warn("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
             throw new IllegalStateException(ErrorCode.EM_009.name());
         }
     }

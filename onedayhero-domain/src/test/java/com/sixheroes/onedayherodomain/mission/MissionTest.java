@@ -10,8 +10,7 @@ import org.springframework.data.geo.Point;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class MissionTest {
 
@@ -50,6 +49,128 @@ class MissionTest {
         // when & then
         assertThatThrownBy(() -> mission.validAbleDelete(unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+    @DisplayName("시민은 미션을 수정 할 수 있다.")
+    @Test
+    void updateMission() {
+        // given
+        var citizenId = 1L;
+        var mission = createMission(citizenId);
+
+        var missionCategory = MissionCategory.builder()
+                .missionCategoryCode(MissionCategoryCode.MC_002)
+                .name(MissionCategoryCode.MC_002.name())
+                .build();
+
+        var missionDate = LocalDate.of(2023, 10, 20);
+        var startTime = LocalTime.of(10, 0, 0);
+        var endTime = LocalTime.of(10, 30, 0);
+        var deadlineTime = LocalTime.of(10, 10, 0);
+
+        var missionInfo = MissionInfo.builder()
+                .content("수정하는 내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(15000)
+                .build();
+
+        var newMission = createMission(citizenId, missionCategory, missionInfo);
+
+        // when
+        mission.update(newMission);
+
+        // then
+        assertThat(mission)
+                .extracting(
+                        "missionCategory",
+                        "citizenId",
+                        "regionId",
+                        "location",
+                        "missionInfo",
+                        "bookmarkCount",
+                        "missionStatus"
+                )
+                .containsExactly(
+                        missionCategory,
+                        newMission.getCitizenId(),
+                        newMission.getRegionId(),
+                        newMission.getLocation(),
+                        missionInfo,
+                        0,
+                        MissionStatus.MATCHING
+                );
+    }
+
+    @DisplayName("본인의 미션이 아니라면 수정이 불가능하다.")
+    @Test
+    void updateMissionWithInvalidCitizen() {
+        // given
+        var citizenId = 1L;
+        var mission = createMission(citizenId);
+
+        var missionCategory = MissionCategory.builder()
+                .missionCategoryCode(MissionCategoryCode.MC_002)
+                .name(MissionCategoryCode.MC_002.name())
+                .build();
+
+        var missionDate = LocalDate.of(2023, 10, 20);
+        var startTime = LocalTime.of(10, 0, 0);
+        var endTime = LocalTime.of(10, 30, 0);
+        var deadlineTime = LocalTime.of(10, 10, 0);
+
+        var missionInfo = MissionInfo.builder()
+                .content("수정하는 내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(15000)
+                .build();
+
+        var unknownCitizenId = 2L;
+        var newMission = createMission(unknownCitizenId, missionCategory, missionInfo);
+
+        // when & then
+        assertThatThrownBy(() -> mission.update(newMission))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+    @DisplayName("미션이 매칭 중인 상태가 아니라면 수정이 불가능하다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING")
+    @ParameterizedTest
+    void updateMissionWithNotMatching(MissionStatus missionStatus) {
+        // given
+        var mission = createMission(missionStatus);
+
+        var missionCategory = MissionCategory.builder()
+                .missionCategoryCode(MissionCategoryCode.MC_002)
+                .name(MissionCategoryCode.MC_002.name())
+                .build();
+
+        var missionDate = LocalDate.of(2023, 10, 20);
+        var startTime = LocalTime.of(10, 0, 0);
+        var endTime = LocalTime.of(10, 30, 0);
+        var deadlineTime = LocalTime.of(10, 10, 0);
+
+        var missionInfo = MissionInfo.builder()
+                .content("수정하는 내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(15000)
+                .build();
+        
+        var newMission = createMission(mission.getCitizenId(), missionCategory, missionInfo);
+
+        // when & then
+        assertThatThrownBy(() -> mission.update(newMission))
+                .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_009.name());
     }
 
@@ -73,6 +194,43 @@ class MissionTest {
                 .citizenId(1L)
                 .location(new Point(123456.78, 123456.78))
                 .missionStatus(missionStatus)
+                .bookmarkCount(0)
+                .build();
+    }
+
+    private Mission createMission(Long citizenId, MissionCategory missionCategory, MissionInfo missionInfo) {
+        return Mission.builder()
+                .missionCategory(missionCategory)
+                .missionInfo(missionInfo)
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
+                .bookmarkCount(0)
+                .build();
+    }
+
+    private Mission createMission(Long citizenId) {
+        return Mission.builder()
+                .missionCategory(
+                        MissionCategory.builder()
+                                .missionCategoryCode(MissionCategoryCode.MC_001)
+                                .name(MissionCategoryCode.MC_001.getDescription())
+                                .build())
+                .missionInfo(
+                        MissionInfo.builder()
+                                .content("content")
+                                .missionDate(LocalDate.now())
+                                .startTime(LocalTime.now())
+                                .endTime(LocalTime.now())
+                                .deadlineTime(LocalTime.now())
+                                .price(1000)
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
+                .bookmarkCount(0)
                 .build();
     }
 

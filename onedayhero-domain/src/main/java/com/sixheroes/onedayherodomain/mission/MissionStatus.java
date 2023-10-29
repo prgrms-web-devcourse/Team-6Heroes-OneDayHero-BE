@@ -13,6 +13,10 @@ public enum MissionStatus {
 
     private final String description;
 
+    public boolean isMatching() {
+        return this == MATCHING;
+    }
+
     public boolean isMatchingCompleted() {
         return this == MATCHING_COMPLETED;
     }

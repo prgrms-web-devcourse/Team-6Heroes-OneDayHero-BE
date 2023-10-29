@@ -35,16 +35,18 @@ public class MissionController {
 
     @PatchMapping("/{missionId}")
     public ResponseEntity<ApiResponse<MissionResponse>> updateMission(
+            @PathVariable Long missionId,
             @Valid @RequestBody MissionUpdateRequest request
     ) {
         var modifiedDateTime = LocalDateTime.now();
-        var result = missionService.updateMission(request.toService(), modifiedDateTime);
+        var result = missionService.updateMission(missionId, request.toService(), modifiedDateTime);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @PatchMapping("/{missionId}/extend")
     public ResponseEntity<ApiResponse<MissionResponse>> extendMission(
+            @PathVariable Long missionId,
             @Valid @RequestBody MissionUpdateRequest request
     ) {
         var modifiedDateTime = LocalDateTime.now();

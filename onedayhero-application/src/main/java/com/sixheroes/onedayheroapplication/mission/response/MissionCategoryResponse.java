@@ -10,7 +10,13 @@ public record MissionCategoryResponse(
         String name
 ) {
 
-    public MissionCategoryResponse(MissionCategory category) {
-        this(category.getId(), category.getMissionCategoryCode().name(), category.getName());
+    public static MissionCategoryResponse from(
+            MissionCategory missionCategory
+    ) {
+        return MissionCategoryResponse.builder()
+                .categoryId(missionCategory.getId())
+                .code(missionCategory.getMissionCategoryCode().name())
+                .name(missionCategory.getName())
+                .build();
     }
 }
