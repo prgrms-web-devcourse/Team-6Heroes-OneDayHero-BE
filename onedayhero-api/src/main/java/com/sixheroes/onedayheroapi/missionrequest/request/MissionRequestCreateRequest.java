@@ -4,6 +4,9 @@ import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequest
 import jakarta.validation.constraints.NotNull;
 
 public record MissionRequestCreateRequest(
+    @NotNull(message = "유저 아이디는 필수 값입니다.")
+    Long userId,
+
     @NotNull(message = "미션 아이디는 필수 값입니다.")
     Long missionId,
 
@@ -13,6 +16,7 @@ public record MissionRequestCreateRequest(
 
     public MissionRequestCreateServiceRequest toService() {
         return MissionRequestCreateServiceRequest.builder()
+            .userId(userId)
             .missionId(missionId)
             .heroId(heroId)
             .build();
