@@ -1,0 +1,12 @@
+[[mission-match-create]]
+=== 미션 매치 생성
+
+==== HTTP Request
+
+include::{snippets}/mission-match-create/http-request.adoc[]
+include::{snippets}/mission-match-create/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-match-create/http-response.adoc[]
+include::{snippets}/mission-match-create/response-fields.adoc[]

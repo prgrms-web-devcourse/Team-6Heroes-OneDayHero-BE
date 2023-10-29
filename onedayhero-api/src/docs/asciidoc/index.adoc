@@ -18,3 +18,8 @@ include::api/mission/mission.adoc[]
 == Mission Bookmark API
 
 include::api/mission/missionboomark.adoc[]
+
+[[Mission-Match-API]]
+== Mission Match API
+
+include::api/missionmatch/missionmatch.adoc[]
