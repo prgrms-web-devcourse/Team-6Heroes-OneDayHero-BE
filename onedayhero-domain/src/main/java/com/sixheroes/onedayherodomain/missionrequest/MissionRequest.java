@@ -1,9 +1,8 @@
 package com.sixheroes.onedayherodomain.missionrequest;
 
-<<<<<<< HEAD
+
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-=======
->>>>>>> 4b6dffc ([SIX-98] feat & test : 미션 제안 생성에 대한 도메인 로직 구현 및 테스트)
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -48,7 +47,6 @@ public class MissionRequest {
         this.heroId = heroId;
         this.missionRequestStatus = MissionRequestStatus.REQUEST;
     }
-<<<<<<< HEAD
 
     public void changeMissionRequestStatusApprove(
         Long userId
