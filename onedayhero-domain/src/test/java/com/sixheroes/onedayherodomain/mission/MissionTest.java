@@ -233,4 +233,27 @@ class MissionTest {
                 .bookmarkCount(0)
                 .build();
     }
+
+    private Mission createMission(Long citizenId) {
+        return Mission.builder()
+                .missionCategory(
+                        MissionCategory.builder()
+                                .missionCategoryCode(MissionCategoryCode.MC_001)
+                                .name(MissionCategoryCode.MC_001.getDescription())
+                                .build())
+                .missionInfo(
+                        MissionInfo.builder()
+                                .content("content")
+                                .missionDate(LocalDate.now())
+                                .startTime(LocalTime.now())
+                                .endTime(LocalTime.now())
+                                .deadlineTime(LocalTime.now())
+                                .price(1000)
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
+                .build();
+    }
 }
