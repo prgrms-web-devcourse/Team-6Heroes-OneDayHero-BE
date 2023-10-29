@@ -240,6 +240,7 @@ class MissionTest {
         // when
         mission.validMissionRequestChangeStatus();
 
+
         // then
         assertThat(mission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
     }
