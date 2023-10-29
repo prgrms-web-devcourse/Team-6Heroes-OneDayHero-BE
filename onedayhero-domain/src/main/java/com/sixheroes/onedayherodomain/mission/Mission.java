@@ -175,7 +175,7 @@ public class Mission extends BaseEntity {
         }
     }
 
-    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible 검증
+    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible, validMissionRequestChangeStatus 검증
     public void validMissionRequestPossible(
         Long userId
     ) {

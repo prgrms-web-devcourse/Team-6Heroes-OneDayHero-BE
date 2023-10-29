@@ -11,4 +11,8 @@ public enum MissionRequestStatus {
     REJECT("거절");
 
     private final String description;
+
+    public boolean isRequest() {
+        return this == REQUEST;
+    }
 }
