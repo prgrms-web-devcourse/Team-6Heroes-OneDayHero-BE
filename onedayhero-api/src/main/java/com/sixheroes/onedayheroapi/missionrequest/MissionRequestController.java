@@ -41,7 +41,7 @@ public class MissionRequestController {
     public ResponseEntity<ApiResponse<MissionRequestApproveResponse>> approveMissionRequest(
         @PathVariable Long missionRequestId,
         @Valid @RequestBody MissionRequestApproveRequest missionRequestApproveRequest
-        ) {
+    ) {
         var missionRequestApproveResponse = missionRequestService.approveMissionRequest(
             missionRequestId,
             missionRequestApproveRequest.toService()

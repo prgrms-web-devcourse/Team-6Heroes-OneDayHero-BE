@@ -46,12 +46,13 @@ class MissionRequestControllerTest extends RestDocsSupport {
     @Test
     void createMissionRequest() throws Exception {
         // given
+        var userId = 1L;
         var missionId = 1L;
         var heroId = 1L;
         var missionRequestId = 1L;
         var missionStatus = "REQUEST";
 
-        var missionRequestCreateRequest = new MissionRequestCreateRequest(missionId, heroId);
+        var missionRequestCreateRequest = new MissionRequestCreateRequest(userId, missionId, heroId);
         var missionRequestCreateResponse = new MissionRequestCreateResponse(missionRequestId, missionId, heroId, missionStatus);
 
         given(missionRequestService.createMissionRequest(any(MissionRequestCreateServiceRequest.class)))
@@ -73,6 +74,8 @@ class MissionRequestControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.missionRequestStatus").value(missionRequestCreateResponse.missionRequestStatus()))
             .andDo(document("mission-request-create",
                     requestFields(
+                        fieldWithPath("userId").type(JsonFieldType.NUMBER)
+                            .description("유저 아이디"),
                         fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                             .description("미션 아이디"),
                         fieldWithPath("heroId").type(JsonFieldType.NUMBER)
