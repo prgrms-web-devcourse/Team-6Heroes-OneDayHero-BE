@@ -204,6 +204,49 @@ class MissionTest {
                 .hasMessage(ErrorCode.T_001.name());
     }
 
+    @DisplayName("미션 소유자이고 미션 매칭 중인 상태일 때 미션을 제안할 수 있다.")
+    @Test
+    void validPossibleMissionRequest() {
+        // given
+        var citizenId = 1L;
+        var mission = createMission(citizenId);
+
+        // when
+        mission.validMissionRequestPossible(citizenId);
+
+        // then
+        assertThat(mission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
+        assertThat(mission.getCitizenId()).isEqualTo(citizenId);
+    }
+
+    @DisplayName("미션 소유자가 아닐 때 미션을 제안하면 예외가 발생한다.")
+    @Test
+    void invalidPossibleMissionRequestWhenNotOwner() {
+        // given
+        var citizenId = 1L;
+        var requestCitizenId = 2L;
+        var mission = createMission(citizenId);
+
+        // when & then
+        assertThatThrownBy(() -> mission.validMissionRequestPossible(requestCitizenId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.EM_007.name());
+    }
+
+    @DisplayName("미션이 매칭 중인 상태라면 미션 제안을 승낙 혹은 거절할 수 있다.")
+    @Test
+    void validMissionRequestApproveOrReject() {
+        // given
+        var citizenId = 1L;
+        var mission = createMission(citizenId);
+
+        // when
+        mission.validMissionRequestChangeStatus();
+
+        // then
+        assertThat(mission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
+    }
+
     private Mission createMission(
             MissionStatus missionStatus
     ) {
