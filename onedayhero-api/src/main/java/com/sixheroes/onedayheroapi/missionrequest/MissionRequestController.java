@@ -7,10 +7,7 @@ import com.sixheroes.onedayheroapplication.missionrequest.response.MissionReques
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -29,5 +26,31 @@ public class MissionRequestController {
 
         return ResponseEntity.created(URI.create("/api/v1/mission-requests/" + missionRequest.missionRequestId()))
             .body(ApiResponse.created(missionRequest));
+    }
+
+    @PatchMapping("/{missionRequestId}/approve")
+    public ResponseEntity<ApiResponse<MissionRequestApproveResponse>> approveMissionRequest(
+        @PathVariable Long missionRequestId,
+        @Valid @RequestBody MissionRequestApproveRequest missionRequestApproveRequest
+    ) {
+        var missionRequestApproveResponse = missionRequestService.approveMissionRequest(
+            missionRequestId,
+            missionRequestApproveRequest.toService()
+        );
+
+        return ResponseEntity.ok(ApiResponse.ok(missionRequestApproveResponse));
+    }
+
+    @PatchMapping("/{missionRequestId}/reject")
+    public ResponseEntity<ApiResponse<MissionRequestRejectResponse>> rejectMissionRequest(
+        @PathVariable Long missionRequestId,
+        @Valid @RequestBody MissionRequestRejectRequest missionRequestRejectRequest
+    ) {
+        var missionRequestRejectResponse = missionRequestService.rejectMissionRequest(
+            missionRequestId,
+            missionRequestRejectRequest.toService()
+        );
+
+        return ResponseEntity.ok(ApiResponse.ok(missionRequestRejectResponse));
     }
 }
