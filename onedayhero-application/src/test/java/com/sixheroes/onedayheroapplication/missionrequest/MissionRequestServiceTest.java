@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionrequest;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
@@ -9,6 +10,7 @@ import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.missionrequest.MissionRequest;
 import com.sixheroes.onedayherodomain.missionrequest.repository.MissionRequestRepository;
 import com.sixheroes.onedayherodomain.user.Email;
 import com.sixheroes.onedayherodomain.user.User;
@@ -126,6 +128,74 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
         assertThatThrownBy(() -> missionRequestService.createMissionRequest(missionRequestCreateServiceRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EUC_001.name());
+    }
+
+    @DisplayName("미션 제안을 승낙한다.")
+    @Test
+    void approveMissionRequst() {
+        // given
+        var citizenId = 1L;
+        var missionCategory = missionCategoryRepository.save(createMissionCategory());
+        var mission = missionRepository.save(createMission(citizenId, missionCategory));
+
+        var heroId = 1L;
+        var missionRequest = missionRequestRepository.save(createMissionRequest(mission.getId(), heroId));
+
+        var missionRequestApproveServiceRequest = new MissionRequestApproveServiceRequest(heroId);
+
+        // when
+        var missionRequestApproveResponse = missionRequestService.approveMissionRequest(
+            missionRequest.getId(),
+            missionRequestApproveServiceRequest
+        );
+
+        // then
+        assertThat(missionRequestApproveResponse.missionRequestId()).isEqualTo(missionRequest.getId());
+        assertThat(missionRequestApproveResponse.missionId()).isEqualTo(missionRequest.getMissionId());
+        assertThat(missionRequestApproveResponse.heroId()).isEqualTo(missionRequest.getId());
+        assertThat(missionRequestApproveResponse.missionRequestStatus()).isEqualTo("APPROVE");
+    }
+
+    @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
+    @Test
+    void doNotapproveMissionRequstWhenNotExsistRequest() {
+        // given
+        var heroId = 1L;
+        var missionRequestId = 1L;
+
+        var missionRequestApproveServiceRequest = new MissionRequestApproveServiceRequest(heroId);
+
+        // when
+        assertThatThrownBy(() -> missionRequestService.approveMissionRequest(missionRequestId, missionRequestApproveServiceRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EMR_000.name());
+    }
+
+    @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
+    @Test
+    void doNotapproveMissionRequstWhenNotExsistMission() {
+        // given
+        var missionId = 1L;
+        var heroId = 1L;
+        var missionRequest = missionRequestRepository.save(createMissionRequest(missionId, heroId));
+
+
+        var missionRequestApproveServiceRequest = new MissionRequestApproveServiceRequest(heroId);
+
+        // when
+        assertThatThrownBy(() -> missionRequestService.approveMissionRequest(missionRequest.getId(), missionRequestApproveServiceRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EMC_000.name());
+    }
+
+    private MissionRequest createMissionRequest(
+        Long missionId,
+        Long heroId
+    ) {
+        return MissionRequest.builder()
+            .missionId(missionId)
+            .heroId(heroId)
+            .build();
     }
 
     private Mission createMission(
