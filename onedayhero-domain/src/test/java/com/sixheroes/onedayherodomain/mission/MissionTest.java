@@ -1,7 +1,6 @@
 package com.sixheroes.onedayherodomain.mission;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.geo.Point;
@@ -43,10 +42,18 @@ class MissionTest {
             .hasMessage(ErrorCode.EM_007.name());
     }
 
-    private User createHero() {
-        return User.builder()
-            .
-            .build();
+    @DisplayName("미션이 매칭 중인 상태라면 미션 제안을 승낙할 수 있다.")
+    @Test
+    void validMissionRequestApprove() {
+        // given
+        var citizenId = 1L;
+        var mission = createMission(citizenId);
+
+        // when
+        mission.validMissionRequestApprove();
+
+        // then
+        assertThat(mission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
     }
 
     private Mission createMission(

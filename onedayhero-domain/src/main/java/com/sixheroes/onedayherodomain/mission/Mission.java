@@ -74,11 +74,15 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible 검증
+    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible, validMissionRequestApprove 검증
     public void validMissionRequestPossible(
         Long userId
     ) {
         validMissionOwner(userId);
+        validMissionStatusMatching();
+    }
+
+    public void validMissionRequestApprove() {
         validMissionStatusMatching();
     }
 
