@@ -47,11 +47,11 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when
         var request = createMissionMatchCreateServiceRequest(
+                citizenId,
                 mission,
                 heroId
         );
         var response = missionMatchService.createMissionMatch(
-                citizenId,
                 request
         );
 
@@ -72,16 +72,16 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         // given
         var citizenId = 1L;
         var heroId = 2L;
+        var otherUserId = 3L;
         var mission = createMission(citizenId);
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
+                otherUserId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
-                heroId,
-                request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_008.name());
@@ -98,22 +98,23 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
+                citizenId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
-                citizenId,
-                request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
     }
 
     private MissionMatchCreateServiceRequest createMissionMatchCreateServiceRequest(
+            Long userId,
             Mission mission,
             Long heroId
     ) {
         return MissionMatchCreateServiceRequest.builder()
+                .userId(userId)
                 .missionId(mission.getId())
                 .heroId(heroId)
                 .build();

@@ -25,7 +25,6 @@ public class MissionMatchService {
     private final MissionMatchRepository missionMatchRepository;
 
     public MissionMatchCreateResponse createMissionMatch(
-            Long userId,
             MissionMatchCreateServiceRequest request
     ) {
         var mission = missionRepository.findById(request.missionId())
@@ -45,7 +44,7 @@ public class MissionMatchService {
                 request.heroId()
         );
 
-        mission.missionMatchingCompleted(userId);
+        mission.missionMatchingCompleted(request.userId());
         var savedMissionMatch = missionMatchRepository.save(missionMatch);
 
         return MissionMatchCreateResponse.from(savedMissionMatch);
