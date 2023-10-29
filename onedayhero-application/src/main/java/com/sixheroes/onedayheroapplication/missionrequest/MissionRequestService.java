@@ -42,8 +42,17 @@ public class MissionRequestService {
         Long missionRequestId,
         MissionRequestApproveServiceRequest missionRequestApproveServiceRequest
     ) {
-        // TODO 유저가 요청받은 히어로 인지 확인, 미션 매칭 중인지 확인
-        return null;
+        var missionRequest = missionRequestRepository.findById(missionRequestId)
+            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EMR_000.name()));
+
+        var mission = missionRepository.findById(missionRequest.getMissionId())
+            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EMC_000.name()));
+
+        mission.validMissionRequestApprove();
+
+        missionRequest.changeMissionRequestStatusApprove(missionRequestApproveServiceRequest.userId());
+
+        return MissionRequestApproveResponse.from(missionRequest);
     }
 
     @Transactional
