@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -77,5 +78,34 @@ public class User extends BaseEntity {
     ) {
         this.userBasicInfo = userBasicInfo;
         this.userFavoriteWorkingDay = userFavoriteWorkingDay;
+    }
+
+    public void changeHeroModeOn() {
+        validActive();
+        this.isHeroMode = true;
+    }
+
+    public void delete() {
+        validActive();
+        this.isActive = false;
+    }
+
+    public void validPossibleMissionRequested() {
+        validHeroModeOn();
+        validActive();
+    }
+
+    private void validHeroModeOn() {
+        if (!isHeroMode) {
+            log.debug("해당 유저는 히어로 모드가 비활성화 상태입니다.");
+            throw new IllegalStateException(ErrorCode.EU_009.name());
+        }
+    }
+
+    private void validActive() {
+        if (!isActive) {
+            log.debug("탈퇴한 유저로 계정이 비활성화 상태입니다.");
+            throw new IllegalStateException(ErrorCode.EU_010.name());
+        }
     }
 }

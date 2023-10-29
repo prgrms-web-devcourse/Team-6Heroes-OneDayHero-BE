@@ -172,6 +172,24 @@ public class Mission extends BaseEntity {
     private void validateBookmarkCountAddable() {
         if (this.missionStatus != MissionStatus.MATCHING) {
             log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+        }
+    }
+
+    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible 검증
+    public void validMissionRequestPossible(
+        Long userId
+    ) {
+        validMissionOwner(userId);
+        validMissionStatusMatching();
+    }
+
+    public void validMissionRequestChangeStatus() {
+        validMissionStatusMatching();
+    }
+
+    private void validateBookmarkCountAddable(MissionStatus missionStatus) {
+        if (missionStatus != MissionStatus.MATCHING) {
+            log.warn("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", missionStatus);
             throw new IllegalStateException(ErrorCode.EMC_002.name());
         }
     }
@@ -189,6 +207,23 @@ public class Mission extends BaseEntity {
         if (!missionStatus.isMatching()) {
             log.debug("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
             throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
+    }
+
+    private void validMissionOwner(
+        Long userId
+    ) {
+        if (!citizenId.equals(userId)) {
+            log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
+            throw new IllegalArgumentException(ErrorCode.EM_007.name());
+        }
+    }
+
+    // TODO validateBookmarkCountAddable과 행위가 같음
+    private void validMissionStatusMatching() {
+        if (!missionStatus.isMatching()) {
+            log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_008.name());
         }
     }
 }
