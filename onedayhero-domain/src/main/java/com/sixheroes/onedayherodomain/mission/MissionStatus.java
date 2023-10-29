@@ -12,4 +12,8 @@ public enum MissionStatus {
     EXPIRED("마감된 미션");
 
     private final String description;
+
+    public boolean isMatching() {
+        return this == MATCHING;
+    }
 }
