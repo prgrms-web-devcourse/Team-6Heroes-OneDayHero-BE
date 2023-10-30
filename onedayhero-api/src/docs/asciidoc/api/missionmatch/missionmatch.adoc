@@ -10,3 +10,29 @@ include::{snippets}/mission-match-create/request-fields.adoc[]
 
 include::{snippets}/mission-match-create/http-response.adoc[]
 include::{snippets}/mission-match-create/response-fields.adoc[]
+
+[[mission-match-withdraw]]
+=== (시민) 미션 매치 철회
+
+==== HTTP Request
+
+include::{snippets}/mission-match-withdraw/http-request.adoc[]
+include::{snippets}/mission-match-withdraw/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-match-withdraw/http-response.adoc[]
+include::{snippets}/mission-match-withdraw/response-fields.adoc[]
+
+[[mission-match-giveUp]]
+=== (시민) 미션 매치 철회
+
+==== HTTP Request
+
+include::{snippets}/mission-match-giveUp/http-request.adoc[]
+include::{snippets}/mission-match-giveUp/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-match-giveUp/http-response.adoc[]
+include::{snippets}/mission-match-giveUp/response-fields.adoc[]
