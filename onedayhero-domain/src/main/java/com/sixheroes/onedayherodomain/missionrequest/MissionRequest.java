@@ -55,6 +55,15 @@ public class MissionRequest {
         this.missionRequestStatus = MissionRequestStatus.APPROVE;
     }
 
+    public void changeMissionRequestStatusReject(
+        Long userId
+    ) {
+        validMissionRequestStatus();
+        validHeroId(userId);
+
+        this.missionRequestStatus = MissionRequestStatus.REJECT;
+    }
+
     private void validMissionRequestStatus() {
         if (!missionRequestStatus.isRequest()) {
             log.debug("미션 제안 중인 상태가 아닙니다. missionRequestStatus : {}", missionRequestStatus);
