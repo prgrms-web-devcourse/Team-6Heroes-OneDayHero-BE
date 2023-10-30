@@ -42,15 +42,15 @@ class MissionTest {
             .hasMessage(ErrorCode.EM_007.name());
     }
 
-    @DisplayName("미션이 매칭 중인 상태라면 미션 제안을 승낙할 수 있다.")
+    @DisplayName("미션이 매칭 중인 상태라면 미션 제안을 승낙 혹은 거절할 수 있다.")
     @Test
-    void validMissionRequestApprove() {
+    void validMissionRequestApproveOrReject() {
         // given
         var citizenId = 1L;
         var mission = createMission(citizenId);
 
         // when
-        mission.validMissionRequestApprove();
+        mission.validMissionRequestApproveOrRejct();
 
         // then
         assertThat(mission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);

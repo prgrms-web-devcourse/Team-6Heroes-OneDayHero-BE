@@ -51,6 +51,48 @@ class MissionRequestTest {
             .hasMessage(ErrorCode.EMR_002.name());
     }
 
+    @DisplayName("요청한 유저가 제안 받은 히어로고 요청 중인 상태라면 미션 제안을 거절한다.")
+    @Test
+    void changeMissionRequestStatusReject() {
+        // given
+        var heroId = 1L;
+        var missionRequest = createMissionRequest(heroId);
+
+        // when
+        missionRequest.changeMissionRequestStatusReject(heroId);
+
+        // then
+        assertThat(missionRequest.getMissionRequestStatus()).isEqualTo(MissionRequestStatus.REJECT);
+    }
+
+    @DisplayName("요청한 유저가 제안 받은 히어로가 아니면 미션 제안을 거절할 때 예외가 발생한다.")
+    @Test
+    void doNotchangeMissionRequestStatusRejectWhenNotHero() {
+        // given
+        var heroId = 1L;
+        var requestUserId = 2L;
+        var missionRequest = createMissionRequest(heroId);
+
+        // when & then
+        assertThatThrownBy(() -> missionRequest.changeMissionRequestStatusReject(requestUserId))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ErrorCode.EMR_001.name());
+    }
+
+    @DisplayName("제안 중인 상태가 아니라면 미션 제안을 거절할 때 예외가 발생한다.")
+    @Test
+    void doNotchangeMissionRequestStatusRejctWhenNotRequest() {
+        // given
+        var heroId = 1L;
+        var missionRequest = createMissionRequest(heroId);
+        missionRequest.changeMissionRequestStatusApprove(heroId);
+
+        // when & then
+        assertThatThrownBy(() -> missionRequest.changeMissionRequestStatusReject(heroId))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage(ErrorCode.EMR_002.name());
+    }
+
     public MissionRequest createMissionRequest(
         Long heroId
     ) {

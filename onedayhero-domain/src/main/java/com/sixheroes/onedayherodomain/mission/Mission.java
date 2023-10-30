@@ -82,7 +82,7 @@ public class Mission extends BaseEntity {
         validMissionStatusMatching();
     }
 
-    public void validMissionRequestApprove() {
+    public void validMissionRequestApproveOrRejct() {
         validMissionStatusMatching();
     }
 
