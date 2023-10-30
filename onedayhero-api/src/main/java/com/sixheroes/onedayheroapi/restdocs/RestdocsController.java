@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RestdocsController {
 
-    @GetMapping("/docs")
+    @GetMapping("/api-docs")
     public String docs() {
         return "docs/index.html";
     }

@@ -2,13 +2,13 @@
 
 function find_idle_profile()
 {
-    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://43.200.91.152/)
+    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://43.200.91.152/profile)
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
         CURRENT_PROFILE=dev-green
     else
-        CURRENT_PROFILE=$(sudo curl -s http://43.200.91.152/)
+        CURRENT_PROFILE=$(sudo curl -s http://43.200.91.152/profile)
     fi
 
     if [ ${CURRENT_PROFILE} == dev-blue ]
