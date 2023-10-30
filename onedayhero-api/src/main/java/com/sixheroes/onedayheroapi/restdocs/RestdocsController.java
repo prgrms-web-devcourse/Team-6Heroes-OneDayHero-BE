@@ -5,17 +5,25 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Slf4j
-@RestController
+@Controller
 public class RestdocsController {
 
+    @GetMapping(value = "/docs/index")
+    public String callDocs() {
+        log.debug("index.html 을 Controller 로 호출하였습니다.");
+        return "/docs/index.html";
+    }
+
+    @ResponseBody
     @GetMapping(value = "/api/docs", produces = MediaType.TEXT_HTML_VALUE)
     public String docs() throws IOException {
 
