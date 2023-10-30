@@ -71,6 +71,17 @@ public class Mission extends BaseEntity {
         this.missionStatus = MissionStatus.MATCHING_COMPLETED;
     }
 
+    public void missionMatchingCanceled() {
+        validateCurrentMissionStatusIsMatchingCompleted();
+        this.missionStatus = MissionStatus.MATCHING;
+    }
+
+    public void missionMatchingCanceled(Long citizenId) {
+        validateMissionOwnerIsValid(citizenId);
+        validateCurrentMissionStatusIsMatchingCompleted();
+        this.missionStatus = MissionStatus.MATCHING;
+    }
+
     public void addBookmarkCount() {
         validateBookmarkCountAddable();
         this.bookmarkCount += 1;
@@ -80,8 +91,8 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    private void validateMissionOwnerIsValid(Long userId) {
-        if (!this.citizenId.equals(userId)) {
+    private void validateMissionOwnerIsValid(Long citizenId) {
+        if (!this.citizenId.equals(citizenId)) {
             throw new IllegalStateException(ErrorCode.EM_008.name());
         }
     }
@@ -90,6 +101,13 @@ public class Mission extends BaseEntity {
         if (this.missionStatus != MissionStatus.MATCHING) {
             log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
             throw new IllegalStateException(ErrorCode.EM_007.name());
+        }
+    }
+
+    private void validateCurrentMissionStatusIsMatchingCompleted() {
+        if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
+            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_009.name());
         }
     }
 
