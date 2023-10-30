@@ -4,16 +4,16 @@ import com.sixheroes.onedayherodomain.missionrequest.MissionRequest;
 import lombok.Builder;
 
 @Builder
-public record MissionRequestApproveResponse(
+public record MissionRequestRejectResponse(
     Long missionRequestId,
     Long missionId,
     Long heroId,
     String missionRequestStatus
 ) {
-    public static MissionRequestApproveResponse from(
+    public static MissionRequestRejectResponse from(
         MissionRequest missionRequest
     ) {
-        return MissionRequestApproveResponse.builder()
+        return MissionRequestRejectResponse.builder()
             .missionRequestId(missionRequest.getId())
             .missionId(missionRequest.getMissionId())
             .heroId(missionRequest.getHeroId())

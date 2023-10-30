@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication.missionrequest;
 
+import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestRejectServiceRequest;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestApproveResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestCreateResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestRejectResponse;
@@ -9,11 +11,13 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionrequest.repository.MissionRequestRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MissionRequestService {
@@ -41,12 +45,19 @@ public class MissionRequestService {
         MissionRequestApproveServiceRequest missionRequestApproveServiceRequest
     ) {
         var missionRequest = missionRequestRepository.findById(missionRequestId)
-            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EMR_000.name()));
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션 제안입니다. missionRequestId : {}", missionRequestId);
+                return new NoSuchElementException(ErrorCode.EMR_000.name());
+            });
 
-        var mission = missionRepository.findById(missionRequest.getMissionId())
-            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EMC_000.name()));
+        var missionId = missionRequest.getMissionId();
+        var mission = missionRepository.findById(missionId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
+                return new NoSuchElementException(ErrorCode.EMC_000.name());
+            });
 
-        mission.validMissionRequestApprove();
+        mission.validMissionRequestChangeStatus();
 
         missionRequest.changeMissionRequestStatusApprove(missionRequestApproveServiceRequest.userId());
 
@@ -58,7 +69,24 @@ public class MissionRequestService {
         Long missionRequestId,
         MissionRequestRejectServiceRequest missionRequestRejectServiceRequest
     ) {
-        return null;
+        var missionRequest = missionRequestRepository.findById(missionRequestId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션 제안입니다. missionRequestId : {}", missionRequestId);
+                return new NoSuchElementException(ErrorCode.EMR_000.name());
+            });
+
+        var missionId = missionRequest.getMissionId();
+        var mission = missionRepository.findById(missionId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
+                return new NoSuchElementException(ErrorCode.EMC_000.name());
+            });
+
+        mission.validMissionRequestChangeStatus();
+
+        missionRequest.changeMissionRequestStatusReject(missionRequestRejectServiceRequest.userId());
+
+        return MissionRequestRejectResponse.from(missionRequest);
     }
 
     private void validMission(
@@ -66,7 +94,10 @@ public class MissionRequestService {
         Long userId
     ) {
         var mission = missionRepository.findById(missionId)
-            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EMC_000.name()));
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
+                return new NoSuchElementException(ErrorCode.EMC_000.name());
+            });
 
         mission.validMissionRequestPossible(userId);
     }
@@ -75,7 +106,10 @@ public class MissionRequestService {
         Long heroId
     ) {
         var hero = userRepository.findById(heroId)
-            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EUC_001.name()));
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 유저입니다. userId : {}", heroId);
+                return new NoSuchElementException(ErrorCode.EUC_001.name());
+            });
 
         hero.validPossibleMissionRequested();
     }
