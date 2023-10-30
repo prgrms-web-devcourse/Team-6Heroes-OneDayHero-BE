@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.missionrequest;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequestRejectServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
@@ -88,15 +89,14 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
     void createMissionRequestNotExistMission() {
         // given
         var citizenId = 1L;
-        var missionCategory = missionCategoryRepository.save(createMissionCategory());
-        var mission = missionRepository.save(createMission(citizenId, missionCategory));
+        var missionId = 1L;
 
         var hero = userRepository.save(createUser());
         hero.changeHeroModeOn();
 
         var missionRequestCreateServiceRequest = new MissionRequestCreateServiceRequest(
             citizenId,
-            4L,
+            missionId,
             hero.getId()
         );
 
@@ -131,6 +131,7 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("미션 제안을 승낙한다.")
+    @Transactional
     @Test
     void approveMissionRequst() {
         // given
@@ -157,8 +158,9 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
+    @Transactional
     @Test
-    void doNotapproveMissionRequstWhenNotExsistRequest() {
+    void doNotApproveMissionRequstWhenNotExsistRequest() {
         // given
         var heroId = 1L;
         var missionRequestId = 1L;
@@ -172,8 +174,9 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
+    @Transactional
     @Test
-    void doNotapproveMissionRequstWhenNotExsistMission() {
+    void doNotApproveMissionRequstWhenNotExsistMission() {
         // given
         var missionId = 1L;
         var heroId = 1L;
@@ -184,6 +187,65 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionRequestService.approveMissionRequest(missionRequest.getId(), missionRequestApproveServiceRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EMC_000.name());
+    }
+
+    @DisplayName("미션 제안을 거절한다.")
+    @Transactional
+    @Test
+    void rejectMissionRequst() {
+        // given
+        var citizenId = 1L;
+        var missionCategory = missionCategoryRepository.save(createMissionCategory());
+        var mission = missionRepository.save(createMission(citizenId, missionCategory));
+
+        var heroId = 1L;
+        var missionRequest = missionRequestRepository.save(createMissionRequest(mission.getId(), heroId));
+
+        var missionRequestRejectServiceRequest = new MissionRequestRejectServiceRequest(heroId);
+
+        // when
+        var missionRequestRejectResponse = missionRequestService.rejectMissionRequest(
+            missionRequest.getId(),
+            missionRequestRejectServiceRequest
+        );
+
+        // then
+        assertThat(missionRequestRejectResponse.missionRequestId()).isEqualTo(missionRequest.getId());
+        assertThat(missionRequestRejectResponse.missionId()).isEqualTo(missionRequest.getMissionId());
+        assertThat(missionRequestRejectResponse.heroId()).isEqualTo(missionRequest.getHeroId());
+        assertThat(missionRequestRejectResponse.missionRequestStatus()).isEqualTo("REJECT");
+    }
+
+    @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 거절할 때 예외가 발생한다.")
+    @Test
+    void doNotRejectMissionRequstWhenNotExsistRequest() {
+        // given
+        var heroId = 1L;
+        var missionRequestId = 1L;
+
+        var missionRequestRejectServiceRequest = new MissionRequestRejectServiceRequest(heroId);
+
+        // when
+        assertThatThrownBy(() -> missionRequestService.rejectMissionRequest(missionRequestId, missionRequestRejectServiceRequest))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EMR_000.name());
+    }
+
+    @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
+    @Test
+    void doNotRejectMissionRequstWhenNotExsistMission() {
+        // given
+        var missionId = 1L;
+        var heroId = 1L;
+        var missionRequest = missionRequestRepository.save(createMissionRequest(missionId, heroId));
+
+
+        var missionRequestRejectServiceRequest = new MissionRequestRejectServiceRequest(heroId);
+
+        // when
+        assertThatThrownBy(() -> missionRequestService.rejectMissionRequest(missionRequest.getId(), missionRequestRejectServiceRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EMC_000.name());
     }

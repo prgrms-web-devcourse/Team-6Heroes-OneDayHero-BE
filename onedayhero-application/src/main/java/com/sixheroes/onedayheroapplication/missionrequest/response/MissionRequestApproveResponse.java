@@ -19,6 +19,5 @@ public record MissionRequestApproveResponse(
             .heroId(missionRequest.getHeroId())
             .missionRequestStatus(missionRequest.getMissionRequestStatus().name())
             .build();
-
     }
 }
