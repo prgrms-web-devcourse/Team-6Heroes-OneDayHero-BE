@@ -39,10 +39,12 @@ public class RestdocsController {
         var builder = new StringBuilder();
         while (true) {
             var line = br.readLine();
-            log.debug(line);
+            log.debug("docs 읽는 중..");
             if (line == null) break;
             builder.append(line);
         }
+        log.debug("완료");
+
         return builder.toString();
     }
 }
