@@ -4,7 +4,29 @@ dependencies {
     api 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.0'
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
     api 'com.h2database:h2'
+
+    // query-dsl 추가 spring-boot 3.0, spring 6
+    api 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     implementation project(':onedayhero-common')
+}
+
+// === QueryDsl 빌드 옵션  ===
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [querydslDir]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
 }
 
 tasks.named('test') {
