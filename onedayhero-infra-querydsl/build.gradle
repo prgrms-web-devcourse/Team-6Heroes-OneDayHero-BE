@@ -2,14 +2,14 @@ dependencies {
     implementation project(":onedayhero-domain")
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
 jar {
     enabled = true
 }
 
 bootJar {
     enabled = false
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
