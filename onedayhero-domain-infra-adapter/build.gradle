@@ -1,0 +1,12 @@
+dependencies {
+    implementation project(":onedayhero-domain")
+    implementation project(":onedayhero-infra-querydsl")
+}
+
+bootJar {
+    enabled = false;
+}
+
+jar {
+    enabled = true;
+}
