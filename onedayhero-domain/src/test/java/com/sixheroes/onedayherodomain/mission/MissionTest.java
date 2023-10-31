@@ -17,7 +17,9 @@ class MissionTest {
     @DisplayName("미션 매칭이 완료 된 상태가 아니라면 미션을 삭제 할 수 있다.")
     @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING_COMPLETED")
     @ParameterizedTest
-    void deleteMissionWithNotMatchingCompleteStatus(MissionStatus missionStatus) {
+    void deleteMissionWithNotMatchingCompleteStatus(
+            MissionStatus missionStatus
+    ) {
         // given
         var mission = createMission(missionStatus);
 
@@ -143,7 +145,9 @@ class MissionTest {
     @DisplayName("미션이 매칭 중인 상태가 아니라면 수정이 불가능하다.")
     @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING")
     @ParameterizedTest
-    void updateMissionWithNotMatching(MissionStatus missionStatus) {
+    void updateMissionWithNotMatching(
+            MissionStatus missionStatus
+    ) {
         // given
         var mission = createMission(missionStatus);
 
@@ -165,7 +169,7 @@ class MissionTest {
                 .deadlineTime(deadlineTime)
                 .price(15000)
                 .build();
-        
+
         var newMission = createMission(mission.getCitizenId(), missionCategory, missionInfo);
 
         // when & then
@@ -174,7 +178,22 @@ class MissionTest {
                 .hasMessage(ErrorCode.EM_009.name());
     }
 
-    private Mission createMission(MissionStatus missionStatus) {
+    @DisplayName("미션이 만료된 상태가 아니라면 연장이 불가능하다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "EXPIRED")
+    @ParameterizedTest
+    void extendMissionWithNotExpired(MissionStatus missionStatus) {
+        // given
+        var mission = createMission(missionStatus);
+
+        // when & then
+        assertThatThrownBy(() -> mission.extend(mission))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.T_001.name());
+    }
+
+    private Mission createMission(
+            MissionStatus missionStatus
+    ) {
         return Mission.builder()
                 .missionCategory(
                         MissionCategory.builder()
@@ -198,7 +217,11 @@ class MissionTest {
                 .build();
     }
 
-    private Mission createMission(Long citizenId, MissionCategory missionCategory, MissionInfo missionInfo) {
+    private Mission createMission(
+            Long citizenId,
+            MissionCategory missionCategory,
+            MissionInfo missionInfo
+    ) {
         return Mission.builder()
                 .missionCategory(missionCategory)
                 .missionInfo(missionInfo)
@@ -210,7 +233,9 @@ class MissionTest {
                 .build();
     }
 
-    private Mission createMission(Long citizenId) {
+    private Mission createMission(
+            Long citizenId
+    ) {
         return Mission.builder()
                 .missionCategory(
                         MissionCategory.builder()
@@ -231,29 +256,6 @@ class MissionTest {
                 .location(new Point(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
-                .build();
-    }
-
-    private Mission createMission(Long citizenId) {
-        return Mission.builder()
-                .missionCategory(
-                        MissionCategory.builder()
-                                .missionCategoryCode(MissionCategoryCode.MC_001)
-                                .name(MissionCategoryCode.MC_001.getDescription())
-                                .build())
-                .missionInfo(
-                        MissionInfo.builder()
-                                .content("content")
-                                .missionDate(LocalDate.now())
-                                .startTime(LocalTime.now())
-                                .endTime(LocalTime.now())
-                                .deadlineTime(LocalTime.now())
-                                .price(1000)
-                                .build())
-                .regionId(1L)
-                .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
-                .missionStatus(MissionStatus.MATCHING)
                 .build();
     }
 }

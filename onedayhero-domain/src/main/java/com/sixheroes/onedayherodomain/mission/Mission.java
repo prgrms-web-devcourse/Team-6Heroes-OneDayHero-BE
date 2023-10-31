@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -94,7 +93,9 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
-    public void update(Mission mission) {
+    public void update(
+            Mission mission
+    ) {
         validOwn(mission.citizenId);
         validAbleUpdate();
         this.missionCategory = mission.missionCategory;
@@ -103,7 +104,18 @@ public class Mission extends BaseEntity {
         this.location = mission.location;
     }
 
-    public void validAbleDelete(Long citizenId) {
+    public void extend(Mission mission) {
+        validOwn(mission.citizenId);
+        validAbleExtend();
+        this.missionCategory = mission.missionCategory;
+        this.missionInfo = mission.missionInfo;
+        this.regionId = mission.regionId;
+        this.location = mission.location;
+    }
+
+    public void validAbleDelete(
+            Long citizenId
+    ) {
         validOwn(citizenId);
 
         if (missionStatus.isMatchingCompleted()) {
@@ -111,20 +123,31 @@ public class Mission extends BaseEntity {
         }
     }
 
-    public void validRangeOfMissionTime(LocalDateTime dateTime) {
+    private void validAbleExtend() {
+        if (!missionStatus.isExpired()) {
+            log.debug("미션의 연장이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
+    }
+
+    public void validRangeOfMissionTime(
+            LocalDateTime dateTime
+    ) {
         missionInfo.validMissionDateTimeInRange(dateTime);
     }
 
-    private void validOwn(Long citizenId) {
+    private void validOwn(
+            Long citizenId
+    ) {
         if (!this.citizenId.equals(citizenId)) {
-            log.warn("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
+            log.debug("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
             throw new IllegalStateException(ErrorCode.EM_100.name());
         }
     }
 
     private void validAbleUpdate() {
         if (!missionStatus.isMatching()) {
-            log.warn("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
+            log.debug("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
             throw new IllegalStateException(ErrorCode.EM_009.name());
         }
     }
