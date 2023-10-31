@@ -68,10 +68,19 @@ public class MissionService {
 
     @Transactional
     public MissionResponse extendMission(
+            Long missionId,
             MissionUpdateServiceRequest request,
             LocalDateTime dateTime
     ) {
-        return null;
+        var mission = missionReader.findOne(missionId);
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+
+        var requestExtendMission = request.toEntity(missionCategory);
+        requestExtendMission.validRangeOfMissionTime(dateTime);
+
+        mission.extend(requestExtendMission);
+
+        return MissionResponse.from(mission);
     }
 
     private void deleteUserBookMarkByMissionId(

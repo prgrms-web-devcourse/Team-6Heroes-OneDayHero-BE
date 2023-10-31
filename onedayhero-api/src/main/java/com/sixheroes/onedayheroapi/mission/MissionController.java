@@ -50,7 +50,7 @@ public class MissionController {
             @Valid @RequestBody MissionUpdateRequest request
     ) {
         var modifiedDateTime = LocalDateTime.now();
-        var result = missionService.extendMission(request.toService(), modifiedDateTime);
+        var result = missionService.extendMission(missionId, request.toService(), modifiedDateTime);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
