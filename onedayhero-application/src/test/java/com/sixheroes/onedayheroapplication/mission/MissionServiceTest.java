@@ -508,6 +508,95 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_005.name());
     }
 
+    @DisplayName("시민은 마감된 미션에 대해서만 미션을 연장 할 수 있다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "EXPIRED")
+    @ParameterizedTest
+    void extendMissionWithStatusIsExpired(MissionStatus missionStatus) {
+        // given
+        var citizenId = 1L;
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionStatus
+        );
+
+        var savedMission = missionRepository.save(mission);
+        var today = LocalDateTime.of(
+                savedMission.getMissionInfo().getMissionDate().minusDays(1),
+                LocalTime.MIDNIGHT
+        );
+
+        var missionInfoServiceRequest = createMissionInfoServiceRequest(
+                savedMission.getMissionInfo().getMissionDate().plusDays(2),
+                savedMission.getMissionInfo().getStartTime().plusHours(2),
+                savedMission.getMissionInfo().getEndTime().plusHours(3),
+                savedMission.getMissionInfo().getDeadlineTime().plusHours(1)
+        );
+
+        var updateCategoryId = 2L;
+
+        var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
+                .missionCategoryId(updateCategoryId)
+                .citizenId(citizenId)
+                .regionId(2L)
+                .latitude(1235678.48)
+                .longitude(1235678.48)
+                .missionInfo(missionInfoServiceRequest)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionUpdateServiceRequest, today))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.T_001.name());
+    }
+
+    @DisplayName("시민은 본인이 만든 미션만 연장 할 수 있다.")
+    @Test
+    void extendMissionWithInvalidUser() {
+        // given
+        var citizenId = 1L;
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                MissionStatus.MATCHING
+        );
+
+        var savedMission = missionRepository.save(mission);
+        var today = LocalDateTime.of(
+                savedMission.getMissionInfo().getMissionDate().minusDays(1),
+                LocalTime.MIDNIGHT
+        );
+
+        var missionInfoServiceRequest = createMissionInfoServiceRequest(
+                savedMission.getMissionInfo().getMissionDate().plusDays(2),
+                savedMission.getMissionInfo().getStartTime().plusHours(2),
+                savedMission.getMissionInfo().getEndTime().plusHours(3),
+                savedMission.getMissionInfo().getDeadlineTime().plusHours(1)
+        );
+
+        var updateCategoryId = 2L;
+        var unknownCitizenId = 2L;
+
+        var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
+                .missionCategoryId(updateCategoryId)
+                .citizenId(unknownCitizenId)
+                .regionId(2L)
+                .latitude(1235678.48)
+                .longitude(1235678.48)
+                .missionInfo(missionInfoServiceRequest)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionUpdateServiceRequest, today))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {
