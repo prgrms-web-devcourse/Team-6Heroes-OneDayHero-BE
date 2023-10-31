@@ -27,6 +27,7 @@ public class MissionMatchService {
     private final MissionRepository missionRepository;
     private final UserRepository userRepository;
     private final MissionMatchRepository missionMatchRepository;
+    private final MissionMatchReader missionMatchReader;
 
     public MissionMatchCreateResponse createMissionMatch(MissionMatchCreateServiceRequest request) {
         var mission = missionRepository.findById(request.missionId())
@@ -61,14 +62,9 @@ public class MissionMatchService {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
                     return new NoSuchElementException(ErrorCode.EMC_000.name());
                 });
-
-        var missionMatch = missionMatchRepository.findByMissionId(mission.getId())
-                .orElseThrow(() -> {
-                    log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
-                    return new NoSuchElementException(ErrorCode.EMC_000.name());
-                });
-
         mission.missionMatchingCanceled(request.citizenId());
+
+        var missionMatch = missionMatchReader.findByMissionId(mission.getId());
         missionMatch.missionMatchWithdrawn();
 
         //TODO: 히어로에게 미션매칭 취소 알람
@@ -87,14 +83,9 @@ public class MissionMatchService {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
                     return new NoSuchElementException(ErrorCode.EMC_000.name());
                 });
-
-        var missionMatch = missionMatchRepository.findByMissionId(mission.getId())
-                .orElseThrow(() -> {
-                    log.debug("미션에 해당하는 미션매칭이 존재하지 않습니다. missionId : {}", request.missionId());
-                    return new NoSuchElementException(ErrorCode.EMMC_000.name());
-                });
-
         mission.missionMatchingCanceled();
+
+        var missionMatch = missionMatchReader.findByMissionId(mission.getId());
         missionMatch.missionMatchGivenUp(request.heroId());
 
         //TODO: 시민에게 미션매칭 취소 알람

@@ -27,6 +27,7 @@ public class MissionBookmarkService {
     private final MissionRepository missionRepository;
     private final UserRepository userRepository;
     private final MissionBookmarkRepository missionBookmarkRepository;
+    private final MissionBookmarkReader missionBookmarkReader;
 
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
         var mission = missionRepository.findById(request.missionId())
@@ -41,16 +42,16 @@ public class MissionBookmarkService {
 //                    log.debug("존재하지 않는 유저입니다. userId : {}", request.userId());
 //                    return new NoSuchElementException(ErrorCode.EUC_000.name());
 //                });
-
+        
         var missionBookmark = MissionBookmark.builder()
                 .mission(mission)
                 .userId(request.userId())
                 .build();
 
-        var savedMission = missionBookmarkRepository.save(missionBookmark);
+        var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
         mission.addBookmarkCount();
 
-        return new MissionBookmarkCreateResponse(savedMission);
+        return new MissionBookmarkCreateResponse(savedMissionBookmark);
     }
 
     public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelServiceRequest request) {
@@ -60,11 +61,10 @@ public class MissionBookmarkService {
                     return new NoSuchElementException(ErrorCode.EMC_000.name());
                 });
 
-        var findMissionBookmark = missionBookmarkRepository.findByMissionAndUserId(mission, request.userId())
-                .orElseThrow(() -> {
-                    log.debug("존재하지 않는 미션 북마크입니다. missionId:{}, userId:{}", request.missionId(), request.userId());
-                    return new NoSuchElementException(ErrorCode.EMC_000.name());
-                });
+        var findMissionBookmark = missionBookmarkReader.findByMissionIdAndUserId(
+                request.missionId(),
+                request.userId()
+        );
 
         missionBookmarkRepository.delete(findMissionBookmark);
         mission.subBookmarkCount();
