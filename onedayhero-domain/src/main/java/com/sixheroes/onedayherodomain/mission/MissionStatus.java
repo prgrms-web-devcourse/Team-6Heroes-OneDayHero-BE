@@ -20,4 +20,8 @@ public enum MissionStatus {
     public boolean isMatchingCompleted() {
         return this == MATCHING_COMPLETED;
     }
+
+    public boolean isExpired() {
+        return this == EXPIRED;
+    }
 }
