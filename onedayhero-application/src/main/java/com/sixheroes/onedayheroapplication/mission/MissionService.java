@@ -4,7 +4,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomaininfraadapter.mapper.MissionRepositoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 public class MissionService {
 
     private final MissionCategoryRepository missionCategoryRepository;
-    private final MissionRepository missionRepository;
+    private final MissionRepositoryMapper missionRepository;
 
     @Transactional
     public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
