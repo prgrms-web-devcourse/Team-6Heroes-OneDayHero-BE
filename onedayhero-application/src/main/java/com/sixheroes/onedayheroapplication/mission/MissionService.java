@@ -3,10 +3,8 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.bookmark.UserBookMarkMission;
 import com.sixheroes.onedayherodomain.bookmark.repository.UserBookMarkMissionRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,7 +19,8 @@ import java.util.NoSuchElementException;
 @Service
 public class MissionService {
 
-    private final MissionCategoryRepository missionCategoryRepository;
+    private final MissionCategoryReader missionCategoryReader;
+    private final MissionReader missionReader;
     private final MissionRepository missionRepository;
     private final UserBookMarkMissionRepository userBookMarkMissionRepository;
 
@@ -31,12 +29,7 @@ public class MissionService {
             MissionCreateServiceRequest request,
             LocalDateTime dateTime
     ) {
-        var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
-                    return new NoSuchElementException(ErrorCode.EMC_001.name());
-                });
-
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = request.toEntity(missionCategory);
         mission.validRangeOfMissionTime(dateTime);
 
@@ -50,12 +43,7 @@ public class MissionService {
             Long missionId,
             Long citizenId
     ) {
-        var mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
-                    return new NoSuchElementException(ErrorCode.EM_008.name());
-                });
-
+        var mission = missionReader.findOne(missionId);
         mission.validAbleDelete(citizenId);
 
         deleteUserBookMarkByMissionId(missionId);
@@ -68,17 +56,8 @@ public class MissionService {
             MissionUpdateServiceRequest request,
             LocalDateTime modifiedDateTime
     ) {
-        var mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
-                    return new NoSuchElementException(ErrorCode.EM_008.name());
-                });
-
-        var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
-                    return new NoSuchElementException(ErrorCode.EMC_001.name());
-                });
+        var mission = missionReader.findOne(missionId);
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
 
         var requestMission = request.toEntity(missionCategory);
         requestMission.validRangeOfMissionTime(modifiedDateTime);
