@@ -1,10 +1,14 @@
 package com.sixheroes.onedayherodomain.missionmatch;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mission_matches")
@@ -24,4 +28,38 @@ public class MissionMatch {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
     private MissionMatchStatus missionMatchStatus;
+
+    @Builder
+    private MissionMatch(
+            Long missionId,
+            Long heroId,
+            MissionMatchStatus missionMatchStatus
+    ) {
+        this.missionId = missionId;
+        this.heroId = heroId;
+        this.missionMatchStatus = missionMatchStatus;
+    }
+
+    public static MissionMatch createMissionMatch(
+            Long missionId,
+            Long heroId
+    ) {
+        return MissionMatch.builder()
+                .missionId(missionId)
+                .heroId(heroId)
+                .missionMatchStatus(MissionMatchStatus.MATCHED)
+                .build();
+    }
+
+    public void canceled() {
+        validateCurrentMissionMatchStatusIsMatchingMatched();
+        this.missionMatchStatus = MissionMatchStatus.WITHDRAW;
+    }
+
+    private void validateCurrentMissionMatchStatusIsMatchingMatched() {
+        if (this.missionMatchStatus != MissionMatchStatus.MATCHED) {
+            log.debug("매칭된 상태의 미션만 취소할 수 있습니다. 미션 상태 : {}", this.missionMatchStatus);
+            throw new IllegalStateException(ErrorCode.EMM_001.name());
+        }
+    }
 }
