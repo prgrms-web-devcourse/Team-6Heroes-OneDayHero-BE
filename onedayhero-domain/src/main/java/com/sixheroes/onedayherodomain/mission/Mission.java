@@ -130,10 +130,26 @@ public class Mission extends BaseEntity {
         }
     }
 
+    public void addBookmarkCount() {
+        validateBookmarkCountAddable(this.missionStatus);
+        this.bookmarkCount += 1;
+    }
+
+    public void subBookmarkCount() {
+        this.bookmarkCount -= 1;
+    }
+
     public void validRangeOfMissionTime(
             LocalDateTime dateTime
     ) {
         missionInfo.validMissionDateTimeInRange(dateTime);
+    }
+
+    private void validateBookmarkCountAddable(MissionStatus missionStatus) {
+        if (missionStatus != MissionStatus.MATCHING) {
+            log.warn("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", missionStatus);
+            throw new IllegalStateException(ErrorCode.EMC_002.name());
+        }
     }
 
     private void validOwn(

@@ -6,8 +6,8 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceReq
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.bookmark.repository.UserBookMarkMissionRepository;
 import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MissionServiceTest extends IntegrationApplicationTest {
 
     @Autowired
-    private UserBookMarkMissionRepository userBookMarkMissionRepository;
+    private MissionBookmarkRepository missionBookmarkRepository;
 
     @Autowired
     private MissionCategoryRepository missionCategoryRepository;
@@ -179,7 +179,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         missionService.deleteMission(savedMission.getId(), citizenId);
 
         var findMission = missionRepository.findById(savedMission.getId());
-        var findUserBookMarkMission = userBookMarkMissionRepository.findByMissionId(savedMission.getId());
+        var findUserBookMarkMission = missionBookmarkRepository.findByMissionId(savedMission.getId());
 
         // then
         assertThat(findMission).isEmpty();

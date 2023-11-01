@@ -3,9 +3,10 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayherodomain.bookmark.UserBookMarkMission;
-import com.sixheroes.onedayherodomain.bookmark.repository.UserBookMarkMissionRepository;
+import com.sixheroes.onedayherodomain.mission.MissionBookmark;
+import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class MissionService {
     private final MissionCategoryReader missionCategoryReader;
     private final MissionReader missionReader;
     private final MissionRepository missionRepository;
-    private final UserBookMarkMissionRepository userBookMarkMissionRepository;
+    private final MissionBookmarkRepository missionBookmarkRepository;
+    private final MissionQueryRepository missionQueryRepository;
 
     @Transactional
     public MissionResponse createMission(
@@ -86,11 +88,11 @@ public class MissionService {
     private void deleteUserBookMarkByMissionId(
             Long missionId
     ) {
-        var userBookMarks = userBookMarkMissionRepository.findByMissionId(missionId);
+        var userBookMarks = missionBookmarkRepository.findByMissionId(missionId);
         var userBookMarkIds = userBookMarks.stream()
-                .map(UserBookMarkMission::getId)
+                .map(MissionBookmark::getId)
                 .toList();
 
-        userBookMarkMissionRepository.deleteByIdIn(userBookMarkIds);
+        missionBookmarkRepository.deleteByIdIn(userBookMarkIds);
     }
 }
