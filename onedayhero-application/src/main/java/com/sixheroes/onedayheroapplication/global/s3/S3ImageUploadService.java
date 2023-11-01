@@ -19,7 +19,7 @@ import java.util.UUID;
 @Component
 public class S3ImageUploadService {
 
-    @Value("${cloud.aws.s3.bucket}")
+//    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     private final AmazonS3 amazonS3;
