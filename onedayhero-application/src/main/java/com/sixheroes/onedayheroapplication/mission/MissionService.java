@@ -91,10 +91,9 @@ public class MissionService {
     }
 
     public MissionResponse findOne(Long missionId) {
-        var mission = missionReader.findOne(missionId);
-        var region = regionReader.findOne(mission.getRegionId());
+        var missionQueryResponse = missionReader.fetchFindOne(missionId);
 
-        return MissionResponse.from(mission, region);
+        return MissionResponse.from(missionQueryResponse);
     }
 
     private void deleteUserBookMarkByMissionId(
