@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
-    implementation project(':onedayhero-domain-infra-adapter')
     implementation project(':onedayhero-infra-querydsl')
 }
 
