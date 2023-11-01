@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "s3-image")
+//@ConfigurationProperties(prefix = "s3-image")
 public class S3ImageDirectoryProperties {
 
     private final String profileDir;

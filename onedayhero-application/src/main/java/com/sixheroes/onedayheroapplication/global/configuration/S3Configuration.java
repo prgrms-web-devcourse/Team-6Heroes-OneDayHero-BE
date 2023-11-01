@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(S3ImageDirectoryProperties.class)
+//@EnableConfigurationProperties(S3ImageDirectoryProperties.class)
 @RequiredArgsConstructor
 public class S3Configuration {
 
