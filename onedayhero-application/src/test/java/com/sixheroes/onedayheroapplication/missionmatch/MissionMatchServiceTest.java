@@ -170,6 +170,8 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         var mission = Mission.builder()
                 .missionInfo(createMissionInfo())
                 .missionCategory(missionCategoryRepository.findById(1L).get())
+                .bookmarkCount(0)
+                .missionStatus(MissionStatus.MATCHING)
                 .citizenId(citizenId)
                 .regionId(1L)
                 .location(new Point(1234, 5678))

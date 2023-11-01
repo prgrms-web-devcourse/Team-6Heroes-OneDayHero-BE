@@ -24,7 +24,7 @@ public class MissionMatchReader {
         return missionMatchRepository.findByMissionId(missionId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
-                    return new NoSuchElementException(ErrorCode.EMC_000.name());
+                    return new NoSuchElementException(ErrorCode.T_001.name());
                 });
     }
 }
