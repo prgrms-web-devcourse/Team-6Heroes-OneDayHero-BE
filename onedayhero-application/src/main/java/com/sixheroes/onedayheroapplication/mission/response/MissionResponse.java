@@ -20,17 +20,20 @@ public record MissionResponse(
         Integer bookmarkCount,
         String missionStatus
 ) {
-    public MissionResponse(Mission mission) {
-        this(
-                mission.getId(),
-                new MissionCategoryResponse(mission.getMissionCategory()),
-                mission.getCitizenId(),
-                mission.getRegionId(),
-                mission.getLocation(),
-                new MissionInfoResponse(mission.getMissionInfo()),
-                mission.getBookmarkCount(),
-                mission.getMissionStatus().name()
-        );
+
+    public static MissionResponse from(Mission mission) {
+        return MissionResponse.builder()
+                .id(mission.getId())
+                .missionCategory(
+                        MissionCategoryResponse.from(mission.getMissionCategory())
+                )
+                .citizenId(mission.getCitizenId())
+                .regionId(mission.getRegionId())
+                .location(mission.getLocation())
+                .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
+                .bookmarkCount(mission.getBookmarkCount())
+                .missionStatus(mission.getMissionStatus().name())
+                .build();
     }
 
     @Builder
@@ -51,15 +54,15 @@ public record MissionResponse(
 
             Integer price
     ) {
-        private MissionInfoResponse(MissionInfo missionInfo) {
-            this(
-                    missionInfo.getContent(),
-                    missionInfo.getMissionDate(),
-                    missionInfo.getStartTime(),
-                    missionInfo.getEndTime(),
-                    missionInfo.getDeadlineTime(),
-                    missionInfo.getPrice()
-            );
+        public static MissionInfoResponse from(MissionInfo missionInfo) {
+            return MissionInfoResponse.builder()
+                    .content(missionInfo.getContent())
+                    .missionDate(missionInfo.getMissionDate())
+                    .startTime(missionInfo.getStartTime())
+                    .endTime(missionInfo.getEndTime())
+                    .deadlineTime(missionInfo.getDeadlineTime())
+                    .price(missionInfo.getPrice())
+                    .build();
         }
     }
 }

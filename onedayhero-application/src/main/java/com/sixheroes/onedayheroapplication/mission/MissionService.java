@@ -1,9 +1,10 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
+import com.sixheroes.onedayherodomain.mission.MissionBookmark;
+import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,23 +20,79 @@ import java.util.NoSuchElementException;
 @Service
 public class MissionService {
 
-    private final MissionCategoryRepository missionCategoryRepository;
+    private final MissionCategoryReader missionCategoryReader;
+    private final MissionReader missionReader;
     private final MissionRepository missionRepository;
+    private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionQueryRepository missionQueryRepository;
 
     @Transactional
-    public MissionResponse createMission(MissionCreateServiceRequest request, LocalDateTime dateTime) {
-        var missionCategory = missionCategoryRepository.findById(request.missionCategoryId())
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 카테고리가 입력되었습니다. id : {}", request.missionCategoryId());
-                    return new NoSuchElementException(ErrorCode.EMC_001.name());
-                });
-
+    public MissionResponse createMission(
+            MissionCreateServiceRequest request,
+            LocalDateTime dateTime
+    ) {
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = request.toEntity(missionCategory);
         mission.validRangeOfMissionTime(dateTime);
 
         var savedMission = missionRepository.save(mission);
 
-        return new MissionResponse(savedMission);
+        return MissionResponse.from(savedMission);
+    }
+
+    @Transactional
+    public void deleteMission(
+            Long missionId,
+            Long citizenId
+    ) {
+        var mission = missionReader.findOne(missionId);
+        mission.validAbleDelete(citizenId);
+
+        deleteUserBookMarkByMissionId(missionId);
+        missionRepository.delete(mission);
+    }
+
+    @Transactional
+    public MissionResponse updateMission(
+            Long missionId,
+            MissionUpdateServiceRequest request,
+            LocalDateTime modifiedDateTime
+    ) {
+        var mission = missionReader.findOne(missionId);
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+
+        var requestMission = request.toEntity(missionCategory);
+        requestMission.validRangeOfMissionTime(modifiedDateTime);
+
+        mission.update(requestMission);
+        return MissionResponse.from(mission);
+    }
+
+    @Transactional
+    public MissionResponse extendMission(
+            Long missionId,
+            MissionUpdateServiceRequest request,
+            LocalDateTime dateTime
+    ) {
+        var mission = missionReader.findOne(missionId);
+        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+
+        var requestExtendMission = request.toEntity(missionCategory);
+        requestExtendMission.validRangeOfMissionTime(dateTime);
+
+        mission.extend(requestExtendMission);
+
+        return MissionResponse.from(mission);
+    }
+
+    private void deleteUserBookMarkByMissionId(
+            Long missionId
+    ) {
+        var userBookMarks = missionBookmarkRepository.findByMissionId(missionId);
+        var userBookMarkIds = userBookMarks.stream()
+                .map(MissionBookmark::getId)
+                .toList();
+
+        missionBookmarkRepository.deleteByIdIn(userBookMarkIds);
     }
 }

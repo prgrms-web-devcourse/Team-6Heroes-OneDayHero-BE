@@ -2,12 +2,11 @@ package com.sixheroes.onedayheroapplication.mission.request;
 
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
-import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import lombok.Builder;
 import org.springframework.data.geo.Point;
 
 @Builder
-public record MissionCreateServiceRequest(
+public record MissionUpdateServiceRequest(
         Long missionCategoryId,
         Long citizenId,
         Long regionId,
@@ -17,12 +16,12 @@ public record MissionCreateServiceRequest(
 ) {
 
     public Mission toEntity(MissionCategory missionCategory) {
-        return Mission.createMission(
-                missionCategory,
-                citizenId,
-                regionId,
-                new Point(longitude, latitude),
-                missionInfo.toVo()
-        );
+        return Mission.builder()
+                .missionCategory(missionCategory)
+                .citizenId(citizenId)
+                .regionId(regionId)
+                .location(new Point(longitude, latitude))
+                .missionInfo(missionInfo.toVo())
+                .build();
     }
 }

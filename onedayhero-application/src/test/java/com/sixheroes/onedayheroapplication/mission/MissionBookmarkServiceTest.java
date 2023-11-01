@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.SoftAssertions.*;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 
 @Transactional
@@ -128,6 +128,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .citizenId(citizenId)
                 .regionId(1L)
                 .location(new Point(1234, 5678))
+                .bookmarkCount(0)
                 .build();
 
         return missionRepository.save(mission);
