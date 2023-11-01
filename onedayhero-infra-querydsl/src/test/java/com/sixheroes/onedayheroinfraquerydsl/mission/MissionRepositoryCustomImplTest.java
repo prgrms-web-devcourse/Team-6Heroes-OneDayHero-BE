@@ -4,7 +4,7 @@ import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
-import com.sixheroes.onedayheroquerydsl.mission.MissionRepositoryCustom;
+import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
     private MissionRepository missionRepository;
 
     @Autowired
-    private MissionRepositoryCustom missionRepositoryCustom;
+    private MissionQueryRepository missionQueryRepository;
 
     @BeforeAll
     public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
@@ -63,7 +63,7 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
         missionRepository.save(missionB);
 
         // when
-        var missions = missionRepositoryCustom.findByCategoryId(1L);
+        var missions = missionQueryRepository.findByCategoryId(1L);
 
         // then
         assertThat(missions).hasSize(2);
