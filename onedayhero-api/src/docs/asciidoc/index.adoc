@@ -9,6 +9,11 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
+[[User-API]]
+== User API
+
+include::api/user/user.adoc[]
+
 [[Mission-API]]
 == Mission API
 
