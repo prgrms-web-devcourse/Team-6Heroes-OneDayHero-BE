@@ -20,6 +20,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'jacoco'
 
     configurations {
         compileOnly {
@@ -29,6 +30,27 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    test {
+        finalizedBy 'jacocoTestReport'
+    }
+
+    jacocoTestReport {
+        dependsOn test
+
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, excludes: [
+                        "**/Q*",
+                        "**/*Request.class", // request 폴더 제외 안ㅓㅁ
+                        "**/*Response*",
+                        "**/*Dto*",
+                        "**/config/*",
+                        "**/global/*"
+                ])
+            }))
+        }
     }
 
     dependencies {
