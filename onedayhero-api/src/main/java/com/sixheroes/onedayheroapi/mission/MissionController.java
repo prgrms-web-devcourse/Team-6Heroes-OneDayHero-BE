@@ -22,6 +22,15 @@ public class MissionController {
 
     private final MissionService missionService;
 
+    @GetMapping("/{missionId}")
+    public ResponseEntity<ApiResponse<MissionResponse>> findMission(
+            @PathVariable Long missionId
+    ) {
+        var result = missionService.findOne(missionId);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<MissionResponse>> createMission(
             @Valid @RequestBody MissionCreateRequest request
