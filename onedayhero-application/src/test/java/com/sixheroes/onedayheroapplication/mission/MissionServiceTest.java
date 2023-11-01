@@ -5,11 +5,14 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.region.Region;
+import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,15 +42,29 @@ class MissionServiceTest extends IntegrationApplicationTest {
     private MissionRepository missionRepository;
 
     @Autowired
+    private RegionRepository regionRepository;
+
+    @Autowired
     private MissionService missionService;
 
     @BeforeAll
-    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
+    public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
         var missionCategories = Arrays.stream(MissionCategoryCode.values())
                 .map(MissionCategory::from)
                 .toList();
 
         missionCategoryRepository.saveAll(missionCategories);
+
+        var region = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build();
+
+        regionRepository.save(region);
     }
 
     @Transactional
@@ -67,6 +84,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionCategoryId = missionCreateServiceRequest.missionCategoryId();
         var missionCategory = missionCategoryRepository.findById(missionCategoryId).get();
+        var region = regionRepository.findById(1L).get();
+
 
         // when
         var result = missionService.createMission(missionCreateServiceRequest, today);
@@ -76,7 +95,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .extracting(
                         "missionCategory",
                         "citizenId",
-                        "regionId",
+                        "region",
                         "location",
                         "missionInfo",
                         "bookmarkCount",
@@ -85,7 +104,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .containsExactly(
                         MissionCategoryResponse.from(missionCategory),
                         missionCreateServiceRequest.citizenId(),
-                        missionCreateServiceRequest.regionId(),
+                        RegionResponse.from(region),
                         new Point(missionCreateServiceRequest.longitude(), missionCreateServiceRequest.latitude()),
                         result.missionInfo(),
                         0,
@@ -234,6 +253,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var citizenId = 1L;
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
@@ -257,7 +278,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(1L)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -271,7 +292,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .extracting(
                         "missionCategory",
                         "citizenId",
-                        "regionId",
+                        "region",
                         "location",
                         "missionInfo",
                         "bookmarkCount",
@@ -280,7 +301,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .containsExactly(
                         MissionCategoryResponse.from(updateMissionCategory),
                         missionUpdateServiceRequest.citizenId(),
-                        missionUpdateServiceRequest.regionId(),
+                        RegionResponse.from(region),
                         new Point(missionUpdateServiceRequest.longitude(), missionUpdateServiceRequest.latitude()),
                         result.missionInfo(),
                         0,
@@ -320,7 +341,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(unknownCitizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -364,7 +385,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(citizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -408,7 +429,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(citizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -452,7 +473,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(citizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -496,7 +517,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(citizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -540,7 +561,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(citizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -584,7 +605,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .citizenId(unknownCitizenId)
-                .regionId(2L)
+                .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)

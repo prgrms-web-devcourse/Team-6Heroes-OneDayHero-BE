@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
+import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
@@ -22,6 +23,7 @@ public class MissionService {
 
     private final MissionCategoryReader missionCategoryReader;
     private final MissionReader missionReader;
+    private final RegionReader regionReader;
     private final MissionRepository missionRepository;
     private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionQueryRepository missionQueryRepository;
@@ -32,12 +34,13 @@ public class MissionService {
             LocalDateTime dateTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+        var region = regionReader.findOne(request.regionId());
         var mission = request.toEntity(missionCategory);
         mission.validRangeOfMissionTime(dateTime);
 
         var savedMission = missionRepository.save(mission);
 
-        return MissionResponse.from(savedMission);
+        return MissionResponse.from(savedMission, region);
     }
 
     @Transactional
@@ -58,14 +61,15 @@ public class MissionService {
             MissionUpdateServiceRequest request,
             LocalDateTime modifiedDateTime
     ) {
-        var mission = missionReader.findOne(missionId);
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+        var region = regionReader.findOne(request.regionId());
+        var mission = missionReader.findOne(missionId);
 
         var requestMission = request.toEntity(missionCategory);
         requestMission.validRangeOfMissionTime(modifiedDateTime);
 
         mission.update(requestMission);
-        return MissionResponse.from(mission);
+        return MissionResponse.from(mission, region);
     }
 
     @Transactional
@@ -74,15 +78,16 @@ public class MissionService {
             MissionUpdateServiceRequest request,
             LocalDateTime dateTime
     ) {
-        var mission = missionReader.findOne(missionId);
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
+        var region = regionReader.findOne(request.regionId());
+        var mission = missionReader.findOne(missionId);
 
         var requestExtendMission = request.toEntity(missionCategory);
         requestExtendMission.validRangeOfMissionTime(dateTime);
 
         mission.extend(requestExtendMission);
 
-        return MissionResponse.from(mission);
+        return MissionResponse.from(mission, region);
     }
 
     private void deleteUserBookMarkByMissionId(

@@ -1,8 +1,10 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
+import com.sixheroes.onedayherodomain.region.Region;
 import lombok.Builder;
 import org.springframework.data.geo.Point;
 
@@ -14,21 +16,23 @@ public record MissionResponse(
         Long id,
         MissionCategoryResponse missionCategory,
         Long citizenId,
-        Long regionId,
+        RegionResponse region,
         Point location,
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
         String missionStatus
 ) {
 
-    public static MissionResponse from(Mission mission) {
+    public static MissionResponse from(Mission mission, Region region) {
         return MissionResponse.builder()
                 .id(mission.getId())
                 .missionCategory(
                         MissionCategoryResponse.from(mission.getMissionCategory())
                 )
                 .citizenId(mission.getCitizenId())
-                .regionId(mission.getRegionId())
+                .region(
+                        RegionResponse.from(region)
+                )
                 .location(mission.getLocation())
                 .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
                 .bookmarkCount(mission.getBookmarkCount())

@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record MissionCategoryResponse(
-        Long categoryId,
+        Long id,
         String code,
         String name
 ) {
@@ -14,7 +14,7 @@ public record MissionCategoryResponse(
             MissionCategory missionCategory
     ) {
         return MissionCategoryResponse.builder()
-                .categoryId(missionCategory.getId())
+                .id(missionCategory.getId())
                 .code(missionCategory.getMissionCategoryCode().name())
                 .name(missionCategory.getName())
                 .build();
