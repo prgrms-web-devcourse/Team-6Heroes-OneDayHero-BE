@@ -617,6 +617,42 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_100.name());
     }
 
+    @DisplayName("시민은 하나의 미션을 조회 할 수 있다.")
+    @Test
+    void findOneMission() {
+        // given
+        var citizenId = 1L;
+        var missionStatus = MissionStatus.MATCHING;
+        var region = regionRepository.findById(1L).get();
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var mission = createMission(missionCategory, citizenId, missionStatus);
+
+        var savedMission = missionRepository.save(mission);
+
+        // when
+        var result = missionService.findOne(savedMission.getId());
+
+        // then
+        assertThat(result)
+                .extracting(
+                        "missionCategory",
+                        "citizenId",
+                        "region",
+                        "location",
+                        "missionInfo",
+                        "bookmarkCount",
+                        "missionStatus"
+                )
+                .containsExactly(
+                        MissionCategoryResponse.from(missionCategory),
+                        citizenId,
+                        RegionResponse.from(region),
+                        mission.getLocation(),
+                        result.missionInfo(),
+                        0,
+                        MissionStatus.MATCHING.name()
+                );
+    }
 
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
