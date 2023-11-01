@@ -2,12 +2,10 @@ package com.sixheroes.onedayheroapi.missionmatch;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchCreateRequest;
-import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchGiveUpRequest;
-import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchWithdrawRequest;
+import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchCancelRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
 import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchGiveUpResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchWithdrawResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,20 +31,11 @@ public class MissionMatchController {
                 .body(ApiResponse.created(response));
     }
 
-    @PutMapping("/withdraw")
-    public ResponseEntity<ApiResponse<MissionMatchWithdrawResponse>> withdrawMissionMatch(
-            @Valid @RequestBody MissionMatchWithdrawRequest request
+    @PutMapping("/cancel")
+    public ResponseEntity<ApiResponse<MissionMatchCancelResponse>> cancelMissionMatch(
+            @Valid @RequestBody MissionMatchCancelRequest request
     ) {
-        var response = missionMatchService.withdrawMissionMatch(request.toService());
-        return ResponseEntity.ok()
-                .body(ApiResponse.ok(response));
-    }
-
-    @PutMapping("/give-up")
-    public ResponseEntity<ApiResponse<MissionMatchGiveUpResponse>> giveUpMissionMatch(
-            @Valid @RequestBody MissionMatchGiveUpRequest request
-    ) {
-        var response = missionMatchService.giveUpMissionMatch(request.toService());
+        var response = missionMatchService.cancelMissionMatch(request.toService());
         return ResponseEntity.ok()
                 .body(ApiResponse.ok(response));
     }

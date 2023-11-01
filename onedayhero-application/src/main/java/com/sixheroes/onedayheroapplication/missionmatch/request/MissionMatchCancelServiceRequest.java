@@ -3,8 +3,8 @@ package com.sixheroes.onedayheroapplication.missionmatch.request;
 import lombok.Builder;
 
 @Builder
-public record MissionMatchGiveUpServiceRequest(
-        Long heroId,
+public record MissionMatchCancelServiceRequest(
+        Long citizenId,
         Long missionId
 ) {
 }

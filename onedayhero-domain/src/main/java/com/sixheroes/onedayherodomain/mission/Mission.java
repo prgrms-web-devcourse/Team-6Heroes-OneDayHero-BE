@@ -71,11 +71,6 @@ public class Mission extends BaseEntity {
         this.missionStatus = MissionStatus.MATCHING_COMPLETED;
     }
 
-    public void missionMatchingCanceled() {
-        validateCurrentMissionStatusIsMatchingCompleted();
-        this.missionStatus = MissionStatus.MATCHING;
-    }
-
     public void missionMatchingCanceled(Long citizenId) {
         validateMissionOwnerIsValid(citizenId);
         validateCurrentMissionStatusIsMatchingCompleted();

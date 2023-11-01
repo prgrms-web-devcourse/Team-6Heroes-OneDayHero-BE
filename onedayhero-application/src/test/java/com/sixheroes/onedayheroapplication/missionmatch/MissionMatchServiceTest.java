@@ -1,8 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionmatch;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchGiveUpServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchWithdrawServiceRequest;
+import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
@@ -110,9 +109,9 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_007.name());
     }
 
-    @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 철회할 수 있다.")
+    @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 취소할 수 있다.")
     @Test
-    void withdrawMissionMatch() {
+    void cancelMissionMatch() {
         // given
         var citizenId = 1L;
         var heroId = 2L;
@@ -126,11 +125,11 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         );
 
         // when
-        var request = createMissionMatchWithdrawServiceRequest(
+        var request = createMissionMatchCancelServiceRequest(
                 citizenId,
                 mission.getId()
         );
-        var response = missionMatchService.withdrawMissionMatch(request);
+        var response = missionMatchService.cancelMissionMatch(request);
 
         // then
         assertSoftly(soft -> {
@@ -138,39 +137,6 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                     .isEqualTo(mission.getId());
             soft.assertThat(response.citizenId())
                     .isEqualTo(citizenId);
-            soft.assertThat(response.missionId())
-                    .isEqualTo(mission.getId());
-        });
-    }
-
-    @DisplayName("히어로는 본인이 매칭된 미션에 대한 미션매칭을 철회할 수 있다.")
-    @Test
-    void giveUpMissionMatch() {
-        // given
-        var citizenId = 1L;
-        var heroId = 2L;
-        var mission = createMission(citizenId);
-        missionMatchService.createMissionMatch(
-                createMissionMatchCreateServiceRequest(
-                        citizenId,
-                        mission,
-                        heroId
-                )
-        );
-
-        // when
-        var request = createMissionMatchGiveUpServiceRequest(
-                heroId,
-                mission.getId()
-        );
-        var response = missionMatchService.giveUpMissionMatch(request);
-
-        // then
-        assertSoftly(soft -> {
-            soft.assertThat(response.missionId())
-                    .isEqualTo(mission.getId());
-            soft.assertThat(response.heroId())
-                    .isEqualTo(heroId);
             soft.assertThat(response.missionId())
                     .isEqualTo(mission.getId());
         });
@@ -188,22 +154,12 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .build();
     }
 
-    private MissionMatchWithdrawServiceRequest createMissionMatchWithdrawServiceRequest(
+    private MissionMatchCancelServiceRequest createMissionMatchCancelServiceRequest(
             Long citizenId,
             Long missionId
     ) {
-        return MissionMatchWithdrawServiceRequest.builder()
+        return MissionMatchCancelServiceRequest.builder()
                 .citizenId(citizenId)
-                .missionId(missionId)
-                .build();
-    }
-
-    private MissionMatchGiveUpServiceRequest createMissionMatchGiveUpServiceRequest(
-            Long heroId,
-            Long missionId
-    ) {
-        return MissionMatchGiveUpServiceRequest.builder()
-                .heroId(heroId)
                 .missionId(missionId)
                 .build();
     }

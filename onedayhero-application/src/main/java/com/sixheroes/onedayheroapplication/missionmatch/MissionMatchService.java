@@ -1,11 +1,9 @@
 package com.sixheroes.onedayheroapplication.missionmatch;
 
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchGiveUpServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchWithdrawServiceRequest;
+import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchGiveUpResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchWithdrawResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatch;
@@ -56,7 +54,7 @@ public class MissionMatchService {
     }
 
     //시민이 미션 매칭 취소
-    public MissionMatchWithdrawResponse withdrawMissionMatch(MissionMatchWithdrawServiceRequest request) {
+    public MissionMatchCancelResponse cancelMissionMatch(MissionMatchCancelServiceRequest request) {
         var mission = missionRepository.findById(request.missionId())
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
@@ -65,34 +63,13 @@ public class MissionMatchService {
         mission.missionMatchingCanceled(request.citizenId());
 
         var missionMatch = missionMatchReader.findByMissionId(mission.getId());
-        missionMatch.missionMatchWithdrawn();
+        missionMatch.canceled();
 
         //TODO: 히어로에게 미션매칭 취소 알람
 
-        return MissionMatchWithdrawResponse.builder()
+        return MissionMatchCancelResponse.builder()
                 .id(missionMatch.getId())
                 .citizenId(request.citizenId())
-                .missionId(request.missionId())
-                .build();
-    }
-
-    //히어로가 미션 매칭 취소
-    public MissionMatchGiveUpResponse giveUpMissionMatch(MissionMatchGiveUpServiceRequest request) {
-        var mission = missionRepository.findById(request.missionId())
-                .orElseThrow(() -> {
-                    log.debug("존재하지 않는 미션입니다. missionId : {}", request.missionId());
-                    return new NoSuchElementException(ErrorCode.EMC_000.name());
-                });
-        mission.missionMatchingCanceled();
-
-        var missionMatch = missionMatchReader.findByMissionId(mission.getId());
-        missionMatch.missionMatchGivenUp(request.heroId());
-
-        //TODO: 시민에게 미션매칭 취소 알람
-
-        return MissionMatchGiveUpResponse.builder()
-                .id(missionMatch.getId())
-                .heroId(request.heroId())
                 .missionId(request.missionId())
                 .build();
     }

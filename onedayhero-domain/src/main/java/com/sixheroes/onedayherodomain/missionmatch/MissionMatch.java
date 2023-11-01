@@ -51,27 +51,15 @@ public class MissionMatch {
                 .build();
     }
 
-    public void missionMatchWithdrawn() {
+    public void canceled() {
         validateCurrentMissionMatchStatusIsMatchingMatched();
         this.missionMatchStatus = MissionMatchStatus.WITHDRAW;
-    }
-
-    public void missionMatchGivenUp(Long heroId) {
-        validateMissionMatchOwnerIsValid(heroId);
-        validateCurrentMissionMatchStatusIsMatchingMatched();
-        this.missionMatchStatus = MissionMatchStatus.GIVE_UP;
     }
 
     private void validateCurrentMissionMatchStatusIsMatchingMatched() {
         if (this.missionMatchStatus != MissionMatchStatus.MATCHED) {
             log.debug("매칭된 상태의 미션만 취소할 수 있습니다. 미션 상태 : {}", this.missionMatchStatus);
             throw new IllegalStateException(ErrorCode.EMM_001.name());
-        }
-    }
-
-    private void validateMissionMatchOwnerIsValid(Long heroId) {
-        if (!this.heroId.equals(heroId)) {
-            throw new IllegalStateException(ErrorCode.EMM_002.name());
         }
     }
 }

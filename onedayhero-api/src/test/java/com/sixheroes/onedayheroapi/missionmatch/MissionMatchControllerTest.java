@@ -3,11 +3,9 @@ package com.sixheroes.onedayheroapi.missionmatch;
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchGiveUpServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchWithdrawServiceRequest;
+import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchGiveUpResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchWithdrawResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -85,17 +83,18 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 철회할 수 있다.")
+    @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 취소할 수 있다.")
     @Test
     void withdrawMissionMatch() throws Exception {
+        // given
         var request = createMissionMatchWithdrawServiceRequest();
         var response = createMissionMatchWithdrawResponse();
 
-        given(missionMatchService.withdrawMissionMatch(any(MissionMatchWithdrawServiceRequest.class)))
+        given(missionMatchService.cancelMissionMatch(any(MissionMatchCancelServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(put("/api/v1/mission-matches/withdraw")
+        mockMvc.perform(put("/api/v1/mission-matches/cancel")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 ).andDo(print())
@@ -105,7 +104,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.citizenId").value(response.citizenId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("mission-match-withdraw",
+                .andDo(document("mission-match-cancel",
                         requestFields(
                                 fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
@@ -120,51 +119,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                                         .description("미션매칭 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
-                                        .description("매칭완료를 철회한 시민 아이디"),
-                                fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
-                                        .description("매칭완료가 취소된 미션 아이디"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
-                                        .description("서버 응답 시간").attributes(getDateTimeFormat())
-                        )
-                ));
-    }
-
-    @DisplayName("히어로는 본인이 매칭된 미션에 대한 미션매칭을 철회할 수 있다.")
-    @Test
-    void giveUpMissionMatch() throws Exception {
-        var request = createMissionMatchGiveUpServiceRequest();
-        var response = createMissionMatchGiveUpResponse();
-
-        given(missionMatchService.giveUpMissionMatch(any(MissionMatchGiveUpServiceRequest.class)))
-                .willReturn(response);
-
-        // when & then
-        mockMvc.perform(put("/api/v1/mission-matches/give-up")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                ).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.id").value(response.id()))
-                .andExpect(jsonPath("$.data.heroId").value(response.heroId()))
-                .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
-                .andExpect(jsonPath("$.serverDateTime").exists())
-                .andDo(document("mission-match-giveUp",
-                        requestFields(
-                                fieldWithPath("heroId").type(JsonFieldType.NUMBER)
-                                        .description("히어로 아이디"),
-                                fieldWithPath("missionId").type(JsonFieldType.NUMBER)
-                                        .description("미션 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                        .description("HTTP 응답 코드"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("미션매칭 아이디"),
-                                fieldWithPath("data.heroId").type(JsonFieldType.NUMBER)
-                                        .description("매칭완료를 포기한 히어로 아이디"),
+                                        .description("매칭완료를 취소한 시민 아이디"),
                                 fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                                         .description("매칭완료가 취소된 미션 아이디"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
@@ -181,20 +136,12 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .build();
     }
 
-    private MissionMatchWithdrawServiceRequest createMissionMatchWithdrawServiceRequest() {
-        return MissionMatchWithdrawServiceRequest.builder()
+    private MissionMatchCancelServiceRequest createMissionMatchWithdrawServiceRequest() {
+        return MissionMatchCancelServiceRequest.builder()
                 .citizenId(1L)
                 .missionId(2L)
                 .build();
     }
-
-    private MissionMatchGiveUpServiceRequest createMissionMatchGiveUpServiceRequest() {
-        return MissionMatchGiveUpServiceRequest.builder()
-                .heroId(3L)
-                .missionId(2L)
-                .build();
-    }
-
 
     private MissionMatchCreateResponse createMissionMatchResponse() {
         return MissionMatchCreateResponse.builder()
@@ -204,19 +151,11 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .build();
     }
 
-    private MissionMatchWithdrawResponse createMissionMatchWithdrawResponse() {
-        return MissionMatchWithdrawResponse.builder()
+    private MissionMatchCancelResponse createMissionMatchWithdrawResponse() {
+        return MissionMatchCancelResponse.builder()
                 .id(1L)
                 .missionId(2L)
                 .citizenId(1L)
-                .build();
-    }
-
-    private MissionMatchGiveUpResponse createMissionMatchGiveUpResponse() {
-        return MissionMatchGiveUpResponse.builder()
-                .id(1L)
-                .missionId(2L)
-                .heroId(3L)
                 .build();
     }
 }
