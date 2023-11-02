@@ -176,5 +176,6 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
-application.yml
+onedayhero-api/src/main/resources/application.yml
+#application.yml
 # End of https://www.toptal.com/developers/gitignore/api/intellij,gradle,macos
