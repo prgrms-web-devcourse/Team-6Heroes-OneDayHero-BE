@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.geo.Point;
@@ -678,7 +680,7 @@ public class MissionControllerTest extends RestDocsSupport {
         Slice<MissionResponse> sliceMissionResponses = new SliceImpl<>(missionResponseList, pageRequest, false);
         MissionResponses missionResponses = new MissionResponses(sliceMissionResponses);
 
-        given(missionService.findAllByDynamicCond(any(), any()))
+        given(missionService.findAllByDynamicCond(any(Pageable.class), any(MissionFindFilterServiceRequest.class)))
                 .willReturn(missionResponses);
 
         // when & then
