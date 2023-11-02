@@ -3,13 +3,17 @@ package com.sixheroes.onedayherocommon.jwt;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtTokenUtils {
 
     private static final String USER_ID = "id";
