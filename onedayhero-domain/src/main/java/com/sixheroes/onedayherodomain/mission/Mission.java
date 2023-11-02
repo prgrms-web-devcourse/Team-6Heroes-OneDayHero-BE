@@ -176,12 +176,6 @@ public class Mission extends BaseEntity {
         }
     }
 
-    public void validRangeOfMissionTime(
-            LocalDateTime dateTime
-    ) {
-        missionInfo.validMissionDateTimeInRange(dateTime);
-    }
-
     private void validOwn(
             Long citizenId
     ) {
