@@ -4,6 +4,7 @@ import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Builder
@@ -16,7 +17,7 @@ public record MissionInfoServiceRequest(
         Integer price
 ) {
 
-    public MissionInfo toVo() {
+    public MissionInfo toVo(LocalDateTime serverTime) {
         return MissionInfo.builder()
                 .content(content)
                 .missionDate(missionDate)
@@ -24,6 +25,7 @@ public record MissionInfoServiceRequest(
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(price)
+                .serverTime(serverTime)
                 .build();
     }
 }

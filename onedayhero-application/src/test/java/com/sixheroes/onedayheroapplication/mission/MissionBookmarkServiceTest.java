@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -142,6 +143,10 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .deadlineTime(LocalTime.of(10, 0))
                 .price(10000)
                 .content("서빙 도와주기")
+                .serverTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 9),
+                        LocalTime.MIDNIGHT
+                ))
                 .build();
     }
 }

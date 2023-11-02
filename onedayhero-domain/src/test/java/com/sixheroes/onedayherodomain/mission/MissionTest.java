@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.data.geo.Point;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.*;
@@ -66,10 +67,12 @@ class MissionTest {
                 .name(MissionCategoryCode.MC_002.name())
                 .build();
 
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 19), LocalTime.MIDNIGHT);
+
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 10, 0);
+        var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
                 .content("수정하는 내용")
@@ -78,6 +81,7 @@ class MissionTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(15000)
+                .serverTime(serverTime)
                 .build();
 
         var newMission = createMission(citizenId, missionCategory, missionInfo);
@@ -119,10 +123,12 @@ class MissionTest {
                 .name(MissionCategoryCode.MC_002.name())
                 .build();
 
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 19), LocalTime.MIDNIGHT);
+
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 10, 0);
+        var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
                 .content("수정하는 내용")
@@ -131,6 +137,7 @@ class MissionTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(15000)
+                .serverTime(serverTime)
                 .build();
 
         var unknownCitizenId = 2L;
@@ -156,10 +163,12 @@ class MissionTest {
                 .name(MissionCategoryCode.MC_002.name())
                 .build();
 
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 19), LocalTime.MIDNIGHT);
+
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 10, 0);
+        var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
                 .content("수정하는 내용")
@@ -168,6 +177,7 @@ class MissionTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(15000)
+                .serverTime(serverTime)
                 .build();
 
         var newMission = createMission(mission.getCitizenId(), missionCategory, missionInfo);
@@ -203,11 +213,15 @@ class MissionTest {
                 .missionInfo(
                         MissionInfo.builder()
                                 .content("content")
-                                .missionDate(LocalDate.now())
-                                .startTime(LocalTime.now())
-                                .endTime(LocalTime.now())
-                                .deadlineTime(LocalTime.now())
+                                .missionDate(LocalDate.of(2023, 11, 1))
+                                .startTime(LocalTime.of(12, 30))
+                                .endTime(LocalTime.of(14, 30))
+                                .deadlineTime(LocalTime.of(12, 0))
                                 .price(1000)
+                                .serverTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 10, 31),
+                                        LocalTime.MIDNIGHT
+                                ))
                                 .build())
                 .regionId(1L)
                 .citizenId(1L)
@@ -245,11 +259,15 @@ class MissionTest {
                 .missionInfo(
                         MissionInfo.builder()
                                 .content("content")
-                                .missionDate(LocalDate.now())
-                                .startTime(LocalTime.now())
-                                .endTime(LocalTime.now())
-                                .deadlineTime(LocalTime.now())
+                                .missionDate(LocalDate.of(2023, 11, 1))
+                                .startTime(LocalTime.of(12, 30))
+                                .endTime(LocalTime.of(14, 30))
+                                .deadlineTime(LocalTime.of(12, 0))
                                 .price(1000)
+                                .serverTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 10, 31),
+                                        LocalTime.MIDNIGHT
+                                ))
                                 .build())
                 .regionId(1L)
                 .citizenId(citizenId)

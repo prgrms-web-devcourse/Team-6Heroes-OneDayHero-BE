@@ -13,8 +13,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -176,12 +174,6 @@ public class Mission extends BaseEntity {
             log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
             throw new IllegalStateException(ErrorCode.EMC_002.name());
         }
-    }
-
-    public void validRangeOfMissionTime(
-            LocalDateTime dateTime
-    ) {
-        missionInfo.validMissionDateTimeInRange(dateTime);
     }
 
     private void validOwn(

@@ -2,6 +2,7 @@ package com.sixheroes.onedayherodomain.region;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,15 @@ public class Region {
 
     @Column(name = "dong", length = 10, nullable = false)
     private String dong;
+
+    @Builder
+    private Region(
+            String si,
+            String gu,
+            String dong
+    ) {
+        this.si = si;
+        this.gu = gu;
+        this.dong = dong;
+    }
 }

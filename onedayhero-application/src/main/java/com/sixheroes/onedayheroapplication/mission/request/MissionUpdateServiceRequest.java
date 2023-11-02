@@ -5,6 +5,8 @@ import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import lombok.Builder;
 import org.springframework.data.geo.Point;
 
+import java.time.LocalDateTime;
+
 @Builder
 public record MissionUpdateServiceRequest(
         Long missionCategoryId,
@@ -15,13 +17,13 @@ public record MissionUpdateServiceRequest(
         MissionInfoServiceRequest missionInfo
 ) {
 
-    public Mission toEntity(MissionCategory missionCategory) {
+    public Mission toEntity(MissionCategory missionCategory, LocalDateTime serverTime) {
         return Mission.builder()
                 .missionCategory(missionCategory)
                 .citizenId(citizenId)
                 .regionId(regionId)
                 .location(new Point(longitude, latitude))
-                .missionInfo(missionInfo.toVo())
+                .missionInfo(missionInfo.toVo(serverTime))
                 .build();
     }
 }
