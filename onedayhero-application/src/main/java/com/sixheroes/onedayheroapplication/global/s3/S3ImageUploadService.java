@@ -3,8 +3,8 @@ package com.sixheroes.onedayheroapplication.global.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadRequest;
-import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadResponse;
+import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +26,13 @@ public class S3ImageUploadService {
 
     private final AmazonS3 amazonS3;
 
-    public List<S3ImageUploadResponse> uploadImages(
-            List<S3ImageUploadRequest> s3ImageUploadRequests,
+    public List<S3ImageUploadServiceResponse> uploadImages(
+            List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests,
             String dir
     ) {
-        return s3ImageUploadRequests.stream()
-                .map(s3ImageUploadRequest -> {
-                    var originalName = s3ImageUploadRequest.originalFilename();
+        return s3ImageUploadServiceRequests.stream()
+                .map(s3ImageUploadServiceRequest -> {
+                    var originalName = s3ImageUploadServiceRequest.originalName();
                     var uniqueName = createUniqueName(
                             dir,
                             originalName
@@ -40,10 +40,10 @@ public class S3ImageUploadService {
 
                     uploadImage(
                             uniqueName,
-                            s3ImageUploadRequest
+                            s3ImageUploadServiceRequest
                     );
 
-                    return new S3ImageUploadResponse(
+                    return new S3ImageUploadServiceResponse(
                             originalName,
                             uniqueName,
                             getPath(uniqueName)
@@ -53,16 +53,16 @@ public class S3ImageUploadService {
 
     private void uploadImage(
             String uniqueName,
-            S3ImageUploadRequest s3ImageUploadRequest
+            S3ImageUploadServiceRequest s3ImageUploadServiceRequest
     ) {
         var metadata = new ObjectMetadata();
-        metadata.setContentType(s3ImageUploadRequest.contentType());
-        metadata.setContentLength(s3ImageUploadRequest.contentSize());
+        metadata.setContentType(s3ImageUploadServiceRequest.contentType());
+        metadata.setContentLength(s3ImageUploadServiceRequest.contentSize());
 
         amazonS3.putObject(
                 bucket,
                 uniqueName,
-                s3ImageUploadRequest.inputStream(),
+                s3ImageUploadServiceRequest.inputStream(),
                 metadata
         );
     }

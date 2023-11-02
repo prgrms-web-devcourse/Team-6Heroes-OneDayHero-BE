@@ -2,14 +2,13 @@ package com.sixheroes.onedayheroapplication.global.s3;
 
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteRequest;
-import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageDeleteResponse;
+import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteServiceRequest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageDeleteServiceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -24,11 +23,11 @@ public class S3ImageDeleteService {
 
     private final AmazonS3 amazonS3;
 
-    public List<S3ImageDeleteResponse> deleteImages(List<S3ImageDeleteRequest> s3ImageDeleteRequests) {
-        return s3ImageDeleteRequests.stream()
-                .map(s3ImageDeleteRequest -> {
-                    deleteImage(s3ImageDeleteRequest.uniqueName());
-                    return new S3ImageDeleteResponse(s3ImageDeleteRequest.imageId());
+    public List<S3ImageDeleteServiceResponse> deleteImages(List<S3ImageDeleteServiceRequest> s3ImageDeleteServiceRequests) {
+        return s3ImageDeleteServiceRequests.stream()
+                .map(s3ImageDeleteServiceRequest -> {
+                    deleteImage(s3ImageDeleteServiceRequest.uniqueName());
+                    return new S3ImageDeleteServiceResponse(s3ImageDeleteServiceRequest.imageId());
                 }).toList();
     }
 
