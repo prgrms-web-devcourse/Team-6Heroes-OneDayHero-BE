@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -72,7 +73,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void createMission() {
         // given
-        var today = LocalDateTime.of(2023, 10, 10, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
@@ -88,7 +89,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
 
         // when
-        var result = missionService.createMission(missionCreateServiceRequest, today);
+        var result = missionService.createMission(missionCreateServiceRequest, serverTime);
 
         // then
         assertThat(result)
@@ -117,7 +118,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void createMissionWithMissionDateBeforeToday() {
         // given
-        var today = LocalDateTime.of(2023, 10, 21, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 21, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
@@ -128,7 +129,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
 
         // when & then
-        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, today))
+        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_003.name());
     }
@@ -138,7 +139,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void createMissionWithEndTimeBeforeStartTime() {
         // given
-        var today = LocalDateTime.of(2023, 10, 20, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 20, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
@@ -149,7 +150,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
 
         // when & then
-        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, today))
+        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_004.name());
     }
@@ -159,7 +160,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void createMissionWithDeadLineTimeAfterStartTime() {
         // given
-        var today = LocalDateTime.of(2023, 10, 20, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 20, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
@@ -170,7 +171,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
 
         // when & then
-        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, today))
+        assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_005.name());
     }
@@ -182,17 +183,35 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void deleteMission(MissionStatus missionStatus) {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
         var missionCategory = missionCategoryRepository.findById(1L).get();
-        var mission = createMission(missionCategory, citizenId, missionStatus);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                missionStatus
+        );
 
         var savedMission = missionRepository.save(mission);
 
-        /*
-        TODO
-        userBookMarkMissionRepository.saveAll(List.of(
-            createUserBookMarkMission(citizenId, savedMissionId);
-        ))
-        */
+        missionBookmarkRepository.saveAll(
+                List.of(
+                        createMissionBookmark(citizenId, savedMission),
+                        createMissionBookmark(2L, savedMission)
+                )
+        );
+
 
         // when
         missionService.deleteMission(savedMission.getId(), citizenId);
@@ -209,9 +228,26 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void deleteMissionWithMatchingCompleteStatus() {
         // given
-        var missionCategory = missionCategoryRepository.findById(1L).get();
         var citizenId = 1L;
-        var mission = createMission(missionCategory, citizenId, MissionStatus.MATCHING_COMPLETED);
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING_COMPLETED
+        );
 
         var savedMission = missionRepository.save(mission);
 
@@ -225,9 +261,26 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void deleteMissionWithInValidUser() {
         // given
-        var missionCategory = missionCategoryRepository.findById(1L).get();
         var citizenId = 1L;
-        var mission = createMission(missionCategory, citizenId, MissionStatus.MATCHING);
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING
+        );
 
         var savedMission = missionRepository.save(mission);
 
@@ -243,16 +296,16 @@ class MissionServiceTest extends IntegrationApplicationTest {
     @Test
     void updateMission() {
         // given
-        var today = LocalDateTime.of(2023, 10, 20, 0, 0);
-
-        var missionDate = LocalDate.of(2023, 10, 20);
-        var startTime = LocalTime.of(10, 0, 0);
-        var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
-
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var region = regionRepository.findById(1L).get();
 
         var mission = createMission(
@@ -261,8 +314,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 missionDate,
                 startTime,
                 endTime,
-                deadlineTime
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING
         );
+
         var savedMission = missionRepository.save(mission);
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(
@@ -285,7 +341,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .build();
 
         // when
-        var result = missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today);
+        var result = missionService.updateMission(mission.getId(), missionUpdateServiceRequest, serverTime);
 
         // then
         assertThat(result)
@@ -314,11 +370,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void updateMissionWithInvalidUser() {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 MissionStatus.MATCHING
         );
 
@@ -359,11 +427,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void updateMissionWithStatusIsMatching(MissionStatus missionStatus) {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 missionStatus
         );
 
@@ -402,11 +482,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void updateMissionWithMissionDateBeforeToday() {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 MissionStatus.MATCHING
         );
 
@@ -446,11 +538,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void updateMissionWithDeadlineTimeAfterStartTime() {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 MissionStatus.MATCHING
         );
 
@@ -490,11 +594,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void updateMissionWithEndTimeBeforeStartTime() {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 MissionStatus.MATCHING
         );
 
@@ -535,11 +651,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void extendMissionWithStatusIsExpired(MissionStatus missionStatus) {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 missionStatus
         );
 
@@ -578,11 +706,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void extendMissionWithInvalidUser() {
         // given
         var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
         var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
         var mission = createMission(
                 missionCategory,
                 citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
                 MissionStatus.MATCHING
         );
 
@@ -622,10 +762,25 @@ class MissionServiceTest extends IntegrationApplicationTest {
     void findOneMission() {
         // given
         var citizenId = 1L;
-        var missionStatus = MissionStatus.MATCHING;
         var region = regionRepository.findById(1L).get();
         var missionCategory = missionCategoryRepository.findById(1L).get();
-        var mission = createMission(missionCategory, citizenId, missionStatus);
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING
+        );
 
         var savedMission = missionRepository.save(mission);
 
@@ -690,7 +845,9 @@ class MissionServiceTest extends IntegrationApplicationTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalTime deadlineTime,
+            LocalDateTime serverTime,
+            MissionStatus missionStatus
     ) {
         return Mission.builder()
                 .missionCategory(missionCategory)
@@ -702,36 +859,23 @@ class MissionServiceTest extends IntegrationApplicationTest {
                                 .endTime(endTime)
                                 .deadlineTime(deadlineTime)
                                 .price(1000)
-                                .build())
-                .regionId(1L)
-                .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
-                .bookmarkCount(0)
-                .missionStatus(MissionStatus.MATCHING)
-                .build();
-    }
-
-    private Mission createMission(
-            MissionCategory missionCategory,
-            Long citizenId,
-            MissionStatus missionStatus
-    ) {
-        return Mission.builder()
-                .missionCategory(missionCategory)
-                .missionInfo(
-                        MissionInfo.builder()
-                                .content("content")
-                                .missionDate(LocalDate.now())
-                                .startTime(LocalTime.now())
-                                .endTime(LocalTime.now())
-                                .deadlineTime(LocalTime.now())
-                                .price(1000)
+                                .serverTime(serverTime)
                                 .build())
                 .regionId(1L)
                 .citizenId(citizenId)
                 .location(new Point(123456.78, 123456.78))
                 .bookmarkCount(0)
                 .missionStatus(missionStatus)
+                .build();
+    }
+
+    private MissionBookmark createMissionBookmark(
+            Long citizenId,
+            Mission mission
+    ) {
+        return MissionBookmark.builder()
+                .userId(citizenId)
+                .mission(mission)
                 .build();
     }
 }

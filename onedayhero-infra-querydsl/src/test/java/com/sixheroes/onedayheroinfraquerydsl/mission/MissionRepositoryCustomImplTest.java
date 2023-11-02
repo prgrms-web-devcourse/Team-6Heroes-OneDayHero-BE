@@ -15,6 +15,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -61,6 +62,8 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
         // given
         var missionCategory = missionCategoryRepository.findById(1L).get();
 
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
@@ -68,8 +71,8 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
 
         var endTimeB = LocalTime.of(11, 0);
 
-        var missionInfoA = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
-        var missionInfoB = createMissionInfo(missionDate, startTime, endTimeB, deadlineTime);
+        var missionInfoA = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var missionInfoB = createMissionInfo(missionDate, startTime, endTimeB, deadlineTime, serverTime);
 
 
         var missionA = createMission(1L, missionCategory, missionInfoA);
@@ -92,12 +95,14 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
         // given
         var missionCategory = missionCategoryRepository.findById(1L).get();
 
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
         var deadlineTime = LocalTime.of(10, 0);
 
-        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
 
         var mission = createMission(1L, missionCategory, missionInfo);
 
@@ -114,7 +119,8 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalTime deadlineTime,
+            LocalDateTime serverTime
     ) {
         return MissionInfo.builder()
                 .content("내용")
@@ -123,6 +129,7 @@ class MissionRepositoryCustomImplTest extends IntegrationQueryDslTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(10000)
+                .serverTime(serverTime)
                 .build();
     }
 

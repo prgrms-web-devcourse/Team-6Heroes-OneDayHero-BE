@@ -13,8 +13,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -137,12 +135,6 @@ public class Mission extends BaseEntity {
 
     public void subBookmarkCount() {
         this.bookmarkCount -= 1;
-    }
-
-    public void validRangeOfMissionTime(
-            LocalDateTime dateTime
-    ) {
-        missionInfo.validMissionDateTimeInRange(dateTime);
     }
 
     private void validateBookmarkCountAddable(MissionStatus missionStatus) {

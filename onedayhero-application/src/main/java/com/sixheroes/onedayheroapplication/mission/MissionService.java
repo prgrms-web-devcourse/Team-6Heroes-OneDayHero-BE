@@ -31,12 +31,11 @@ public class MissionService {
     @Transactional
     public MissionResponse createMission(
             MissionCreateServiceRequest request,
-            LocalDateTime dateTime
+            LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var region = regionReader.findOne(request.regionId());
-        var mission = request.toEntity(missionCategory);
-        mission.validRangeOfMissionTime(dateTime);
+        var mission = request.toEntity(missionCategory, serverTime);
 
         var savedMission = missionRepository.save(mission);
 
@@ -59,14 +58,13 @@ public class MissionService {
     public MissionResponse updateMission(
             Long missionId,
             MissionUpdateServiceRequest request,
-            LocalDateTime modifiedDateTime
+            LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var region = regionReader.findOne(request.regionId());
         var mission = missionReader.findOne(missionId);
 
-        var requestMission = request.toEntity(missionCategory);
-        requestMission.validRangeOfMissionTime(modifiedDateTime);
+        var requestMission = request.toEntity(missionCategory, serverTime);
 
         mission.update(requestMission);
         return MissionResponse.from(mission, region);
@@ -76,14 +74,13 @@ public class MissionService {
     public MissionResponse extendMission(
             Long missionId,
             MissionUpdateServiceRequest request,
-            LocalDateTime dateTime
+            LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var region = regionReader.findOne(request.regionId());
         var mission = missionReader.findOne(missionId);
 
-        var requestExtendMission = request.toEntity(missionCategory);
-        requestExtendMission.validRangeOfMissionTime(dateTime);
+        var requestExtendMission = request.toEntity(missionCategory, serverTime);
 
         mission.extend(requestExtendMission);
 

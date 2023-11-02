@@ -21,6 +21,8 @@ class MissionInfoTest {
     @Test
     void createMissionInfo() {
         // given
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
         var content = "내용";
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
@@ -35,6 +37,7 @@ class MissionInfoTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(1000)
+                .serverTime(serverTime)
                 .build();
 
         // when & then
@@ -71,17 +74,16 @@ class MissionInfoTest {
     @Test
     void MissionInfoWithMissionDateBeforeToday() {
         // given
-        var today = LocalDateTime.of(2023, 10, 21, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 21, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
         var deadlineTime = LocalTime.of(10, 0, 0);
 
-        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
 
         // when & then
-        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_003.name());
     }
@@ -90,17 +92,15 @@ class MissionInfoTest {
     @Test
     void MissionInfoWithEndTimeBeforeStartTime() {
         // given
-        var today = LocalDateTime.of(2023, 10, 20, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 20, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(9, 30, 0);
         var deadlineTime = LocalTime.of(10, 0, 0);
 
-        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
-
         // when & then
-        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_004.name());
     }
@@ -109,17 +109,15 @@ class MissionInfoTest {
     @Test
     void MissionInfoWithDeadLineTimeAfterStartTime() {
         // given
-        var today = LocalDateTime.of(2023, 10, 20, 0, 0);
+        var serverTime = LocalDateTime.of(2023, 10, 20, 0, 0);
 
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
         var deadlineTime = LocalTime.of(10, 10, 0);
 
-        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime);
-
         // when & then
-        assertThatThrownBy(() -> missionInfo.validMissionDateTimeInRange(today))
+        assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_005.name());
     }
@@ -129,7 +127,8 @@ class MissionInfoTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalTime deadlineTime,
+            LocalDateTime serverTime
     ) {
         return MissionInfo.builder()
                 .content("content")
@@ -138,6 +137,7 @@ class MissionInfoTest {
                 .endTime(endTime)
                 .deadlineTime(deadlineTime)
                 .price(1000)
+                .serverTime(serverTime)
                 .build();
     }
 

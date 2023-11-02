@@ -45,11 +45,13 @@ public class MissionInfo {
             LocalTime startTime,
             LocalTime endTime,
             LocalTime deadlineTime,
-            Integer price
+            Integer price,
+            LocalDateTime serverTime
     ) {
         validMissionContent(content);
         validPriceIsPositive(price);
-
+        validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, serverTime);
+        
         this.content = content;
         this.missionDate = missionDate;
         this.startTime = startTime;
@@ -58,15 +60,19 @@ public class MissionInfo {
         this.price = price;
     }
 
-    public void validMissionDateTimeInRange(
-            LocalDateTime now
+    private void validMissionDateTimeInRange(
+            LocalDate missionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalTime deadlineTime,
+            LocalDateTime serverTime
     ) {
         var startDateTime = LocalDateTime.of(missionDate, startTime);
         var endDateTime = LocalDateTime.of(missionDate, endTime);
         var deadLineDateTime = LocalDateTime.of(missionDate, deadlineTime);
 
-        if (missionDate.isBefore(now.toLocalDate())) {
-            log.warn("미션의 수행 날짜가 현재 날짜보다 이전 일 수 없습니다. 수행 일 : {}, 현재 날짜 : {}", missionDate, now.toLocalDate());
+        if (missionDate.isBefore(serverTime.toLocalDate())) {
+            log.warn("미션의 수행 날짜가 현재 날짜보다 이전 일 수 없습니다. 수행 일 : {}, 현재 날짜 : {}", missionDate, serverTime.toLocalDate());
             throw new IllegalArgumentException(ErrorCode.EM_003.name());
         }
 
