@@ -6,12 +6,15 @@ import com.sixheroes.onedayheroapplication.missionrequest.request.MissionRequest
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestApproveResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestCreateResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestRejectResponse;
+import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestResponse;
 import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionrequest.repository.MissionRequestRepository;
+import com.sixheroes.onedayheroinfraquerydsl.missionrequest.MissionRequestQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +22,14 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class MissionRequestService {
 
     private final MissionRepository missionRepository;
     private final MissionRequestRepository missionRequestRepository;
+    private final MissionRequestQueryRepository missionRequestQueryRepository;
+
     private final MissionRequestReader missionRequestReader;
     private final UserReader userReader;
 
@@ -81,6 +87,14 @@ public class MissionRequestService {
         missionRequest.changeMissionRequestStatusReject(missionRequestRejectServiceRequest.userId());
 
         return MissionRequestRejectResponse.from(missionRequest);
+    }
+
+    public MissionRequestResponse findMissionRequest(
+            Long heroId,
+            Pageable pageable
+    ) {
+        var slice = missionRequestQueryRepository.findByHeroIdAndPageable(heroId, pageable);
+        return MissionRequestResponse.from(slice);
     }
 
     private void validMission(
