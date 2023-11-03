@@ -13,6 +13,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.geo.Point;
 
+import java.util.Objects;
+
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -213,7 +215,7 @@ public class Mission extends BaseEntity {
     private void validMissionOwner(
         Long userId
     ) {
-        if (!citizenId.equals(userId)) {
+        if (!Objects.equals(this.citizenId, userId)) {
             log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
             throw new IllegalArgumentException(ErrorCode.EM_007.name());
         }
@@ -221,7 +223,7 @@ public class Mission extends BaseEntity {
 
     // TODO validateBookmarkCountAddable과 행위가 같음
     private void validMissionStatusMatching() {
-        if (!missionStatus.isMatching()) {
+        if (!this.missionStatus.isMatching()) {
             log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
             throw new IllegalStateException(ErrorCode.EM_008.name());
         }
