@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.missionrequest.dto;
 
-import com.sixheroes.onedayheroinfraquerydsl.missionrequest.dto.MissionRequestQueryDto;
+import com.sixheroes.onedayheroquerydsl.missionrequest.dto.MissionRequestQueryDto;
 
 public record MissionRequestDto(
     Long missionRequestId,
