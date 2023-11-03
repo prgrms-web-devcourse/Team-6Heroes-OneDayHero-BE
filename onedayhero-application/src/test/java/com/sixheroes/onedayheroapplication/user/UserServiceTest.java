@@ -109,7 +109,7 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userId(2L)
+            .userId(user.getId() + 1)
             .userBasicInfo(userBasicInfoServiceDto)
             .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
             .build();

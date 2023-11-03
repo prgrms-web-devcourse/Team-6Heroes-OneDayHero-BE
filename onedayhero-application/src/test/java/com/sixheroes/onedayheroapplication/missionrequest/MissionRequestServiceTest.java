@@ -29,6 +29,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -264,24 +265,22 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
         Long citizenId,
         MissionCategory missionCategory
     ) {
-        return Mission.builder()
-            .regionId(1L)
-            .citizenId(citizenId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .missionInfo(createMissionInfo())
-            .build();
+        return Mission.createMission(missionCategory,
+                citizenId,
+                1L,
+                new Point(123.123, 123.123),
+                createMissionInfo());
     }
 
     private MissionInfo createMissionInfo() {
         return MissionInfo.builder()
             .content("미션 내용입니다.")
-            .missionDate(LocalDate.of(2023, 10, 10))
+            .missionDate(LocalDate.of(2023, 10, 30))
             .startTime(LocalTime.of(10, 0, 0))
             .endTime(LocalTime.of(10, 30, 0))
             .deadlineTime(LocalTime.of(10, 0, 0))
             .price(1000)
+            .serverTime(LocalDateTime.of(2023, 10, 28, 10, 0, 0))
             .build();
     }
 
