@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 @Component
 public class MissionRequestReader {
 
-    private MissionRequestRepository missionRequestRepository;
+    private final MissionRequestRepository missionRequestRepository;
 
     public MissionRequest findOne(
             Long missionRequestId
