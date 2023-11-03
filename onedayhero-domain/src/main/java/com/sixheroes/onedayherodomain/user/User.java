@@ -96,14 +96,14 @@ public class User extends BaseEntity {
     }
 
     private void validHeroModeOn() {
-        if (!isHeroMode) {
+        if (Boolean.FALSE.equals(this.isHeroMode)) {
             log.debug("해당 유저는 히어로 모드가 비활성화 상태입니다.");
             throw new IllegalStateException(ErrorCode.EU_009.name());
         }
     }
 
     private void validActive() {
-        if (!isActive) {
+        if (Boolean.FALSE.equals(this.isActive)) {
             log.debug("탈퇴한 유저로 계정이 비활성화 상태입니다.");
             throw new IllegalStateException(ErrorCode.EU_010.name());
         }
