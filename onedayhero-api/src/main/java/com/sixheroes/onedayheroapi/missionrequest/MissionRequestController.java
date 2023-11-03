@@ -8,8 +8,10 @@ import com.sixheroes.onedayheroapplication.missionrequest.MissionRequestService;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestApproveResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestCreateResponse;
 import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestRejectResponse;
+import com.sixheroes.onedayheroapplication.missionrequest.response.MissionRequestResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +57,15 @@ public class MissionRequestController {
         );
 
         return ResponseEntity.ok(ApiResponse.ok(missionRequestRejectResponse));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<MissionRequestResponse>> findMissionRequest(
+        @RequestParam Long heroId,
+        Pageable pageable
+    ) {
+        var missionRequest = missionRequestService.findMissionRequest(heroId, pageable);
+
+        return ResponseEntity.ok(ApiResponse.ok(missionRequest));
     }
 }
