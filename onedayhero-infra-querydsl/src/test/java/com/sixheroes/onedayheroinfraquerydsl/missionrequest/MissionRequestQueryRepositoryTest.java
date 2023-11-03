@@ -8,7 +8,8 @@ import com.sixheroes.onedayherodomain.missionrequest.repository.MissionRequestRe
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
-import com.sixheroes.onedayheroinfraquerydsl.missionrequest.dto.MissionRequestQueryDto;
+import com.sixheroes.onedayheroquerydsl.missionrequest.MissionRequestQueryRepository;
+import com.sixheroes.onedayheroquerydsl.missionrequest.dto.MissionRequestQueryDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

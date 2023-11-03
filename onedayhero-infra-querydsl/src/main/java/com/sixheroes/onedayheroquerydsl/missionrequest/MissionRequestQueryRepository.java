@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroinfraquerydsl.missionrequest;
+package com.sixheroes.onedayheroquerydsl.missionrequest;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -8,7 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayherodomain.missionrequest.MissionRequestStatus;
-import com.sixheroes.onedayheroinfraquerydsl.missionrequest.dto.MissionRequestQueryDto;
+import com.sixheroes.onedayheroquerydsl.missionrequest.dto.MissionRequestQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

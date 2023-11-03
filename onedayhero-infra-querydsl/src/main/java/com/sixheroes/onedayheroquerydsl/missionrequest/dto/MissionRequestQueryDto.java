@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroinfraquerydsl.missionrequest.dto;
+package com.sixheroes.onedayheroquerydsl.missionrequest.dto;
 
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;

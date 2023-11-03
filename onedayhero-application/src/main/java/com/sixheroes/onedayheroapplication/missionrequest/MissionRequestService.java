@@ -11,7 +11,7 @@ import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionrequest.repository.MissionRequestRepository;
-import com.sixheroes.onedayheroinfraquerydsl.missionrequest.MissionRequestQueryRepository;
+import com.sixheroes.onedayheroquerydsl.missionrequest.MissionRequestQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

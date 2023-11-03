@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionrequest.response;
 
 import com.sixheroes.onedayheroapplication.missionrequest.dto.MissionRequestDto;
-import com.sixheroes.onedayheroinfraquerydsl.missionrequest.dto.MissionRequestQueryDto;
+import com.sixheroes.onedayheroquerydsl.missionrequest.dto.MissionRequestQueryDto;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
