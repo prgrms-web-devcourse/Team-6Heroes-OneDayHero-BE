@@ -26,43 +26,17 @@ class UserTest {
         assertThat(user.getIsHeroMode()).isTrue();
     }
 
-    @DisplayName("히어로 모드는 계정이 비활성 상태이면 활성 상태로 변경할 때 예외가 발생한다.")
+    @DisplayName("히어로 모드를 활성 상태일 때 활성 상태로 바꿀 수 없다.")
     @Test
-    void doNotchangeHeroModeWhenNotActive() {
+    void invalidChangeHeroModeOn() {
         // given
         var user = createUser();
-        user.delete();
+        user.changeHeroModeOn();
 
         // when & then
         assertThatThrownBy(user::changeHeroModeOn)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_010.name());
-    }
-
-    @DisplayName("탈퇴하면 계정이 비활성화 상태가 된다.")
-    @Test
-    void delete() {
-        // given
-        var user = createUser();
-
-        // when
-        user.delete();
-
-        // then
-        assertThat(user.getIsActive()).isFalse();
-    }
-
-    @DisplayName("이미 탈퇴한 회원이면 계정을 비활성화 상태로 바꿀 때 예외가 발생한다.")
-    @Test
-    void doNotDeleteWhenNotActive() {
-        // given
-        var user = createUser();
-        user.delete();
-
-        // when & then
-        assertThatThrownBy(user::delete)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_010.name());
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EU_010.name());
     }
 
     @DisplayName("히어로 모드가 아닐 때 미션 요청을 받을 수 없다.")
@@ -75,20 +49,6 @@ class UserTest {
         assertThatThrownBy(user::validPossibleMissionRequested)
             .isInstanceOf(IllegalStateException.class)
             .hasMessage(ErrorCode.EU_009.name());
-    }
-
-    @DisplayName("계정이 비활성화 상태일 때 미션 요청을 받을 수 없다.")
-    @Test
-    void impossibleMissionRequestWhenNotActive() {
-        // given
-        var user = createUser();
-        user.changeHeroModeOn();
-        user.delete();
-
-        // when & then
-        assertThatThrownBy(user::validPossibleMissionRequested)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_010.name());
     }
 
     private User createUser() {

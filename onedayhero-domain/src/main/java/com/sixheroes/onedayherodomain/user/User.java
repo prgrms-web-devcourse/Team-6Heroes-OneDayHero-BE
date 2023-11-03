@@ -16,10 +16,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE users SET is_active = false WHERE id = ?")
+@Where(clause = "is_active = false")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {
@@ -81,18 +85,12 @@ public class User extends BaseEntity {
     }
 
     public void changeHeroModeOn() {
-        validActive();
+        validHeroModeOff();
         this.isHeroMode = true;
-    }
-
-    public void delete() {
-        validActive();
-        this.isActive = false;
     }
 
     public void validPossibleMissionRequested() {
         validHeroModeOn();
-        validActive();
     }
 
     private void validHeroModeOn() {
@@ -102,9 +100,9 @@ public class User extends BaseEntity {
         }
     }
 
-    private void validActive() {
-        if (Boolean.FALSE.equals(this.isActive)) {
-            log.debug("탈퇴한 유저로 계정이 비활성화 상태입니다.");
+    private void validHeroModeOff() {
+        if (Boolean.TRUE.equals(this.isHeroMode)) {
+            log.debug("해당 유저는 히어로 모드가 활성화 상태입니다.");
             throw new IllegalStateException(ErrorCode.EU_010.name());
         }
     }
