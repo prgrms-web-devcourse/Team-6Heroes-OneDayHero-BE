@@ -127,7 +127,7 @@ class MissionRequestServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> missionRequestService.createMissionRequest(missionRequestCreateServiceRequest))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_001.name());
+            .hasMessage(ErrorCode.EUC_000.name());
     }
 
     @DisplayName("미션 제안을 승낙한다.")

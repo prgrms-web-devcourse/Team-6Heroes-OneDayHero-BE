@@ -117,7 +117,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> userService.updateUser(userServiceUpdateRequest))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_001.name());
+            .hasMessage(ErrorCode.EUC_000.name());
     }
 
     private User createUser() {
