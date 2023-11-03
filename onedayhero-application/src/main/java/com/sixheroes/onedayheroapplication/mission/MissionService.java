@@ -99,7 +99,7 @@ public class MissionService {
         return MissionResponse.from(missionQueryResponse);
     }
 
-    public MissionResponses findAllByDynamicCond(
+    public MissionResponses findAllByDynamicCondition(
             Pageable pageable,
             MissionFindFilterServiceRequest request
     ) {

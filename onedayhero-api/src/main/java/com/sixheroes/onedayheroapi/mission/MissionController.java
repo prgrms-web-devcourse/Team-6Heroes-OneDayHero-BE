@@ -3,9 +3,9 @@ package com.sixheroes.onedayheroapi.mission;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
-import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import jakarta.validation.Valid;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -39,10 +38,10 @@ public class MissionController {
     @GetMapping
     public ResponseEntity<ApiResponse<MissionResponses>> findMissions(
             @PageableDefault(size = 5) Pageable pageable,
-            @RequestParam MultiValueMap<String, String> paramMap
+            MissionFindFilterRequest request
     ) {
-        var request = MissionFindFilterServiceRequest.from(paramMap);
-        var result = missionService.findAllByDynamicCond(pageable, request);
+        var serviceRequest = request.toService();
+        var result = missionService.findAllByDynamicCondition(pageable, serviceRequest);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
