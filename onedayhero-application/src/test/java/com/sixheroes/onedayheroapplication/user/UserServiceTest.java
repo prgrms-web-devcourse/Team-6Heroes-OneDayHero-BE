@@ -17,6 +17,7 @@ import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,6 +26,7 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Transactional
 class UserServiceTest extends IntegrationApplicationTest {
 
     @Autowired
