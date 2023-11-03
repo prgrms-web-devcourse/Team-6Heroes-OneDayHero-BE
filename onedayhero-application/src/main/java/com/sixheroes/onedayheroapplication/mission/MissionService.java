@@ -6,7 +6,6 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceR
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import com.sixheroes.onedayheroapplication.region.RegionReader;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
@@ -103,7 +102,12 @@ public class MissionService {
             Pageable pageable,
             MissionFindFilterServiceRequest request
     ) {
-        throw new UnsupportedOperationException(ErrorCode.T_001.name());
+        var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
+        var missionResponses = sliceMissionQueryResponses.stream()
+                .map(MissionResponse::from)
+                .toList();
+
+        return MissionResponses.from(pageable, missionResponses, sliceMissionQueryResponses.hasNext());
     }
 
     private void deleteUserBookMarkByMissionId(
