@@ -5,6 +5,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,7 @@ public class MissionQueryRepository {
 
     public Slice<MissionQueryResponse> findByDynamicCondition(
             Pageable pageable,
-            List<Long> categoryIds,
-            List<Long> regionIds,
-            List<LocalDate> missionDates
+            MissionFindFilterQueryRequest request
     ) {
         var content = queryFactory.select(
                         Projections.constructor(MissionQueryResponse.class,
@@ -59,9 +58,10 @@ public class MissionQueryRepository {
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(region.id.eq(mission.regionId))
-                .where(missionCategoryIdsEq(categoryIds),
-                        regionIdsEq(regionIds),
-                        missionDatesEq(missionDates))
+                .where(userIdEq(request.userId()),
+                        missionCategoryIdsEq(request.missionCategoryIds()),
+                        regionIdsEq(request.regionIds()),
+                        missionDatesEq(request.missionDates()))
                 .fetch();
 
         log.debug("query Size : {}", content.size());
@@ -71,9 +71,10 @@ public class MissionQueryRepository {
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(region.id.eq(mission.regionId))
-                .where(missionCategoryIdsEq(categoryIds),
-                        regionIdsEq(regionIds),
-                        missionDatesEq(missionDates)
+                .where(userIdEq(request.userId()),
+                        missionCategoryIdsEq(request.missionCategoryIds()),
+                        regionIdsEq(request.regionIds()),
+                        missionDatesEq(request.missionDates())
                 );
 
         log.debug("total Count : {}", totalCount.fetchOne());
@@ -121,6 +122,10 @@ public class MissionQueryRepository {
                 .fetchOne();
 
         return Optional.ofNullable(queryResult);
+    }
+
+    private BooleanBuilder userIdEq(Long userId) {
+        return new BooleanBuilder(mission.citizenId.eq(userId));
     }
 
     private BooleanBuilder missionCategoryIdsEq(List<Long> missionCategories) {
