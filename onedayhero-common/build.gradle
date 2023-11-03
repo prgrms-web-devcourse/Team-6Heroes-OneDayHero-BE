@@ -1,4 +1,12 @@
+ext {
+    jjwtVersion = '0.11.5'
+}
+
 dependencies {
+    //JWT
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
 }
 
 tasks.named('test') {
