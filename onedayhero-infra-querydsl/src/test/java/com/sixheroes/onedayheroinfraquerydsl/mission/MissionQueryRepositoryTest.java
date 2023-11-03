@@ -6,6 +6,7 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
+import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -148,10 +149,17 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         var missionCategoryIds = List.of(1L, 2L);
         var regionIds = List.of(1L, 2L);
-        var localDates = List.of(LocalDate.of(2023, 10, 31), LocalDate.of(2023, 11, 4));
+        var missionDates = List.of(LocalDate.of(2023, 10, 31), LocalDate.of(2023, 11, 4));
+
+        var request = MissionFindFilterQueryRequest.builder()
+                .userId(citizenId)
+                .missionCategoryIds(missionCategoryIds)
+                .regionIds(regionIds)
+                .missionDates(missionDates)
+                .build();
 
         // when
-        var result = missionQueryRepository.findByDynamicCondition(pageRequest, missionCategoryIds, regionIds, localDates);
+        var result = missionQueryRepository.findByDynamicCondition(pageRequest, request);
 
         // then
         assertThat(result).hasSize(2);
@@ -182,8 +190,15 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         var missionCategoryIds = List.of(1L);
 
+        var request = MissionFindFilterQueryRequest.builder()
+                .userId(citizenId)
+                .missionCategoryIds(missionCategoryIds)
+                .regionIds(Collections.emptyList())
+                .missionDates(Collections.emptyList())
+                .build();
+
         // when
-        var result = missionQueryRepository.findByDynamicCondition(pageRequest, missionCategoryIds, Collections.emptyList(), Collections.emptyList());
+        var result = missionQueryRepository.findByDynamicCondition(pageRequest, request);
 
         // then
         assertThat(result).hasSize(1);
@@ -212,8 +227,15 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         missionRepository.saveAll(List.of(missionA, missionB));
 
+        var request = MissionFindFilterQueryRequest.builder()
+                .userId(citizenId)
+                .missionCategoryIds(Collections.emptyList())
+                .regionIds(Collections.emptyList())
+                .missionDates(Collections.emptyList())
+                .build();
+
         // when
-        var result = missionQueryRepository.findByDynamicCondition(pageRequest, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        var result = missionQueryRepository.findByDynamicCondition(pageRequest, request);
 
         // then
         assertThat(result).hasSize(2);
