@@ -2,6 +2,7 @@ package com.sixheroes.onedayherodomain.missionrequest;
 
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mission_requests")
 @Entity
-public class MissionRequest {
+public class MissionRequest extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

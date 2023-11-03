@@ -1,4 +1,4 @@
-package com.sixheroes;
+package com.sixheroes.onedayheroinfraquerydsl;
 
 import org.springframework.stereotype.Component;
 
