@@ -1,10 +1,7 @@
 package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionInfoRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
+import com.sixheroes.onedayheroapi.mission.request.*;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
@@ -25,14 +22,11 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -659,14 +653,14 @@ public class MissionControllerTest extends RestDocsSupport {
 
     @DisplayName("유저는 필터에 따라 미션들을 조회 할 수 있다.")
     @Test
-    void findAllByDynamicCond() throws Exception {
+    void findAllByDynamicCondition() throws Exception {
         // given
         var pageRequest = PageRequest.of(0, 4);
-        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>(
-                Map.of("categoryCodes", List.of("MC_001", "MC_002"),
-                        "missionDates", List.of("2023-10-31", "2023-11-02"),
-                        "regionIds", List.of("1", "3"))
-        );
+        var request = MissionFindFilterRequest.builder()
+                .missionCategoryCodes(List.of("MC_001", "MC_002"))
+                .missionDates(List.of(LocalDate.of(2023, 10, 31), LocalDate.of(2023, 11, 2)))
+                .regionIds(List.of(1L, 3L))
+                .build();
 
         var regionResponse = createRegionResponse();
         var missionCategoryResponse = createMissionCategoryResponse();
@@ -680,7 +674,7 @@ public class MissionControllerTest extends RestDocsSupport {
         Slice<MissionResponse> sliceMissionResponses = new SliceImpl<>(missionResponseList, pageRequest, false);
         MissionResponses missionResponses = new MissionResponses(sliceMissionResponses);
 
-        given(missionService.findAllByDynamicCond(any(Pageable.class), any(MissionFindFilterServiceRequest.class)))
+        given(missionService.findAllByDynamicCondition(any(Pageable.class), any(MissionFindFilterServiceRequest.class)))
                 .willReturn(missionResponses);
 
         // when & then
@@ -688,7 +682,10 @@ public class MissionControllerTest extends RestDocsSupport {
                         .param("page", "0")
                         .param("size", "4")
                         .param("sort", "")
-                        .params(paramMap)
+                        .param("missionCategoryCodes", "MC_001", "MC_002")
+                        .param("missionDates", "2023-10-31", "2023-11-02")
+                        .param("regionIds", "1", "3")
+                        .flashAttr("request", request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -700,7 +697,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("데이터 크기"),
                                 parameterWithName("sort").optional()
                                         .description("정렬 기준 필드"),
-                                parameterWithName("categoryCodes").optional()
+                                parameterWithName("missionCategoryCodes").optional()
                                         .description("미션 카테고리 필터 코드"),
                                 parameterWithName("missionDates").optional()
                                         .description("미션 수행 일 필터"),
