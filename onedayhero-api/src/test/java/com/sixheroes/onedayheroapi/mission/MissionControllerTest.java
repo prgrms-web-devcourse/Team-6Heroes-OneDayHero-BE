@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
@@ -671,8 +670,8 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionResponseB = createMissionResponse(2L, regionResponse, missionCategoryResponse, missionInfoResponseB);
         var missionResponseList = List.of(missionResponseA, missionResponseB);
 
-        Slice<MissionResponse> sliceMissionResponses = new SliceImpl<>(missionResponseList, pageRequest, false);
-        MissionResponses missionResponses = new MissionResponses(sliceMissionResponses);
+        var sliceMissionResponses = new SliceImpl<>(missionResponseList, pageRequest, false);
+        var missionResponses = new MissionResponses(sliceMissionResponses);
 
         given(missionService.findAllByDynamicCondition(any(Pageable.class), any(MissionFindFilterServiceRequest.class)))
                 .willReturn(missionResponses);
