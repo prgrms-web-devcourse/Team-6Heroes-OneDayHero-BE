@@ -18,6 +18,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -97,47 +98,17 @@ class MissionRequestQueryRepositoryTest extends IntegrationQueryDslTest {
         Long regionId,
         MissionCategory missionCategory
     ) {
-        var mission1 = Mission.builder()
-            .citizenId(1L)
-            .regionId(regionId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .build();
+        var mission1 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
 
-        var mission2 = Mission.builder()
-            .citizenId(1L)
-            .regionId(regionId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .build();
+        var mission2 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
 
-        var mission3 = Mission.builder()
-            .citizenId(1L)
-            .regionId(regionId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .build();
+        var mission3 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
         mission3.changeMissionStatus(MissionStatus.MATCHING_COMPLETED);
 
-        var mission4 = Mission.builder()
-            .citizenId(1L)
-            .regionId(regionId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .build();
+        var mission4 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
         mission4.changeMissionStatus(MissionStatus.MISSION_COMPLETED);
 
-        var mission5 = Mission.builder()
-            .citizenId(1L)
-            .regionId(regionId)
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .location(new Point(123.123, 123.123))
-            .build();
+        var mission5 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
         mission5.changeMissionStatus(MissionStatus.EXPIRED);
 
         return List.of(mission1, mission2, mission3, mission4, mission5);
@@ -149,8 +120,9 @@ class MissionRequestQueryRepositoryTest extends IntegrationQueryDslTest {
             .startTime(LocalTime.of(12, 0, 0))
             .endTime(LocalTime.of(16, 0, 0))
             .price(20000)
-            .deadlineTime(LocalTime.of(16, 0, 0))
+            .deadlineTime(LocalTime.of(11, 0, 0))
             .content("미션 내용")
+            .serverTime(LocalDateTime.of(2023, 10, 28, 12, 0, 0))
             .build();
     }
 
