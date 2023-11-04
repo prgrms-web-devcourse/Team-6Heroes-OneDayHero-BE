@@ -87,7 +87,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .param("page", "0")
                 .param("size", "3")
                 .param("sort", "")
-                .param("userId", "1")
+                .param("userId", "-1")
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.missionBookmarkMeLineDtos.content[0].missionId").value(missionBookmarkMeDtoA.missionId()))
@@ -142,7 +142,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                                 parameterWithName("sort").optional()
                                         .description("정렬 기준 필드"),
                                 parameterWithName("userId").optional()
-                                        .description("유저 아이디")
+                                        .description("Oauth2 사용 시 액세스 토큰으로 대체하므로 전송할 필요 없음")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
