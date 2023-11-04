@@ -5,12 +5,17 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancel
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
+import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeLineDto;
+import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
+import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 
 @Slf4j
@@ -21,7 +26,30 @@ public class MissionBookmarkService {
 
     private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionBookmarkReader missionBookmarkReader;
+    private final MissionBookmarkQueryRepository missionBookmarkQueryRepository;
     private final MissionReader missionReader;
+
+    @Transactional(readOnly = true)
+    public MissionBookmarkMeViewResponse me(
+            Pageable pageable,
+            Long userId
+    ) {
+        var queryResponses = missionBookmarkQueryRepository.me(
+                pageable,
+                userId
+        );
+
+        var missionBookmarkMeLineDtos = queryResponses.getContent()
+                .stream()
+                .map(MissionBookmarkMeLineDto::from)
+                .toList();
+
+        return new MissionBookmarkMeViewResponse(
+                pageable,
+                missionBookmarkMeLineDtos,
+                queryResponses.hasNext()
+        );
+    }
 
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
         //TODO : UserReader 를 통한 히어로 유저 존재 검증

@@ -6,10 +6,13 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreate
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.region.Region;
+import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.geo.Point;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -35,9 +40,58 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
     private MissionRepository missionRepository;
 
     @BeforeAll
-    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
-        MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
-        missionCategoryRepository.save(missionCategory);
+    public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
+        var missionCategories = Arrays.stream(MissionCategoryCode.values())
+                .map(MissionCategory::from)
+                .toList();
+
+        missionCategoryRepository.saveAll(missionCategories);
+
+        var region = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build();
+
+        regionRepository.save(region);
+    }
+
+    @DisplayName("유저는 미션 찜목록을 조회할 수 있다.")
+    @Test
+    void viewMeBookmarkMissions() {
+        // given
+        var bookmarkUserId = 1L;
+        var citizenId = 2L;
+
+        IntStream.range(0, 10)
+                .forEach(i -> {
+                    var mission = createMissionWithMissionStatus(
+                            citizenId,
+                            MissionStatus.MATCHING
+                    );
+
+                    if (i <= 5) {
+                        missionBookmarkService.createMissionBookmark(
+                                createMissionBookmarkCreateServiceRequest(
+                                        mission.getId(),
+                                        bookmarkUserId
+                                )
+                        );
+                    }
+                });
+
+        // when
+        var pageRequest = PageRequest.of(1, 3);
+        var response = missionBookmarkService.me(pageRequest, bookmarkUserId);
+
+        // then
+        assertSoftly(soft -> {
+            soft.assertThat(response.missionBookmarkMeLineDtos().size()).isEqualTo(3);
+            soft.assertThat(response.hasNext()).isFalse();
+        });
     }
 
     @DisplayName("시민은 매칭중인 미션을 찜 할 수 있다.")
