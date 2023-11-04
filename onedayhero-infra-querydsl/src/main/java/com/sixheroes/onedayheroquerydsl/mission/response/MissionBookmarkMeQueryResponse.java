@@ -30,6 +30,8 @@ public record MissionBookmarkMeQueryResponse(
 
         String categoryName,
 
+        Long regionId,
+
         String si,
 
         String gu,

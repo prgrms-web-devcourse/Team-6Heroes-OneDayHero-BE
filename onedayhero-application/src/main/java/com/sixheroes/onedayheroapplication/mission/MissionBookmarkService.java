@@ -5,7 +5,6 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancel
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeLineDto;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;

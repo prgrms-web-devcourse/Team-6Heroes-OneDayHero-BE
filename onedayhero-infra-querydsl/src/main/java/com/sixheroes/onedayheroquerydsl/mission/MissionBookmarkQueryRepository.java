@@ -43,7 +43,8 @@ public class MissionBookmarkQueryRepository {
                                 mission.missionInfo.startTime,
                                 mission.missionInfo.endTime,
                                 mission.missionCategory.name, //TODO: categoryId 캐싱 고려
-                                region.si, //TODO: regionId 캐싱 고려
+                                region.id, //TODO: regionId 캐싱 고려
+                                region.si,
                                 region.gu,
                                 region.dong
                         )
@@ -53,6 +54,7 @@ public class MissionBookmarkQueryRepository {
                 .join(missionBookmark).on(mission.id.eq(missionBookmark.mission.id))
                 .join(region).on(mission.regionId.eq(region.id))
                 .where(missionBookmark.userId.eq(userId))
+                .orderBy(mission.missionInfo.missionDate.asc(), mission.missionInfo.startTime.asc())
                 .offset(pageable.getOffset()) //TODO: 인덱스 및 NO-OFFSET 적용 고려
                 .limit(pageable.getPageSize())
                 .fetch();

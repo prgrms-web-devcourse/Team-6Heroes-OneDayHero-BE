@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionBookmarkMeQueryResponse;
 import lombok.Builder;
@@ -16,29 +17,31 @@ public record MissionBookmarkMeLineDto(
 
         Boolean isAlive,
 
-        String title,
+        MissionBookmarkMeMissionInfoDto missionInfo,
 
-        Integer bookmarkCount,
-
-        Integer price,
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-        LocalDate missionDate,
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        LocalTime startTime,
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        LocalTime endTime,
-
-        String categoryName,
-
-        String si,
-
-        String gu,
-
-        String dong
+        RegionResponse region
 ) {
+
+    @Builder
+    public record MissionBookmarkMeMissionInfoDto(
+            String title,
+
+            String categoryName,
+
+            Integer bookmarkCount,
+
+            Integer price,
+
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+            LocalDate missionDate,
+
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+            LocalTime startTime,
+
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+            LocalTime endTime
+    ) {
+    }
 
     public static MissionBookmarkMeLineDto from(
             MissionBookmarkMeQueryResponse queryResponse
@@ -47,16 +50,21 @@ public record MissionBookmarkMeLineDto(
                 queryResponse.missionId(),
                 queryResponse.missionBookmarkId(),
                 isAlive(queryResponse.missionStatus()),
-                queryResponse.title(),
-                queryResponse.bookmarkCount(),
-                queryResponse.price(),
-                queryResponse.missionDate(),
-                queryResponse.startTime(),
-                queryResponse.endTime(),
-                queryResponse.categoryName(),
-                queryResponse.si(),
-                queryResponse.gu(),
-                queryResponse.dong()
+                MissionBookmarkMeMissionInfoDto.builder()
+                        .title(queryResponse.title())
+                        .categoryName(queryResponse.categoryName())
+                        .bookmarkCount(queryResponse.bookmarkCount())
+                        .price(queryResponse.price())
+                        .missionDate(queryResponse.missionDate())
+                        .startTime(queryResponse.startTime())
+                        .endTime(queryResponse.endTime())
+                        .build(),
+                RegionResponse.builder()
+                        .id(queryResponse.regionId())
+                        .si(queryResponse.si())
+                        .gu(queryResponse.gu())
+                        .dong(queryResponse.dong())
+                        .build()
         );
     }
 
