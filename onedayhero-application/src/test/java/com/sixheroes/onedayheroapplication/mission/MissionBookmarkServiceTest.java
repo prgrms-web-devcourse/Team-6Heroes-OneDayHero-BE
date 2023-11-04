@@ -89,8 +89,8 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
         // then
         assertSoftly(soft -> {
-            soft.assertThat(response.missionBookmarkMeLineDtos().size()).isEqualTo(3);
-            soft.assertThat(response.hasNext()).isFalse();
+            soft.assertThat(response.missionBookmarkMeLineDtos().getSize()).isEqualTo(3);
+            soft.assertThat(response.missionBookmarkMeLineDtos().hasNext()).isFalse();
         });
     }
 

@@ -39,16 +39,7 @@ public class MissionBookmarkService {
                 userId
         );
 
-        var missionBookmarkMeLineDtos = queryResponses.getContent()
-                .stream()
-                .map(MissionBookmarkMeLineDto::from)
-                .toList();
-
-        return new MissionBookmarkMeViewResponse(
-                pageable,
-                missionBookmarkMeLineDtos,
-                queryResponses.hasNext()
-        );
+        return MissionBookmarkMeViewResponse.from(queryResponses);
     }
 
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
