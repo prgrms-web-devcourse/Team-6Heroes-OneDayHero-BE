@@ -34,9 +34,12 @@ subprojects {
         mavenCentral()
     }
 
-    jacocoTestReport {
-        dependsOn test
+    test{
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
 
+    jacocoTestReport {
         reports {
             xml.required = true
         }
