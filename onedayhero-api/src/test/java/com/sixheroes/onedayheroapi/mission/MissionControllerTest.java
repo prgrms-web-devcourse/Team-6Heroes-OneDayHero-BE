@@ -91,6 +91,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("경도"),
                                 fieldWithPath("missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -143,6 +145,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("위도 (latitude)"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("data.missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("data.missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -183,6 +187,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
                 .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
+                .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
@@ -281,6 +286,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("경도"),
                                 fieldWithPath("missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("제목"),
                                 fieldWithPath("missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -333,6 +340,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("위도 (latitude)"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("data.missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("data.missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -373,6 +382,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
                 .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
+                .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
@@ -429,6 +439,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("경도"),
                                 fieldWithPath("missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -481,6 +493,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("위도 (latitude)"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("data.missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("data.missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -521,6 +535,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
                 .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
+                .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
@@ -599,6 +614,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("위도 (latitude)"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("data.missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 상세 내용"),
                                 fieldWithPath("data.missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -639,6 +656,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
                 .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
+                .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
@@ -742,6 +760,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("위도 (latitude)"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
+                                fieldWithPath("data.missionResponses.content[].missionInfo.title").type(JsonFieldType.STRING)
+                                        .description("미션 상세 제목"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo.content").type(JsonFieldType.STRING)
                                         .description("미션 내용"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo.missionDate").type(JsonFieldType.STRING)
@@ -808,40 +828,41 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].id").value(1))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.id").value(1))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.code").value("MC_001"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.name").value("서빙"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].citizenId").value(1))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].region.id").value(1))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].region.si").value("서울시"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].region.gu").value("강남구"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].region.dong").value("역삼동"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.x").value(123.45))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.y").value(123.56))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.content").value("내용"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.missionDate").value("2023-10-21"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.startTime").value("09:00"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.endTime").value("09:30"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value("08:30"))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.price").value(1000))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].bookmarkCount").value(0))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionStatus").value("MATCHING"))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.pageNumber").value(0))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.pageSize").value(4))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.sort.empty").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.offset").value(0))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.paged").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.pageable.unpaged").value(false))
-                .andExpect(jsonPath("$.data.missionResponses.size").value(4))
-                .andExpect(jsonPath("$.data.missionResponses.number").value(0))
-                .andExpect(jsonPath("$.data.missionResponses.sort.empty").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.sort.sorted").value(false))
-                .andExpect(jsonPath("$.data.missionResponses.sort.unsorted").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.numberOfElements").value(2))
-                .andExpect(jsonPath("$.data.missionResponses.first").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.last").value(true))
-                .andExpect(jsonPath("$.data.missionResponses.empty").value(false))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].id").value(missionResponseA.id()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.id").value(missionResponseA.missionCategory().id()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.code").value(missionResponseA.missionCategory().code()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.name").value(missionResponseA.missionCategory().name()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].citizenId").value(missionResponseA.citizenId()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].region.id").value(missionResponseA.region().id()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].region.si").value(missionResponseA.region().si()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].region.gu").value(missionResponseA.region().gu()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].region.dong").value(missionResponseA.region().dong()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].location.x").value(missionResponseA.location().getX()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].location.y").value(missionResponseA.location().getY()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.title").value(missionResponseA.missionInfo().title()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.content").value(missionResponseA.missionInfo().content()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionResponseA.missionInfo().missionDate())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().startTime())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().endTime())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().deadlineTime())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.price").value(missionResponseA.missionInfo().price()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].bookmarkCount").value(missionResponseA.bookmarkCount()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionStatus").value(missionResponseA.missionStatus()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.pageNumber").value(missionResponses.missionResponses().getPageable().getPageNumber()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.pageSize").value(missionResponses.missionResponses().getPageable().getPageSize()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.sort.empty").value(missionResponses.missionResponses().getPageable().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.offset").value(missionResponses.missionResponses().getPageable().getOffset()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.paged").value(missionResponses.missionResponses().getPageable().isPaged()))
+                .andExpect(jsonPath("$.data.missionResponses.pageable.unpaged").value(missionResponses.missionResponses().getPageable().isUnpaged()))
+                .andExpect(jsonPath("$.data.missionResponses.size").value(missionResponses.missionResponses().getSize()))
+                .andExpect(jsonPath("$.data.missionResponses.number").value(missionResponses.missionResponses().getNumber()))
+                .andExpect(jsonPath("$.data.missionResponses.sort.empty").value(missionResponses.missionResponses().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.missionResponses.sort.sorted").value(missionResponses.missionResponses().getSort().isSorted()))
+                .andExpect(jsonPath("$.data.missionResponses.sort.unsorted").value(missionResponses.missionResponses().getSort().isUnsorted()))
+                .andExpect(jsonPath("$.data.missionResponses.numberOfElements").value(missionResponses.missionResponses().getNumberOfElements()))
+                .andExpect(jsonPath("$.data.missionResponses.first").value(missionResponses.missionResponses().isFirst()))
+                .andExpect(jsonPath("$.data.missionResponses.last").value(missionResponses.missionResponses().isLast()))
+                .andExpect(jsonPath("$.data.missionResponses.empty").value(missionResponses.missionResponses().isEmpty()))
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
@@ -885,6 +906,7 @@ public class MissionControllerTest extends RestDocsSupport {
             LocalDate missionDate
     ) {
         return MissionResponse.MissionInfoResponse.builder()
+                .title("제목")
                 .content("내용")
                 .missionDate(missionDate)
                 .startTime(LocalTime.of(9, 0))
@@ -933,6 +955,7 @@ public class MissionControllerTest extends RestDocsSupport {
             MissionInfoRequest missionInfoRequest
     ) {
         return MissionResponse.MissionInfoResponse.builder()
+                .title(missionInfoRequest.title())
                 .content(missionInfoRequest.content())
                 .missionDate(missionInfoRequest.missionDate())
                 .startTime(missionInfoRequest.startTime())
@@ -976,6 +999,7 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionInfoRequest
                 .builder()
+                .title("제목")
                 .content("내용")
                 .missionDate(missionDate)
                 .startTime(startTime)

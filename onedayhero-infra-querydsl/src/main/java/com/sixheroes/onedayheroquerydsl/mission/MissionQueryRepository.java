@@ -4,8 +4,8 @@ package com.sixheroes.onedayheroquerydsl.mission;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
+import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,7 @@ public class MissionQueryRepository {
                                 region.gu,
                                 region.dong,
                                 mission.location,
+                                mission.missionInfo.title,
                                 mission.missionInfo.content,
                                 mission.missionInfo.missionDate,
                                 mission.missionInfo.startTime,
@@ -82,13 +83,29 @@ public class MissionQueryRepository {
         return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
     }
 
-    public List<Mission> findByCategoryId(
-            Long categoryId
+    public Slice<MissionProgressQueryResponse> findProgressMissionByUserId(
+            Long userId
     ) {
-        return queryFactory.select(mission)
+        queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
+                        mission.id,
+                        mission.missionCategory.id,
+                        mission.missionCategory.missionCategoryCode,
+                        mission.missionCategory.name,
+                        region.si,
+                        region.gu,
+                        region.dong,
+                        mission.missionInfo.missionDate,
+                        mission.bookmarkCount,
+                        mission.missionStatus
+                ))
                 .from(mission)
-                .where(mission.missionCategory.id.eq(categoryId))
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .where(mission.citizenId.eq(userId))
                 .fetch();
+
+        return null;
     }
 
     public Optional<MissionQueryResponse> fetchOne(
@@ -105,6 +122,7 @@ public class MissionQueryRepository {
                         region.gu,
                         region.dong,
                         mission.location,
+                        mission.missionInfo.title,
                         mission.missionInfo.content,
                         mission.missionInfo.missionDate,
                         mission.missionInfo.startTime,
@@ -140,7 +158,7 @@ public class MissionQueryRepository {
         if (regionIds.isEmpty()) {
             return null;
         }
-        
+
         return new BooleanBuilder(mission.regionId.in(regionIds));
     }
 

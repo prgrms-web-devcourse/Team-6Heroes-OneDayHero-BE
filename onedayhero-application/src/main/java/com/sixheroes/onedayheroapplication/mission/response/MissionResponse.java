@@ -61,6 +61,8 @@ public record MissionResponse(
 
     @Builder
     public record MissionInfoResponse(
+            String title,
+
             String content,
 
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

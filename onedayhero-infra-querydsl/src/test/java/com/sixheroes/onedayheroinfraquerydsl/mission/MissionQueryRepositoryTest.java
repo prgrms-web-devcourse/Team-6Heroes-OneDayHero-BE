@@ -65,39 +65,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     }
 
     @Transactional
-    @DisplayName("카테고리 ID로 미션을 조회 할 수 있다.")
-    @Test
-    void findByCategoryId() {
-        // given
-        var missionCategory = missionCategoryRepository.findById(1L).get();
-
-        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
-
-        var missionDate = LocalDate.of(2023, 10, 10);
-        var startTime = LocalTime.of(10, 0);
-        var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
-
-        var endTimeB = LocalTime.of(11, 0);
-
-        var missionInfoA = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
-        var missionInfoB = createMissionInfo(missionDate, startTime, endTimeB, deadlineTime, serverTime);
-
-
-        var missionA = createMission(1L, missionCategory, missionInfoA, 1L);
-        var missionB = createMission(2L, missionCategory, missionInfoB, 1L);
-
-        missionRepository.save(missionA);
-        missionRepository.save(missionB);
-
-        // when
-        var missions = missionQueryRepository.findByCategoryId(1L);
-
-        // then
-        assertThat(missions).hasSize(2);
-    }
-
-    @Transactional
     @DisplayName("미션을 한 번의 쿼리로 단 건 조회 할 수 있다.")
     @Test
     void findOneWithFetchJoin() {
@@ -246,6 +213,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
             LocalDateTime serverTime
     ) {
         return MissionInfo.builder()
+                .title("제목")
                 .content("내용")
                 .missionDate(missionDate)
                 .startTime(LocalTime.of(10, 0))
@@ -264,6 +232,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
             LocalDateTime serverTime
     ) {
         return MissionInfo.builder()
+                .title("제목")
                 .content("내용")
                 .missionDate(missionDate)
                 .startTime(startTime)
