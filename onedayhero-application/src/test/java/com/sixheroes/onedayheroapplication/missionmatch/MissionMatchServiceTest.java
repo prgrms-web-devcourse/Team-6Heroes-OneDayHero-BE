@@ -138,8 +138,6 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                     .isEqualTo(mission.getId());
             soft.assertThat(response.citizenId())
                     .isEqualTo(citizenId);
-            soft.assertThat(response.missionId())
-                    .isEqualTo(mission.getId());
         });
     }
 

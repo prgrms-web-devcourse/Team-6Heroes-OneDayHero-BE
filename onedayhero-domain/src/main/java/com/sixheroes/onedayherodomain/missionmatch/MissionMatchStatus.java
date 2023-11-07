@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MissionMatchStatus {
     MATCHED("매칭 됨"),
-    GIVE_UP("포기"),
-    WITHDRAW("철회"),
+    CANCELED("취소"),
     COMPLETE("완료");
 
     private final String description;
