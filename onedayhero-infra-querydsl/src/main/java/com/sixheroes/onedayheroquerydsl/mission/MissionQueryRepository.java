@@ -3,7 +3,9 @@ package com.sixheroes.onedayheroquerydsl.mission;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
@@ -84,10 +86,12 @@ public class MissionQueryRepository {
     }
 
     public Slice<MissionProgressQueryResponse> findProgressMissionByUserId(
+            Pageable pageable,
             Long userId
     ) {
-        queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
+        var content = queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
                         mission.id,
+                        mission.missionInfo.title,
                         mission.missionCategory.id,
                         mission.missionCategory.missionCategoryCode,
                         mission.missionCategory.name,
@@ -102,10 +106,21 @@ public class MissionQueryRepository {
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(mission.regionId.eq(region.id))
-                .where(mission.citizenId.eq(userId))
+                .where(userIdEq(userId), missionStatusIsProgress())
                 .fetch();
 
-        return null;
+        var count = queryFactory.select(mission.count())
+                .from(mission)
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .where(userIdEq(userId), missionStatusIsProgress());
+
+        return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
+    }
+
+    private BooleanExpression missionStatusIsProgress() {
+        return mission.missionStatus.notIn(MissionStatus.MISSION_COMPLETED, MissionStatus.EXPIRED);
     }
 
     public Optional<MissionQueryResponse> fetchOne(

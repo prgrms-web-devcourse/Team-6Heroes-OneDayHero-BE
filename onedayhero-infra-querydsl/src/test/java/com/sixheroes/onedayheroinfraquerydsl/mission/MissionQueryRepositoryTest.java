@@ -208,6 +208,67 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         assertThat(result).hasSize(2);
     }
 
+    @Transactional
+    @DisplayName("유저가 현재 진행중인 미션 목록을 조회 할 수 있다.")
+    @Test
+    void findProgressMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalTime.of(10, 0);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var mission = createMission(citizenId, missionCategory, missionInfo, 1L);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.EXPIRED);
+
+
+        var pageRequest = PageRequest.of(0, 3);
+
+        var savedMission = missionRepository.saveAll(
+                List.of(mission, completedMission, matchedMission, expiredMission)
+        );
+
+        // when
+        var missionQueryResponse = missionQueryRepository.findProgressMissionByUserId(pageRequest, citizenId);
+
+        // then
+        assertThat(missionQueryResponse).hasSize(2);
+        assertThat(missionQueryResponse.getContent().get(0))
+                .extracting(
+                        "title",
+                        "categoryId",
+                        "categoryCode",
+                        "categoryName",
+                        "si",
+                        "gu",
+                        "dong",
+                        "missionDate",
+                        "bookmarkCount",
+                        "missionStatus")
+                .containsExactly(
+                        mission.getMissionInfo().getTitle(),
+                        mission.getMissionCategory().getId(),
+                        mission.getMissionCategory().getMissionCategoryCode(),
+                        mission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        region.getSi(),
+                        region.getGu(),
+                        region.getDong(),
+                        mission.getMissionInfo().getMissionDate(),
+                        mission.getBookmarkCount(),
+                        mission.getMissionStatus()
+                );
+    }
+
     private MissionInfo createMissionInfo(
             LocalDate missionDate,
             LocalDateTime serverTime
@@ -256,6 +317,24 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .citizenId(citizenId)
                 .location(new Point(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
+                .bookmarkCount(0)
+                .build();
+    }
+
+    private Mission createMission(
+            Long citizenId,
+            MissionCategory missionCategory,
+            MissionInfo missionInfo,
+            Long regionId,
+            MissionStatus missionStatus
+    ) {
+        return Mission.builder()
+                .missionCategory(missionCategory)
+                .missionInfo(missionInfo)
+                .regionId(regionId)
+                .citizenId(citizenId)
+                .location(new Point(123456.78, 123456.78))
+                .missionStatus(missionStatus)
                 .bookmarkCount(0)
                 .build();
     }
