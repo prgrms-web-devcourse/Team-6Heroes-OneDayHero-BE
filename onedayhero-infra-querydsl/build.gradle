@@ -1,4 +1,5 @@
 dependencies {
+    implementation project(":onedayhero-common")
     implementation project(":onedayhero-domain")
 }
 

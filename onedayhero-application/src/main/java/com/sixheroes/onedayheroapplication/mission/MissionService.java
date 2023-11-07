@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import com.sixheroes.onedayheroapplication.region.RegionReader;
@@ -103,11 +104,14 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        var missionResponses = sliceMissionQueryResponses.stream()
-                .map(MissionResponse::from)
-                .toList();
 
-        return MissionResponses.from(pageable, missionResponses, sliceMissionQueryResponses.hasNext());
+        return MissionResponses.from(pageable, sliceMissionQueryResponses, sliceMissionQueryResponses.hasNext());
+    }
+
+    public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
+        var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
+
+        return MissionProgressResponses.from(pageable, sliceMissionProgressQueryResponses, sliceMissionProgressQueryResponses.hasNext());
     }
 
     private void deleteUserBookMarkByMissionId(
