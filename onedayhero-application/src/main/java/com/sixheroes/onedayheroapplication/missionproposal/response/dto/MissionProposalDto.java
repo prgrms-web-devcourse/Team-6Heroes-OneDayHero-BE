@@ -10,32 +10,33 @@ public record MissionProposalDto(
             MissionProposalQueryDto missionProposalQueryDto
     ) {
         var regionDto = RegionDto.builder()
-                .si(missionProposalQueryDto.si())
-                .gu(missionProposalQueryDto.gu())
-                .dong(missionProposalQueryDto.dong())
-                .build();
+            .si(missionProposalQueryDto.si())
+            .gu(missionProposalQueryDto.gu())
+            .dong(missionProposalQueryDto.dong())
+            .build();
 
         var missionInfoDto = MissionInfoDto.builder()
-                .missionDate(missionProposalQueryDto.missionDate())
-                .startTime(missionProposalQueryDto.startTime())
-                .endTime(missionProposalQueryDto.endTime())
-                .price(missionProposalQueryDto.price())
-                .build();
+            .missionTitle(missionProposalQueryDto.missionTitle())
+            .missionDate(missionProposalQueryDto.missionDate())
+            .startTime(missionProposalQueryDto.startTime())
+            .endTime(missionProposalQueryDto.endTime())
+            .price(missionProposalQueryDto.price())
+            .build();
 
         var missionCategoryDto = MissionCategoryDto.builder()
-                .categoryName(missionProposalQueryDto.categoryName())
-                .missionCategoryCode(missionProposalQueryDto.missionCategoryCode().name())
-                .build();
+            .categoryName(missionProposalQueryDto.categoryName())
+            .missionCategoryCode(missionProposalQueryDto.missionCategoryCode().name())
+            .build();
 
         var missionDto = MissionDto.builder()
-                .missionId(missionProposalQueryDto.missionId())
-                .missionStatus(missionProposalQueryDto.missionStatus().name())
-                .missionCreatedAt(missionProposalQueryDto.missionCreatedAt())
-                .bookmarkCount(missionProposalQueryDto.bookmarkCount())
-                .region(regionDto)
-                .missionInfo(missionInfoDto)
-                .missionCategory(missionCategoryDto)
-                .build();
+            .missionId(missionProposalQueryDto.missionId())
+            .missionStatus(missionProposalQueryDto.missionStatus().name())
+            .missionCreatedAt(missionProposalQueryDto.missionCreatedAt())
+            .bookmarkCount(missionProposalQueryDto.bookmarkCount())
+            .region(regionDto)
+            .missionInfo(missionInfoDto)
+            .missionCategory(missionCategoryDto)
+            .build();
 
         return new MissionProposalDto(missionProposalQueryDto.missionProposalId(), missionDto);
     }

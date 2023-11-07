@@ -13,6 +13,7 @@ public record MissionProposalQueryDto(
     MissionStatus missionStatus,
     Integer bookmarkCount,
     LocalDateTime missionCreatedAt,
+    String missionTitle,
     LocalDate missionDate,
     LocalTime startTime,
     LocalTime endTime,

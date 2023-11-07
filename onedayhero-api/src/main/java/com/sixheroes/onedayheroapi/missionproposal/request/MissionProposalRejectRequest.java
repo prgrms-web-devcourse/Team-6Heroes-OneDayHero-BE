@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapi.missionrequest.request;
+package com.sixheroes.onedayheroapi.missionproposal.request;
 
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalRejectServiceRequest;
 import jakarta.validation.constraints.NotNull;

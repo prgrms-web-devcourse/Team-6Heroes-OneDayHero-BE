@@ -7,19 +7,19 @@ import java.time.LocalDateTime;
 
 @Builder
 public record MissionDto(
-        Long missionId,
+    Long missionId,
 
-        String missionStatus,
+    String missionStatus,
 
-        Integer bookmarkCount,
+    Integer bookmarkCount,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-        LocalDateTime missionCreatedAt,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    LocalDateTime missionCreatedAt,
 
-        RegionDto region,
+    RegionDto region,
 
-        MissionCategoryDto missionCategory,
+    MissionCategoryDto missionCategory,
 
-        MissionInfoDto missionInfo
+    MissionInfoDto missionInfo
 ) {
 }

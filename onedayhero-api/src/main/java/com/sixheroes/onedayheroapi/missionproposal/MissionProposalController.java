@@ -1,9 +1,9 @@
-package com.sixheroes.onedayheroapi.missionrequest;
+package com.sixheroes.onedayheroapi.missionproposal;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalApproveRequest;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalCreateRequest;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalRejectRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalApproveRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalCreateRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalRejectRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;

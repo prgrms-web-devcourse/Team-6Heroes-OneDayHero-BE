@@ -1,9 +1,9 @@
-package com.sixheroes.onedayheroapi.missionrequest;
+package com.sixheroes.onedayheroapi.missionproposal;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalApproveRequest;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalCreateRequest;
-import com.sixheroes.onedayheroapi.missionrequest.request.MissionProposalRejectRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalApproveRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalCreateRequest;
+import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalRejectRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
@@ -269,6 +269,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.region.dong").value(missionProposal1.mission().region().dong()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.missionCategoryCode").value(missionProposal1.mission().missionCategory().missionCategoryCode()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.categoryName").value(missionProposal1.mission().missionCategory().categoryName()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.missionTitle").value(missionProposal1.mission().missionInfo().missionTitle()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionProposal1.mission().missionInfo().missionDate())))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionProposal1.mission().missionInfo().startTime())))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionProposal1.mission().missionInfo().endTime())))
@@ -336,6 +337,8 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("카테고리 이름"),
                     fieldWithPath("data.missionProposals.content[].mission.missionInfo").type(JsonFieldType.OBJECT)
                         .description("미션 상세 정보"),
+                    fieldWithPath("data.missionProposals.content[].mission.missionInfo.missionTitle").type(JsonFieldType.STRING)
+                        .description("미션 제목"),
                     fieldWithPath("data.missionProposals.content[].mission.missionInfo.missionDate").type(JsonFieldType.STRING)
                         .attributes(getDateFormat())
                         .description("미션 시작 일"),
@@ -400,42 +403,43 @@ class MissionProposalControllerTest extends RestDocsSupport {
     }
 
     private MissionDto createMissionDto(
-            Long missionId,
-            String missionStatus,
-            LocalDateTime missionCreatedAt
+        Long missionId,
+        String missionStatus,
+        LocalDateTime missionCreatedAt
     ) {
         return MissionDto.builder()
-                .missionId(missionId)
-                .missionStatus(missionStatus)
-                .missionCreatedAt(missionCreatedAt)
-                .bookmarkCount(5)
-                .missionCategory(createMissionCategoryDto())
-                .missionInfo(createMissionInfoDto())
-                .region(createRegionDto())
-                .build();
+            .missionId(missionId)
+            .missionStatus(missionStatus)
+            .missionCreatedAt(missionCreatedAt)
+            .bookmarkCount(5)
+            .missionCategory(createMissionCategoryDto())
+            .missionInfo(createMissionInfoDto())
+            .region(createRegionDto())
+            .build();
     }
 
     private RegionDto createRegionDto() {
         return RegionDto.builder()
-                .si("서울시")
-                .gu("프로구")
-                .dong("래머동")
-                .build();
+            .si("서울시")
+            .gu("프로구")
+            .dong("래머동")
+            .build();
     }
 
     private MissionInfoDto createMissionInfoDto() {
         return MissionInfoDto.builder()
-                .missionDate(LocalDate.of(2023, 10, 30))
-                .startTime(LocalTime.of(12, 0, 0))
-                .endTime(LocalTime.of(18, 0, 0))
-                .price(30000)
-                .build();
+            .missionTitle("미션 제목")
+            .missionDate(LocalDate.of(2023, 10, 30))
+            .startTime(LocalTime.of(12, 0, 0))
+            .endTime(LocalTime.of(18, 0, 0))
+            .price(30000)
+            .build();
     }
 
     private MissionCategoryDto createMissionCategoryDto() {
         return MissionCategoryDto.builder()
-                .missionCategoryCode("MC_001")
-                .categoryName("서빙")
-                .build();
+            .missionCategoryCode("MC_001")
+            .categoryName("서빙")
+            .build();
     }
 }

@@ -8,15 +8,17 @@ import java.time.LocalTime;
 
 @Builder
 public record MissionInfoDto(
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-        LocalDate missionDate,
+    String missionTitle,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        LocalTime startTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    LocalDate missionDate,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        LocalTime endTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+    LocalTime startTime,
 
-        Integer price
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+    LocalTime endTime,
+
+    Integer price
 ) {
 }

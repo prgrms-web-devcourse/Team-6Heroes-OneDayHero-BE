@@ -266,14 +266,15 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         MissionCategory missionCategory
     ) {
         return Mission.createMission(missionCategory,
-                citizenId,
-                1L,
-                new Point(123.123, 123.123),
-                createMissionInfo());
+            citizenId,
+            1L,
+            new Point(123.123, 123.123),
+            createMissionInfo());
     }
 
     private MissionInfo createMissionInfo() {
         return MissionInfo.builder()
+            .title("미션 제목")
             .content("미션 내용입니다.")
             .missionDate(LocalDate.of(2023, 10, 30))
             .startTime(LocalTime.of(10, 0, 0))

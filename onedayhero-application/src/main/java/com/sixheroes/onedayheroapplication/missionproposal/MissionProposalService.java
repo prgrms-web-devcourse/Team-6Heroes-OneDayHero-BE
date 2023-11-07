@@ -74,8 +74,8 @@ public class MissionProposalService {
     }
 
     public MissionProposalResponse findMissionProposal(
-            Long heroId,
-            Pageable pageable
+        Long heroId,
+        Pageable pageable
     ) {
         var slice = missionProposalQueryRepository.findByHeroIdAndPageable(heroId, pageable);
         return MissionProposalResponse.from(slice);

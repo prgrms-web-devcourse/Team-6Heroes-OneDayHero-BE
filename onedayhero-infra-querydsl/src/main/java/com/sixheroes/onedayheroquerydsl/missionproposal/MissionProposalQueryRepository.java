@@ -49,6 +49,7 @@ public class MissionProposalQueryRepository {
                         mission.missionStatus,
                         mission.bookmarkCount,
                         mission.createdAt,
+                        mission.missionInfo.title,
                         mission.missionInfo.missionDate,
                         mission.missionInfo.startTime,
                         mission.missionInfo.endTime,

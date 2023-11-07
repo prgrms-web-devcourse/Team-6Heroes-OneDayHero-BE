@@ -121,6 +121,7 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
             .endTime(LocalTime.of(16, 0, 0))
             .price(20000)
             .deadlineTime(LocalTime.of(11, 0, 0))
+            .title("미션 제목")
             .content("미션 내용")
             .serverTime(LocalDateTime.of(2023, 10, 28, 12, 0, 0))
             .build();

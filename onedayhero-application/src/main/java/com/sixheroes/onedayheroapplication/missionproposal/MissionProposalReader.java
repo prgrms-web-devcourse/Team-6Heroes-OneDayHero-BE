@@ -19,12 +19,12 @@ public class MissionProposalReader {
     private final MissionProposalRepository missionProposalRepository;
 
     public MissionProposal findOne(
-            Long missionProposalId
+        Long missionProposalId
     ) {
         return missionProposalRepository.findById(missionProposalId)
-                .orElseThrow(() -> {
-                    log.debug("존재하지 않는 미션 제안입니다. missionProposalId : {}", missionProposalId);
-                    return new NoSuchElementException(ErrorCode.EMP_000.name());
-                });
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션 제안입니다. missionProposalId : {}", missionProposalId);
+                return new NoSuchElementException(ErrorCode.EMP_000.name());
+            });
     }
 }
