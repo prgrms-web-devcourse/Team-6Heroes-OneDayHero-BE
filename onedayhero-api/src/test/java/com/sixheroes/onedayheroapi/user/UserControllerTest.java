@@ -185,7 +185,7 @@ class UserControllerTest extends RestDocsSupport {
                 true
         );
 
-        given(missionBookmarkService.me(
+        given(missionBookmarkService.viewMyBookmarks(
                         any(Pageable.class),
                         anyLong()
                 )
