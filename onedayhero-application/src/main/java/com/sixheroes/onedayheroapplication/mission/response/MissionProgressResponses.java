@@ -9,6 +9,7 @@ import java.util.List;
 public record MissionProgressResponses(
         Slice<MissionProgressResponse> missionProgressResponses
 ) {
+
     public static MissionProgressResponses from(
             Pageable pageable,
             List<MissionProgressResponse> missionProgressResponses,

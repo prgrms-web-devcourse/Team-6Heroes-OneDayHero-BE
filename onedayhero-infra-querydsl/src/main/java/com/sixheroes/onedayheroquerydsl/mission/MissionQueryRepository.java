@@ -160,7 +160,7 @@ public class MissionQueryRepository {
     private BooleanBuilder userIdEq(Long userId) {
         return new BooleanBuilder(mission.citizenId.eq(userId));
     }
-
+    
     private BooleanBuilder missionCategoryIdsIn(List<Long> missionCategories) {
         if (missionCategories.isEmpty()) {
             return null;

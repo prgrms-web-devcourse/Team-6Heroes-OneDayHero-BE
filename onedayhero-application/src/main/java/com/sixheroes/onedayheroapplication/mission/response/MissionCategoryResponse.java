@@ -11,6 +11,7 @@ public record MissionCategoryResponse(
         String code,
         String name
 ) {
+    
     public static MissionCategoryResponse from(
             MissionQueryResponse response
     ) {

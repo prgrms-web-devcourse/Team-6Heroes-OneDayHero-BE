@@ -961,7 +961,6 @@ public class MissionControllerTest extends RestDocsSupport {
                 ))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].id").value(missionResponseA.id()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.id").value(missionResponseA.missionCategory().id()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionCategory.code").value(missionResponseA.missionCategory().code()))

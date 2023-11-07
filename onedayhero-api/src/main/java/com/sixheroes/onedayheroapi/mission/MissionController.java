@@ -46,7 +46,7 @@ public class MissionController {
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
-
+    
     @GetMapping("/progress/{userId}")
     public ResponseEntity<ApiResponse<MissionProgressResponses>> findProgressMission(
             @PageableDefault(size = 5) Pageable pageable,

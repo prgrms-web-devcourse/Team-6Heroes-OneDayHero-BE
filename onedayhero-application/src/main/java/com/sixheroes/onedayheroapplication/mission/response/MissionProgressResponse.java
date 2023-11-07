@@ -21,6 +21,7 @@ public record MissionProgressResponse(
 
         String missionStatus
 ) {
+
     public static MissionProgressResponse from(
             MissionProgressQueryResponse response
     ) {

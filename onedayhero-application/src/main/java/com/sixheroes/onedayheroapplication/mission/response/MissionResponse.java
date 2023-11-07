@@ -23,6 +23,7 @@ public record MissionResponse(
         Integer bookmarkCount,
         String missionStatus
 ) {
+
     public static MissionResponse from(MissionQueryResponse response) {
         return MissionResponse.builder()
                 .id(response.id())
