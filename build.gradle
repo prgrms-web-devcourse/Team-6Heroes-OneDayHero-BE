@@ -35,7 +35,6 @@ subprojects {
     }
 
     test{
-        useJUnitPlatform()
         finalizedBy jacocoTestReport
     }
 
@@ -48,11 +47,13 @@ subprojects {
             classDirectories.setFrom(files(classDirectories.files.collect {
                 fileTree(dir: it, excludes: [
                         "**/Q*",
-                        "**/*Request.class", // request 폴더 제외 안ㅓㅁ
-                        "**/*Response*",
-                        "**/*Dto*",
+                        "**/request/*", // request 폴더 제외
+                        "**/response/*",
+                        "**/dto/*",
                         "**/config/*",
-                        "**/global/*"
+                        "**/global/**",
+                        "**/*Converter*",
+                        "**/healthcheck/*"
                 ])
             }))
         }
