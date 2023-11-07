@@ -12,7 +12,6 @@ include::{snippets}/mission-create/http-response.adoc[]
 include::{snippets}/mission-create/response-fields.adoc[]
 
 [[mission-findOne]]
-
 === 유저는 미션을 단 건 조회 할 수 있다.
 
 ==== Http Request
@@ -26,10 +25,10 @@ include::{snippets}/mission-findOne/http-response.adoc[]
 include::{snippets}/mission-findOne/response-fields.adoc[]
 
 [[mission-find-DynamicCondition]]
-
 === 유저는 미션을 필터 조회 할 수 있다.
 
 ==== Http Request
+
 include::{snippets}/mission-find-DynamicCondition/query-parameters.adoc[]
 include::{snippets}/mission-find-DynamicCondition/http-request.adoc[]
 
@@ -37,6 +36,19 @@ include::{snippets}/mission-find-DynamicCondition/http-request.adoc[]
 
 include::{snippets}/mission-find-DynamicCondition/http-response.adoc[]
 include::{snippets}/mission-find-DynamicCondition/response-fields.adoc[]
+
+[[mission-progress-find]]
+=== 유저는 진행중인 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-progress-find/path-parameters.adoc[]
+include::{snippets}/mission-progress-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-progress-find/http-response.adoc[]
+include::{snippets}/mission-progress-find/response-fields.adoc[]
 
 [[mission-update]]
 === 시민은 미션을 수정 할 수 있다.
