@@ -128,13 +128,13 @@ public class Mission extends BaseEntity {
         }
     }
 
-    public void missionMatchingCompleted(Long userId) {
+    public void completeMissionMatching(Long userId) {
         validateMissionOwnerIsValid(userId);
         validateCurrentMissionStatusIsMatching();
         this.missionStatus = MissionStatus.MATCHING_COMPLETED;
     }
 
-    public void missionMatchingCanceled(Long citizenId) {
+    public void cancelMissionMatching(Long citizenId) {
         validateMissionOwnerIsValid(citizenId);
         validateCurrentMissionStatusIsMatchingCompleted();
         this.missionStatus = MissionStatus.MATCHING;

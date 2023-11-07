@@ -11,6 +11,8 @@ import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,13 +78,16 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("시민은 미션이 매칭 중 상태가 아니라면, 매칭완료 상태를 가지는 미션매칭을 생성할 수 없다.")
-    @Test
-    void createMissionMatchingFailWithInvalidStatus() {
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING")
+    @ParameterizedTest
+    void createMissionMatchingFailWithInvalidStatus(MissionStatus missionStatus) {
+        System.out.println(missionStatus);
         // given
         var citizenId = 1L;
         var heroId = 2L;
-        var mission = createMission(citizenId);
-        mission.missionMatchingCompleted(citizenId);
+        var mission = createMissionWithStatus(
+                citizenId, missionStatus
+        );
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
@@ -181,6 +186,23 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionCategory(missionCategoryRepository.findById(1L).get())
                 .bookmarkCount(0)
                 .missionStatus(MissionStatus.MATCHING)
+                .citizenId(citizenId)
+                .regionId(1L)
+                .location(new Point(1234, 5678))
+                .build();
+
+        return missionRepository.save(mission);
+    }
+
+    private Mission createMissionWithStatus(
+            Long citizenId,
+            MissionStatus missionStatus
+    ) {
+        var mission = Mission.builder()
+                .missionInfo(createMissionInfo())
+                .missionCategory(missionCategoryRepository.findById(1L).get())
+                .bookmarkCount(0)
+                .missionStatus(missionStatus)
                 .citizenId(citizenId)
                 .regionId(1L)
                 .location(new Point(1234, 5678))
