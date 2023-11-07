@@ -34,19 +34,18 @@ public class MissionBookmarkService {
             Pageable pageable,
             Long userId
     ) {
-        var queryResponses = missionBookmarkQueryRepository.me(
+        var responses = missionBookmarkQueryRepository.me(
                 pageable,
                 userId
         );
 
         return MissionBookmarkMeViewResponse.of(
                 userId,
-                queryResponses
+                responses
         );
     }
 
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
-        //TODO : UserReader 를 통한 히어로 유저 존재 검증
         var mission = missionReader.findOne(request.missionId());
         var missionBookmark = MissionBookmark.builder()
                 .mission(mission)
@@ -88,7 +87,7 @@ public class MissionBookmarkService {
         if (missionBookmarkRepository.existsByMissionIdAndUserId(
                 missionId,
                 userId)) {
-            log.debug("이미 해당 미션에 대해 찜했습니다.");
+            log.debug("이미 해당 미션에 대해 찜 했습니다.");
             throw new IllegalStateException(ErrorCode.T_001.name());
         }
     }

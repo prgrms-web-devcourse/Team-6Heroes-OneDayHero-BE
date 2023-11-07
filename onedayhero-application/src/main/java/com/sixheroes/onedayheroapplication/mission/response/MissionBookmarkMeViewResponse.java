@@ -7,24 +7,24 @@ import org.springframework.data.domain.SliceImpl;
 
 public record MissionBookmarkMeViewResponse(
     Long userId,
-    Slice<MissionBookmarkMeLineDto> missionBookmarkMeLineDtos
+    Slice<MissionBookmarkMeResponse> missionBookmarkMeResponses
 ) {
 
     public static MissionBookmarkMeViewResponse of(
             Long userId,
-            Slice<MissionBookmarkMeQueryResponse> queryResponses
+            Slice<MissionBookmarkMeQueryResponse> responses
     ) {
-        var content = queryResponses.getContent()
+        var content = responses.getContent()
                 .stream()
-                .map(MissionBookmarkMeLineDto::from)
+                .map(MissionBookmarkMeResponse::from)
                 .toList();
 
-        var lineDtos = new SliceImpl<MissionBookmarkMeLineDto>(
+        var slice = new SliceImpl<MissionBookmarkMeResponse>(
                 content,
-                queryResponses.getPageable(),
-                queryResponses.hasNext()
+                responses.getPageable(),
+                responses.hasNext()
         );
 
-        return new MissionBookmarkMeViewResponse(userId, lineDtos);
+        return new MissionBookmarkMeViewResponse(userId, slice);
     }
 }

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Builder
-public record MissionBookmarkMeLineDto(
+public record MissionBookmarkMeResponse(
         Long missionId,
 
         Long missionBookmarkId,
@@ -43,10 +43,10 @@ public record MissionBookmarkMeLineDto(
     ) {
     }
 
-    public static MissionBookmarkMeLineDto from(
+    public static MissionBookmarkMeResponse from(
             MissionBookmarkMeQueryResponse queryResponse
     ) {
-        return new MissionBookmarkMeLineDto(
+        return new MissionBookmarkMeResponse(
                 queryResponse.missionId(),
                 queryResponse.missionBookmarkId(),
                 isAlive(queryResponse.missionStatus()),

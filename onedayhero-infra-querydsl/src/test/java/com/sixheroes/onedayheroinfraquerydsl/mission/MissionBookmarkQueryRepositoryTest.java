@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,31 +69,20 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
         // given
         var bookmarkUserId = 1L;
         var citizenId = 2L;
-        for (int i = 1; i <= 10; i++) {
-            var mission = createMissionWithMissionStatus(
-                    citizenId,
-                    MissionStatus.MATCHING
-            );
-
-            if (i <= 5) {
-                var missionBookmark = MissionBookmark.builder()
-                        .mission(mission)
-                        .userId(bookmarkUserId)
-                        .build();
-                missionBookmarkRepository.save(missionBookmark);
-                mission.addBookmarkCount();
-            }
-        }
+        createFiveBookmarks(
+                citizenId,
+                bookmarkUserId
+        );
 
         // when
         var pageRequest = PageRequest.of(1, 3);
-        var dtoResponses = missionBookmarkQueryRepository.me(
+        var responses = missionBookmarkQueryRepository.me(
                 pageRequest,
                 bookmarkUserId
         );
 
         // then
-        assertThat(dtoResponses).hasSize(2);
+        assertThat(responses).hasSize(2);
     }
 
     private Mission createMissionWithMissionStatus(
@@ -125,5 +115,27 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
                         LocalTime.MIDNIGHT
                 ))
                 .build();
+    }
+
+    private void createFiveBookmarks(
+            long citizenId,
+            long bookmarkUserId
+    ) {
+        IntStream.range(0, 10)
+                .forEach(i -> {
+                    var mission = createMissionWithMissionStatus(
+                            citizenId,
+                            MissionStatus.MATCHING
+                    );
+
+                    if (i <= 4) {
+                        var missionBookmark = MissionBookmark.builder()
+                                .mission(mission)
+                                .userId(bookmarkUserId)
+                                .build();
+                        missionBookmarkRepository.save(missionBookmark);
+                        mission.addBookmarkCount();
+                    }
+                });
     }
 }

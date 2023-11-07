@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancel
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.region.Region;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,6 +42,9 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private MissionRepository missionRepository;
+
+    @Autowired
+    private MissionBookmarkRepository missionBookmarkRepository;
 
     @BeforeAll
     public static void setUp(
@@ -67,32 +72,22 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         // given
         var bookmarkUserId = 1L;
         var citizenId = 2L;
-
-        IntStream.range(0, 10)
-                .forEach(i -> {
-                    var mission = createMissionWithMissionStatus(
-                            citizenId,
-                            MissionStatus.MATCHING
-                    );
-
-                    if (i <= 5) {
-                        missionBookmarkService.createMissionBookmark(
-                                createMissionBookmarkCreateServiceRequest(
-                                        mission.getId(),
-                                        bookmarkUserId
-                                )
-                        );
-                    }
-                });
+        createFiveBookmarks(
+                citizenId,
+                bookmarkUserId
+        );
 
         // when
         var pageRequest = PageRequest.of(1, 3);
-        var response = missionBookmarkService.me(pageRequest, bookmarkUserId);
+        var response = missionBookmarkService.me(
+                pageRequest,
+                bookmarkUserId
+        );
 
         // then
         assertSoftly(soft -> {
-            soft.assertThat(response.missionBookmarkMeLineDtos().getSize()).isEqualTo(3);
-            soft.assertThat(response.missionBookmarkMeLineDtos().hasNext()).isFalse();
+            soft.assertThat(response.missionBookmarkMeResponses().getContent().size()).isEqualTo(2);
+            soft.assertThat(response.missionBookmarkMeResponses().hasNext()).isFalse();
         });
     }
 
@@ -229,5 +224,27 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                         LocalTime.MIDNIGHT
                 ))
                 .build();
+    }
+
+    private void createFiveBookmarks(
+            long citizenId,
+            long bookmarkUserId
+    ) {
+        IntStream.range(0, 10)
+                .forEach(i -> {
+                    var mission = createMissionWithMissionStatus(
+                            citizenId,
+                            MissionStatus.MATCHING
+                    );
+
+                    if (i <= 4) {
+                        missionBookmarkService.createMissionBookmark(
+                                createMissionBookmarkCreateServiceRequest(
+                                        mission.getId(),
+                                        bookmarkUserId
+                                )
+                        );
+                    }
+                });
     }
 }

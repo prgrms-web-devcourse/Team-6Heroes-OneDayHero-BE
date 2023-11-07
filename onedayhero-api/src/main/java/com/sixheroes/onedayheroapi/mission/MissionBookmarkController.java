@@ -6,11 +6,8 @@ import com.sixheroes.onedayheroapi.mission.request.MissionBookmarkCreateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,18 +19,6 @@ import java.net.URI;
 public class MissionBookmarkController {
 
     private final MissionBookmarkService missionBookmarkService;
-
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<MissionBookmarkMeViewResponse>> me(
-            @PageableDefault(size = 3) Pageable pageable,
-            Long userId //TODO: @Auth Long userId
-    ) {
-        var viewResponse = missionBookmarkService.me(
-                pageable,
-                userId
-        );
-        return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
-    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<MissionBookmarkCreateResponse>> createMissionBookmark(
