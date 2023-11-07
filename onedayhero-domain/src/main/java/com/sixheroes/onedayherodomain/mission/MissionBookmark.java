@@ -9,7 +9,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "mission_bookmarks")
+@Table(
+        name = "mission_bookmarks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "mission_and_user_id_idx",
+                        columnNames = {"mission_id", "user_id"}
+                )
+        }
+)
 @Entity
 public class MissionBookmark extends BaseEntity {
 

@@ -79,7 +79,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
         // when
         var pageRequest = PageRequest.of(1, 3);
-        var response = missionBookmarkService.me(
+        var response = missionBookmarkService.viewMyBookmarks(
                 pageRequest,
                 bookmarkUserId
         );

@@ -12,6 +12,7 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkReposito
 import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class MissionBookmarkService {
     private final MissionReader missionReader;
 
     @Transactional(readOnly = true)
-    public MissionBookmarkMeViewResponse me(
+    public MissionBookmarkMeViewResponse viewMyBookmarks(
             Pageable pageable,
             Long userId
     ) {
@@ -52,15 +53,18 @@ public class MissionBookmarkService {
                 .userId(request.userId())
                 .build();
 
-        validateMissionBookmarkIsAlreadyExist(
-                mission.getId(),
-                request.userId()
-        );
+        try {
+            var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
+            mission.addBookmarkCount();
 
-        var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
-        mission.addBookmarkCount();
-
-        return new MissionBookmarkCreateResponse(savedMissionBookmark);
+            return new MissionBookmarkCreateResponse(savedMissionBookmark);
+        } catch (DataIntegrityViolationException e) {
+            log.debug("이미 해당 미션에 찜을 한 상태입니다. missionId={}, userId={}",
+                    request.missionId(),
+                    request.userId()
+            );
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
     }
 
     public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelServiceRequest request) {
@@ -78,17 +82,5 @@ public class MissionBookmarkService {
                 .missionId(mission.getId())
                 .userId(findMissionBookmark.getUserId())
                 .build();
-    }
-
-    private void validateMissionBookmarkIsAlreadyExist(
-            Long missionId,
-            Long userId) {
-
-        if (missionBookmarkRepository.existsByMissionIdAndUserId(
-                missionId,
-                userId)) {
-            log.debug("이미 해당 미션에 대해 찜 했습니다.");
-            throw new IllegalStateException(ErrorCode.T_001.name());
-        }
     }
 }

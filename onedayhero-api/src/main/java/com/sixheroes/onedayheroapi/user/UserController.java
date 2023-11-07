@@ -35,7 +35,7 @@ public class UserController {
             @PageableDefault(size = 3) Pageable pageable
             //TODO: @Auth Long userID
     ) {
-        var viewResponse = missionBookmarkService.me(
+        var viewResponse = missionBookmarkService.viewMyBookmarks(
                 pageable,
                 tempUserId()
         );
