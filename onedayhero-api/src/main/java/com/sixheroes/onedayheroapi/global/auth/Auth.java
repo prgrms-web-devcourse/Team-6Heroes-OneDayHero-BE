@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapi.global.jwt;
+package com.sixheroes.onedayheroapi.global.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
