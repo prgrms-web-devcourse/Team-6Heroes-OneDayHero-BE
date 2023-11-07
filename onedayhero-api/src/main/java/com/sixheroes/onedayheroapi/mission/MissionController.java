@@ -6,6 +6,7 @@ import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import jakarta.validation.Valid;
@@ -42,6 +43,16 @@ public class MissionController {
     ) {
         var serviceRequest = request.toService();
         var result = missionService.findAllByDynamicCondition(pageable, serviceRequest);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @GetMapping("/progress/{userId}")
+    public ResponseEntity<ApiResponse<MissionProgressResponses>> findProgressMission(
+            @PageableDefault(size = 5) Pageable pageable,
+            @PathVariable Long userId
+    ) {
+        var result = missionService.findProgressMission(pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

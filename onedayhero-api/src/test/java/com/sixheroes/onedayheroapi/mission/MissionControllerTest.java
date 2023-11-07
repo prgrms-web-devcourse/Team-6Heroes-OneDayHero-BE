@@ -6,9 +6,7 @@ import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
+import com.sixheroes.onedayheroapplication.mission.response.*;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -668,6 +666,142 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
+    @DisplayName("유저는 현재 진행 중인 미션을 조회 할 수 있다.")
+    @Test
+    void findProgressMissionByUserId() throws Exception {
+        // given
+        var citizenId = 1L;
+        var pageRequest = PageRequest.of(0, 4);
+        var missionCategoryResponse = createMissionCategoryResponse();
+        var missionProgressResponse = createMissionProgressResponse(missionCategoryResponse);
+
+        var sliceMissionResponses = new SliceImpl<>(List.of(missionProgressResponse), pageRequest, false);
+        var result = MissionProgressResponses.from(pageRequest, List.of(missionProgressResponse), sliceMissionResponses.hasNext());
+
+        given(missionService.findProgressMission(any(Pageable.class), any(Long.class)))
+                .willReturn(result);
+
+        // when & then
+        mockMvc.perform(get("/api/v1/missions/progress/{userId}", citizenId)
+                        .param("page", "0")
+                        .param("size", "4")
+                        .param("sort", "")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("mission-progress-find",
+                        pathParameters(
+                                parameterWithName("userId")
+                                        .description("시민 아이디")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").optional()
+                                        .description("페이지 번호"),
+                                parameterWithName("size").optional()
+                                        .description("데이터 크기"),
+                                parameterWithName("sort").optional()
+                                        .description("정렬 기준 필드")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.missionProgressResponses").type(JsonFieldType.OBJECT)
+                                        .description("미션 응답 데이터"),
+                                fieldWithPath("data.missionProgressResponses.content[]").type(JsonFieldType.ARRAY)
+                                        .description("미션 응답 데이터 배열"),
+                                fieldWithPath("data.missionProgressResponses.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("미션 ID"),
+                                fieldWithPath("data.missionProgressResponses.content[].title").type(JsonFieldType.STRING)
+                                        .description("미션 제목"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionCategory").type(JsonFieldType.OBJECT)
+                                        .description("미션 카테고리 객체"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionCategory.id")
+                                        .description("미션 카테고리 ID"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionCategory.code")
+                                        .description("미션 카테고리 코드"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionCategory.name")
+                                        .description("미션 카테고리 이름"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionDate").type(JsonFieldType.STRING)
+                                        .attributes(getDateFormat())
+                                        .description("미션 날짜"),
+                                fieldWithPath("data.missionProgressResponses.content[].bookmarkCount").type(JsonFieldType.NUMBER)
+                                        .description("북마크 횟수"),
+                                fieldWithPath("data.missionProgressResponses.content[].missionStatus").type(JsonFieldType.STRING)
+                                        .description("미션 상태"),
+                                fieldWithPath("data.missionProgressResponses.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.missionProgressResponses.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                        .description("페이지 크기"),
+                                fieldWithPath("data.missionProgressResponses.pageable.sort").type(JsonFieldType.OBJECT)
+                                        .description("정렬 상태 객체"),
+                                fieldWithPath("data.missionProgressResponses.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.missionProgressResponses.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.missionProgressResponses.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.missionProgressResponses.pageable.offset").type(JsonFieldType.NUMBER)
+                                        .description("페이지 번호"),
+                                fieldWithPath("data.missionProgressResponses.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있는지 여부"),
+                                fieldWithPath("data.missionProgressResponses.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있지 않은지 여부"),
+                                fieldWithPath("data.missionProgressResponses.size").type(JsonFieldType.NUMBER)
+                                        .description("미션 리스트 크기"),
+                                fieldWithPath("data.missionProgressResponses.number").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.missionProgressResponses.sort").type(JsonFieldType.OBJECT)
+                                        .description("미션 리스트 정렬 정보 객체"),
+                                fieldWithPath("data.missionProgressResponses.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.missionProgressResponses.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.missionProgressResponses.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.missionProgressResponses.numberOfElements").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지의 요소 수"),
+                                fieldWithPath("data.missionProgressResponses.first").type(JsonFieldType.BOOLEAN)
+                                        .description("첫 번째 페이지인지 여부"),
+                                fieldWithPath("data.missionProgressResponses.last").type(JsonFieldType.BOOLEAN)
+                                        .description("마지막 페이지인지 여부"),
+                                fieldWithPath("data.missionProgressResponses.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트가 비어있는지 여부"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].id").value(missionProgressResponse.id()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].title").value(missionProgressResponse.title()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].missionCategory.id").value(missionProgressResponse.missionCategory().id()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].missionCategory.code").value(missionProgressResponse.missionCategory().code()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].missionCategory.name").value(missionProgressResponse.missionCategory().name()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionProgressResponse.missionDate())))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].bookmarkCount").value(missionProgressResponse.bookmarkCount()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.content[0].missionStatus").value(missionProgressResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.pageNumber").value(result.missionProgressResponses().getPageable().getPageNumber()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.pageSize").value(result.missionProgressResponses().getPageable().getPageSize()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.sort.empty").value(result.missionProgressResponses().getPageable().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.offset").value(result.missionProgressResponses().getPageable().getOffset()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.paged").value(result.missionProgressResponses().getPageable().isPaged()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.pageable.unpaged").value(result.missionProgressResponses().getPageable().isUnpaged()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.size").value(result.missionProgressResponses().getSize()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.number").value(result.missionProgressResponses().getNumber()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.sort.empty").value(result.missionProgressResponses().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.sort.sorted").value(result.missionProgressResponses().getSort().isSorted()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.sort.unsorted").value(result.missionProgressResponses().getSort().isUnsorted()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.numberOfElements").value(result.missionProgressResponses().getNumberOfElements()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.first").value(result.missionProgressResponses().isFirst()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.last").value(result.missionProgressResponses().isLast()))
+                .andExpect(jsonPath("$.data.missionProgressResponses.empty").value(result.missionProgressResponses().isEmpty()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+    }
+
     @DisplayName("유저는 필터에 따라 미션들을 조회 할 수 있다.")
     @Test
     void findAllByDynamicCondition() throws Exception {
@@ -988,6 +1122,19 @@ public class MissionControllerTest extends RestDocsSupport {
                 .latitude(1234252.23)
                 .longitude(1234277.388)
                 .missionInfo(missionInfoRequest)
+                .build();
+    }
+
+    private MissionProgressResponse createMissionProgressResponse(
+            MissionCategoryResponse missionCategory
+    ) {
+        return MissionProgressResponse.builder()
+                .id(1L)
+                .title("제목")
+                .missionCategory(missionCategory)
+                .missionDate(LocalDate.of(2023, 11, 6))
+                .bookmarkCount(1)
+                .missionStatus("MATCHING")
                 .build();
     }
 

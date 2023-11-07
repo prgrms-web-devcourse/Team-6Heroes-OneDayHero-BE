@@ -1,9 +1,11 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 
 import java.time.LocalDate;
 
+@Builder
 public record MissionProgressResponse(
         Long id,
 
