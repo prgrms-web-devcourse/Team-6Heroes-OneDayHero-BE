@@ -23,6 +23,7 @@ public record MissionFindFilterRequest(
 
     public MissionFindFilterServiceRequest toService() {
         return MissionFindFilterServiceRequest.builder()
+                .userId(userId)
                 .missionCategoryCodes(missionCategoryCodes)
                 .missionDates(missionDates)
                 .regionIds(regionIds)
