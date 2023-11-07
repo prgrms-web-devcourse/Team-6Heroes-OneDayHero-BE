@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
@@ -112,7 +113,12 @@ public class MissionService {
     }
 
     public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
-        throw new UnsupportedOperationException();
+        var sliceMissionProgressResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
+        var missionProgressResponses = sliceMissionProgressResponses.stream()
+                .map(MissionProgressResponse::from)
+                .toList();
+
+        return MissionProgressResponses.from(pageable, missionProgressResponses, sliceMissionProgressResponses.hasNext());
     }
 
     private void deleteUserBookMarkByMissionId(
