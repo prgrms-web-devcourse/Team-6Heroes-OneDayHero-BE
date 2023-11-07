@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
@@ -23,6 +24,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 
@@ -118,6 +120,31 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
             soft.assertThat(response).isNotNull();
             soft.assertThat(mission.getBookmarkCount()).isEqualTo(1);
         });
+    }
+
+    @DisplayName("시민은 이미 찜한 미션에 또 찜할 수 없다.")
+    @Test
+    void createMissionBookmarkFail() {
+        // given
+        var bookmarkUserId = 1L;
+        var citizenId = 2L;
+        var mission = createMissionWithMissionStatus(
+                citizenId,
+                MissionStatus.MATCHING
+        );
+        missionBookmarkService.createMissionBookmark(
+                createMissionBookmarkCreateServiceRequest(
+                        mission.getId(),
+                        bookmarkUserId
+                )
+        );
+
+        // when
+        assertThatThrownBy(() -> missionBookmarkService.createMissionBookmark(createMissionBookmarkCreateServiceRequest(
+                mission.getId(),
+                bookmarkUserId
+        ))).isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.T_001.name());
     }
 
     @DisplayName("시민은 찜했던 미션에 대해 찜 취소를 할 수 있다.")
