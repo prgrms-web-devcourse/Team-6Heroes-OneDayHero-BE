@@ -59,9 +59,9 @@ public class MissionQueryRepository {
                 .join(region)
                 .on(region.id.eq(mission.regionId))
                 .where(userIdEq(request.userId()),
-                        missionCategoryIdsEq(request.missionCategoryIds()),
-                        regionIdsEq(request.regionIds()),
-                        missionDatesEq(request.missionDates()))
+                        missionCategoryIdsIn(request.missionCategoryIds()),
+                        regionIdsIn(request.regionIds()),
+                        missionDatesIn(request.missionDates()))
                 .fetch();
 
         log.debug("query Size : {}", content.size());
@@ -72,9 +72,9 @@ public class MissionQueryRepository {
                 .join(region)
                 .on(region.id.eq(mission.regionId))
                 .where(userIdEq(request.userId()),
-                        missionCategoryIdsEq(request.missionCategoryIds()),
-                        regionIdsEq(request.regionIds()),
-                        missionDatesEq(request.missionDates())
+                        missionCategoryIdsIn(request.missionCategoryIds()),
+                        regionIdsIn(request.regionIds()),
+                        missionDatesIn(request.missionDates())
                 );
 
         log.debug("total Count : {}", totalCount.fetchOne());
@@ -128,27 +128,27 @@ public class MissionQueryRepository {
         return new BooleanBuilder(mission.citizenId.eq(userId));
     }
 
-    private BooleanBuilder missionCategoryIdsEq(List<Long> missionCategories) {
-        var booleanBuilder = new BooleanBuilder();
-        for (Long categoryId : missionCategories) {
-            booleanBuilder.or(mission.missionCategory.id.eq(categoryId));
+    private BooleanBuilder missionCategoryIdsIn(List<Long> missionCategories) {
+        if (missionCategories.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+
+        return new BooleanBuilder(mission.missionCategory.id.in(missionCategories));
     }
 
-    private BooleanBuilder regionIdsEq(List<Long> regionIds) {
-        var booleanBuilder = new BooleanBuilder();
-        for (Long regionId : regionIds) {
-            booleanBuilder.or(mission.regionId.eq(regionId));
+    private BooleanBuilder regionIdsIn(List<Long> regionIds) {
+        if (regionIds.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+        
+        return new BooleanBuilder(mission.regionId.in(regionIds));
     }
 
-    private BooleanBuilder missionDatesEq(List<LocalDate> missionDates) {
-        var booleanBuilder = new BooleanBuilder();
-        for (LocalDate missionDate : missionDates) {
-            booleanBuilder.or(mission.missionInfo.missionDate.eq(missionDate));
+    private BooleanBuilder missionDatesIn(List<LocalDate> missionDates) {
+        if (missionDates.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+
+        return new BooleanBuilder(mission.missionInfo.missionDate.in(missionDates));
     }
 }
