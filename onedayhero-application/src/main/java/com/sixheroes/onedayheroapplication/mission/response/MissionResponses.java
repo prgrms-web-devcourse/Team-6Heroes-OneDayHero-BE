@@ -1,10 +1,9 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
+import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-
-import java.util.List;
 
 public record MissionResponses(
         Slice<MissionResponse> missionResponses
@@ -12,9 +11,13 @@ public record MissionResponses(
 
     public static MissionResponses from(
             Pageable pageable,
-            List<MissionResponse> missionResponses,
+            Slice<MissionQueryResponse> response,
             boolean hasNext
     ) {
+        var missionResponses = response.stream()
+                .map(MissionResponse::from)
+                .toList();
+
         var resultMissionResponses = new SliceImpl<>(missionResponses, pageable, hasNext);
         return new MissionResponses(resultMissionResponses);
     }

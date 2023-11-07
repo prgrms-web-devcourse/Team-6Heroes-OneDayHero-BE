@@ -3,7 +3,6 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
@@ -105,20 +104,14 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        var missionResponses = sliceMissionQueryResponses.stream()
-                .map(MissionResponse::from)
-                .toList();
 
-        return MissionResponses.from(pageable, missionResponses, sliceMissionQueryResponses.hasNext());
+        return MissionResponses.from(pageable, sliceMissionQueryResponses, sliceMissionQueryResponses.hasNext());
     }
 
     public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
-        var sliceMissionProgressResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
-        var missionProgressResponses = sliceMissionProgressResponses.stream()
-                .map(MissionProgressResponse::from)
-                .toList();
+        var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
 
-        return MissionProgressResponses.from(pageable, missionProgressResponses, sliceMissionProgressResponses.hasNext());
+        return MissionProgressResponses.from(pageable, sliceMissionProgressQueryResponses, sliceMissionProgressQueryResponses.hasNext());
     }
 
     private void deleteUserBookMarkByMissionId(
