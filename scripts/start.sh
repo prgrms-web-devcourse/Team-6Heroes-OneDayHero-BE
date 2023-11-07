@@ -50,5 +50,5 @@ echo "$files"
 # docker 이미지를 연결하고 환경변수 전달
 echo "> docker build -t spring ./"
 sudo docker build -t spring ./
-echo "> docker run -it --name ${IDLE_PROFILE} -d -e active=${IDLE_PROFILE} -e location=${LOCATION} -p ${IDLE_PORT}:${IDLE_PORT} spring"
+echo "> docker run -it --name ${IDLE_PROFILE} -d -e active=${IDLE_PROFILE} -e location=${LOCATION} -v /home/ec2-user/yml/application.yml:/yml/application.yml -p ${IDLE_PORT}:${IDLE_PORT} spring"
 sudo docker run -it --name "$IDLE_PROFILE" -d -e active="$IDLE_PROFILE" -e location=$LOCATION -v /home/ec2-user/yml/application.yml:/yml/application.yml -p "$IDLE_PORT":"$IDLE_PORT" spring
