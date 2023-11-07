@@ -22,8 +22,8 @@ import org.hibernate.annotations.Where;
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE users SET is_active = false WHERE id = ?")
-@Where(clause = "is_active = false")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = true")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {
@@ -55,8 +55,8 @@ public class User extends BaseEntity {
     @Column(name = "is_hero_mode", nullable = false)
     private Boolean isHeroMode;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
     @Builder
     private User(
@@ -73,7 +73,7 @@ public class User extends BaseEntity {
         this.userRole = userRole;
         this.heroScore = 30;
         this.isHeroMode = false;
-        this.isActive = true;
+        this.isDeleted = false;
     }
 
     public void updateUser(
@@ -89,7 +89,7 @@ public class User extends BaseEntity {
         this.isHeroMode = true;
     }
 
-    public void validPossibleMissionRequested() {
+    public void validPossibleMissionProposal() {
         validHeroModeOn();
     }
 
