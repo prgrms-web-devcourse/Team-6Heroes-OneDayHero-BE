@@ -52,7 +52,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .andExpect(header().string("Location", "/api/v1/missions/" + request.missionId()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value(201))
-                .andExpect(jsonPath("$.data.id").value(response.id()))
+                .andExpect(jsonPath("$.data.missionBookmarkId").value(response.missionBookmarkId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.data.userId").value(response.userId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -68,7 +68,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.missionBookmarkId").type(JsonFieldType.NUMBER)
                                         .description("생성된 북마크 아이디"),
                                 fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                                         .description("찜한 미션 아이디"),
@@ -97,7 +97,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.id").value(response.id()))
+                .andExpect(jsonPath("$.data.missionBookmarkId").value(response.missionBookmarkId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.data.userId").value(response.userId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -113,7 +113,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.missionBookmarkId").type(JsonFieldType.NUMBER)
                                         .description("제거된 북마크 아이디"),
                                 fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                                         .description("찜 취소된 미션 아이디"),
@@ -135,7 +135,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
 
     private MissionBookmarkCreateResponse createMissionBookmarkCreateResponse() {
         return MissionBookmarkCreateResponse.builder()
-                .id(1L)
+                .missionBookmarkId(1L)
                 .missionId(1L)
                 .userId(10L)
                 .build();
@@ -150,7 +150,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
 
     private MissionBookmarkCancelResponse createMissionBookmarkCancelResponse() {
         return MissionBookmarkCancelResponse.builder()
-                .id(1L)
+                .missionBookmarkId(1L)
                 .missionId(1L)
                 .userId(10L)
                 .build();

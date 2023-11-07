@@ -74,7 +74,7 @@ public class MissionBookmarkService {
         mission.subBookmarkCount();
 
         return MissionBookmarkCancelResponse.builder()
-                .id(findMissionBookmark.getId())
+                .missionBookmarkId(findMissionBookmark.getId())
                 .missionId(mission.getId())
                 .userId(findMissionBookmark.getUserId())
                 .build();

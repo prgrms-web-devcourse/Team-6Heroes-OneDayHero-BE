@@ -24,7 +24,6 @@ public class MissionMatchService {
     private final MissionMatchReader missionMatchReader;
 
     public MissionMatchCreateResponse createMissionMatch(MissionMatchCreateServiceRequest request) {
-        //TODO : UserReader 를 통한 히어로 유저 존재 검증
         var mission = missionReader.findOne(request.missionId());
         var missionMatch = MissionMatch.createMissionMatch(
                 mission.getId(),
@@ -50,7 +49,7 @@ public class MissionMatchService {
         //TODO: 히어로에게 미션매칭 취소 알람
 
         return MissionMatchCancelResponse.builder()
-                .id(missionMatch.getId())
+                .missionMatchId(missionMatch.getId())
                 .citizenId(request.citizenId())
                 .missionId(request.missionId())
                 .build();
