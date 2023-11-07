@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
+import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequest;
+import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.Email;
@@ -50,14 +50,14 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
             .nickname(nickname)
             .gender(gender)
             .birth(birth)
             .introduce(introduce)
             .build();
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
             .favoriteDate(favoriteDate)
             .favoriteStartTime(favoriteStartTime)
             .favoriteEndTime(favoriteEndTime)
@@ -97,14 +97,14 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
             .nickname(nickname)
             .gender(gender)
             .birth(birth)
             .introduce(introduce)
             .build();
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
             .favoriteDate(favoriteDate)
             .favoriteStartTime(favoriteStartTime)
             .favoriteEndTime(favoriteEndTime)

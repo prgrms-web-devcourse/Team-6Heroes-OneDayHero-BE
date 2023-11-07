@@ -29,7 +29,7 @@ include::api/mission/missionboomark.adoc[]
 
 include::api/missionmatch/missionmatch.adoc[]
 
-[[Mission-Request-API]]
-== Mission Request API
+[[Mission-proposal-API]]
+== Mission Proposal API
 
-include::api/mission-request/mission-request.adoc[]
+include::api/missionproposal/mission-proposal.adoc[]

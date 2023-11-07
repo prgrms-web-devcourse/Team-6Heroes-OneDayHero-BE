@@ -5,9 +5,9 @@ import com.sixheroes.onedayheroapi.user.request.UserBasicInfoDto;
 import com.sixheroes.onedayheroapi.user.request.UserFavoriteWorkingDayDto;
 import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
 import com.sixheroes.onedayheroapplication.user.UserService;
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
+import com.sixheroes.onedayheroapplication.user.response.UserBasicInfoServiceResponse;
+import com.sixheroes.onedayheroapplication.user.response.UserFavoriteWorkingDayServiceResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -51,8 +51,8 @@ class UserControllerTest extends RestDocsSupport {
         var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayDto(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userUpadateRequest = new UserUpadateRequest(userId, userBasicInfoDto, userFavoriteWorkingDayDto);
 
-        var userBasicInfoServiceDto = new UserBasicInfoServiceDto("이름", "MALE", LocalDate.of(1990, 1, 1), "자기소개");
-        var userFavoriteWorkingDayServiceDto = new UserFavoriteWorkingDayServiceDto(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
+        var userBasicInfoServiceDto = new UserBasicInfoServiceResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기소개");
+        var userFavoriteWorkingDayServiceDto = new UserFavoriteWorkingDayServiceResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userUpdateResponse = new UserUpdateResponse(userId, userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto);
 
         given(userService.updateUser(any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);

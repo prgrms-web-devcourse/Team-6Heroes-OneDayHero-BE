@@ -39,14 +39,14 @@ class UserTest {
                 .hasMessage(ErrorCode.EU_010.name());
     }
 
-    @DisplayName("히어로 모드가 아닐 때 미션 요청을 받을 수 없다.")
+    @DisplayName("히어로 모드가 아닐 때 미션 제안을 받을 수 없다.")
     @Test
-    void impossibleMissionRequestedWhenNotHeroMode() {
+    void impossibleMissionProposedWhenNotHeroMode() {
         // given
         var user = createUser();
 
         // when & then
-        assertThatThrownBy(user::validPossibleMissionRequested)
+        assertThatThrownBy(user::validPossibleMissionProposal)
             .isInstanceOf(IllegalStateException.class)
             .hasMessage(ErrorCode.EU_009.name());
     }

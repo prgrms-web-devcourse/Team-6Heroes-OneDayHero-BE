@@ -177,15 +177,15 @@ public class Mission extends BaseEntity {
         }
     }
 
-    // TODO 미션이 매칭중이 아닐 때 validMissionRequestPossible, validMissionRequestChangeStatus 검증
-    public void validMissionRequestPossible(
+    // TODO 미션이 매칭중이 아닐 때 validMissionProposalPossible, validMissionProposalChangeStatus 검증
+    public void validMissionProposalPossible(
         Long userId
     ) {
         validMissionOwner(userId);
         validMissionStatusMatching();
     }
 
-    public void validMissionRequestChangeStatus() {
+    public void validMissionProposalChangeStatus() {
         validMissionStatusMatching();
     }
 
@@ -194,13 +194,6 @@ public class Mission extends BaseEntity {
             MissionStatus missionStatus
     ) {
         this.missionStatus = missionStatus;
-    }
-
-    private void validateBookmarkCountAddable(MissionStatus missionStatus) {
-        if (missionStatus != MissionStatus.MATCHING) {
-            log.warn("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", missionStatus);
-            throw new IllegalStateException(ErrorCode.EMC_002.name());
-        }
     }
 
     private void validOwn(
