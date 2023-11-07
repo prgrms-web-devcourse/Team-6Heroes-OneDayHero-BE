@@ -6,6 +6,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreate
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
@@ -38,7 +39,10 @@ public class MissionBookmarkService {
                 userId
         );
 
-        return MissionBookmarkMeViewResponse.from(queryResponses);
+        return MissionBookmarkMeViewResponse.of(
+                userId,
+                queryResponses
+        );
     }
 
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
@@ -48,6 +52,11 @@ public class MissionBookmarkService {
                 .mission(mission)
                 .userId(request.userId())
                 .build();
+
+        validateMissionBookmarkIsAlreadyExist(
+                mission.getId(),
+                request.userId()
+        );
 
         var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
         mission.addBookmarkCount();
@@ -70,5 +79,17 @@ public class MissionBookmarkService {
                 .missionId(mission.getId())
                 .userId(findMissionBookmark.getUserId())
                 .build();
+    }
+
+    private void validateMissionBookmarkIsAlreadyExist(
+            Long missionId,
+            Long userId) {
+
+        if (missionBookmarkRepository.existsByMissionIdAndUserId(
+                missionId,
+                userId)) {
+            log.debug("이미 해당 미션에 대해 찜했습니다.");
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
     }
 }

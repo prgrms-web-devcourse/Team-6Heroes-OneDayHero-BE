@@ -6,10 +6,12 @@ import org.springframework.data.domain.SliceImpl;
 
 
 public record MissionBookmarkMeViewResponse(
+    Long userId,
     Slice<MissionBookmarkMeLineDto> missionBookmarkMeLineDtos
 ) {
 
-    public static MissionBookmarkMeViewResponse from(
+    public static MissionBookmarkMeViewResponse of(
+            Long userId,
             Slice<MissionBookmarkMeQueryResponse> queryResponses
     ) {
         var content = queryResponses.getContent()
@@ -23,6 +25,6 @@ public record MissionBookmarkMeViewResponse(
                 queryResponses.hasNext()
         );
 
-        return new MissionBookmarkMeViewResponse(lineDtos);
+        return new MissionBookmarkMeViewResponse(userId, lineDtos);
     }
 }

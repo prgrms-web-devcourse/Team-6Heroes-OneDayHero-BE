@@ -10,6 +10,8 @@ public interface MissionBookmarkRepository extends JpaRepository<MissionBookmark
 
     Optional<MissionBookmark> findByMissionIdAndUserId(Long missionId, Long userId);
 
+    Boolean existsByMissionIdAndUserId(Long missionId, Long userId);
+
     List<MissionBookmark> findByMissionId(Long missionId);
 
     void deleteByIdIn(List<Long> userBookmarkIds);

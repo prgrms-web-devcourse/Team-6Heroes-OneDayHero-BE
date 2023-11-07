@@ -57,6 +57,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
     @Test
     void viewMeBookmarkMissions() throws Exception {
         // when
+        var userId = 1L;
         var missionBookmarkMeDtoA = createMissionBookmarkMeDtoA();
         var missionBookmarkMeDtoB = createMissionBookmarkMeDtoB();
         var missionBookmarkMeDtoC = createMissionBookmarkMeDtoC();
@@ -78,7 +79,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 any(Pageable.class),
                 anyLong()
                 )
-        ).willReturn(new MissionBookmarkMeViewResponse(lineDtos));
+        ).willReturn(new MissionBookmarkMeViewResponse(userId, lineDtos));
 
 
         // when & then
@@ -90,6 +91,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .param("userId", "-1")
         ).andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.userId").value(userId))
                 .andExpect(jsonPath("$.data.missionBookmarkMeLineDtos.content[0].missionId").value(missionBookmarkMeDtoA.missionId()))
                 .andExpect(jsonPath("$.data.missionBookmarkMeLineDtos.content[0].missionBookmarkId").value(missionBookmarkMeDtoA.missionBookmarkId()))
                 .andExpect(jsonPath("$.data.missionBookmarkMeLineDtos.content[0].isAlive").value(missionBookmarkMeDtoA.isAlive()))
@@ -149,6 +151,8 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
+                                fieldWithPath("data.userId").type(JsonFieldType.NUMBER)
+                                        .description("내 유저 아이디"),
                                 fieldWithPath("data.missionBookmarkMeLineDtos").type(JsonFieldType.OBJECT)
                                         .description("내 찜 미션 목록"),
                                 fieldWithPath("data.missionBookmarkMeLineDtos.content[]").type(JsonFieldType.ARRAY)
