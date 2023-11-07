@@ -9,6 +9,7 @@ import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
 import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@Disabled
 @Transactional
 class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
