@@ -11,6 +11,9 @@ import java.time.LocalTime;
 
 @Builder
 public record MissionInfoRequest(
+        @NotBlank(message = "미션의 제목은 필수 값이며 공백 일 수 없습니다.")
+        String title,
+
         @NotBlank(message = "미션의 내용은 필수 값이며 공백 일 수 없습니다.")
         String content,
 

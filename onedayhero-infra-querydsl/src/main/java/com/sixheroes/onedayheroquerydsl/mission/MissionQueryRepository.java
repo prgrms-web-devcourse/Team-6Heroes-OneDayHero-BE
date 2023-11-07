@@ -3,9 +3,11 @@ package com.sixheroes.onedayheroquerydsl.mission;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
+import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,7 @@ public class MissionQueryRepository {
                                 region.gu,
                                 region.dong,
                                 mission.location,
+                                mission.missionInfo.title,
                                 mission.missionInfo.content,
                                 mission.missionInfo.missionDate,
                                 mission.missionInfo.startTime,
@@ -59,9 +62,9 @@ public class MissionQueryRepository {
                 .join(region)
                 .on(region.id.eq(mission.regionId))
                 .where(userIdEq(request.userId()),
-                        missionCategoryIdsEq(request.missionCategoryIds()),
-                        regionIdsEq(request.regionIds()),
-                        missionDatesEq(request.missionDates()))
+                        missionCategoryIdsIn(request.missionCategoryIds()),
+                        regionIdsIn(request.regionIds()),
+                        missionDatesIn(request.missionDates()))
                 .fetch();
 
         log.debug("query Size : {}", content.size());
@@ -72,9 +75,9 @@ public class MissionQueryRepository {
                 .join(region)
                 .on(region.id.eq(mission.regionId))
                 .where(userIdEq(request.userId()),
-                        missionCategoryIdsEq(request.missionCategoryIds()),
-                        regionIdsEq(request.regionIds()),
-                        missionDatesEq(request.missionDates())
+                        missionCategoryIdsIn(request.missionCategoryIds()),
+                        regionIdsIn(request.regionIds()),
+                        missionDatesIn(request.missionDates())
                 );
 
         log.debug("total Count : {}", totalCount.fetchOne());
@@ -82,13 +85,42 @@ public class MissionQueryRepository {
         return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
     }
 
-    public List<Mission> findByCategoryId(
-            Long categoryId
+    public Slice<MissionProgressQueryResponse> findProgressMissionByUserId(
+            Pageable pageable,
+            Long userId
     ) {
-        return queryFactory.select(mission)
+        var content = queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
+                        mission.id,
+                        mission.missionInfo.title,
+                        mission.missionCategory.id,
+                        mission.missionCategory.missionCategoryCode,
+                        mission.missionCategory.name,
+                        region.si,
+                        region.gu,
+                        region.dong,
+                        mission.missionInfo.missionDate,
+                        mission.bookmarkCount,
+                        mission.missionStatus
+                ))
                 .from(mission)
-                .where(mission.missionCategory.id.eq(categoryId))
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .where(userIdEq(userId), missionStatusIsProgress())
                 .fetch();
+
+        var count = queryFactory.select(mission.count())
+                .from(mission)
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .where(userIdEq(userId), missionStatusIsProgress());
+
+        return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
+    }
+
+    private BooleanExpression missionStatusIsProgress() {
+        return mission.missionStatus.notIn(MissionStatus.MISSION_COMPLETED, MissionStatus.EXPIRED);
     }
 
     public Optional<MissionQueryResponse> fetchOne(
@@ -105,6 +137,7 @@ public class MissionQueryRepository {
                         region.gu,
                         region.dong,
                         mission.location,
+                        mission.missionInfo.title,
                         mission.missionInfo.content,
                         mission.missionInfo.missionDate,
                         mission.missionInfo.startTime,
@@ -128,27 +161,27 @@ public class MissionQueryRepository {
         return new BooleanBuilder(mission.citizenId.eq(userId));
     }
 
-    private BooleanBuilder missionCategoryIdsEq(List<Long> missionCategories) {
-        var booleanBuilder = new BooleanBuilder();
-        for (Long categoryId : missionCategories) {
-            booleanBuilder.or(mission.missionCategory.id.eq(categoryId));
+    private BooleanBuilder missionCategoryIdsIn(List<Long> missionCategories) {
+        if (missionCategories.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+
+        return new BooleanBuilder(mission.missionCategory.id.in(missionCategories));
     }
 
-    private BooleanBuilder regionIdsEq(List<Long> regionIds) {
-        var booleanBuilder = new BooleanBuilder();
-        for (Long regionId : regionIds) {
-            booleanBuilder.or(mission.regionId.eq(regionId));
+    private BooleanBuilder regionIdsIn(List<Long> regionIds) {
+        if (regionIds.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+
+        return new BooleanBuilder(mission.regionId.in(regionIds));
     }
 
-    private BooleanBuilder missionDatesEq(List<LocalDate> missionDates) {
-        var booleanBuilder = new BooleanBuilder();
-        for (LocalDate missionDate : missionDates) {
-            booleanBuilder.or(mission.missionInfo.missionDate.eq(missionDate));
+    private BooleanBuilder missionDatesIn(List<LocalDate> missionDates) {
+        if (missionDates.isEmpty()) {
+            return null;
         }
-        return booleanBuilder;
+
+        return new BooleanBuilder(mission.missionInfo.missionDate.in(missionDates));
     }
 }

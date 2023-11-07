@@ -23,6 +23,7 @@ public record MissionResponse(
         Integer bookmarkCount,
         String missionStatus
 ) {
+
     public static MissionResponse from(MissionQueryResponse response) {
         return MissionResponse.builder()
                 .id(response.id())
@@ -61,6 +62,8 @@ public record MissionResponse(
 
     @Builder
     public record MissionInfoResponse(
+            String title,
+
             String content,
 
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

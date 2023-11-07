@@ -12,10 +12,10 @@ NGINX_NAME=nginx
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY*.jar $REPOSITORY"
 
-cp $REPOSITORY/*.jar $REPOSITORY      # 새로운 jar file 계속 덮어쓰기
+cp -f $REPOSITORY*.jar $REPOSITORY      # 새로운 jar file 계속 덮어쓰기
 
 echo "> 새 어플리케이션 배포"
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr $REPOSITORY*.jar | tail -n 1)
 
 echo "> JAR Name: $JAR_NAME"
 
@@ -50,5 +50,5 @@ echo "$files"
 # docker 이미지를 연결하고 환경변수 전달
 echo "> docker build -t spring ./"
 sudo docker build -t spring ./
-echo "> docker run -it --name ${IDLE_PROFILE} -d -e active=${IDLE_PROFILE} -e location=${LOCATION} -p ${IDLE_PORT}:${IDLE_PORT} spring"
+echo "> docker run -it --name ${IDLE_PROFILE} -d -e active=${IDLE_PROFILE} -e location=${LOCATION} -v /home/ec2-user/yml/application.yml:/yml/application.yml -p ${IDLE_PORT}:${IDLE_PORT} spring"
 sudo docker run -it --name "$IDLE_PROFILE" -d -e active="$IDLE_PROFILE" -e location=$LOCATION -v /home/ec2-user/yml/application.yml:/yml/application.yml -p "$IDLE_PORT":"$IDLE_PORT" spring

@@ -20,6 +20,9 @@ import java.time.LocalTime;
 @Embeddable
 public class MissionInfo {
 
+    @Column(name = "title", length = 100, nullable = false)
+    private String title;
+
     @Column(name = "content", length = 1000, nullable = false)
     private String content;
 
@@ -38,8 +41,11 @@ public class MissionInfo {
     @Column(name = "price", nullable = false)
     private Integer price;
 
+    //TODO : Refactoring
+    //많은 검증 로직을 Embeddable로 바꿔서 검증 로직 분리
     @Builder
     private MissionInfo(
+            String title,
             String content,
             LocalDate missionDate,
             LocalTime startTime,
@@ -48,16 +54,37 @@ public class MissionInfo {
             Integer price,
             LocalDateTime serverTime
     ) {
+        validMissionTitle(title);
         validMissionContent(content);
         validPriceIsPositive(price);
         validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, serverTime);
-        
+
+        this.title = title;
         this.content = content;
         this.missionDate = missionDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.deadlineTime = deadlineTime;
         this.price = price;
+    }
+
+    private void validMissionTitle(String title) {
+        validTitleIsEmpty(title);
+        validTitleInRange(title);
+    }
+
+    private void validTitleIsEmpty(String title) {
+        if (!StringUtils.hasText(title)) {
+            log.warn("미션의 제목은 null 이거나 공백 일 수 없습니다. title : {}", title);
+            throw new IllegalArgumentException(ErrorCode.EM_001.name());
+        }
+    }
+
+    private void validTitleInRange(String title) {
+        if (title.length() > 100) {
+            log.warn("미션의 제목의 길이는 100자 이하여야합니다. title 길이 : {}", title.length());
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
+        }
     }
 
     private void validMissionDateTimeInRange(

@@ -6,11 +6,13 @@ import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Component
 public class RegionReader {
 

@@ -1,5 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission.request;
 
+import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
+import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -13,4 +15,18 @@ public record MissionFindFilterServiceRequest(
         List<Long> regionIds
 ) {
 
+    public MissionFindFilterQueryRequest toQuery() {
+        return MissionFindFilterQueryRequest.builder()
+                .missionCategoryIds(convertMissionCategoryCodesToLong(missionCategoryCodes))
+                .missionDates(missionDates)
+                .regionIds(regionIds)
+                .build();
+    }
+
+    private List<Long> convertMissionCategoryCodesToLong(List<String> missionCategoryCodes) {
+        return missionCategoryCodes.stream()
+                .map(MissionCategoryCode::valueOf)
+                .map(MissionCategoryCode::getCategoryId)
+                .toList();
+    }
 }
