@@ -1,10 +1,12 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
+import lombok.Builder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
+@Builder
 public record MissionProgressResponses(
         Slice<MissionProgressResponse> missionProgressResponses
 ) {

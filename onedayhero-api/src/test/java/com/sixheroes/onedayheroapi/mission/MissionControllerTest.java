@@ -676,7 +676,9 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionProgressResponse = createMissionProgressResponse(missionCategoryResponse);
 
         var sliceMissionResponses = new SliceImpl<>(List.of(missionProgressResponse), pageRequest, false);
-        var result = MissionProgressResponses.from(pageRequest, List.of(missionProgressResponse), sliceMissionResponses.hasNext());
+        var result = MissionProgressResponses.builder()
+                .missionProgressResponses(sliceMissionResponses)
+                .build();
 
         given(missionService.findProgressMission(any(Pageable.class), any(Long.class)))
                 .willReturn(result);
