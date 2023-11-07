@@ -1,8 +1,12 @@
 ext {
     jjwtVersion = '0.11.5'
+    mysqlJdbcDriverVersion = '8.0.33'
 }
 
 dependencies {
+    //MySQL
+    api "mysql:mysql-connector-java:${mysqlJdbcDriverVersion}"
+
     //JWT
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
