@@ -12,10 +12,10 @@ NGINX_NAME=nginx
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY*.jar $REPOSITORY"
 
-cp $REPOSITORY/*.jar $REPOSITORY      # 새로운 jar file 계속 덮어쓰기
+cp -f $REPOSITORY*.jar $REPOSITORY      # 새로운 jar file 계속 덮어쓰기
 
 echo "> 새 어플리케이션 배포"
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr $REPOSITORY*.jar | tail -n 1)
 
 echo "> JAR Name: $JAR_NAME"
 
