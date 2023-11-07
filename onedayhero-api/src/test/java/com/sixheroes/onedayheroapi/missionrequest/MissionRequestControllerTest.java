@@ -259,7 +259,6 @@ class MissionRequestControllerTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.missionRequests.content[0].missionRequestId").value(missionRequest1.missionRequestId()))
                 .andExpect(jsonPath("$.data.missionRequests.content[0].mission.missionId").value(missionRequest1.mission().missionId()))
                 .andExpect(jsonPath("$.data.missionRequests.content[0].mission.missionStatus").value(missionRequest1.mission().missionStatus()))
