@@ -53,7 +53,7 @@ public class MissionMatch {
 
     public void canceled() {
         validateCurrentMissionMatchStatusIsMatchingMatched();
-        this.missionMatchStatus = MissionMatchStatus.WITHDRAW;
+        this.missionMatchStatus = MissionMatchStatus.CANCELED;
     }
 
     private void validateCurrentMissionMatchStatusIsMatchingMatched() {

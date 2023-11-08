@@ -30,7 +30,7 @@ public class MissionMatchService {
                 request.heroId()
         );
 
-        mission.missionMatchingCompleted(request.userId());
+        mission.completeMissionMatching(request.userId());
         var savedMissionMatch = missionMatchRepository.save(missionMatch);
 
         //TODO: 시민, 히어로에게 미션매칭 성사 알람
@@ -38,12 +38,11 @@ public class MissionMatchService {
         return MissionMatchCreateResponse.from(savedMissionMatch);
     }
 
-    //시민이 미션 매칭 취소
     public MissionMatchCancelResponse cancelMissionMatch(MissionMatchCancelServiceRequest request) {
         var mission = missionReader.findOne(request.missionId());
-        mission.missionMatchingCanceled(request.citizenId());
-
         var missionMatch = missionMatchReader.findByMissionId(mission.getId());
+
+        mission.cancelMissionMatching(request.citizenId());
         missionMatch.canceled();
 
         //TODO: 히어로에게 미션매칭 취소 알람

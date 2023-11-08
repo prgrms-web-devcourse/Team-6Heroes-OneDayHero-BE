@@ -80,7 +80,7 @@ class MissionInfoTest {
         // when & then
         assertThatThrownBy(() -> createMissionInfo(title, "content"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_001.name());
+                .hasMessage(ErrorCode.T_001.name());
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 제목은 100자를 초과 할 수 없다.")

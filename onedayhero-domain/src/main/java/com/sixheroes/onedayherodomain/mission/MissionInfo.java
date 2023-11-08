@@ -76,7 +76,7 @@ public class MissionInfo {
     private void validTitleIsEmpty(String title) {
         if (!StringUtils.hasText(title)) {
             log.warn("미션의 제목은 null 이거나 공백 일 수 없습니다. title : {}", title);
-            throw new IllegalArgumentException(ErrorCode.EM_001.name());
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
         }
     }
 

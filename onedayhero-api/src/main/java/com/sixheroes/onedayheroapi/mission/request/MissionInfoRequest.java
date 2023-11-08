@@ -39,6 +39,7 @@ public record MissionInfoRequest(
 
     public MissionInfoServiceRequest toService() {
         return MissionInfoServiceRequest.builder()
+                .title(title)
                 .content(content)
                 .missionDate(missionDate)
                 .startTime(startTime)

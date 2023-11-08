@@ -1,5 +1,7 @@
-package com.sixheroes.onedayherocommon.jwt;
+package com.sixheroes.onedayheroapi.jwt;
 
+import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
+import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class JwtTokenUtilsTest {
+class JwtTokenManagerTest {
 
     private final static String INVALID_FORMAT_ACCESS_TOKEN = "esJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5ODkxMTkyNCwiZXwIjoxNjk4OTEyNTI0fQ.k-sTH0U_HM3lv7augTF2Gx0497DKzDZiyRMzv_QZObQ";
     private final static String TEST_SECRET_KEY = "EENY5W0eegTf1naQB2eDeaaaRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ";
@@ -21,22 +23,16 @@ class JwtTokenUtilsTest {
         // given
         var userId = 1L;
         var userRole = "MEMBER";
-        var accessToken = JwtTokenUtils.generateAccessToken(
+
+        var jwtTokenManager = new JwtTokenManager(createProperties(TEST_EXPIRY_TIME_MS));
+        var accessToken = jwtTokenManager.generateAccessToken(
                 userId,
-                userRole,
-                TEST_SECRET_KEY,
-                TEST_EXPIRY_TIME_MS
+                userRole
         );
 
         // when
-        var userIdFromAccessToken = JwtTokenUtils.getId(
-                accessToken,
-                TEST_SECRET_KEY
-        );
-        var userRoleFromAccessToken = JwtTokenUtils.getRole(
-                accessToken,
-                TEST_SECRET_KEY
-        );
+        var userIdFromAccessToken = jwtTokenManager.getId(accessToken);
+        var userRoleFromAccessToken = jwtTokenManager.getRole(accessToken);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -48,12 +44,11 @@ class JwtTokenUtilsTest {
     @DisplayName("잘못된 형식의 액세스토큰을 검증할 수 있다.")
     @Test
     void validateMalformedToken() {
+        var jwtTokenManager = new JwtTokenManager(createProperties(TEST_EXPIRY_TIME_MS));
+
         // when & then
         assertThatThrownBy(() ->
-                JwtTokenUtils.getRole(
-                        INVALID_FORMAT_ACCESS_TOKEN,
-                        TEST_SECRET_KEY
-                )
+                jwtTokenManager.getRole(INVALID_FORMAT_ACCESS_TOKEN)
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.T_001.name());
@@ -65,21 +60,27 @@ class JwtTokenUtilsTest {
         // given
         var userId = 1L;
         var userRole = "MEMBER";
-        var expiredAccessToken = JwtTokenUtils.generateAccessToken(
+        var jwtTokenManager = new JwtTokenManager(createProperties(TEST_SHORT_EXPIRY_TIME_MS));
+        var expiredAccessToken = jwtTokenManager.generateAccessToken(
                 userId,
-                userRole,
-                TEST_SECRET_KEY,
-                TEST_SHORT_EXPIRY_TIME_MS
+                userRole
         );
 
         // when & then
         assertThatThrownBy(() ->
-                JwtTokenUtils.getId(
-                        expiredAccessToken,
-                        TEST_SECRET_KEY
-                )
+                jwtTokenManager.getId(expiredAccessToken)
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.T_001.name());
+    }
+
+    private JwtProperties createProperties(Long accessTokenExpiryTime) {
+        return new JwtProperties(
+                TEST_SECRET_KEY,
+                accessTokenExpiryTime,
+                1L,
+                "id",
+                "role"
+                );
     }
 }
