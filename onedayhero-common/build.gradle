@@ -1,5 +1,3 @@
-dependencies {
-
 ext {
     jjwtVersion = '0.11.5'
     mysqlVersion = '8.0.33'

@@ -204,7 +204,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionStatus(missionStatus)
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.56))
                 .build();
 
         return missionRepository.save(mission);
