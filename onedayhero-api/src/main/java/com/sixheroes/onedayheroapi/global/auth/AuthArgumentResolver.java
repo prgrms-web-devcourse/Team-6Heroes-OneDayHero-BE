@@ -32,7 +32,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory
     ) {
         var request = webRequest.getNativeRequest(HttpServletRequest.class);
-        var id = request.getAttribute(jwtProperties.getClaimID());
+        var id = request.getAttribute(jwtProperties.getClaimId());
 
         if (ObjectUtils.isEmpty(id)) {
             throw new IllegalStateException(ErrorCode.S_001.name());
