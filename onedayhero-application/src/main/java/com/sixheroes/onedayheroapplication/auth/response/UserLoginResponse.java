@@ -1,7 +1,6 @@
 package com.sixheroes.onedayheroapplication.auth.response;
 
 import com.sixheroes.onedayherodomain.user.User;
-import com.sixheroes.onedayherodomain.user.UserRole;
 import lombok.Builder;
 
 @Builder

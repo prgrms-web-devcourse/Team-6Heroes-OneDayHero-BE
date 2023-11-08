@@ -1,6 +1,5 @@
 package com.sixheroes.onedayheroapi.global.jwt;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
