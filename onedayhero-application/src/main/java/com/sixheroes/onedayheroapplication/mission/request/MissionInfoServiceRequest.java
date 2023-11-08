@@ -14,7 +14,7 @@ public record MissionInfoServiceRequest(
         LocalDate missionDate,
         LocalTime startTime,
         LocalTime endTime,
-        LocalTime deadlineTime,
+        LocalDateTime deadlineTime,
         Integer price
 ) {
 

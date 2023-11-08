@@ -77,7 +77,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
@@ -124,7 +124,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
@@ -145,7 +145,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(9, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
@@ -166,7 +166,10 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                startTime.plusMinutes(1)
+        );
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
@@ -191,7 +194,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -237,7 +240,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -270,7 +273,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -305,7 +308,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var region = regionRepository.findById(1L).get();
 
@@ -380,7 +383,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -437,7 +440,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -480,7 +483,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_009.name());
     }
 
-    @DisplayName("시민이 미션을 생성 할 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
+    @DisplayName("시민이 미션을 수정 할 때 미션 일이 현재보다 이전 일 수 없다.")
     @Test
     void updateMissionWithMissionDateBeforeToday() {
         // given
@@ -492,7 +495,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -548,7 +551,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -592,7 +595,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_004.name());
     }
 
-    @DisplayName("시민이 미션을 수정 할 때 미션의 수행 일이 현재 날짜 이전 일 수 없다.")
+    @DisplayName("시민이 미션을 수정 할 때 미션의 종료 시간이 시작 시간보다 빠를 수 없다.")
     @Test
     void updateMissionWithEndTimeBeforeStartTime() {
         // given
@@ -604,7 +607,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -623,11 +626,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 savedMission.getMissionInfo().getMissionDate().minusDays(1),
                 LocalTime.MIDNIGHT
         );
-
+        
         var missionInfoServiceRequest = createMissionInfoServiceRequest(
                 savedMission.getMissionInfo().getMissionDate().plusDays(2),
-                savedMission.getMissionInfo().getStartTime().plusHours(2),
-                savedMission.getMissionInfo().getEndTime().plusHours(3),
+                savedMission.getMissionInfo().getStartTime().plusHours(3),
+                savedMission.getMissionInfo().getEndTime().plusHours(2),
                 savedMission.getMissionInfo().getDeadlineTime().plusHours(3)
         );
 
@@ -645,7 +648,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_005.name());
+                .hasMessage(ErrorCode.EM_004.name());
     }
 
     @DisplayName("시민은 마감된 미션에 대해서만 미션을 연장 할 수 있다.")
@@ -661,7 +664,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -716,7 +719,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -772,7 +775,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
                 missionCategory,
@@ -831,7 +834,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalDateTime deadlineTime
     ) {
         return MissionInfoServiceRequest
                 .builder()
@@ -851,7 +854,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime,
+            LocalDateTime deadlineTime,
             LocalDateTime serverTime,
             MissionStatus missionStatus
     ) {

@@ -215,7 +215,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 10),
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .title("서빙")
                 .content("서빙 도와주기")

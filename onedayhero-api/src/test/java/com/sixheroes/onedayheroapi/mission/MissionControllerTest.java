@@ -53,7 +53,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                startTime
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateRequest = createMissionCreateRequest(missionInfoRequest);
@@ -186,7 +189,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -243,7 +246,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                startTime
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -378,7 +384,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -393,7 +399,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                LocalTime.of(10, 0)
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -528,7 +537,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -543,7 +552,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                LocalTime.of(9, 30)
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -646,7 +658,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -964,7 +976,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionResponseA.missionInfo().missionDate())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().startTime())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().endTime())))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().deadlineTime())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionResponseA.missionInfo().deadlineTime())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.price").value(missionResponseA.missionInfo().price()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].bookmarkCount").value(missionResponseA.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionStatus").value(missionResponseA.missionStatus()))
@@ -1033,7 +1045,10 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionDate(missionDate)
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(9, 30))
-                .deadlineTime(LocalTime.of(8, 30))
+                .deadlineTime(LocalDateTime.of(
+                        missionDate,
+                        LocalTime.of(8, 30)
+                ))
                 .price(1000)
                 .build();
     }
@@ -1131,7 +1146,7 @@ public class MissionControllerTest extends RestDocsSupport {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalDateTime deadlineTime
     ) {
         return MissionInfoRequest
                 .builder()

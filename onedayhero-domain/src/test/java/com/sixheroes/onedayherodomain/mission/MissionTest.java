@@ -71,7 +71,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -128,7 +128,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -169,7 +169,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -219,7 +219,10 @@ class MissionTest {
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))
                                 .endTime(LocalTime.of(14, 30))
-                                .deadlineTime(LocalTime.of(12, 0))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 30)
+                                ))
                                 .price(1000)
                                 .serverTime(LocalDateTime.of(
                                         LocalDate.of(2023, 10, 31),
@@ -266,7 +269,10 @@ class MissionTest {
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))
                                 .endTime(LocalTime.of(14, 30))
-                                .deadlineTime(LocalTime.of(12, 0))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 0)
+                                ))
                                 .price(1000)
                                 .serverTime(LocalDateTime.of(
                                         LocalDate.of(2023, 10, 31),

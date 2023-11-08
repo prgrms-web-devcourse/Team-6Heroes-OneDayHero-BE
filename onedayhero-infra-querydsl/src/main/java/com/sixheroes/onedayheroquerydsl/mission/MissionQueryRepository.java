@@ -9,11 +9,11 @@ import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
+import com.sixheroes.onedayheroquerydsl.util.SliceResultConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -65,24 +65,12 @@ public class MissionQueryRepository {
                         missionCategoryIdsIn(request.missionCategoryIds()),
                         regionIdsIn(request.regionIds()),
                         missionDatesIn(request.missionDates()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(mission.createdAt.asc())
                 .fetch();
 
-        log.debug("query Size : {}", content.size());
-
-        var totalCount = queryFactory.select(mission.count())
-                .from(mission)
-                .join(mission.missionCategory, missionCategory)
-                .join(region)
-                .on(region.id.eq(mission.regionId))
-                .where(userIdEq(request.userId()),
-                        missionCategoryIdsIn(request.missionCategoryIds()),
-                        regionIdsIn(request.regionIds()),
-                        missionDatesIn(request.missionDates())
-                );
-
-        log.debug("total Count : {}", totalCount.fetchOne());
-
-        return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
+        return SliceResultConverter.consume(content, pageable);
     }
 
     public Slice<MissionProgressQueryResponse> findProgressMissionByUserId(
@@ -107,16 +95,12 @@ public class MissionQueryRepository {
                 .join(region)
                 .on(mission.regionId.eq(region.id))
                 .where(userIdEq(userId), missionStatusIsProgress())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(mission.createdAt.asc())
                 .fetch();
 
-        var count = queryFactory.select(mission.count())
-                .from(mission)
-                .join(mission.missionCategory, missionCategory)
-                .join(region)
-                .on(mission.regionId.eq(region.id))
-                .where(userIdEq(userId), missionStatusIsProgress());
-
-        return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
+        return SliceResultConverter.consume(content, pageable);
     }
 
     private BooleanExpression missionStatusIsProgress() {

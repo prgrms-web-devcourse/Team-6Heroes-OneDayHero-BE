@@ -9,6 +9,7 @@ import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Builder
@@ -77,8 +78,8 @@ public record MissionResponse(
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
             LocalTime endTime,
 
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-            LocalTime deadlineTime,
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+            LocalDateTime deadlineTime,
 
             Integer price
     ) {
@@ -87,6 +88,7 @@ public record MissionResponse(
                 MissionQueryResponse response
         ) {
             return MissionInfoResponse.builder()
+                    .title(response.title())
                     .content(response.content())
                     .missionDate(response.missionDate())
                     .startTime(response.startTime())
@@ -100,6 +102,7 @@ public record MissionResponse(
                 MissionInfo missionInfo
         ) {
             return MissionInfoResponse.builder()
+                    .title(missionInfo.getTitle())
                     .content(missionInfo.getContent())
                     .missionDate(missionInfo.getMissionDate())
                     .startTime(missionInfo.getStartTime())

@@ -75,7 +75,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
 
@@ -220,7 +220,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
         var citizenId = 1L;
@@ -236,6 +236,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var savedMission = missionRepository.saveAll(
                 List.of(mission, completedMission, matchedMission, expiredMission)
         );
+
 
         // when
         var missionQueryResponse = missionQueryRepository.findProgressMissionByUserId(pageRequest, citizenId);
@@ -278,7 +279,10 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .missionDate(missionDate)
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        missionDate,
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .serverTime(serverTime)
                 .build();
@@ -288,7 +292,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime,
+            LocalDateTime deadlineTime,
             LocalDateTime serverTime
     ) {
         return MissionInfo.builder()

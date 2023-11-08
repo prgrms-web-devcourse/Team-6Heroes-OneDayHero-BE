@@ -36,7 +36,7 @@ public class MissionInfo {
     private LocalTime endTime;
 
     @Column(name = "deadline_time", nullable = false)
-    private LocalTime deadlineTime;
+    private LocalDateTime deadlineTime;
 
     @Column(name = "price", nullable = false)
     private Integer price;
@@ -50,7 +50,7 @@ public class MissionInfo {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime,
+            LocalDateTime deadlineTime,
             Integer price,
             LocalDateTime serverTime
     ) {
@@ -91,12 +91,11 @@ public class MissionInfo {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime,
+            LocalDateTime deadlineTime,
             LocalDateTime serverTime
     ) {
         var startDateTime = LocalDateTime.of(missionDate, startTime);
         var endDateTime = LocalDateTime.of(missionDate, endTime);
-        var deadLineDateTime = LocalDateTime.of(missionDate, deadlineTime);
 
         if (missionDate.isBefore(serverTime.toLocalDate())) {
             log.warn("미션의 수행 날짜가 현재 날짜보다 이전 일 수 없습니다. 수행 일 : {}, 현재 날짜 : {}", missionDate, serverTime.toLocalDate());
@@ -108,8 +107,8 @@ public class MissionInfo {
             throw new IllegalArgumentException(ErrorCode.EM_004.name());
         }
 
-        if (deadLineDateTime.isAfter(startDateTime)) {
-            log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadLineDateTime);
+        if (deadlineTime.isAfter(startDateTime)) {
+            log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadlineTime);
             throw new IllegalArgumentException(ErrorCode.EM_005.name());
         }
     }
