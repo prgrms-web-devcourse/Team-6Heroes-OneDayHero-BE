@@ -1,9 +1,22 @@
+ext {
+    set('springCloudVersion', "2022.0.3")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     //AWS S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.575'
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-infra-querydsl')
+
+    // OPEN FEIGN
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
 
 tasks.named('test') {

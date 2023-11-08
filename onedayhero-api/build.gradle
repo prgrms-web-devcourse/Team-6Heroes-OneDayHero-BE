@@ -14,6 +14,7 @@ jar {
 ext {
     jjwtVersion = '0.11.5'
     snippetsDir = file('build/generated-snippets')
+    set('springCloudVersion', "2022.0.3")
 }
 
 
@@ -70,4 +71,11 @@ task copyAsciidoc(type: Copy) {
 
 build {
     dependsOn copyAsciidoc
+}
+
+// OPEN FEIGN
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
