@@ -37,7 +37,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         }
 
         var id = jwtTokenManager.getId(getAccessToken(authorizationHeader));
-        request.setAttribute(jwtProperties.getClaimID(), id);
+        request.setAttribute(jwtProperties.getClaimId(), id);
 
         return true;
     }

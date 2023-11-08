@@ -16,13 +16,12 @@ import org.springframework.context.annotation.Profile;
 public class JwtConfiguration {
 
     private final JwtProperties jwtProperties;
-    private final JwtTokenManager jwtTokenManager;
 
     @Bean
     public JwtAuthInterceptor jwtAuthInterceptor() {
         return new JwtAuthInterceptor(
                 jwtProperties,
-                jwtTokenManager
+                jwtTokenManager()
         );
     }
 

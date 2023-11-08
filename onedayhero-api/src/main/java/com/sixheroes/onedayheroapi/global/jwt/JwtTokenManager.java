@@ -21,7 +21,7 @@ public class JwtTokenManager {
             String token
     ) {
         return extractClaims(token).get(
-                jwtProperties.getClaimID(),
+                jwtProperties.getClaimId(),
                 Long.class
         );
     }
@@ -65,7 +65,7 @@ public class JwtTokenManager {
         var currentTimeMillis = System.currentTimeMillis();
 
         Claims claims = Jwts.claims();
-        claims.put(jwtProperties.getClaimID(), id);
+        claims.put(jwtProperties.getClaimId(), id);
         claims.put(jwtProperties.getClaimRole(), role);
 
         return Jwts.builder()

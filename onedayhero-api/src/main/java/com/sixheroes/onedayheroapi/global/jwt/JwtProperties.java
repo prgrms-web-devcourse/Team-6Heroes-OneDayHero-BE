@@ -14,6 +14,6 @@ public class JwtProperties {
     private final String secretKey;
     private final Long accessTokenExpiryTimeMs;
     private final Long refreshTokenExpiryTimeMs;
-    private final String claimID;
+    private final String claimId;
     private final String claimRole;
 }
