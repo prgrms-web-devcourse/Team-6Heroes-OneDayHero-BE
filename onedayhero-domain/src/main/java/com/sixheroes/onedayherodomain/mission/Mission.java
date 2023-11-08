@@ -112,13 +112,16 @@ public class Mission extends BaseEntity {
         this.location = mission.location;
     }
 
-    public void extend(Mission mission) {
+    public void extend(
+            Mission mission
+    ) {
         validOwn(mission.citizenId);
         validAbleExtend();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
         this.regionId = mission.regionId;
         this.location = mission.location;
+        this.missionStatus = MissionStatus.MATCHING;
     }
 
     public void validAbleDelete(

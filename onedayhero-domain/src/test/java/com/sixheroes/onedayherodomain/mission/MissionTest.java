@@ -203,6 +203,42 @@ class MissionTest {
                 .hasMessage(ErrorCode.T_001.name());
     }
 
+    @DisplayName("유저는 만료된 미션을 연장 할 수 있다.")
+    @Test
+    void extendMission() {
+        // given
+        var expiredMission = createMission(MissionStatus.EXPIRED);
+
+        var extendMission = Mission.builder()
+                .citizenId(expiredMission.getCitizenId())
+                .regionId(expiredMission.getRegionId())
+                .missionCategory(expiredMission.getMissionCategory())
+                .missionInfo(MissionInfo.builder()
+                        .serverTime(LocalDateTime.of(
+                                LocalDate.of(2023, 11, 7),
+                                LocalTime.MIDNIGHT
+                        ))
+                        .title("수정된 제목")
+                        .content("수정된 내용")
+                        .missionDate(LocalDate.of(2023, 11, 9))
+                        .startTime(LocalTime.of(10, 0))
+                        .endTime(LocalTime.of(10, 30))
+                        .deadlineTime(LocalDateTime.of(
+                                LocalDate.of(2023, 11, 9),
+                                LocalTime.of(10, 0)
+                        ))
+                        .price(1500)
+                        .build())
+                .location(Mission.createPoint(1234.56, 1234.56))
+                .build();
+        
+        // when
+        expiredMission.extend(extendMission);
+
+        // then
+        assertThat(expiredMission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
+    }
+
     private Mission createMission(
             MissionStatus missionStatus
     ) {
