@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -315,7 +314,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .missionInfo(missionInfo)
                 .regionId(regionId)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
                 .build();
@@ -333,7 +332,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .missionInfo(missionInfo)
                 .regionId(regionId)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(missionStatus)
                 .bookmarkCount(0)
                 .build();

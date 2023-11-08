@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.data.geo.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -229,7 +228,7 @@ class MissionTest {
                                 .build())
                 .regionId(1L)
                 .citizenId(1L)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(missionStatus)
                 .bookmarkCount(0)
                 .build();
@@ -245,7 +244,7 @@ class MissionTest {
                 .missionInfo(missionInfo)
                 .regionId(1L)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
                 .build();
@@ -276,7 +275,7 @@ class MissionTest {
                                 .build())
                 .regionId(1L)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
                 .build();

@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -135,12 +134,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -181,9 +178,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
@@ -330,12 +326,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -376,9 +370,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
@@ -483,12 +476,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -529,9 +520,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
@@ -604,12 +594,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -650,9 +638,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
@@ -888,12 +875,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("지역 구"),
                                 fieldWithPath("data.missionResponses.content[].region.dong")
                                         .description("지역 동"),
-                                fieldWithPath("data.missionResponses.content[].location").type(JsonFieldType.OBJECT)
-                                        .description("위도 경도 객체"),
-                                fieldWithPath("data.missionResponses.content[].location.x")
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.missionResponses.content[].location.y")
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.missionResponses.content[].longitude")
+                                        .description("경도"),
+                                fieldWithPath("data.missionResponses.content[].latitude")
+                                        .description("위도"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo.title").type(JsonFieldType.STRING)
@@ -972,8 +957,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.si").value(missionResponseA.region().si()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.gu").value(missionResponseA.region().gu()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.dong").value(missionResponseA.region().dong()))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.x").value(missionResponseA.location().getX()))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.y").value(missionResponseA.location().getY()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].longitude").value(missionResponseA.longitude()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].latitude").value(missionResponseA.latitude()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.title").value(missionResponseA.missionInfo().title()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.content").value(missionResponseA.missionInfo().content()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionResponseA.missionInfo().missionDate())))
@@ -1014,7 +999,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .region(regionResponse)
-                .location(new Point(123.45, 123.56))
+                .longitude(123.45)
+                .latitude(123.45)
                 .missionStatus("MATCHING")
                 .build();
     }
@@ -1030,7 +1016,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionCategory(missionCategoryResponse)
                 .citizenId(missionCreateRequest.citizenId())
                 .region(regionResponse)
-                .location(new Point(missionCreateRequest.latitude(), missionCreateRequest.latitude()))
+                .longitude(missionCreateRequest.longitude())
+                .latitude(missionCreateRequest.latitude())
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .missionStatus("MATCHING")
@@ -1062,7 +1049,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionCategory(missionCategoryResponse)
                 .citizenId(missionUpdateRequest.citizenId())
                 .region(regionResponse)
-                .location(new Point(missionUpdateRequest.longitude(), missionUpdateRequest.latitude()))
+                .longitude(missionUpdateRequest.longitude())
+                .latitude(missionUpdateRequest.latitude())
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .missionStatus("MATCHING")

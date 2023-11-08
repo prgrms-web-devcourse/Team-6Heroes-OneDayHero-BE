@@ -162,7 +162,7 @@ public class MissionQueryRepository {
     }
 
     private BooleanBuilder missionCategoryIdsIn(List<Long> missionCategories) {
-        if (missionCategories.isEmpty()) {
+        if (missionCategories == null || missionCategories.isEmpty()) {
             return null;
         }
 
@@ -170,7 +170,7 @@ public class MissionQueryRepository {
     }
 
     private BooleanBuilder regionIdsIn(List<Long> regionIds) {
-        if (regionIds.isEmpty()) {
+        if (regionIds == null || regionIds.isEmpty()) {
             return null;
         }
 
@@ -178,7 +178,7 @@ public class MissionQueryRepository {
     }
 
     private BooleanBuilder missionDatesIn(List<LocalDate> missionDates) {
-        if (missionDates.isEmpty()) {
+        if (missionDates == null || missionDates.isEmpty()) {
             return null;
         }
 

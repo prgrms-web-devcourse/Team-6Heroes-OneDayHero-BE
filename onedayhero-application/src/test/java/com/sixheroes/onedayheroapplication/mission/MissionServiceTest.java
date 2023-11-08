@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -97,7 +96,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "missionCategory",
                         "citizenId",
                         "region",
-                        "location",
+                        "longitude",
+                        "latitude",
                         "missionInfo",
                         "bookmarkCount",
                         "missionStatus"
@@ -106,7 +106,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         MissionCategoryResponse.from(missionCategory),
                         missionCreateServiceRequest.citizenId(),
                         RegionResponse.from(region),
-                        new Point(missionCreateServiceRequest.longitude(), missionCreateServiceRequest.latitude()),
+                        missionCreateServiceRequest.longitude(),
+                        missionCreateServiceRequest.latitude(),
                         result.missionInfo(),
                         0,
                         MissionStatus.MATCHING.name()
@@ -349,7 +350,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "missionCategory",
                         "citizenId",
                         "region",
-                        "location",
+                        "longitude",
+                        "latitude",
                         "missionInfo",
                         "bookmarkCount",
                         "missionStatus"
@@ -358,7 +360,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         MissionCategoryResponse.from(updateMissionCategory),
                         missionUpdateServiceRequest.citizenId(),
                         RegionResponse.from(region),
-                        new Point(missionUpdateServiceRequest.longitude(), missionUpdateServiceRequest.latitude()),
+                        missionUpdateServiceRequest.longitude(),
+                        missionUpdateServiceRequest.latitude(),
                         result.missionInfo(),
                         0,
                         MissionStatus.MATCHING.name()
@@ -793,7 +796,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "missionCategory",
                         "citizenId",
                         "region",
-                        "location",
+                        "longitude",
+                        "latitude",
                         "missionInfo",
                         "bookmarkCount",
                         "missionStatus"
@@ -802,7 +806,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         MissionCategoryResponse.from(missionCategory),
                         citizenId,
                         RegionResponse.from(region),
-                        mission.getLocation(),
+                        mission.getLocation().getX(),
+                        mission.getLocation().getY(),
                         result.missionInfo(),
                         0,
                         MissionStatus.MATCHING.name()
@@ -865,7 +870,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                                 .build())
                 .regionId(1L)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.89))
                 .bookmarkCount(0)
                 .missionStatus(missionStatus)
                 .build();

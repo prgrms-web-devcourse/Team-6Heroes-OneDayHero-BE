@@ -7,7 +7,6 @@ import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
-import org.springframework.data.geo.Point;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +17,8 @@ public record MissionResponse(
         MissionCategoryResponse missionCategory,
         Long citizenId,
         RegionResponse region,
-        Point location,
+        Double longitude,
+        Double latitude,
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
         String missionStatus
@@ -34,7 +34,8 @@ public record MissionResponse(
                 .region(
                         RegionResponse.from(response)
                 )
-                .location(response.location())
+                .longitude(response.location().getX())
+                .latitude(response.location().getY())
                 .missionInfo(
                         MissionInfoResponse.from(response)
                 )
@@ -53,7 +54,8 @@ public record MissionResponse(
                 .region(
                         RegionResponse.from(region)
                 )
-                .location(mission.getLocation())
+                .longitude(mission.getLocation().getX())
+                .latitude(mission.getLocation().getY())
                 .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
                 .bookmarkCount(mission.getBookmarkCount())
                 .missionStatus(mission.getMissionStatus().name())
