@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
         name = "mission_bookmarks",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "mission_and_user_id_idx",
+                        name = "mission_id_and_user_id_uk_idx",
                         columnNames = {"mission_id", "user_id"}
                 )
         }
