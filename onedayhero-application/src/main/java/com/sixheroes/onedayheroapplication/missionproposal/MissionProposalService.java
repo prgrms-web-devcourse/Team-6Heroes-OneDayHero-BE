@@ -7,7 +7,7 @@ import com.sixheroes.onedayheroapplication.missionproposal.request.MissionPropos
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponse;
+import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponses;
 import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayheroquerydsl.missionproposal.MissionProposalQueryRepository;
@@ -73,12 +73,12 @@ public class MissionProposalService {
         return MissionProposalRejectResponse.from(missionProposal);
     }
 
-    public MissionProposalResponse findMissionProposal(
+    public MissionProposalResponses findMissionProposal(
         Long heroId,
         Pageable pageable
     ) {
         var slice = missionProposalQueryRepository.findByHeroIdAndPageable(heroId, pageable);
-        return MissionProposalResponse.from(slice);
+        return MissionProposalResponses.from(slice);
     }
 
     private void validMission(

@@ -8,7 +8,7 @@ import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalServic
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponse;
+import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class MissionProposalController {
     ) {
         var missionProposal = missionProposalService.createMissionProposal(missionRequestCreateRequest.toService());
 
-        return ResponseEntity.created(URI.create("/api/v1/mission-proposals/" + missionProposal.missionProposalId()))
+        return ResponseEntity.created(URI.create("/api/v1/mission-proposals/" + missionProposal.id()))
             .body(ApiResponse.created(missionProposal));
     }
 
@@ -60,7 +60,7 @@ public class MissionProposalController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<MissionProposalResponse>> findMissionRequest(
+    public ResponseEntity<ApiResponse<MissionProposalResponses>> findMissionRequest(
         @RequestParam Long heroId,
         Pageable pageable
     ) {

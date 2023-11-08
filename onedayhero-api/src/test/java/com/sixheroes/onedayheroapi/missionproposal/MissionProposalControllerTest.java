@@ -11,7 +11,7 @@ import com.sixheroes.onedayheroapplication.missionproposal.request.MissionPropos
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponse;
+import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponses;
 import com.sixheroes.onedayheroapplication.missionproposal.response.dto.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -73,12 +73,12 @@ class MissionProposalControllerTest extends RestDocsSupport {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(missionProposalCreateRequest))
             ).andDo(print())
-            .andExpect(header().string("Location", "/api/v1/mission-proposals/" + missionProposalCreateResponse.missionProposalId()))
+            .andExpect(header().string("Location", "/api/v1/mission-proposals/" + missionProposalCreateResponse.id()))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.status").value(201))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.missionProposalId").value(missionProposalCreateResponse.missionProposalId()))
+            .andExpect(jsonPath("$.data.id").value(missionProposalCreateResponse.id()))
             .andExpect(jsonPath("$.data.missionId").value(missionProposalCreateResponse.missionId()))
             .andExpect(jsonPath("$.data.heroId").value(missionProposalCreateResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalCreateResponse.missionProposalStatus()))
@@ -96,7 +96,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
                             .description("HTTP 응답 코드"),
                         fieldWithPath("data").type(JsonFieldType.OBJECT)
                             .description("응답 데이터"),
-                        fieldWithPath("data.missionProposalId").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                             .description("미션 요청 아이디"),
                         fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                             .description("미션 아이디"),
@@ -135,7 +135,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.missionProposalId").value(missionProposalApproveResponse.missionProposalId()))
+            .andExpect(jsonPath("$.data.id").value(missionProposalApproveResponse.id()))
             .andExpect(jsonPath("$.data.missionId").value(missionProposalApproveResponse.missionId()))
             .andExpect(jsonPath("$.data.heroId").value(missionProposalApproveResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalApproveResponse.missionProposalStatus()))
@@ -152,7 +152,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("HTTP 응답 코드"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.missionProposalId").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                         .description("미션 요청 아이디"),
                     fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                         .description("미션 아이디"),
@@ -191,7 +191,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.missionProposalId").value(missionProposalRejectResponse.missionProposalId()))
+            .andExpect(jsonPath("$.data.id").value(missionProposalRejectResponse.id()))
             .andExpect(jsonPath("$.data.missionId").value(missionProposalRejectResponse.missionId()))
             .andExpect(jsonPath("$.data.heroId").value(missionProposalRejectResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalRejectResponse.missionProposalStatus()))
@@ -208,7 +208,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("HTTP 응답 코드"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.missionProposalId").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                         .description("미션 요청 아이디"),
                     fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                         .description("미션 아이디"),
@@ -248,7 +248,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
         var page = PageRequest.of(0, 5);
         var slice = new SliceImpl(missionProposals, page, true);
 
-        when(missionProposalService.findMissionProposal(anyLong(), any(Pageable.class))).thenReturn(new MissionProposalResponse(slice));
+        when(missionProposalService.findMissionProposal(anyLong(), any(Pageable.class))).thenReturn(new MissionProposalResponses(slice));
 
         mockMvc.perform(get("/api/v1/mission-proposals")
                 .param("heroId", "1")
@@ -259,17 +259,17 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").exists())
             .andExpect(jsonPath("$.status").value(200))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].id").value(missionProposal1.id()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.bookmarkCount").value(missionProposal1.mission().bookmarkCount()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionStatus").value(missionProposal1.mission().missionStatus()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionId").value(missionProposal1.mission().missionId()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCreatedAt").value(DateTimeConverter.convertLocalDateTimeToString(missionProposal1.mission().missionCreatedAt())))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].missionProposalId").value(missionProposal1.missionProposalId()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.status").value(missionProposal1.mission().status()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.id").value(missionProposal1.mission().id()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.createdAt").value(DateTimeConverter.convertLocalDateTimeToString(missionProposal1.mission().createdAt())))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.region.si").value(missionProposal1.mission().region().si()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.region.gu").value(missionProposal1.mission().region().gu()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.region.dong").value(missionProposal1.mission().region().dong()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.missionCategoryCode").value(missionProposal1.mission().missionCategory().missionCategoryCode()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.categoryName").value(missionProposal1.mission().missionCategory().categoryName()))
-            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.missionTitle").value(missionProposal1.mission().missionInfo().missionTitle()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.code").value(missionProposal1.mission().missionCategory().code()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionCategory.name").value(missionProposal1.mission().missionCategory().name()))
+            .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.title").value(missionProposal1.mission().missionInfo().title()))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionProposal1.mission().missionInfo().missionDate())))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionProposal1.mission().missionInfo().startTime())))
             .andExpect(jsonPath("$.data.missionProposals.content[0].mission.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionProposal1.mission().missionInfo().endTime())))
@@ -307,17 +307,17 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("미션 제안 데이터"),
                     fieldWithPath("data.missionProposals.content[]").type(JsonFieldType.ARRAY)
                         .description("미션 제안 데이터 배열"),
-                    fieldWithPath("data.missionProposals.content[].missionProposalId").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.missionProposals.content[].id").type(JsonFieldType.NUMBER)
                         .description("미션 제안 ID"),
                     fieldWithPath("data.missionProposals.content[].mission").type(JsonFieldType.OBJECT)
                         .description("미션 정보"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionId").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.missionProposals.content[].mission.id").type(JsonFieldType.NUMBER)
                         .description("미션 ID"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionStatus").type(JsonFieldType.STRING)
+                    fieldWithPath("data.missionProposals.content[].mission.status").type(JsonFieldType.STRING)
                         .description("미션 상태"),
                     fieldWithPath("data.missionProposals.content[].mission.bookmarkCount").type(JsonFieldType.NUMBER)
                         .description("미션 찜 카운트"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionCreatedAt")
+                    fieldWithPath("data.missionProposals.content[].mission.createdAt")
                         .attributes(getDateTimeFormat())
                         .type(JsonFieldType.STRING)
                         .description("미션 생성일"),
@@ -331,13 +331,13 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("동"),
                     fieldWithPath("data.missionProposals.content[].mission.missionCategory").type(JsonFieldType.OBJECT)
                         .description("미션 카테고리"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionCategory.missionCategoryCode").type(JsonFieldType.STRING)
+                    fieldWithPath("data.missionProposals.content[].mission.missionCategory.code").type(JsonFieldType.STRING)
                         .description("카테고리 코드"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionCategory.categoryName").type(JsonFieldType.STRING)
+                    fieldWithPath("data.missionProposals.content[].mission.missionCategory.name").type(JsonFieldType.STRING)
                         .description("카테고리 이름"),
                     fieldWithPath("data.missionProposals.content[].mission.missionInfo").type(JsonFieldType.OBJECT)
                         .description("미션 상세 정보"),
-                    fieldWithPath("data.missionProposals.content[].mission.missionInfo.missionTitle").type(JsonFieldType.STRING)
+                    fieldWithPath("data.missionProposals.content[].mission.missionInfo.title").type(JsonFieldType.STRING)
                         .description("미션 제목"),
                     fieldWithPath("data.missionProposals.content[].mission.missionInfo.missionDate").type(JsonFieldType.STRING)
                         .attributes(getDateFormat())
@@ -395,22 +395,22 @@ class MissionProposalControllerTest extends RestDocsSupport {
 
     }
 
-    private MissionProposalDto createMissionProposalDto(
+    private MissionProposalResponse createMissionProposalDto(
             Long missionProposalId,
-            MissionDto missionDto
+            MissionForMissionProposalResponse missionDto
     ) {
-       return new MissionProposalDto(missionProposalId, missionDto);
+       return new MissionProposalResponse(missionProposalId, missionDto);
     }
 
-    private MissionDto createMissionDto(
+    private MissionForMissionProposalResponse createMissionDto(
         Long missionId,
         String missionStatus,
         LocalDateTime missionCreatedAt
     ) {
-        return MissionDto.builder()
-            .missionId(missionId)
-            .missionStatus(missionStatus)
-            .missionCreatedAt(missionCreatedAt)
+        return MissionForMissionProposalResponse.builder()
+            .id(missionId)
+            .status(missionStatus)
+            .createdAt(missionCreatedAt)
             .bookmarkCount(5)
             .missionCategory(createMissionCategoryDto())
             .missionInfo(createMissionInfoDto())
@@ -418,17 +418,17 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .build();
     }
 
-    private RegionDto createRegionDto() {
-        return RegionDto.builder()
+    private RegionForMissionProposalResponse createRegionDto() {
+        return RegionForMissionProposalResponse.builder()
             .si("서울시")
             .gu("프로구")
             .dong("래머동")
             .build();
     }
 
-    private MissionInfoDto createMissionInfoDto() {
-        return MissionInfoDto.builder()
-            .missionTitle("미션 제목")
+    private MissionInfoForMissionProposalResponse createMissionInfoDto() {
+        return MissionInfoForMissionProposalResponse.builder()
+            .title("미션 제목")
             .missionDate(LocalDate.of(2023, 10, 30))
             .startTime(LocalTime.of(12, 0, 0))
             .endTime(LocalTime.of(18, 0, 0))
@@ -436,10 +436,10 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .build();
     }
 
-    private MissionCategoryDto createMissionCategoryDto() {
-        return MissionCategoryDto.builder()
-            .missionCategoryCode("MC_001")
-            .categoryName("서빙")
+    private MissionCategoryForMissionProposalResponse createMissionCategoryDto() {
+        return MissionCategoryForMissionProposalResponse.builder()
+            .code("MC_001")
+            .name("서빙")
             .build();
     }
 }

@@ -24,7 +24,7 @@ public class UserService {
 
         user.updateUser(userBasicInfo, userFavoriteWorkingDay);
 
-        return UserUpdateResponse.from(
+        return UserUpdateResponse.of(
             user.getId(),
             user.getUserBasicInfo(),
             user.getUserFavoriteWorkingDay()

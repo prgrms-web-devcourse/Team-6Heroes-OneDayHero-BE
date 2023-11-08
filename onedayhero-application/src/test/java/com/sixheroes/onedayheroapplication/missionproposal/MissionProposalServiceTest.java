@@ -76,7 +76,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var missionProposalCreateResponse = missionProposalService.createMissionProposal(missionProposalCreateServiceRequest);
 
         // then
-        var missionProposalId = missionProposalCreateResponse.missionProposalId();
+        var missionProposalId = missionProposalCreateResponse.id();
         var missionProposal = missionProposalRepository.findById(missionProposalId);
         assertThat(missionProposal).isNotEmpty();
         assertThat(missionProposalCreateResponse.missionId()).isEqualTo(mission.getId());
@@ -119,10 +119,11 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var hero = userRepository.save(createUser());
         hero.changeHeroModeOn();
 
+        var notExsistHeroId = 4L;
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
             citizenId,
             mission.getId(),
-            4L
+            notExsistHeroId
         );
 
         // when & then
@@ -152,7 +153,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         );
 
         // then
-        assertThat(missionProposalApproveResponse.missionProposalId()).isEqualTo(missionProposal.getId());
+        assertThat(missionProposalApproveResponse.id()).isEqualTo(missionProposal.getId());
         assertThat(missionProposalApproveResponse.missionId()).isEqualTo(missionProposal.getMissionId());
         assertThat(missionProposalApproveResponse.heroId()).isEqualTo(missionProposal.getId());
         assertThat(missionProposalApproveResponse.missionProposalStatus()).isEqualTo("APPROVE");
@@ -212,7 +213,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         );
 
         // then
-        assertThat(missionProposalRejectResponse.missionProposalId()).isEqualTo(missionProposal.getId());
+        assertThat(missionProposalRejectResponse.id()).isEqualTo(missionProposal.getId());
         assertThat(missionProposalRejectResponse.missionId()).isEqualTo(missionProposal.getMissionId());
         assertThat(missionProposalRejectResponse.heroId()).isEqualTo(missionProposal.getHeroId());
         assertThat(missionProposalRejectResponse.missionProposalStatus()).isEqualTo("REJECT");

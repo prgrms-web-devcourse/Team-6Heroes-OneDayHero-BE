@@ -23,7 +23,7 @@ public class UserReader {
     ) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.debug("존재하지 않는 유저 아이디입니다. userId : {}", userId);
+                    log.debug("존재하지 않는 유저 아이디입니다. id : {}", userId);
                     return new NoSuchElementException(ErrorCode.EUC_000.name());
                 });
     }

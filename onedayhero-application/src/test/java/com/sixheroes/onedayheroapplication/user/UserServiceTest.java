@@ -73,7 +73,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         var userUpdateResponse = userService.updateUser(userServiceUpdateRequest);
 
         // then
-        assertThat(userUpdateResponse.userId()).isEqualTo(savedUser.getId());
+        assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
         assertThat(userUpdateResponse.basicInfo())
             .extracting("nickname", "gender", "birth", "introduce")
             .contains(nickname, gender, birth, introduce);
@@ -110,8 +110,10 @@ class UserServiceTest extends IntegrationApplicationTest {
             .favoriteEndTime(favoriteEndTime)
             .build();
 
+        var notExsistUserId = 2L;
+
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userId(user.getId() + 1)
+            .userId(notExsistUserId)
             .userBasicInfo(userBasicInfoServiceDto)
             .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
             .build();

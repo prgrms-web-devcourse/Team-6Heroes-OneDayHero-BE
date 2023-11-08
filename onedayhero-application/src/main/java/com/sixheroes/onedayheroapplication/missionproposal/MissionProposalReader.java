@@ -23,7 +23,7 @@ public class MissionProposalReader {
     ) {
         return missionProposalRepository.findById(missionProposalId)
             .orElseThrow(() -> {
-                log.debug("존재하지 않는 미션 제안입니다. missionProposalId : {}", missionProposalId);
+                log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
                 return new NoSuchElementException(ErrorCode.EMP_000.name());
             });
     }

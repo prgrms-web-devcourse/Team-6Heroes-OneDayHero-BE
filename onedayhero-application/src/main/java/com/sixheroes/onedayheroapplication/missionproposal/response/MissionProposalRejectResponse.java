@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record MissionProposalRejectResponse(
-    Long missionProposalId,
+    Long id,
     Long missionId,
     Long heroId,
     String missionProposalStatus
@@ -14,7 +14,7 @@ public record MissionProposalRejectResponse(
         MissionProposal missionProposal
     ) {
         return MissionProposalRejectResponse.builder()
-            .missionProposalId(missionProposal.getId())
+            .id(missionProposal.getId())
             .missionId(missionProposal.getMissionId())
             .heroId(missionProposal.getHeroId())
             .missionProposalStatus(missionProposal.getMissionProposalStatus().name())

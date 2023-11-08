@@ -65,7 +65,7 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.userId").value(userId))
+            .andExpect(jsonPath("$.data.id").value(userId))
             .andExpect(jsonPath("$.data.basicInfo").exists())
             .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoServiceDto.nickname()))
             .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoServiceDto.gender()))
@@ -112,7 +112,7 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat()),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디"),
                     fieldWithPath("data.basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
                     fieldWithPath("data.basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
                     fieldWithPath("data.basicInfo.gender").type(JsonFieldType.STRING).description("성별"),

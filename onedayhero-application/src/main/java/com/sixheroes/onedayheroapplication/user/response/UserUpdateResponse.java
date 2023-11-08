@@ -5,12 +5,12 @@ import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
 import com.sixheroes.onedayherodomain.user.Week;
 
 public record UserUpdateResponse(
-    Long userId,
+    Long id,
     UserBasicInfoServiceResponse basicInfo,
     UserFavoriteWorkingDayServiceResponse favoriteWorkingDay
 ) {
 
-    public static UserUpdateResponse from(
+    public static UserUpdateResponse of(
         Long userId,
         UserBasicInfo userBasicInfo,
         UserFavoriteWorkingDay userFavoriteWorkingDay
