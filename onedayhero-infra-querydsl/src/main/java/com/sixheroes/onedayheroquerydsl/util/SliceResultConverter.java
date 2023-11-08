@@ -8,6 +8,10 @@ import java.util.List;
 
 public final class SliceResultConverter {
 
+    private SliceResultConverter() {
+        
+    }
+
     public static <T> Slice<T> consume(List<T> content, Pageable pageable) {
         boolean hasNext = false;
 
