@@ -3,6 +3,9 @@ package com.sixheroes.onedayheroapi.global.interceptor;
 import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
 import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +35,29 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         }
 
         var authorizationHeader = getAuthorization(request);
+
         if (validateAuthorizationHeaderIsValid(authorizationHeader)) {
             throw new IllegalStateException(ErrorCode.A_001.name());
         }
 
-        var id = jwtTokenManager.getId(getAccessToken(authorizationHeader));
-        request.setAttribute(jwtProperties.getClaimId(), id);
+        try {
+            var id = jwtTokenManager.getId(getAccessToken(authorizationHeader));
+            request.setAttribute(jwtProperties.getClaimId(), id);
 
-        return true;
+            return true;
+        } catch (MalformedJwtException exception) {
+            log.warn("잘못된 형식의 JWT 토큰입니다.");
+
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        } catch (ExpiredJwtException exception) {
+            log.warn("만료된 JWT 토큰입니다.");
+
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        } catch (JwtException exception) {
+            log.warn("JWT 토큰 에러 발생");
+
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
     }
 
     private boolean validateAuthorizationHeaderIsValid(String header) {

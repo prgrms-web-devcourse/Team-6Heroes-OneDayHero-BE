@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapi.global.configuration;
 
-import com.sixheroes.onedayheroapi.global.auth.AuthArgumentResolver;
+import com.sixheroes.onedayheroapi.global.auth.AuthUserArgumentResolver;
 import com.sixheroes.onedayheroapi.global.interceptor.JwtAuthInterceptor;
 import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
 import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
@@ -23,7 +23,7 @@ public class JwtWebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthArgumentResolver(jwtProperties));
+        resolvers.add(new AuthUserArgumentResolver(jwtProperties));
     }
 
     @Override
@@ -31,6 +31,6 @@ public class JwtWebConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(new JwtAuthInterceptor(jwtProperties, jwtTokenManager))
                 .order(1)
                 .addPathPatterns("/test")
-                .excludePathPatterns("/login_test");
+                .excludePathPatterns("/api/v1/auth/*/login");
     }
 }

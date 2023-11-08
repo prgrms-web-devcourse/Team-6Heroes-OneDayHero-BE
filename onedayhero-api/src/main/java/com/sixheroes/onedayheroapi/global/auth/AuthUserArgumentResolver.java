@@ -12,13 +12,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @RequiredArgsConstructor
-public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtProperties jwtProperties;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        var hasAuthAnnotation = parameter.hasParameterAnnotation(Auth.class);
+        var hasAuthAnnotation = parameter.hasParameterAnnotation(AuthUser.class);
         var hasLongType = Long.class.isAssignableFrom(parameter.getParameterType());
 
         return hasAuthAnnotation && hasLongType;
