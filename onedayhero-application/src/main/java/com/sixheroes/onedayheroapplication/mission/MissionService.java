@@ -1,8 +1,11 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
+import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
@@ -10,6 +13,7 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,10 +91,27 @@ public class MissionService {
         return MissionResponse.from(mission, region);
     }
 
-    public MissionResponse findOne(Long missionId) {
+    public MissionResponse findOne(
+            Long missionId
+    ) {
         var missionQueryResponse = missionReader.fetchFindOne(missionId);
 
         return MissionResponse.from(missionQueryResponse);
+    }
+
+    public MissionResponses findAllByDynamicCondition(
+            Pageable pageable,
+            MissionFindFilterServiceRequest request
+    ) {
+        var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
+
+        return MissionResponses.from(pageable, sliceMissionQueryResponses, sliceMissionQueryResponses.hasNext());
+    }
+
+    public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
+        var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
+
+        return MissionProgressResponses.from(pageable, sliceMissionProgressQueryResponses, sliceMissionProgressQueryResponses.hasNext());
     }
 
     private void deleteUserBookMarkByMissionId(

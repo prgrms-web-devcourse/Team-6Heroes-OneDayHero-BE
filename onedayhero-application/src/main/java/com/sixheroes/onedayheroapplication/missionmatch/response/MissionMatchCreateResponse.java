@@ -9,6 +9,7 @@ public record MissionMatchCreateResponse(
         Long missionId,
         Long heroId
 ) {
+
     public static MissionMatchCreateResponse from(MissionMatch missionMatch) {
         return MissionMatchCreateResponse.builder()
                 .id(missionMatch.getId())

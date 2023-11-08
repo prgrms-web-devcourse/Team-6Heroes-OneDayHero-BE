@@ -830,6 +830,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
     ) {
         return MissionInfoServiceRequest
                 .builder()
+                .title("제목")
                 .content("내용")
                 .missionDate(missionDate)
                 .startTime(startTime)
@@ -853,6 +854,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .missionCategory(missionCategory)
                 .missionInfo(
                         MissionInfo.builder()
+                                .title("title")
                                 .content("content")
                                 .missionDate(missionDate)
                                 .startTime(startTime)

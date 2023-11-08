@@ -85,7 +85,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
 
     @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 취소할 수 있다.")
     @Test
-    void withdrawMissionMatch() throws Exception {
+    void cancelMissionMatch() throws Exception {
         // given
         var request = createMissionMatchWithdrawServiceRequest();
         var response = createMissionMatchWithdrawResponse();

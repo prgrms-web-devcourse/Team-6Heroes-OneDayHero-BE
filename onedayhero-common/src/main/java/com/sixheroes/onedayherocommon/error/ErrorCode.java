@@ -3,7 +3,7 @@ package com.sixheroes.onedayherocommon.error;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
+import java.util.Arrays;
 
 /**
  * <pre><b>code</b>는 프론트와 정한 에러 코드를 넣어준다.</pre>
@@ -73,7 +73,11 @@ public enum ErrorCode {
     private final int status;
     private final String message;
 
-    public static Optional<ErrorCode> findByName(String name) {
-        return Optional.of(ErrorCode.valueOf(name));
+    public static ErrorCode findByName(String name) {
+        return Arrays.stream(ErrorCode.values())
+                .filter((errorCode) -> errorCode.name().equals(name))
+                .findAny()
+                .orElse(ErrorCode.S_001);
     }
+
 }

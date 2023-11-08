@@ -75,6 +75,7 @@ class MissionTest {
         var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
+                .title("수정하는 제목")
                 .content("수정하는 내용")
                 .missionDate(missionDate)
                 .startTime(startTime)
@@ -131,6 +132,7 @@ class MissionTest {
         var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
+                .title("수정하는 제목")
                 .content("수정하는 내용")
                 .missionDate(missionDate)
                 .startTime(startTime)
@@ -171,6 +173,7 @@ class MissionTest {
         var deadlineTime = LocalTime.of(10, 0, 0);
 
         var missionInfo = MissionInfo.builder()
+                .title("수정하는 제목")
                 .content("수정하는 내용")
                 .missionDate(missionDate)
                 .startTime(startTime)
@@ -212,6 +215,7 @@ class MissionTest {
                                 .build())
                 .missionInfo(
                         MissionInfo.builder()
+                                .title("title")
                                 .content("content")
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))
@@ -258,6 +262,7 @@ class MissionTest {
                                 .build())
                 .missionInfo(
                         MissionInfo.builder()
+                                .title("title")
                                 .content("content")
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))

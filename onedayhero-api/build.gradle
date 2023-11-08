@@ -35,6 +35,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
 }
 
+
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()

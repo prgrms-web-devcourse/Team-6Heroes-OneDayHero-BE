@@ -23,6 +23,7 @@ class MissionInfoTest {
         // given
         var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
 
+        var title = "제목";
         var content = "내용";
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
@@ -31,7 +32,8 @@ class MissionInfoTest {
         var price = 1000;
 
         var missionInfo = MissionInfo.builder()
-                .content("내용")
+                .title(title)
+                .content(content)
                 .missionDate(missionDate)
                 .startTime(startTime)
                 .endTime(endTime)
@@ -53,7 +55,7 @@ class MissionInfoTest {
     void MissionInfoWithEmptyContent(String content) {
 
         // when & then
-        assertThatThrownBy(() -> createMissionInfo(content))
+        assertThatThrownBy(() -> createMissionInfo("제목", content))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_001.name());
     }
@@ -65,9 +67,32 @@ class MissionInfoTest {
         var content = new String(new char[1001]).replace('\0', 'a');
 
         // when & then
-        assertThatThrownBy(() -> createMissionInfo(content))
+        assertThatThrownBy(() -> createMissionInfo("제목", content))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.EM_002.name());
+    }
+
+    @DisplayName("미션 정보를 입력 받을 때 미션의 제목은 공백 일 수 없다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    void MissionInfoWithEmptyTitle(String title) {
+
+        // when & then
+        assertThatThrownBy(() -> createMissionInfo(title, "content"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.T_001.name());
+    }
+
+    @DisplayName("미션 정보를 입력 받을 때 미션의 제목은 100자를 초과 할 수 없다.")
+    @Test
+    void MissionInfoOutOfRangeTitle() {
+        // given
+        var title = new String(new char[101]).replace('\0', 'a');
+
+        // when & then
+        assertThatThrownBy(() -> createMissionInfo(title, "content"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.T_001.name());
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 수행 날짜가 생성 날짜보다 이전 일 수 없다.")
@@ -131,6 +156,7 @@ class MissionInfoTest {
             LocalDateTime serverTime
     ) {
         return MissionInfo.builder()
+                .title("title")
                 .content("content")
                 .missionDate(missionDate)
                 .startTime(startTime)
@@ -142,15 +168,20 @@ class MissionInfoTest {
     }
 
     private MissionInfo createMissionInfo(
+            String title,
             String content
     ) {
         return MissionInfo.builder()
+                .title(title)
                 .content(content)
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0, 0))
                 .endTime(LocalTime.of(10, 30, 0))
                 .deadlineTime(LocalTime.of(10, 0, 0))
                 .price(1000)
+                .serverTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 9),
+                        LocalTime.MIDNIGHT))
                 .build();
     }
 }

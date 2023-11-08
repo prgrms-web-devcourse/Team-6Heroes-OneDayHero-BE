@@ -9,6 +9,7 @@ import java.time.LocalTime;
 
 @Builder
 public record MissionInfoServiceRequest(
+        String title,
         String content,
         LocalDate missionDate,
         LocalTime startTime,
@@ -19,6 +20,7 @@ public record MissionInfoServiceRequest(
 
     public MissionInfo toVo(LocalDateTime serverTime) {
         return MissionInfo.builder()
+                .title(title)
                 .content(content)
                 .missionDate(missionDate)
                 .startTime(startTime)

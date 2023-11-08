@@ -1,5 +1,12 @@
 dependencies {
 
+ext {
+    mysqlJdbcDriverVersion = '8.0.33'
+}
+
+dependencies {
+    //MySQL
+    api "mysql:mysql-connector-java:${mysqlJdbcDriverVersion}"
 }
 
 tasks.named('test') {

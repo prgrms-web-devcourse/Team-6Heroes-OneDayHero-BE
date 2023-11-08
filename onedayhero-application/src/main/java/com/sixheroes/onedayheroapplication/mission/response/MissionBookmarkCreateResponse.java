@@ -10,6 +10,7 @@ public record MissionBookmarkCreateResponse(
         Long missionId,
         Long userId
 ) {
+
     public MissionBookmarkCreateResponse(MissionBookmark missionBookmark) {
         this(
                 missionBookmark.getId(),

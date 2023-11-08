@@ -29,6 +29,8 @@ public record MissionQueryResponse(
 
         Point location,
 
+        String title,
+
         String content,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

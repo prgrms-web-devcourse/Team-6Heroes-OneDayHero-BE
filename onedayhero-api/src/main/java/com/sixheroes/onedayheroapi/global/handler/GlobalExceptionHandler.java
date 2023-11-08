@@ -25,9 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException exception) {
-        var errorCode = ErrorCode.findByName(exception.getMessage())
-                .orElse(ErrorCode.S_001);
-
+        var errorCode = ErrorCode.findByName(exception.getMessage());
         if (errorCode == ErrorCode.S_001) {
             log.warn("Error occurred", exception);
             return ResponseEntity.internalServerError()
