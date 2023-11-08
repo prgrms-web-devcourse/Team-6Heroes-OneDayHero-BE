@@ -50,8 +50,31 @@ public class User extends BaseEntity {
     @Column(name = "is_hero_mode", nullable = false)
     private Boolean isHeroMode;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active", nullable = true)
     private Boolean isActive;
+
+    //처음 Oauth 를 통해 회원 가입
+    public static User singUpUser(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole
+    ) {
+        return new User(
+                email,
+                userSocialType,
+                userRole);
+    }
+
+    private User(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole) {
+        this.email = email;
+        this.userSocialType = userSocialType;
+        this.userRole = userRole;
+        this.heroScore = 30;
+        this.isHeroMode = false;
+    }
 
     @Builder
     private User(
