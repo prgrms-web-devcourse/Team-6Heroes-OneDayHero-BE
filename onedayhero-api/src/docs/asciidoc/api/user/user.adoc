@@ -10,3 +10,16 @@ include::{snippets}/user-update/request-fields.adoc[]
 
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
+
+[[mission-bookmark-cancel]]
+=== 내 미션 찜 조회
+
+==== HTTP Request
+include::{snippets}/mission-bookmark-me/http-request.adoc[]
+include::{snippets}/mission-bookmark-me/request-headers.adoc[]
+include::{snippets}/mission-bookmark-me/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-bookmark-me/http-response.adoc[]
+include::{snippets}/mission-bookmark-me/response-fields.adoc[]
