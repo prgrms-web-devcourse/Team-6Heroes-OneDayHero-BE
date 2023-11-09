@@ -76,6 +76,18 @@ include::{snippets}/mission-extend/request-fields.adoc[]
 include::{snippets}/mission-extend/http-response.adoc[]
 include::{snippets}/mission-extend/response-fields.adoc[]
 
+[[mission-complete]]
+=== 시민은 미션을 완료 상태로 변경 할 수 있다.
+
+include::{snippets}/mission-complete/path-parameters.adoc[]
+include::{snippets}/mission-complete/http-request.adoc[]
+include::{snippets}/mission-complete/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-complete/http-response.adoc[]
+include::{snippets}/mission-complete/response-fields.adoc[]
+
 [[mission-delete]]
 === 시민은 미션을 삭제 할 수 있다.
 
