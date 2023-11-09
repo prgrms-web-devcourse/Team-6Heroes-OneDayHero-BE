@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapi.global.interceptor;
 
-import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
-import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 

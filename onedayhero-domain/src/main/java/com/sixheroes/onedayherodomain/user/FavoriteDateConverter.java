@@ -11,7 +11,7 @@ public class FavoriteDateConverter implements AttributeConverter<List<Week>, Str
     @Override
     public String convertToDatabaseColumn(List<Week> attribute) {
         if (attribute == null) {
-            return "";
+            return null;
         }
 
         return attribute.stream()
@@ -21,7 +21,7 @@ public class FavoriteDateConverter implements AttributeConverter<List<Week>, Str
 
     @Override
     public List<Week> convertToEntityAttribute(String dbData) {
-        if (dbData.isEmpty()) {
+        if (dbData == null) {
             return null;
         }
 

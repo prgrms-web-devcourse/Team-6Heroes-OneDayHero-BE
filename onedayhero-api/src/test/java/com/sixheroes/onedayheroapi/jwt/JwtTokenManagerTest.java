@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapi.jwt;
 
-import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
-import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.assertj.core.api.SoftAssertions;
