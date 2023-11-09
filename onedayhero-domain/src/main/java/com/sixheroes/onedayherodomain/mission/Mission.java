@@ -102,9 +102,10 @@ public class Mission extends BaseEntity {
     }
 
     public void update(
-            Mission mission
+            Mission mission,
+            Long userId
     ) {
-        validOwn(mission.citizenId);
+        validOwn(userId);
         validAbleUpdate();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
@@ -113,15 +114,24 @@ public class Mission extends BaseEntity {
     }
 
     public void extend(
-            Mission mission
+            Mission mission,
+            Long userId
     ) {
-        validOwn(mission.citizenId);
+        validOwn(userId);
         validAbleExtend();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
         this.regionId = mission.regionId;
         this.location = mission.location;
         this.missionStatus = MissionStatus.MATCHING;
+    }
+
+    public void complete(
+            Long userId
+    ) {
+        validOwn(userId);
+        validAbleComplete();
+        this.missionStatus = MissionStatus.MISSION_COMPLETED;
     }
 
     public void validAbleDelete(
@@ -137,6 +147,13 @@ public class Mission extends BaseEntity {
     private void validAbleExtend() {
         if (!missionStatus.isExpired()) {
             log.debug("미션의 연장이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
+    }
+
+    private void validAbleComplete() {
+        if (!missionStatus.isMatchingCompleted()) {
+            log.debug("미션을 완료 상태로 변경이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
             throw new IllegalStateException(ErrorCode.T_001.name());
         }
     }
