@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -98,17 +97,17 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
         Long regionId,
         MissionCategory missionCategory
     ) {
-        var mission1 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
+        var mission1 = Mission.createMission(missionCategory, 1L, regionId,123.123, 123.123, createMissionInfo());
 
-        var mission2 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
+        var mission2 = Mission.createMission(missionCategory, 1L, regionId, 123.123, 123.123, createMissionInfo());
 
-        var mission3 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
+        var mission3 = Mission.createMission(missionCategory, 1L, regionId, 123.123, 123.123, createMissionInfo());
         mission3.changeMissionStatus(MissionStatus.MATCHING_COMPLETED);
 
-        var mission4 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
+        var mission4 = Mission.createMission(missionCategory, 1L, regionId, 123.123, 123.123, createMissionInfo());
         mission4.changeMissionStatus(MissionStatus.MISSION_COMPLETED);
 
-        var mission5 = Mission.createMission(missionCategory, 1L, regionId, new Point(123.123, 123.123), createMissionInfo());
+        var mission5 = Mission.createMission(missionCategory, 1L, regionId, 123.123, 123.123, createMissionInfo());
         mission5.changeMissionStatus(MissionStatus.EXPIRED);
 
         return List.of(mission1, mission2, mission3, mission4, mission5);
@@ -120,7 +119,7 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
             .startTime(LocalTime.of(12, 0, 0))
             .endTime(LocalTime.of(16, 0, 0))
             .price(20000)
-            .deadlineTime(LocalTime.of(11, 0, 0))
+            .deadlineTime(LocalDateTime.of(2023, 10, 30, 20, 0, 0))
             .title("미션 제목")
             .content("미션 내용")
             .serverTime(LocalDateTime.of(2023, 10, 28, 12, 0, 0))

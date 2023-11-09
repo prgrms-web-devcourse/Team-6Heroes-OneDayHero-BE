@@ -13,19 +13,11 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryReposito
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
-import com.sixheroes.onedayherodomain.user.Email;
-import com.sixheroes.onedayherodomain.user.User;
-import com.sixheroes.onedayherodomain.user.UserBasicInfo;
-import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
-import com.sixheroes.onedayherodomain.user.UserGender;
-import com.sixheroes.onedayherodomain.user.UserRole;
-import com.sixheroes.onedayherodomain.user.UserSocialType;
-import com.sixheroes.onedayherodomain.user.Week;
+import com.sixheroes.onedayherodomain.user.*;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -269,7 +261,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         return Mission.createMission(missionCategory,
             citizenId,
             1L,
-            new Point(123.123, 123.123),
+            123.123,
+            123.123,
             createMissionInfo());
     }
 
@@ -280,7 +273,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
             .missionDate(LocalDate.of(2023, 10, 30))
             .startTime(LocalTime.of(10, 0, 0))
             .endTime(LocalTime.of(10, 30, 0))
-            .deadlineTime(LocalTime.of(10, 0, 0))
+            .deadlineTime(LocalDateTime.of(2023, 10, 29, 20, 0, 0))
             .price(1000)
             .serverTime(LocalDateTime.of(2023, 10, 28, 10, 0, 0))
             .build();
