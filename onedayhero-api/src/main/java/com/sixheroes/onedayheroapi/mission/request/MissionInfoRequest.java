@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Builder
@@ -29,9 +30,9 @@ public record MissionInfoRequest(
         @NotNull(message = "미션 종료 시간은 필수 값 입니다.")
         LocalTime endTime,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         @NotNull(message = "미션 마감 시간은 필수 값 입니다.")
-        LocalTime deadlineTime,
+        LocalDateTime deadlineTime,
 
         @NotNull(message = "미션 포상금은 필수 값 입니다.")
         Integer price

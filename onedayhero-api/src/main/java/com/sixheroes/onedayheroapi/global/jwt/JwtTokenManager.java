@@ -1,10 +1,9 @@
-package com.sixheroes.onedayherocommon.jwt;
+package com.sixheroes.onedayheroapi.global.jwt;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
@@ -13,44 +12,35 @@ import java.util.Date;
 
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JwtTokenUtils {
+@RequiredArgsConstructor
+public class JwtTokenManager {
 
-    private static final String USER_ID = "id";
-    private static final String USER_ROLE = "role";
+    private final JwtProperties jwtProperties;
 
-    public static Long getId(
-            String token,
-            String key) {
-        return extractClaims(
-                token,
-                key
-        ).get(
-                USER_ID,
+    public Long getId(
+            String token
+    ) {
+        return extractClaims(token).get(
+                jwtProperties.getClaimId(),
                 Long.class
         );
     }
 
-    public static String getRole(
-            String token,
-            String key
+    public String getRole(
+            String token
     ) {
-        return extractClaims(
-                token,
-                key
-        ).get(
-                USER_ROLE,
+        return extractClaims(token).get(
+                jwtProperties.getClaimRole(),
                 String.class
         );
     }
 
-    private static Claims extractClaims(
-            String token,
-            String key
+    private Claims extractClaims(
+            String token
     ) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(getKey(key))
+                    .setSigningKey(getKey(jwtProperties.getSecretKey()))
                     .build()
                     .parseClaimsJws(token).getBody();
         } catch (MalformedJwtException exception) {
@@ -68,23 +58,21 @@ public final class JwtTokenUtils {
         }
     }
 
-    public static String generateAccessToken(
+    public String generateAccessToken(
             Long id,
-            String role,
-            String key,
-            long expiredTimeMs
+            String role
     ) {
         var currentTimeMillis = System.currentTimeMillis();
 
         Claims claims = Jwts.claims();
-        claims.put(USER_ID, id);
-        claims.put(USER_ROLE, role);
+        claims.put(jwtProperties.getClaimId(), id);
+        claims.put(jwtProperties.getClaimRole(), role);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + expiredTimeMs))
-                .signWith(getKey(key), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(currentTimeMillis + jwtProperties.getAccessTokenExpiryTimeMs()))
+                .signWith(getKey(jwtProperties.getSecretKey()), SignatureAlgorithm.HS256)
                 .compact();
     }
 

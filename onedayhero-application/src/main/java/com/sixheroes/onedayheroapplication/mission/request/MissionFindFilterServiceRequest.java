@@ -17,6 +17,7 @@ public record MissionFindFilterServiceRequest(
 
     public MissionFindFilterQueryRequest toQuery() {
         return MissionFindFilterQueryRequest.builder()
+                .userId(userId)
                 .missionCategoryIds(convertMissionCategoryCodesToLong(missionCategoryCodes))
                 .missionDates(missionDates)
                 .regionIds(regionIds)

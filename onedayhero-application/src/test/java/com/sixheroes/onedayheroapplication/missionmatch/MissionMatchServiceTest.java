@@ -7,11 +7,13 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -33,13 +35,16 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
     @Autowired
     private MissionRepository missionRepository;
 
+    @Autowired
+    private MissionMatchReader missionMatchReader;
+
     @BeforeAll
     public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
         MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
         missionCategoryRepository.save(missionCategory);
     }
 
-    @DisplayName("미션이 매칭 중 상태일 때 매칭 완료 상태로 설정할 수 있다.")
+    @DisplayName("시민은 본인이 작성한 미션이 매칭 중 상태일 때, 매칭완료 상태를 가지는 미션매칭을 생성할 수 있다.")
     @Test
     void createMissionMatching() {
         // given
@@ -56,6 +61,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         var response = missionMatchService.createMissionMatch(
                 request
         );
+        var createdMissionMatching = missionMatchReader.findByMissionId(mission.getId());
 
         // then
         assertSoftly(soft -> {
@@ -65,10 +71,36 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                     .isEqualTo(heroId);
             soft.assertThat(mission.getMissionStatus())
                     .isEqualTo(MissionStatus.MATCHING_COMPLETED);
+            soft.assertThat(createdMissionMatching.getMissionMatchStatus())
+                    .isEqualTo(MissionMatchStatus.MATCHED);
         });
     }
 
-    @DisplayName("본인이 작성한 미션이 아니라면 매칭 완료 상태로 설정할 수 없다.")
+    @DisplayName("시민은 미션이 매칭 중 상태가 아니라면, 매칭완료 상태를 가지는 미션매칭을 생성할 수 없다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING")
+    @ParameterizedTest
+    void createMissionMatchingFailWithInvalidStatus(MissionStatus missionStatus) {
+        System.out.println(missionStatus);
+        // given
+        var citizenId = 1L;
+        var heroId = 2L;
+        var mission = createMissionWithStatus(
+                citizenId, missionStatus
+        );
+
+        // when & then
+        var request = createMissionMatchCreateServiceRequest(
+                citizenId,
+                mission,
+                heroId
+        );
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
+        )
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_007.name());
+    }
+
+    @DisplayName("시민은 본인이 작성한 미션이 아니라면, 매칭완료 상태를 가지는 미션매칭을 생성할 수 없다.")
     @Test
     void createMissionMatchingFailWithInvalidOwn() {
         // given
@@ -89,28 +121,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_008.name());
     }
 
-    @DisplayName("미션이 매칭 중 상태가 아니라면 매칭 완료 상태로 설정할 수 없다.")
-    @Test
-    void createMissionMatchingFailWithInvalidStatus() {
-        // given
-        var citizenId = 1L;
-        var heroId = 2L;
-        var mission = createMission(citizenId);
-        mission.missionMatchingCompleted(citizenId);
-
-        // when & then
-        var request = createMissionMatchCreateServiceRequest(
-                citizenId,
-                mission,
-                heroId
-        );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
-        )
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_007.name());
-    }
-
-    @DisplayName("시민은 매칭완료 상태인 본인의 미션에 대한 미션매칭을 취소할 수 있다.")
+    @DisplayName("시민은 본인이 작성한 미션이 매칭 됨 상태일 떄, 연결된 미션매칭에 대해 취소 상태로 변경할 수 있다.")
     @Test
     void cancelMissionMatch() {
         // given
@@ -131,6 +142,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 mission.getId()
         );
         var response = missionMatchService.cancelMissionMatch(request);
+        var canceledMissionMatching = missionMatchReader.findByMissionId(mission.getId());
 
         // then
         assertSoftly(soft -> {
@@ -138,8 +150,8 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                     .isEqualTo(mission.getId());
             soft.assertThat(response.citizenId())
                     .isEqualTo(citizenId);
-            soft.assertThat(response.missionId())
-                    .isEqualTo(mission.getId());
+            soft.assertThat(canceledMissionMatching.getMissionMatchStatus())
+                    .isEqualTo(MissionMatchStatus.CANCELED);
         });
     }
 
@@ -175,7 +187,24 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionStatus(MissionStatus.MATCHING)
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.78))
+                .build();
+
+        return missionRepository.save(mission);
+    }
+
+    private Mission createMissionWithStatus(
+            Long citizenId,
+            MissionStatus missionStatus
+    ) {
+        var mission = Mission.builder()
+                .missionInfo(createMissionInfo())
+                .missionCategory(missionCategoryRepository.findById(1L).get())
+                .bookmarkCount(0)
+                .missionStatus(missionStatus)
+                .citizenId(citizenId)
+                .regionId(1L)
+                .location(Mission.createPoint(1234.56, 1234.56))
                 .build();
 
         return missionRepository.save(mission);
@@ -186,7 +215,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 10),
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .title("서빙")
                 .content("서빙 도와주기")

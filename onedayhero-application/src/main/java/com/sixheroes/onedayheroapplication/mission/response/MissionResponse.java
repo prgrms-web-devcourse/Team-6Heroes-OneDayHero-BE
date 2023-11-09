@@ -7,9 +7,9 @@ import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
-import org.springframework.data.geo.Point;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Builder
@@ -18,7 +18,8 @@ public record MissionResponse(
         MissionCategoryResponse missionCategory,
         Long citizenId,
         RegionResponse region,
-        Point location,
+        Double longitude,
+        Double latitude,
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
         String missionStatus
@@ -34,7 +35,8 @@ public record MissionResponse(
                 .region(
                         RegionResponse.from(response)
                 )
-                .location(response.location())
+                .longitude(response.location().getX())
+                .latitude(response.location().getY())
                 .missionInfo(
                         MissionInfoResponse.from(response)
                 )
@@ -53,7 +55,8 @@ public record MissionResponse(
                 .region(
                         RegionResponse.from(region)
                 )
-                .location(mission.getLocation())
+                .longitude(mission.getLocation().getX())
+                .latitude(mission.getLocation().getY())
                 .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
                 .bookmarkCount(mission.getBookmarkCount())
                 .missionStatus(mission.getMissionStatus().name())
@@ -75,8 +78,8 @@ public record MissionResponse(
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
             LocalTime endTime,
 
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-            LocalTime deadlineTime,
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+            LocalDateTime deadlineTime,
 
             Integer price
     ) {
@@ -85,6 +88,7 @@ public record MissionResponse(
                 MissionQueryResponse response
         ) {
             return MissionInfoResponse.builder()
+                    .title(response.title())
                     .content(response.content())
                     .missionDate(response.missionDate())
                     .startTime(response.startTime())
@@ -98,6 +102,7 @@ public record MissionResponse(
                 MissionInfo missionInfo
         ) {
             return MissionInfoResponse.builder()
+                    .title(missionInfo.getTitle())
                     .content(missionInfo.getContent())
                     .missionDate(missionInfo.getMissionDate())
                     .startTime(missionInfo.getStartTime())
