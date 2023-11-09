@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -128,7 +127,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .missionCategory(missionCategoryRepository.findById(1L).get())
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.78))
                 .bookmarkCount(0)
                 .build();
 
@@ -140,7 +139,10 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 10),
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .title("서빙")
                 .content("서빙 도와주기")

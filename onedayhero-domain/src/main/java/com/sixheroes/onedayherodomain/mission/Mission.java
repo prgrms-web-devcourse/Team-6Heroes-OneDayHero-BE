@@ -11,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 @Slf4j
 @Getter
@@ -53,6 +56,7 @@ public class Mission extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
+    // TODO : 미션 생성 시 전달 받는 값을 longitude, latitude 로 분리하고 생성자에서 Point 변환
     @Builder
     private Mission(
             MissionCategory missionCategory,
@@ -73,18 +77,24 @@ public class Mission extends BaseEntity {
         this.isDeleted = false;
     }
 
+    public static Point createPoint(double x, double y) {
+        var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        return geometryFactory.createPoint(new Coordinate(x, y));
+    }
+
     public static Mission createMission(
             MissionCategory missionCategory,
             Long citizenId,
             Long regionId,
-            Point location,
+            double longitude,
+            double latitude,
             MissionInfo missionInfo
     ) {
         return Mission.builder().
                 missionCategory(missionCategory)
                 .citizenId(citizenId)
                 .regionId(regionId)
-                .location(location)
+                .location(createPoint(longitude, latitude))
                 .missionInfo(missionInfo)
                 .bookmarkCount(0)
                 .missionStatus(MissionStatus.MATCHING)
@@ -102,13 +112,16 @@ public class Mission extends BaseEntity {
         this.location = mission.location;
     }
 
-    public void extend(Mission mission) {
+    public void extend(
+            Mission mission
+    ) {
         validOwn(mission.citizenId);
         validAbleExtend();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
         this.regionId = mission.regionId;
         this.location = mission.location;
+        this.missionStatus = MissionStatus.MATCHING;
     }
 
     public void validAbleDelete(

@@ -104,14 +104,13 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-
-        return MissionResponses.from(pageable, sliceMissionQueryResponses, sliceMissionQueryResponses.hasNext());
+        return MissionResponses.from(sliceMissionQueryResponses);
     }
 
     public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
         var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
 
-        return MissionProgressResponses.from(pageable, sliceMissionProgressQueryResponses, sliceMissionProgressQueryResponses.hasNext());
+        return MissionProgressResponses.from(sliceMissionProgressQueryResponses);
     }
 
     private void deleteUserBookMarkByMissionId(

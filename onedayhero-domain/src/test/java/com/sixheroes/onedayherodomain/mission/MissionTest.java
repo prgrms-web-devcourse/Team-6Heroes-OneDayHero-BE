@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.data.geo.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,7 +71,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -129,7 +128,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -170,7 +169,7 @@ class MissionTest {
         var missionDate = LocalDate.of(2023, 10, 20);
         var startTime = LocalTime.of(10, 0, 0);
         var endTime = LocalTime.of(10, 30, 0);
-        var deadlineTime = LocalTime.of(10, 0, 0);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfo = MissionInfo.builder()
                 .title("수정하는 제목")
@@ -204,6 +203,42 @@ class MissionTest {
                 .hasMessage(ErrorCode.T_001.name());
     }
 
+    @DisplayName("유저는 만료된 미션을 연장 할 수 있다.")
+    @Test
+    void extendMission() {
+        // given
+        var expiredMission = createMission(MissionStatus.EXPIRED);
+
+        var extendMission = Mission.builder()
+                .citizenId(expiredMission.getCitizenId())
+                .regionId(expiredMission.getRegionId())
+                .missionCategory(expiredMission.getMissionCategory())
+                .missionInfo(MissionInfo.builder()
+                        .serverTime(LocalDateTime.of(
+                                LocalDate.of(2023, 11, 7),
+                                LocalTime.MIDNIGHT
+                        ))
+                        .title("수정된 제목")
+                        .content("수정된 내용")
+                        .missionDate(LocalDate.of(2023, 11, 9))
+                        .startTime(LocalTime.of(10, 0))
+                        .endTime(LocalTime.of(10, 30))
+                        .deadlineTime(LocalDateTime.of(
+                                LocalDate.of(2023, 11, 9),
+                                LocalTime.of(10, 0)
+                        ))
+                        .price(1500)
+                        .build())
+                .location(Mission.createPoint(1234.56, 1234.56))
+                .build();
+        
+        // when
+        expiredMission.extend(extendMission);
+
+        // then
+        assertThat(expiredMission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
+    }
+
     private Mission createMission(
             MissionStatus missionStatus
     ) {
@@ -220,7 +255,10 @@ class MissionTest {
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))
                                 .endTime(LocalTime.of(14, 30))
-                                .deadlineTime(LocalTime.of(12, 0))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 30)
+                                ))
                                 .price(1000)
                                 .serverTime(LocalDateTime.of(
                                         LocalDate.of(2023, 10, 31),
@@ -229,7 +267,7 @@ class MissionTest {
                                 .build())
                 .regionId(1L)
                 .citizenId(1L)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(missionStatus)
                 .bookmarkCount(0)
                 .build();
@@ -245,7 +283,7 @@ class MissionTest {
                 .missionInfo(missionInfo)
                 .regionId(1L)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
                 .build();
@@ -267,7 +305,10 @@ class MissionTest {
                                 .missionDate(LocalDate.of(2023, 11, 1))
                                 .startTime(LocalTime.of(12, 30))
                                 .endTime(LocalTime.of(14, 30))
-                                .deadlineTime(LocalTime.of(12, 0))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 0)
+                                ))
                                 .price(1000)
                                 .serverTime(LocalDateTime.of(
                                         LocalDate.of(2023, 10, 31),
@@ -276,7 +317,7 @@ class MissionTest {
                                 .build())
                 .regionId(1L)
                 .citizenId(citizenId)
-                .location(new Point(123456.78, 123456.78))
+                .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(MissionStatus.MATCHING)
                 .bookmarkCount(0)
                 .build();

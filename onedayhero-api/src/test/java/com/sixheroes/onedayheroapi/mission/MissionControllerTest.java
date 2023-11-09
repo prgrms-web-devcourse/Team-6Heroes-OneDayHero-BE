@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -54,7 +53,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                startTime
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateRequest = createMissionCreateRequest(missionInfoRequest);
@@ -135,12 +137,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -181,16 +181,15 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -247,7 +246,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                startTime
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -330,12 +332,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -376,16 +376,15 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -400,7 +399,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                LocalTime.of(10, 0)
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -483,12 +485,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -529,16 +529,15 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -553,7 +552,10 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
-        var deadlineTime = LocalTime.of(10, 0);
+        var deadlineTime = LocalDateTime.of(
+                missionDate,
+                LocalTime.of(9, 30)
+        );
 
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionUpdateRequest = createMissionUpdateRequest(missionInfoRequest);
@@ -604,12 +606,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 수행 지역 구"),
                                 fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
                                         .description("미션 수행 지역 동"),
-                                fieldWithPath("data.location").type(JsonFieldType.OBJECT)
-                                        .description("위도, 경도 정보 객체"),
-                                fieldWithPath("data.location.x").type(JsonFieldType.NUMBER)
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.location.y").type(JsonFieldType.NUMBER)
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER)
+                                        .description("경도"),
+                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER)
+                                        .description("위도"),
                                 fieldWithPath("data.missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionInfo.title").type(JsonFieldType.STRING)
@@ -650,16 +650,15 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.region.si").value(regionResponse.si()))
                 .andExpect(jsonPath("$.data.region.gu").value(regionResponse.gu()))
                 .andExpect(jsonPath("$.data.region.dong").value(regionResponse.dong()))
-                .andExpect(jsonPath("$.data.location").exists())
-                .andExpect(jsonPath("$.data.location.x").value(missionResponse.location().getX()))
-                .andExpect(jsonPath("$.data.location.y").value(missionResponse.location().getY()))
+                .andExpect(jsonPath("$.data.longitude").value(missionResponse.longitude()))
+                .andExpect(jsonPath("$.data.latitude").value(missionResponse.latitude()))
                 .andExpect(jsonPath("$.data.missionInfo").exists())
                 .andExpect(jsonPath("$.data.missionInfo.title").value(missionInfoResponse.title()))
                 .andExpect(jsonPath("$.data.missionInfo.content").value(missionInfoResponse.content()))
                 .andExpect(jsonPath("$.data.missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionInfoResponse.missionDate())))
                 .andExpect(jsonPath("$.data.missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.startTime())))
                 .andExpect(jsonPath("$.data.missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.endTime())))
-                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionInfoResponse.deadlineTime())))
+                .andExpect(jsonPath("$.data.missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionInfoResponse.deadlineTime())))
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
@@ -888,12 +887,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("지역 구"),
                                 fieldWithPath("data.missionResponses.content[].region.dong")
                                         .description("지역 동"),
-                                fieldWithPath("data.missionResponses.content[].location").type(JsonFieldType.OBJECT)
-                                        .description("위도 경도 객체"),
-                                fieldWithPath("data.missionResponses.content[].location.x")
-                                        .description("경도 (longitude)"),
-                                fieldWithPath("data.missionResponses.content[].location.y")
-                                        .description("위도 (latitude)"),
+                                fieldWithPath("data.missionResponses.content[].longitude")
+                                        .description("경도"),
+                                fieldWithPath("data.missionResponses.content[].latitude")
+                                        .description("위도"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo").type(JsonFieldType.OBJECT)
                                         .description("미션 상세 정보 객체"),
                                 fieldWithPath("data.missionResponses.content[].missionInfo.title").type(JsonFieldType.STRING)
@@ -972,14 +969,14 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.si").value(missionResponseA.region().si()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.gu").value(missionResponseA.region().gu()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].region.dong").value(missionResponseA.region().dong()))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.x").value(missionResponseA.location().getX()))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].location.y").value(missionResponseA.location().getY()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].longitude").value(missionResponseA.longitude()))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].latitude").value(missionResponseA.latitude()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.title").value(missionResponseA.missionInfo().title()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.content").value(missionResponseA.missionInfo().content()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.missionDate").value(DateTimeConverter.convertDateToString(missionResponseA.missionInfo().missionDate())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.startTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().startTime())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.endTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().endTime())))
-                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value(DateTimeConverter.convertTimetoString(missionResponseA.missionInfo().deadlineTime())))
+                .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.deadlineTime").value(DateTimeConverter.convertLocalDateTimeToString(missionResponseA.missionInfo().deadlineTime())))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionInfo.price").value(missionResponseA.missionInfo().price()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].bookmarkCount").value(missionResponseA.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionResponses.content[0].missionStatus").value(missionResponseA.missionStatus()))
@@ -1014,7 +1011,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .region(regionResponse)
-                .location(new Point(123.45, 123.56))
+                .longitude(123.45)
+                .latitude(123.45)
                 .missionStatus("MATCHING")
                 .build();
     }
@@ -1030,7 +1028,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionCategory(missionCategoryResponse)
                 .citizenId(missionCreateRequest.citizenId())
                 .region(regionResponse)
-                .location(new Point(missionCreateRequest.latitude(), missionCreateRequest.latitude()))
+                .longitude(missionCreateRequest.longitude())
+                .latitude(missionCreateRequest.latitude())
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .missionStatus("MATCHING")
@@ -1046,7 +1045,10 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionDate(missionDate)
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(9, 30))
-                .deadlineTime(LocalTime.of(8, 30))
+                .deadlineTime(LocalDateTime.of(
+                        missionDate,
+                        LocalTime.of(8, 30)
+                ))
                 .price(1000)
                 .build();
     }
@@ -1062,7 +1064,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionCategory(missionCategoryResponse)
                 .citizenId(missionUpdateRequest.citizenId())
                 .region(regionResponse)
-                .location(new Point(missionUpdateRequest.longitude(), missionUpdateRequest.latitude()))
+                .longitude(missionUpdateRequest.longitude())
+                .latitude(missionUpdateRequest.latitude())
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .missionStatus("MATCHING")
@@ -1143,7 +1146,7 @@ public class MissionControllerTest extends RestDocsSupport {
             LocalDate missionDate,
             LocalTime startTime,
             LocalTime endTime,
-            LocalTime deadlineTime
+            LocalDateTime deadlineTime
     ) {
         return MissionInfoRequest
                 .builder()
