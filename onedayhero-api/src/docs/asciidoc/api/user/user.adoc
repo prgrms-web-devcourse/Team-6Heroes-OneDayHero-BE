@@ -1,3 +1,16 @@
+[[user-find]]
+=== 유저 정보 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find/http-request.adoc[]
+include::{snippets}/user-find/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find/http-response.adoc[]
+include::{snippets}/user-find/response-fields.adoc[]
+
 [[user-update]]
 === 유저 정보 수정
 

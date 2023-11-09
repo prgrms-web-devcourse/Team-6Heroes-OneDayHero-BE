@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record UserBasicInfoServiceResponse(
+public record UserBasicInfoResponse(
     String nickname,
 
     String gender,
