@@ -80,7 +80,7 @@ public class MissionService {
 
         var requestMission = request.toEntity(missionCategory, serverTime);
 
-        mission.update(requestMission);
+        mission.update(requestMission, request.citizenId());
         return MissionResponse.from(mission, region);
     }
 
@@ -96,7 +96,7 @@ public class MissionService {
 
         var requestExtendMission = request.toEntity(missionCategory, serverTime);
 
-        mission.extend(requestExtendMission);
+        mission.extend(requestExtendMission, request.citizenId());
 
         return MissionResponse.from(mission, region);
     }
@@ -105,7 +105,11 @@ public class MissionService {
             Long missionId,
             Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var mission = missionReader.findOne(missionId);
+        var region = regionReader.findOne(mission.getRegionId());
+        mission.complete(userId);
+
+        return MissionResponse.from(mission, region);
     }
 
     @Transactional

@@ -626,7 +626,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 savedMission.getMissionInfo().getMissionDate().minusDays(1),
                 LocalTime.MIDNIGHT
         );
-        
+
         var missionInfoServiceRequest = createMissionInfoServiceRequest(
                 savedMission.getMissionInfo().getMissionDate().plusDays(2),
                 savedMission.getMissionInfo().getStartTime().plusHours(3),
@@ -759,6 +759,72 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionUpdateServiceRequest, today))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+    @DisplayName("시민은 미션을 완료 상태로 변경 할 수 있다.")
+    @Test
+    void completeMission() {
+        // given
+        var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING_COMPLETED
+        );
+        var savedMission = missionRepository.save(mission);
+
+        // when
+        var missionResponse = missionService.completeMission(savedMission.getId(), citizenId);
+
+        // then
+        assertThat(missionResponse.missionStatus()).isEqualTo(MissionStatus.MISSION_COMPLETED.name());
+    }
+
+    @DisplayName("시민은 본인이 만든 미션이 아니면 미션을 완료 상태로 변경 할 수 없다.")
+    @Test
+    void completeMissionWithUnknownCitizen() {
+        // given
+        var citizenId = 1L;
+        var serverTime = LocalDateTime.of(2023, 10, 10, 0, 0);
+
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var mission = createMission(
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING_COMPLETED
+        );
+        var savedMission = missionRepository.save(mission);
+        var unknownCitizenId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> savedMission.complete(unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_100.name());
     }
