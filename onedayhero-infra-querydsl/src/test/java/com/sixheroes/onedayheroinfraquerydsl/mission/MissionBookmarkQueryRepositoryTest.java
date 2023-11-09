@@ -9,7 +9,6 @@ import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
 import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@Disabled
 @Transactional
 class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
@@ -78,7 +76,7 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
         // when
         var pageRequest = PageRequest.of(1, 3);
-        var responses = missionBookmarkQueryRepository.me(
+        var responses = missionBookmarkQueryRepository.viewMyBookmarks(
                 pageRequest,
                 bookmarkUserId
         );
@@ -106,6 +104,7 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
     private MissionInfo createMissionInfo() {
         return MissionInfo.builder()
+                .title("서빙 구함")
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))

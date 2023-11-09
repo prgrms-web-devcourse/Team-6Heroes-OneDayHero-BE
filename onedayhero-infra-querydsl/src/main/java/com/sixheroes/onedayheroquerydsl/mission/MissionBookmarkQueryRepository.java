@@ -4,6 +4,7 @@ package com.sixheroes.onedayheroquerydsl.mission;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroquerydsl.mission.response.MissionBookmarkMeQueryResponse;
+import com.sixheroes.onedayheroquerydsl.util.SliceResultConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class MissionBookmarkQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Slice<MissionBookmarkMeQueryResponse> me(
+    public Slice<MissionBookmarkMeQueryResponse> viewMyBookmarks(
             Pageable pageable,
             Long userId
     ) {
@@ -36,7 +37,7 @@ public class MissionBookmarkQueryRepository {
                                 mission.id,
                                 missionBookmark.id,
                                 mission.missionStatus,
-                                mission.missionInfo.content, //TODO: title
+                                mission.missionInfo.title,
                                 mission.bookmarkCount,
                                 mission.missionInfo.price,
                                 mission.missionInfo.missionDate,
@@ -56,21 +57,12 @@ public class MissionBookmarkQueryRepository {
                 .where(missionBookmark.userId.eq(userId))
                 .orderBy(mission.missionInfo.missionDate.asc(), mission.missionInfo.startTime.asc())
                 .offset(pageable.getOffset()) //TODO: 인덱스 및 NO-OFFSET 적용 고려
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        var totalCount = queryFactory
-                .select(missionBookmark.count())
-                .from(mission)
-                .join(mission.missionCategory, missionCategory)
-                .join(missionBookmark).on(mission.id.eq(missionBookmark.mission.id))
-                .join(region).on(mission.regionId.eq(region.id))
-                .where(missionBookmark.userId.eq(userId));
-
-        return PageableExecutionUtils.getPage(
+        return SliceResultConverter.consume(
                 content,
-                pageable,
-                totalCount::fetchOne
+                pageable
         );
     }
 }

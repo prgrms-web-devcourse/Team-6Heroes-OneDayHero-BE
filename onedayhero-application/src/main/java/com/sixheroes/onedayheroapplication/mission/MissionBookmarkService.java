@@ -35,7 +35,7 @@ public class MissionBookmarkService {
             Pageable pageable,
             Long userId
     ) {
-        var responses = missionBookmarkQueryRepository.me(
+        var responses = missionBookmarkQueryRepository.viewMyBookmarks(
                 pageable,
                 userId
         );
