@@ -1,7 +1,5 @@
 package com.sixheroes.onedayheroapplication.user.request;
 
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
 import com.sixheroes.onedayherodomain.user.UserGender;
@@ -14,8 +12,8 @@ import java.util.Optional;
 @Builder
 public record UserServiceUpdateRequest(
     Long userId,
-    UserBasicInfoServiceDto userBasicInfo,
-    UserFavoriteWorkingDayServiceDto userFavoriteWorkingDay
+    UserBasicInfoServiceRequest userBasicInfo,
+    UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDay
 ) {
 
     public UserBasicInfo toUserBasicInfo() {
