@@ -14,17 +14,7 @@ public record MissionBookmarkMeViewResponse(
             Long userId,
             Slice<MissionBookmarkMeQueryResponse> responses
     ) {
-        var content = responses.getContent()
-                .stream()
-                .map(MissionBookmarkMeResponse::from)
-                .toList();
-
-        var slice = new SliceImpl<MissionBookmarkMeResponse>(
-                content,
-                responses.getPageable(),
-                responses.hasNext()
-        );
-
-        return new MissionBookmarkMeViewResponse(userId, slice);
+        var missionBookmarkMeResponses = responses.map(MissionBookmarkMeResponse::from);
+        return new MissionBookmarkMeViewResponse(userId, missionBookmarkMeResponses);
     }
 }
