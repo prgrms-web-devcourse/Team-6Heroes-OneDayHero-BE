@@ -1,0 +1,12 @@
+[[profile-citizen-find]]
+=== 시민 프로필 조회
+
+==== HTTP Request
+
+include::{snippets}/profile-citizen-find/http-request.adoc[]
+include::{snippets}/profile-citizen-find/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/profile-citizen-find/http-response.adoc[]
+include::{snippets}/profile-citizen-find/response-fields.adoc[]
