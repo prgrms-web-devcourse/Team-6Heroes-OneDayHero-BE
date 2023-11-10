@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 
-@Profile("!test")
 @Getter
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix = "s3-image")
