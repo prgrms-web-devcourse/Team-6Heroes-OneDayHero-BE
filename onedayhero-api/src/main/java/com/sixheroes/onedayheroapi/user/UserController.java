@@ -35,9 +35,23 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
 
-    // TODO 자신의 프로필 조회
+    @PatchMapping("/change-hero")
+    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOn(
+        // TODO JWT 생기면 userId 받기
+    ) {
+        var userId = 1L;
+        var userResponse = userService.turnHeroModeOn(userId);
 
-    // TODO 시민 모드 변경
+        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+    }
 
-    // TODO 히어로 모드 변경
+    @PatchMapping("/change-citizen")
+    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOff(
+        // TODO JWT 생기면 userId 받기
+    ) {
+        var userId = 1L;
+        var userResponse = userService.turnHeroModeOff(userId);
+
+        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+    }
 }

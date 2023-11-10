@@ -23,3 +23,27 @@ include::{snippets}/user-update/request-fields.adoc[]
 
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
+
+[[user-change-hero]]
+=== 유저 히어로 모드 활성화
+
+==== HTTP Request
+
+include::{snippets}/user-change-hero/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-change-hero/http-response.adoc[]
+include::{snippets}/user-change-hero/response-fields.adoc[]
+
+[[user-change-citizen]]
+=== 유저 히어로 모드 비활성화
+
+==== HTTP Request
+
+include::{snippets}/user-change-citizen/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-change-citizen/http-response.adoc[]
+include::{snippets}/user-change-citizen/response-fields.adoc[]
