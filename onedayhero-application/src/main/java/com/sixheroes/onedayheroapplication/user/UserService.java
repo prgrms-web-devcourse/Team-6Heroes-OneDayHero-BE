@@ -38,4 +38,18 @@ public class UserService {
             user.getUserFavoriteWorkingDay()
         );
     }
+
+    @Transactional
+    public UserResponse turnHeroModeOn(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Transactional
+    public UserResponse turnHeroModeOff(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
 }
