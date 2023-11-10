@@ -33,3 +33,8 @@ include::api/missionmatch/missionmatch.adoc[]
 == Mission Proposal API
 
 include::api/missionproposal/mission-proposal.adoc[]
+
+[[Review-API]]
+== Review API
+
+include::api/review/review.adoc[]

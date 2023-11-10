@@ -7,10 +7,7 @@ import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/me")
@@ -26,5 +23,15 @@ public class UserController {
         var userUpdateResponse = userService.updateUser(userUpadateRequest.toService());
 
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
+    }
+
+    @GetMapping("/reviews/send")
+    public ResponseEntity<ApiResponse<?>> findSentReviews() {
+        return null;
+    }
+
+    @GetMapping("/reviews/receive")
+    public ResponseEntity<ApiResponse<?>> findReceivedReviews() {
+        return null;
     }
 }
