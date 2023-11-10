@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
+import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,12 @@ public class UserService {
     private final UserReader userReader;
 
     public UserResponse findUser(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProfileCitizenResponse findCitizenProfile(
         Long userId
     ) {
         throw new UnsupportedOperationException();
