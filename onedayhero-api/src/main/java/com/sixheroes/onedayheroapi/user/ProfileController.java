@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapi.user;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
+import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +25,14 @@ public class ProfileController {
         var citizenProfile = userService.findCitizenProfile(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(citizenProfile));
+    }
+
+    @GetMapping("/{userId}/hero")
+    public ResponseEntity<ApiResponse<ProfileHeroResponse>> findProfileHero(
+        @PathVariable Long userId
+    ) {
+        var heroProfile = userService.findHeroProfile(userId);
+
+        return ResponseEntity.ok(ApiResponse.ok(heroProfile));
     }
 }

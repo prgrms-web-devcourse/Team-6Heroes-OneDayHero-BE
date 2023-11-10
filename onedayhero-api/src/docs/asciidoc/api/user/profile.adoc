@@ -10,3 +10,16 @@ include::{snippets}/profile-citizen-find/path-parameters.adoc[]
 
 include::{snippets}/profile-citizen-find/http-response.adoc[]
 include::{snippets}/profile-citizen-find/response-fields.adoc[]
+
+[[profile-hero-find]]
+=== 히어로 프로필 조회
+
+==== HTTP Request
+
+include::{snippets}/profile-hero-find/http-request.adoc[]
+include::{snippets}/profile-hero-find/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/profile-hero-find/http-response.adoc[]
+include::{snippets}/profile-hero-find/response-fields.adoc[]
