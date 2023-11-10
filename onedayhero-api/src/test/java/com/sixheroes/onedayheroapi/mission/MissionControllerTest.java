@@ -116,7 +116,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 미션 아이디"),
+                                        .description("미션 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -311,7 +311,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 미션 아이디"),
+                                        .description("미션 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -464,7 +464,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 미션 아이디"),
+                                        .description("미션 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -594,7 +594,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 미션 아이디"),
+                                        .description("미션 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -715,7 +715,7 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 미션 아이디"),
+                                        .description("미션 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("시민 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
