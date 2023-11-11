@@ -5,9 +5,9 @@ import com.sixheroes.onedayheroapi.user.request.UserBasicInfoDto;
 import com.sixheroes.onedayheroapi.user.request.UserFavoriteWorkingDayDto;
 import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
 import com.sixheroes.onedayheroapplication.user.UserService;
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
+import com.sixheroes.onedayheroapplication.user.response.UserBasicInfoServiceResponse;
+import com.sixheroes.onedayheroapplication.user.response.UserFavoriteWorkingDayServiceResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -51,8 +51,8 @@ class UserControllerTest extends RestDocsSupport {
         var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayDto(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userUpadateRequest = new UserUpadateRequest(userId, userBasicInfoDto, userFavoriteWorkingDayDto);
 
-        var userBasicInfoServiceDto = new UserBasicInfoServiceDto("이름", "MALE", LocalDate.of(1990, 1, 1), "자기소개");
-        var userFavoriteWorkingDayServiceDto = new UserFavoriteWorkingDayServiceDto(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
+        var userBasicInfoServiceDto = new UserBasicInfoServiceResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기소개");
+        var userFavoriteWorkingDayServiceDto = new UserFavoriteWorkingDayServiceResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userUpdateResponse = new UserUpdateResponse(userId, userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto);
 
         given(userService.updateUser(any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
@@ -65,7 +65,7 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.userId").value(userId))
+            .andExpect(jsonPath("$.data.id").value(userId))
             .andExpect(jsonPath("$.data.basicInfo").exists())
             .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoServiceDto.nickname()))
             .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoServiceDto.gender()))
@@ -112,7 +112,7 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat()),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디"),
                     fieldWithPath("data.basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
                     fieldWithPath("data.basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
                     fieldWithPath("data.basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
