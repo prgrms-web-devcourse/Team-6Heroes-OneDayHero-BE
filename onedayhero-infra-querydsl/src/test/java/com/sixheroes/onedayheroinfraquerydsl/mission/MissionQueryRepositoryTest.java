@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,15 +38,8 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
     @BeforeAll
     public static void setUp(
-            @Autowired MissionCategoryRepository missionCategoryRepository,
             @Autowired RegionRepository regionRepository
     ) {
-        var missionCategories = Arrays.stream(MissionCategoryCode.values())
-                .map(MissionCategory::from)
-                .toList();
-
-        missionCategoryRepository.saveAll(missionCategories);
-
         var regionA = Region.builder()
                 .si("서울시")
                 .gu("강남구")
@@ -68,7 +60,8 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findOneWithFetchJoin() {
         // given
-        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var missionCategory = createMissionCategoryA();
+        missionCategoryRepository.save(missionCategory);
 
         var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
 
@@ -101,11 +94,11 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         );
 
         var citizenId = 1L;
-        var missionCategoryA = missionCategoryRepository.findById(1L).get();
+        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
         var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB = missionCategoryRepository.findById(2L).get();
+        var missionCategoryB = missionCategoryRepository.save(createMissionCategoryB());
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
         var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
@@ -113,7 +106,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         missionRepository.saveAll(List.of(missionA, missionB));
 
-        var missionCategoryIds = List.of(1L, 2L);
+        var missionCategoryIds = List.of(missionCategoryA.getId(), missionCategoryB.getId());
         var regionIds = List.of(1L, 2L);
         var missionDates = List.of(LocalDate.of(2023, 10, 31), LocalDate.of(2023, 11, 4));
 
@@ -142,11 +135,11 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         );
 
         var citizenId = 1L;
-        var missionCategoryA = missionCategoryRepository.findById(1L).get();
+        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
         var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB = missionCategoryRepository.findById(2L).get();
+        var missionCategoryB= missionCategoryRepository.save(createMissionCategoryB());
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
         var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
@@ -154,7 +147,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         missionRepository.saveAll(List.of(missionA, missionB));
 
-        var missionCategoryIds = List.of(1L);
+        var missionCategoryIds = List.of(missionCategoryA.getId());
 
         var request = MissionFindFilterQueryRequest.builder()
                 .userId(citizenId)
@@ -181,11 +174,11 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         );
 
         var citizenId = 1L;
-        var missionCategoryA = missionCategoryRepository.findById(1L).get();
+        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
         var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB = missionCategoryRepository.findById(2L).get();
+        var missionCategoryB= missionCategoryRepository.save(createMissionCategoryB());
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
         var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
@@ -212,7 +205,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findProgressMissionByUserId() {
         // given
-        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var missionCategory= missionCategoryRepository.save(createMissionCategoryA());
         var region = regionRepository.findById(1L).get();
 
         var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
@@ -340,5 +333,13 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .missionStatus(missionStatus)
                 .bookmarkCount(0)
                 .build();
+    }
+
+    private MissionCategory createMissionCategoryA() {
+        return MissionCategory.from(MissionCategoryCode.MC_001);
+    }
+
+    private MissionCategory createMissionCategoryB() {
+        return MissionCategory.from(MissionCategoryCode.MC_002);
     }
 }
