@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +42,32 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
     @Autowired
     private RegionRepository regionRepository;
+
+    @BeforeAll
+    public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
+        var missionCategories = Arrays.stream(MissionCategoryCode.values())
+                .map(MissionCategory::from)
+                .toList();
+
+        missionCategoryRepository.saveAll(missionCategories);
+
+        var regionA = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build();
+
+        var regionB = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("서초동")
+                .build();
+
+        regionRepository.saveAll(List.of(regionA, regionB));
+    }
 
     @DisplayName("내 미션 찜목록을 조회할 수 있다.")
     @Test

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,8 +39,15 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
     @BeforeAll
     public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
             @Autowired RegionRepository regionRepository
     ) {
+        var missionCategories = Arrays.stream(MissionCategoryCode.values())
+                .map(MissionCategory::from)
+                .toList();
+
+        missionCategoryRepository.saveAll(missionCategories);
+
         var regionA = Region.builder()
                 .si("서울시")
                 .gu("강남구")
@@ -60,8 +68,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findOneWithFetchJoin() {
         // given
-        var region = regionRepository.save(createRegion());
-        var missionCategory = missionCategoryRepository.save(createMissionCategoryA());
+        var missionCategory = missionCategoryRepository.findById(1L).get();
 
         var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
 
@@ -72,7 +79,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
 
-        var mission = createMission(1L, missionCategory, missionInfo, region.getId());
+        var mission = createMission(1L, missionCategory, missionInfo, 1L);
 
         var savedMission = missionRepository.save(mission);
 
@@ -88,27 +95,26 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findAllByDynamicCondition() {
         // given
-        var region = regionRepository.save(createRegion());
         var serverTime = LocalDateTime.of(
                 LocalDate.of(2023, 10, 30),
                 LocalTime.MIDNIGHT
         );
 
         var citizenId = 1L;
-        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
+        var missionCategoryA = missionCategoryRepository.findById(1L).get();
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
-        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, region.getId());
+        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB = missionCategoryRepository.save(createMissionCategoryB());
+        var missionCategoryB = missionCategoryRepository.findById(2L).get();
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
-        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, region.getId());
+        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
         var pageRequest = PageRequest.of(0, 3);
 
         missionRepository.saveAll(List.of(missionA, missionB));
 
-        var missionCategoryIds = List.of(missionCategoryA.getId(), missionCategoryB.getId());
-        var regionIds = List.of(region.getId());
+        var missionCategoryIds = List.of(1L, 2L);
+        var regionIds = List.of(1L, 2L);
         var missionDates = List.of(LocalDate.of(2023, 10, 31), LocalDate.of(2023, 11, 4));
 
         var request = MissionFindFilterQueryRequest.builder()
@@ -130,26 +136,25 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findAllByDynamicConditionWithCategoryIds() {
         // given
-        var region = regionRepository.save(createRegion());
         var serverTime = LocalDateTime.of(
                 LocalDate.of(2023, 10, 30),
                 LocalTime.MIDNIGHT
         );
 
         var citizenId = 1L;
-        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
+        var missionCategoryA = missionCategoryRepository.findById(1L).get();
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
-        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, region.getId());
+        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB= missionCategoryRepository.save(createMissionCategoryB());
+        var missionCategoryB = missionCategoryRepository.findById(2L).get();
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
-        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, region.getId());
+        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
         var pageRequest = PageRequest.of(0, 3);
 
         missionRepository.saveAll(List.of(missionA, missionB));
 
-        var missionCategoryIds = List.of(missionCategoryA.getId());
+        var missionCategoryIds = List.of(1L);
 
         var request = MissionFindFilterQueryRequest.builder()
                 .userId(citizenId)
@@ -170,20 +175,19 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findAllByDynamicConditionWithEmptyCondition() {
         // given
-        var region = regionRepository.save(createRegion());
         var serverTime = LocalDateTime.of(
                 LocalDate.of(2023, 10, 30),
                 LocalTime.MIDNIGHT
         );
 
         var citizenId = 1L;
-        var missionCategoryA= missionCategoryRepository.save(createMissionCategoryA());
+        var missionCategoryA = missionCategoryRepository.findById(1L).get();
         var missionInfoA = createMissionInfo(LocalDate.of(2023, 10, 31), serverTime);
-        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, region.getId());
+        var missionA = createMission(citizenId, missionCategoryA, missionInfoA, 1L);
 
-        var missionCategoryB= missionCategoryRepository.save(createMissionCategoryB());
+        var missionCategoryB = missionCategoryRepository.findById(2L).get();
         var missionInfoB = createMissionInfo(LocalDate.of(2023, 11, 4), serverTime);
-        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, region.getId());
+        var missionB = createMission(citizenId, missionCategoryB, missionInfoB, 1L);
 
         var pageRequest = PageRequest.of(0, 3);
 
@@ -208,8 +212,8 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     @Test
     void findProgressMissionByUserId() {
         // given
-        var missionCategory= missionCategoryRepository.save(createMissionCategoryA());
-        var region = regionRepository.save(createRegion());
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
 
         var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
 
@@ -221,10 +225,10 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
         var citizenId = 1L;
 
-        var mission = createMission(citizenId, missionCategory, missionInfo, region.getId());
-        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
-        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
-        var expiredMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.EXPIRED);
+        var mission = createMission(citizenId, missionCategory, missionInfo, 1L);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.EXPIRED);
 
 
         var pageRequest = PageRequest.of(0, 3);
@@ -335,22 +339,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 .location(Mission.createPoint(123456.78, 123456.78))
                 .missionStatus(missionStatus)
                 .bookmarkCount(0)
-                .build();
-    }
-
-    private MissionCategory createMissionCategoryA() {
-        return MissionCategory.from(MissionCategoryCode.MC_001);
-    }
-
-    private MissionCategory createMissionCategoryB() {
-        return MissionCategory.from(MissionCategoryCode.MC_002);
-    }
-
-    private Region createRegion() {
-        return Region.builder()
-                .si("서울시")
-                .gu("프로구")
-                .dong("래머동")
                 .build();
     }
 }
