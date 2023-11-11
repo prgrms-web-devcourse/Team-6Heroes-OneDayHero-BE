@@ -13,14 +13,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.locationtech.jts.geom.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,17 +38,22 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
     @Autowired
     private MissionBookmarkRepository missionBookmarkRepository;
 
+    @Autowired
+    private RegionRepository regionRepository;
+
     @DisplayName("내 미션 찜목록을 조회할 수 있다.")
     @Test
     void viewMeBookmarkMissions() {
         // given
+        var region = regionRepository.save(createRegion());
         var missionCategory = missionCategoryRepository.save(MissionCategory.from(MissionCategoryCode.MC_001));
         var bookmarkUserId = 1L;
         var citizenId = 2L;
         createFiveBookmarks(
                 citizenId,
                 bookmarkUserId,
-                missionCategory
+                missionCategory,
+                region.getId()
         );
 
         // when
@@ -61,21 +63,22 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
                 bookmarkUserId
         );
 
-//        // then
-//        assertThat(responses).hasSize(2);
+        // then
+        assertThat(responses).hasSize(5);
     }
 
     private Mission createMissionWithMissionStatus(
             Long citizenId,
             MissionStatus missionStatus,
-            MissionCategory missionCategory
+            MissionCategory missionCategory,
+            Long regionId
     ) {
         var mission = Mission.builder()
                 .missionStatus(missionStatus)
                 .missionInfo(createMissionInfo())
                 .missionCategory(missionCategory)
                 .citizenId(citizenId)
-                .regionId(1L)
+                .regionId(regionId)
                 .location(Mission.createPoint(1234, 5678))
                 .bookmarkCount(0)
                 .build();
@@ -102,14 +105,16 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
     private void createFiveBookmarks(
             long citizenId,
             long bookmarkUserId,
-            MissionCategory missionCategory
+            MissionCategory missionCategory,
+            Long regionId
     ) {
         IntStream.range(0, 10)
                 .forEach(i -> {
                     var mission = createMissionWithMissionStatus(
                             citizenId,
                             MissionStatus.MATCHING,
-                            missionCategory
+                            missionCategory,
+                            regionId
                     );
 
                     if (i <= 4) {
@@ -121,5 +126,13 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
                         mission.addBookmarkCount();
                     }
                 });
+    }
+
+    private Region createRegion() {
+        return Region.builder()
+                .si("서울시")
+                .gu("프로구")
+                .dong("래머동")
+                .build();
     }
 }
