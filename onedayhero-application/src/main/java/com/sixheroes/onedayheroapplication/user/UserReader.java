@@ -27,4 +27,14 @@ public class UserReader {
                     return new NoSuchElementException(ErrorCode.EUC_000.name());
                 });
     }
+
+    public User findOneWithUserImage(
+        Long userId
+    ) {
+        return userRepository.findByIdJoinUserImage(userId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 유저 아이디입니다. id : {}", userId);
+                return new NoSuchElementException(ErrorCode.EUC_000.name());
+            });
+    }
 }

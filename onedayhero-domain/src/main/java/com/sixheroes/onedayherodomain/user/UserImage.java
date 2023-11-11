@@ -3,10 +3,7 @@ package com.sixheroes.onedayherodomain.user;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -46,6 +43,23 @@ public class UserImage extends BaseEntity {
         this.originalName = originalName;
         this.uniqueName = uniqueName;
         this.path = path;
+    }
+
+    public static UserImage createUserImage(
+        @NonNull User user,
+        String originalName,
+        String uniqueName,
+        String path
+    ) {
+        var userImage = UserImage.builder()
+            .user(user)
+            .originalName(originalName)
+            .uniqueName(uniqueName)
+            .path(path)
+            .build();
+
+        user.setUserImage(userImage);
+        return userImage;
     }
 
     private void validCreateUserImage(

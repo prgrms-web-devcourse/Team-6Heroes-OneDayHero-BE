@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
+import com.sixheroes.onedayherodomain.user.Week;
 import lombok.Builder;
 
 import java.time.LocalTime;
@@ -16,4 +18,18 @@ public record UserFavoriteWorkingDayResponse(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     LocalTime favoriteEndTime
 ) {
+
+    public static UserFavoriteWorkingDayResponse from(
+        UserFavoriteWorkingDay userFavoriteWorkingDay
+    ) {
+        var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream()
+            .map(Week::name)
+            .toList();
+
+        return UserFavoriteWorkingDayResponse.builder()
+            .favoriteDate(favoriteDate)
+            .favoriteStartTime(userFavoriteWorkingDay.getFavoriteStartTime())
+            .favoriteEndTime(userFavoriteWorkingDay.getFavoriteEndTime())
+            .build();
+    }
 }

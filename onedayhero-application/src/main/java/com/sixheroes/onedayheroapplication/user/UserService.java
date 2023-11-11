@@ -19,7 +19,8 @@ public class UserService {
     public UserResponse findUser(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOneWithUserImage(userId);
+        return UserResponse.from(user);
     }
 
     @Transactional
@@ -32,10 +33,6 @@ public class UserService {
 
         user.updateUser(userBasicInfo, userFavoriteWorkingDay);
 
-        return UserUpdateResponse.of(
-            user.getId(),
-            user.getUserBasicInfo(),
-            user.getUserFavoriteWorkingDay()
-        );
+        return UserUpdateResponse.from(user);
     }
 }

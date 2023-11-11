@@ -1,15 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherodomain.global.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +15,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = true")
+@Where(clause = "is_deleted = false")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {
@@ -40,6 +32,9 @@ public class User extends BaseEntity {
 
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
+
+    @OneToOne(mappedBy = "user")
+    private UserImage userImage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "social_type", length = 20, nullable = false)
@@ -74,6 +69,12 @@ public class User extends BaseEntity {
         this.heroScore = 30;
         this.isHeroMode = false;
         this.isDeleted = false;
+    }
+
+    protected void setUserImage(
+        UserImage userImage
+    ) {
+        this.userImage = userImage;
     }
 
     public void updateUser(
