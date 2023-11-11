@@ -13,12 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -40,38 +41,17 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
     @Autowired
     private MissionBookmarkRepository missionBookmarkRepository;
 
-    @BeforeAll
-    public static void setUp(
-            @Autowired MissionCategoryRepository missionCategoryRepository,
-            @Autowired RegionRepository regionRepository
-    ) {
-        MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
-        missionCategoryRepository.save(missionCategory);
-
-        var regionA = Region.builder()
-                .si("서울시")
-                .gu("강남구")
-                .dong("역삼동")
-                .build();
-
-        var regionB = Region.builder()
-                .si("서울시")
-                .gu("강남구")
-                .dong("서초동")
-                .build();
-
-        regionRepository.saveAll(List.of(regionA, regionB));
-    }
-
     @DisplayName("내 미션 찜목록을 조회할 수 있다.")
     @Test
     void viewMeBookmarkMissions() {
         // given
+        var missionCategory = missionCategoryRepository.save(MissionCategory.from(MissionCategoryCode.MC_001));
         var bookmarkUserId = 1L;
         var citizenId = 2L;
         createFiveBookmarks(
                 citizenId,
-                bookmarkUserId
+                bookmarkUserId,
+                missionCategory
         );
 
         // when
@@ -87,15 +67,16 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
     private Mission createMissionWithMissionStatus(
             Long citizenId,
-            MissionStatus missionStatus
+            MissionStatus missionStatus,
+            MissionCategory missionCategory
     ) {
         var mission = Mission.builder()
                 .missionStatus(missionStatus)
                 .missionInfo(createMissionInfo())
-                .missionCategory(missionCategoryRepository.findById(1L).get())
+                .missionCategory(missionCategory)
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234, 5678))
                 .bookmarkCount(0)
                 .build();
 
@@ -108,7 +89,7 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(2023, 10, 1, 1, 1))
                 .price(10000)
                 .content("서빙 도와주기")
                 .serverTime(LocalDateTime.of(
@@ -120,13 +101,15 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
     private void createFiveBookmarks(
             long citizenId,
-            long bookmarkUserId
+            long bookmarkUserId,
+            MissionCategory missionCategory
     ) {
         IntStream.range(0, 10)
                 .forEach(i -> {
                     var mission = createMissionWithMissionStatus(
                             citizenId,
-                            MissionStatus.MATCHING
+                            MissionStatus.MATCHING,
+                            missionCategory
                     );
 
                     if (i <= 4) {
