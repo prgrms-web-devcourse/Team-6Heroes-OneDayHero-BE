@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -188,7 +187,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionStatus(MissionStatus.MATCHING)
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.78))
                 .build();
 
         return missionRepository.save(mission);
@@ -205,7 +204,7 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionStatus(missionStatus)
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.56))
                 .build();
 
         return missionRepository.save(mission);
@@ -216,7 +215,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 10),
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .title("서빙")
                 .content("서빙 도와주기")

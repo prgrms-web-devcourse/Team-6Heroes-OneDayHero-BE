@@ -3,7 +3,6 @@ package com.sixheroes.onedayheroapplication.mission.request;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import lombok.Builder;
-import org.springframework.data.geo.Point;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +21,8 @@ public record MissionCreateServiceRequest(
                 missionCategory,
                 citizenId,
                 regionId,
-                new Point(longitude, latitude),
+                longitude,
+                latitude,
                 missionInfo.toVo(serverTime)
         );
     }

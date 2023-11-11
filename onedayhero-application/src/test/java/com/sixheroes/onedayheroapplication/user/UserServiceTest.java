@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
+import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequest;
+import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.Email;
@@ -17,6 +17,7 @@ import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,6 +26,7 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Transactional
 class UserServiceTest extends IntegrationApplicationTest {
 
     @Autowired
@@ -48,14 +50,14 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
             .nickname(nickname)
             .gender(gender)
             .birth(birth)
             .introduce(introduce)
             .build();
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
             .favoriteDate(favoriteDate)
             .favoriteStartTime(favoriteStartTime)
             .favoriteEndTime(favoriteEndTime)
@@ -71,7 +73,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         var userUpdateResponse = userService.updateUser(userServiceUpdateRequest);
 
         // then
-        assertThat(userUpdateResponse.userId()).isEqualTo(savedUser.getId());
+        assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
         assertThat(userUpdateResponse.basicInfo())
             .extracting("nickname", "gender", "birth", "introduce")
             .contains(nickname, gender, birth, introduce);
@@ -95,21 +97,23 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceDto.builder()
+        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
             .nickname(nickname)
             .gender(gender)
             .birth(birth)
             .introduce(introduce)
             .build();
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceDto.builder()
+        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
             .favoriteDate(favoriteDate)
             .favoriteStartTime(favoriteStartTime)
             .favoriteEndTime(favoriteEndTime)
             .build();
 
+        var notExsistUserId = 2L;
+
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userId(2L)
+            .userId(notExsistUserId)
             .userBasicInfo(userBasicInfoServiceDto)
             .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
             .build();
@@ -117,7 +121,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> userService.updateUser(userServiceUpdateRequest))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_001.name());
+            .hasMessage(ErrorCode.EUC_000.name());
     }
 
     private User createUser() {

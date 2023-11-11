@@ -27,9 +27,9 @@ public class Region {
 
     @Builder
     private Region(
-            String si,
-            String gu,
-            String dong
+        String si,
+        String gu,
+        String dong
     ) {
         this.si = si;
         this.gu = gu;
