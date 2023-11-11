@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroinfrachat.domain;
+package com.sixheroes.onedayherodomain.missionchatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.Getter;
@@ -8,14 +8,14 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Getter
-public enum ChatMessageType {
+public enum ChatType {
 
     ENTER("입장"),
     CHAT("채팅");
 
     private final String description;
 
-    public static ChatMessageType findByName(String name) {
+    public static ChatType findByName(String name) {
         return Arrays.stream(values())
                 .filter((messageType) -> messageType.name().equals(name))
                 .findAny()

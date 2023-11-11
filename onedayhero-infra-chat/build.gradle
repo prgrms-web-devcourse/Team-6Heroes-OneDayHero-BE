@@ -3,6 +3,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     implementation project(':onedayhero-common')
+    implementation project(':onedayhero-domain')
 }
 
 jar {
