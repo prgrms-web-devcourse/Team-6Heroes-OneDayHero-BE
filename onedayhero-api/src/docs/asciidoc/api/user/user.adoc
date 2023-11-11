@@ -24,6 +24,19 @@ include::{snippets}/user-update/request-fields.adoc[]
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
 
+[[mission-bookmark-cancel]]
+=== 내 미션 찜 조회
+
+==== HTTP Request
+include::{snippets}/user-bookmark/http-request.adoc[]
+include::{snippets}/user-bookmark/request-headers.adoc[]
+include::{snippets}/user-bookmark/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-bookmark/http-response.adoc[]
+include::{snippets}/user-bookmark/response-fields.adoc[]
+
 [[user-change-hero]]
 === 유저 히어로 모드 활성화
 
@@ -47,3 +60,4 @@ include::{snippets}/user-change-citizen/http-request.adoc[]
 
 include::{snippets}/user-change-citizen/http-response.adoc[]
 include::{snippets}/user-change-citizen/response-fields.adoc[]
+>>>>>>> develop
