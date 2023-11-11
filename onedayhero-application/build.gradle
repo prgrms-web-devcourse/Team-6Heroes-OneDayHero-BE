@@ -1,9 +1,11 @@
 dependencies {
     //AWS S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.575'
+
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-infra-querydsl')
+    implementation project(':onedayhero-infra-chat')
 }
 
 tasks.named('test') {
