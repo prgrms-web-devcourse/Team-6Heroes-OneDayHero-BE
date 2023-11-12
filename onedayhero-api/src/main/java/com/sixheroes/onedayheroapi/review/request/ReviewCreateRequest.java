@@ -1,8 +1,6 @@
 package com.sixheroes.onedayheroapi.review.request;
 
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -25,8 +23,7 @@ public record ReviewCreateRequest(
         @NotBlank(message = "리뷰 내용은 필수 값이며 공백 일 수 없습니다.")
         String content,
 
-        @Min(value = 1, message = "별점은 1~5 사이의 값을 설정해야합니다.")
-        @Max(value = 5, message = "별점은 1~5 사이의 값을 설정해야합니다.")
+        @NotNull(message = "별점은 필수 값 입니다.")
         Integer starScore
 ) {
 

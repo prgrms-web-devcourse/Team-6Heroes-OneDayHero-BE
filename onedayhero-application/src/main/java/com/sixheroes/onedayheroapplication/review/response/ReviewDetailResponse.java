@@ -8,32 +8,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record ReviewResponse(
+public record ReviewDetailResponse(
         Long id,
 
-        Long senderId,
-
-        Long receiverId,
+        String nickname,
 
         MissionCategoryResponse missionCategory,
 
         String missionTitle,
 
-        String content,
-
         Integer starScore,
 
-        List<ReviewImageResponse> reviewImageResponses,
+        String content,
+
+        List<ReviewResponse.ReviewImageResponse> reviewImageResponses,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         LocalDateTime createdAt
 ) {
-
-    @Builder
-    public record ReviewImageResponse(
-            Long id,
-            String uniqueName,
-            String path
-    ) {
-    }
 }

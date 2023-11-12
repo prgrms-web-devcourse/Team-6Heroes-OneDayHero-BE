@@ -4,12 +4,12 @@ package com.sixheroes.onedayheroapi.review;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.global.s3.MultipartFileMapper;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
-import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteServiceRequest;
-import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
+import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +23,15 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ApiResponse<ReviewResponse>> detailReview(
+            @PathVariable Long reviewId
+    ) {
+        var response = reviewService.findReviewDetail(reviewId);
+
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ReviewResponse>> createReview(
@@ -39,18 +48,29 @@ public class ReviewController {
                 .body(ApiResponse.created(response));
     }
 
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<?>> detailReview(@PathVariable String reviewId) {
-        return null;
-    }
-
+    //리뷰 이미지 추가/제거 기능은 Patch 와는 맞지 않음
     @PatchMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<?>> updateReview(@PathVariable String reviewId) {
-        return null;
+    public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
+    ) {
+        var response = reviewService.update(
+                reviewId,
+                reviewUpdateRequest.toService()
+        );
+
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<?>> deleteReview(@PathVariable String reviewId) {
-        return null;
+    public ResponseEntity<ApiResponse<Void>> deleteReview(
+            @PathVariable Long reviewId
+    ) {
+        reviewService.delete(reviewId);
+
+        return new ResponseEntity<>(
+                ApiResponse.noContent(null),
+                HttpStatus.NO_CONTENT
+        );
     }
 }
