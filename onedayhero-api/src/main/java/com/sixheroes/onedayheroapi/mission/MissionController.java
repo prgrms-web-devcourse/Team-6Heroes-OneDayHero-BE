@@ -1,10 +1,7 @@
 package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
-import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionDeleteRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
-import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
+import com.sixheroes.onedayheroapi.mission.request.*;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -46,7 +43,7 @@ public class MissionController {
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
-    
+
     @GetMapping("/progress/{userId}")
     public ResponseEntity<ApiResponse<MissionProgressResponses>> findProgressMission(
             @PageableDefault(size = 5) Pageable pageable,
@@ -86,6 +83,16 @@ public class MissionController {
     ) {
         var modifiedDateTime = LocalDateTime.now();
         var result = missionService.extendMission(missionId, request.toService(), modifiedDateTime);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @PatchMapping("/{missionId}/complete")
+    public ResponseEntity<ApiResponse<MissionResponse>> completeMission(
+            @PathVariable Long missionId,
+            @Valid @RequestBody MissionCompleteRequest request
+    ) {
+        var result = missionService.completeMission(missionId, request.userId());
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

@@ -48,7 +48,7 @@ public class MissionMatchService {
         //TODO: 히어로에게 미션매칭 취소 알람
 
         return MissionMatchCancelResponse.builder()
-                .id(missionMatch.getId())
+                .missionMatchId(missionMatch.getId())
                 .citizenId(request.citizenId())
                 .missionId(request.missionId())
                 .build();

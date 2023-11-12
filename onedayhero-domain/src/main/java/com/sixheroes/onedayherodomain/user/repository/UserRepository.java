@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             u.heroScore, u.isHeroMode
         )
         from User u
-        join UserImage ui on u.id = ui.id
+        join UserImage ui on u.id = ui.user.id
         where u.id = :userId
     """)
     Optional<UserQueryDto> findByIdJoinUserImage(

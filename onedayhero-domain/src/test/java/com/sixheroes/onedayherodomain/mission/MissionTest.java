@@ -87,7 +87,7 @@ class MissionTest {
         var newMission = createMission(citizenId, missionCategory, missionInfo);
 
         // when
-        mission.update(newMission);
+        mission.update(newMission, citizenId);
 
         // then
         assertThat(mission)
@@ -145,7 +145,7 @@ class MissionTest {
         var newMission = createMission(unknownCitizenId, missionCategory, missionInfo);
 
         // when & then
-        assertThatThrownBy(() -> mission.update(newMission))
+        assertThatThrownBy(() -> mission.update(newMission, unknownCitizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_100.name());
     }
@@ -158,6 +158,7 @@ class MissionTest {
     ) {
         // given
         var mission = createMission(missionStatus);
+        var citizenId = mission.getCitizenId();
 
         var missionCategory = MissionCategory.builder()
                 .missionCategoryCode(MissionCategoryCode.MC_002)
@@ -185,7 +186,7 @@ class MissionTest {
         var newMission = createMission(mission.getCitizenId(), missionCategory, missionInfo);
 
         // when & then
-        assertThatThrownBy(() -> mission.update(newMission))
+        assertThatThrownBy(() -> mission.update(newMission, citizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_009.name());
     }
@@ -196,9 +197,10 @@ class MissionTest {
     void extendMissionWithNotExpired(MissionStatus missionStatus) {
         // given
         var mission = createMission(missionStatus);
+        var citizenId = mission.getCitizenId();
 
         // when & then
-        assertThatThrownBy(() -> mission.extend(mission))
+        assertThatThrownBy(() -> mission.extend(mission, citizenId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.T_001.name());
     }
@@ -251,6 +253,7 @@ class MissionTest {
     void extendMission() {
         // given
         var expiredMission = createMission(MissionStatus.EXPIRED);
+        var citizenId = expiredMission.getCitizenId();
 
         var extendMission = Mission.builder()
                 .citizenId(expiredMission.getCitizenId())
@@ -274,12 +277,56 @@ class MissionTest {
                         .build())
                 .location(Mission.createPoint(1234.56, 1234.56))
                 .build();
-        
+
         // when
-        expiredMission.extend(extendMission);
+        expiredMission.extend(extendMission, citizenId);
 
         // then
         assertThat(expiredMission.getMissionStatus()).isEqualTo(MissionStatus.MATCHING);
+    }
+
+    @DisplayName("유저는 매칭이 완료된 미션을 완료 상태로 변경 할 수 있다.")
+    @Test
+    void completeMission() {
+        // given
+        var matchingCompletedMission = createMission(MissionStatus.MATCHING_COMPLETED);
+        var citizenId = matchingCompletedMission.getCitizenId();
+
+
+        // when
+        matchingCompletedMission.complete(citizenId);
+
+        // then
+        assertThat(matchingCompletedMission.getMissionStatus()).isEqualTo(MissionStatus.MISSION_COMPLETED);
+    }
+
+    @DisplayName("유저는 매칭이 완료된 미션을 완료 상태로 변경은 미션을 생성한 본인만 가능하다.")
+    @Test
+    void completeMissionWithUnknownCitizen() {
+        // given
+        var matchingCompletedMission = createMission(MissionStatus.MATCHING_COMPLETED);
+        var unknownCitizenId = matchingCompletedMission.getCitizenId() + 1;
+
+
+        // when & then
+        assertThatThrownBy(() -> matchingCompletedMission.complete(unknownCitizenId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.EM_100.name());
+    }
+
+    @DisplayName("유저는 매칭이 완료된 상태가 아니라면 미션을 완료 상태로 변경 할 수 없다.")
+    @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING_COMPLETED")
+    @ParameterizedTest
+    void completeMissionWithNotMissionMatchingStatus(MissionStatus missionStatus) {
+        // given
+        var matchingCompletedMission = createMission(missionStatus);
+        var unknownCitizenId = matchingCompletedMission.getCitizenId();
+
+
+        // when & then
+        assertThatThrownBy(() -> matchingCompletedMission.complete(unknownCitizenId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.T_001.name());
     }
 
     private Mission createMission(

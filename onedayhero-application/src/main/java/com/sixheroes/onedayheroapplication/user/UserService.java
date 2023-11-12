@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
+import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
+import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,21 @@ public class UserService {
         Long userId
     ) {
         var userQueryDto = userReader.findOneWithUserImage(userId);
+
         return UserResponse.from(userQueryDto);
+    }
+
+    public ProfileCitizenResponse findCitizenProfile(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProfileHeroResponse findHeroProfile(
+        Long userId
+    ) {
+        // TODO 히어로 모드가 활성화 되어있는지 확인
+        throw new UnsupportedOperationException();
     }
 
     @Transactional
@@ -34,5 +50,19 @@ public class UserService {
         user.updateUser(userBasicInfo, userFavoriteWorkingDay);
 
         return UserUpdateResponse.from(user);
+    }
+
+    @Transactional
+    public UserResponse turnHeroModeOn(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Transactional
+    public UserResponse turnHeroModeOff(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
     }
 }
