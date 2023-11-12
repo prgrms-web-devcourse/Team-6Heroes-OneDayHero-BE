@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,23 +64,23 @@ public class UserController {
     }
 
     @PatchMapping("/change-hero")
-    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOn(
+    public ResponseEntity<ApiResponse<Void>> turnHeroModeOn(
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOn(userId);
+        userService.turnOnHeroMode(userId);
 
-        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/change-citizen")
-    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOff(
+    public ResponseEntity<ApiResponse<Void>> turnHeroModeOff(
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOff(userId);
+        userService.turnOffHeroMode(userId);
 
-        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
   
     //TODO: 로그인 기능 추가 후 제거

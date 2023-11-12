@@ -51,6 +51,32 @@ class UserTest {
             .hasMessage(ErrorCode.EU_009.name());
     }
 
+    @DisplayName("히어로 모드를 비활성 상태로 바꾼다.")
+    @Test
+    void changeHeroModeOff() {
+        // given
+        var user = createUser();
+        user.changeHeroModeOn();
+
+        // when
+        user.changeHeroModeOff();
+
+        // then
+        assertThat(user.getIsHeroMode()).isFalse();
+    }
+
+    @DisplayName("히어로 모드를 비활성 상태일 때 비활성 상태로 바꿀 수 없다.")
+    @Test
+    void invalidChangeHeroModeOff() {
+        // given
+        var user = createUser();
+
+        // when & then
+        assertThatThrownBy(user::changeHeroModeOff)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage(ErrorCode.EU_009.name());
+    }
+
     private User createUser() {
         return User.builder()
             .userBasicInfo(createUserBasicInfo())

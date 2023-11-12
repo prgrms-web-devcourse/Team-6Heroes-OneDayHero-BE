@@ -53,16 +53,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse turnHeroModeOn(
+    public void turnOnHeroMode(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOne(userId);
+        user.changeHeroModeOn();
     }
 
     @Transactional
-    public UserResponse turnHeroModeOff(
+    public void turnOffHeroMode(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOne(userId);
+        user.changeHeroModeOff();
     }
 }

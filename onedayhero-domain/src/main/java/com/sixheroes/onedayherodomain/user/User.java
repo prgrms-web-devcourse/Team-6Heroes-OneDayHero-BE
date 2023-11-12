@@ -104,6 +104,11 @@ public class User extends BaseEntity {
         this.isHeroMode = true;
     }
 
+    public void changeHeroModeOff() {
+        validHeroModeOn();
+        this.isHeroMode = false;
+    }
+
     public void validPossibleMissionProposal() {
         validHeroModeOn();
     }
