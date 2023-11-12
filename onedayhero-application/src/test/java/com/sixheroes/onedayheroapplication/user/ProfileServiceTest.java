@@ -30,7 +30,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
     @Autowired
     private UserImageRepository userImageRepository;
 
-    @DisplayName("상대의 프로필 시민 프로필을 조회한다.")
+    @DisplayName("상대의 시민 프로필을 조회한다.")
     @Test
     void findCitizenProfile() {
         // given
@@ -54,7 +54,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
     }
 
-    @DisplayName("상대의 프로필 시민 프로필을 조회할 때 존재하지 않는 유저라면 예외가 발생한다")
+    @DisplayName("상대의 시민 프로필을 조회할 때 존재하지 않는 유저라면 예외가 발생한다")
     @Transactional(readOnly = true)
     @Test
     void findCitizenProfileWhenNotExist() {
@@ -63,6 +63,49 @@ class ProfileServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> profileService.findCitizenProfile(notExistUserId))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EUC_000.name());
+    }
+
+    @DisplayName("상대의 히어로 프로필을 조회한다.")
+    @Test
+    void findHeroProfile() {
+        // given
+        var user = createUser();
+        user.changeHeroModeOn();
+        var savedUser = userRepository.save(user);
+
+        var userImage = createUserImage(savedUser);
+        userImageRepository.save(userImage);
+
+        // when
+        var userResponse = profileService.findHeroProfile(savedUser.getId());
+
+        // then
+        var userBasicInfo = savedUser.getUserBasicInfo();
+        assertThat(userResponse.basicInfo())
+            .extracting("nickname", "gender", "birth", "introduce")
+            .containsExactly(userBasicInfo.getNickname(), userBasicInfo.getGender().name(), userBasicInfo.getBirth(), userBasicInfo.getIntroduce());
+        var userFavoriteWorkingDay = savedUser.getUserFavoriteWorkingDay();
+        var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream().map(Week::name).toList();
+        assertThat(userResponse.favoriteWorkingDay())
+            .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
+            .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
+        assertThat(userResponse.image())
+            .extracting("originalName", "uniqueName", "path")
+            .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+        assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
+    }
+
+    @DisplayName("상대의 프로필 시민 프로필을 조회할 때 존재하지 않는 유저라면 예외가 발생한다")
+    @Transactional(readOnly = true)
+    @Test
+    void findHeroProfileWhenNotExist() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> profileService.findHeroProfile(notExistUserId))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EUC_000.name());
     }

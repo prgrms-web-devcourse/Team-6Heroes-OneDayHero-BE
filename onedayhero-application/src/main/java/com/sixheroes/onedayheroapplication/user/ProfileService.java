@@ -24,6 +24,9 @@ public class ProfileService {
     public ProfileHeroResponse findHeroProfile(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOne(userId);
+        user.validPossibleHeroProfile();
+
+        return ProfileHeroResponse.from(user);
     }
 }

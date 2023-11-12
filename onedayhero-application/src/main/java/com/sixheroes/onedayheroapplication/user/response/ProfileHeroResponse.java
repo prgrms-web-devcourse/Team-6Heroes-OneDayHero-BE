@@ -11,18 +11,20 @@ public record ProfileHeroResponse(
     Integer heroScore
 ) {
 
-    public static ProfileCitizenResponse from(
+    public static ProfileHeroResponse from(
         User user
     ) {
-        var userBasicInfoResponse = ProfileCitizenResponse.UserBasicInfoForProfileCitizenResponse.from(user.getUserBasicInfo());
+        var userBasicInfoResponse = UserBasicInfoResponse.from(user.getUserBasicInfo());
         var userImageResponse = user.getUserImages().stream()
             .map(UserImageResponse::from)
             .findFirst()
             .orElseGet(UserImageResponse::empty);
+        var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(user.getUserFavoriteWorkingDay());
 
-        return ProfileCitizenResponse.builder()
+        return ProfileHeroResponse.builder()
             .basicInfo(userBasicInfoResponse)
             .image(userImageResponse)
+            .favoriteWorkingDay(userFavoriteWorkingDayResponse)
             .heroScore(user.getHeroScore())
             .build();
     }
