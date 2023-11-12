@@ -19,8 +19,8 @@ public class UserService {
     public UserResponse findUser(
         Long userId
     ) {
-        var user = userReader.findOneWithUserImage(userId);
-        return UserResponse.from(user);
+        var userQueryDto = userReader.findOneWithUserImage(userId);
+        return UserResponse.from(userQueryDto);
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.user;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.User;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
+import com.sixheroes.onedayherodomain.user.repository.dto.UserQueryDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class UserReader {
                 });
     }
 
-    public User findOneWithUserImage(
+    public UserQueryDto findOneWithUserImage(
         Long userId
     ) {
         return userRepository.findByIdJoinUserImage(userId)

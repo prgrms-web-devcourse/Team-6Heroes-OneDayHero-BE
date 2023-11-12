@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
-import com.sixheroes.onedayherodomain.user.UserImage;
+import com.sixheroes.onedayherodomain.user.repository.dto.UserQueryDto;
 import lombok.Builder;
 
 @Builder
@@ -11,12 +11,12 @@ public record UserImageResponse(
 ) {
 
     public static UserImageResponse from(
-        UserImage userImage
+        UserQueryDto userQueryDto
     ) {
         return UserImageResponse.builder()
-            .originalName(userImage.getOriginalName())
-            .uniqueName(userImage.getUniqueName())
-            .path(userImage.getPath())
+            .originalName(userQueryDto.originalName())
+            .uniqueName(userQueryDto.uniqueName())
+            .path(userQueryDto.path())
             .build();
     }
 }

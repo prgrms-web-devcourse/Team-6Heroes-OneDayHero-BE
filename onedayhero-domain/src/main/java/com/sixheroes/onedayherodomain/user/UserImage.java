@@ -32,7 +32,7 @@ public class UserImage extends BaseEntity {
 
     @Builder
     private UserImage(
-        User user,
+        @NonNull User user,
         String originalName,
         String uniqueName,
         String path
@@ -43,23 +43,6 @@ public class UserImage extends BaseEntity {
         this.originalName = originalName;
         this.uniqueName = uniqueName;
         this.path = path;
-    }
-
-    public static UserImage createUserImage(
-        @NonNull User user,
-        String originalName,
-        String uniqueName,
-        String path
-    ) {
-        var userImage = UserImage.builder()
-            .user(user)
-            .originalName(originalName)
-            .uniqueName(uniqueName)
-            .path(path)
-            .build();
-
-        user.setUserImage(userImage);
-        return userImage;
     }
 
     private void validCreateUserImage(

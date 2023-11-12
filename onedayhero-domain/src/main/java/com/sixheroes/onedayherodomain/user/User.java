@@ -33,9 +33,6 @@ public class User extends BaseEntity {
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
 
-    @OneToOne(mappedBy = "user")
-    private UserImage userImage;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "social_type", length = 20, nullable = false)
     private UserSocialType userSocialType;
@@ -69,12 +66,6 @@ public class User extends BaseEntity {
         this.heroScore = 30;
         this.isHeroMode = false;
         this.isDeleted = false;
-    }
-
-    protected void setUserImage(
-        UserImage userImage
-    ) {
-        this.userImage = userImage;
     }
 
     public void updateUser(

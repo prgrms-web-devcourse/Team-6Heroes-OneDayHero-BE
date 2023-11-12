@@ -171,12 +171,12 @@ class UserServiceTest extends IntegrationApplicationTest {
         var uniqueName = "고유 이름";
         var path = "http://";
 
-        return UserImage.createUserImage(
-            user,
-            originalName,
-            uniqueName,
-            path
-        );
+        return UserImage.builder()
+            .user(user)
+            .originalName(originalName)
+            .uniqueName(uniqueName)
+            .path(path)
+            .build();
     }
 
     private User createUser() {

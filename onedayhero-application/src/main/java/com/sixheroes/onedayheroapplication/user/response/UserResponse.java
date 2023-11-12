@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
-import com.sixheroes.onedayherodomain.user.User;
+import com.sixheroes.onedayherodomain.user.repository.dto.UserQueryDto;
 import lombok.Builder;
 
 @Builder
@@ -13,18 +13,18 @@ public record UserResponse(
 ) {
 
     public static UserResponse from(
-        User user
+        UserQueryDto userQueryDto
     ) {
-        var userBasicInfoResponse = UserBasicInfoResponse.from(user.getUserBasicInfo());
-        var userImageResponse = UserImageResponse.from(user.getUserImage());
-        var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(user.getUserFavoriteWorkingDay());
+        var userBasicInfoResponse = UserBasicInfoResponse.from(userQueryDto);
+        var userImageResponse = UserImageResponse.from(userQueryDto);
+        var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(userQueryDto);
 
         return UserResponse.builder()
             .basicInfo(userBasicInfoResponse)
             .image(userImageResponse)
             .favoriteWorkingDay(userFavoriteWorkingDayResponse)
-            .heroScore(user.getHeroScore())
-            .isHeroMode(user.getIsHeroMode())
+            .heroScore(userQueryDto.heroScore())
+            .isHeroMode(userQueryDto.isHeroMode())
             .build();
     }
 }
