@@ -60,4 +60,3 @@ include::{snippets}/user-change-citizen/http-request.adoc[]
 
 include::{snippets}/user-change-citizen/http-response.adoc[]
 include::{snippets}/user-change-citizen/response-fields.adoc[]
->>>>>>> develop

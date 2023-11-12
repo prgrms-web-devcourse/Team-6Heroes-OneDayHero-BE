@@ -38,18 +38,22 @@ public class UserService {
     }
 
     @Transactional
-    public void turnOnHeroMode(
+    public UserResponse turnOnHeroMode(
         Long userId
     ) {
         var user = userReader.findOne(userId);
         user.changeHeroModeOn();
+
+        return UserResponse.from(user);
     }
 
     @Transactional
-    public void turnOffHeroMode(
+    public UserResponse turnOffHeroMode(
         Long userId
     ) {
         var user = userReader.findOne(userId);
         user.changeHeroModeOff();
+
+        return UserResponse.from(user);
     }
 }
