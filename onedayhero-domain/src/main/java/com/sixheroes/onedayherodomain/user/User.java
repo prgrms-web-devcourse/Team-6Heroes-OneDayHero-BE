@@ -1,8 +1,8 @@
 package com.sixheroes.onedayherodomain.user;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -32,6 +35,9 @@ public class User extends BaseEntity {
 
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserImage> userImages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "social_type", length = 20, nullable = false)
@@ -89,6 +95,12 @@ public class User extends BaseEntity {
         this.heroScore = 30;
         this.isHeroMode = false;
         this.isDeleted = false;
+    }
+
+    protected void setUserImages(
+        UserImage userImage
+    ) {
+        this.userImages.add(userImage);
     }
 
     public void updateUser(
