@@ -40,6 +40,16 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
 
+    @GetMapping("/reviews/send")
+    public ResponseEntity<ApiResponse<?>> findSentReviews() {
+        return null;
+    }
+
+    @GetMapping("/reviews/receive")
+    public ResponseEntity<ApiResponse<?>> findReceivedReviews() {
+        return null;
+    }
+
     @GetMapping("/bookmarks")
     public ResponseEntity<ApiResponse<MissionBookmarkMeViewResponse>> viewBookmarks(
             @PageableDefault(size = 3) Pageable pageable
@@ -50,11 +60,6 @@ public class UserController {
                 tempUserId()
         );
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
-    }
-
-    //TODO: 로그인 기능 추가 후 제거
-    private Long tempUserId() {
-        return 1L;
     }
 
     @PatchMapping("/change-hero")
@@ -75,5 +80,10 @@ public class UserController {
         var userResponse = userService.turnHeroModeOff(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
+    }
+  
+    //TODO: 로그인 기능 추가 후 제거
+    private Long tempUserId() {
+        return 1L;
     }
 }

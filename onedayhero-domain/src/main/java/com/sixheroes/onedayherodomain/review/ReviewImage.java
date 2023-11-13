@@ -1,4 +1,4 @@
-package com.sixheroes.onedayherodomain.missionreview;
+package com.sixheroes.onedayherodomain.review;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -15,13 +15,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
-@Profile("!test")
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class S3ImageUploadService {
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${cloud.aws.s3.bucket:default}")
     private String bucket;
 
     private final AmazonS3 amazonS3;

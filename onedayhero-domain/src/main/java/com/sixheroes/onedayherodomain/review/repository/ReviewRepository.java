@@ -1,6 +1,6 @@
-package com.sixheroes.onedayherodomain.missionreview.repository;
+package com.sixheroes.onedayherodomain.review.repository;
 
-import com.sixheroes.onedayherodomain.missionreview.Review;
+import com.sixheroes.onedayherodomain.review.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {

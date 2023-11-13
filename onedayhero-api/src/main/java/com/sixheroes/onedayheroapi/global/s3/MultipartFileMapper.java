@@ -14,21 +14,29 @@ import java.util.Optional;
 @Component
 public final class MultipartFileMapper {
 
-    public static Optional<List<S3ImageUploadServiceRequest>> mapToServiceRequests(List<MultipartFile> multipartFiles) {
+    public static Optional<List<S3ImageUploadServiceRequest>> mapToServiceRequests(
+            List<MultipartFile> multipartFiles
+    ) {
+        if (multipartFiles == null) {
+            return Optional.empty();
+        }
+
         return Optional.of(
                 multipartFiles.stream()
-                .map(multipartFile -> {
-                    try {
-                        return mapToServiceRequest(multipartFile);
-                    } catch (IOException e) {
-                        log.warn("이미지 업로드 과정에서 에러가 발생했습니다.");
-                        throw new RuntimeException(ErrorCode.S_001.name());
-                    }
-                }).toList()
+                        .map(multipartFile -> {
+                            try {
+                                return mapToServiceRequest(multipartFile);
+                            } catch (IOException e) {
+                                log.warn("이미지 업로드 과정에서 에러가 발생했습니다.");
+                                throw new RuntimeException(ErrorCode.S_001.name());
+                            }
+                        }).toList()
         );
     }
 
-    private static S3ImageUploadServiceRequest mapToServiceRequest(MultipartFile multipartFile)
+    private static S3ImageUploadServiceRequest mapToServiceRequest(
+            MultipartFile multipartFile
+    )
             throws IOException {
         return new S3ImageUploadServiceRequest(
                 multipartFile.getInputStream(),

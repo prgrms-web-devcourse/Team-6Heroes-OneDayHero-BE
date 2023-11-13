@@ -1,0 +1,34 @@
+[[review-create]]
+=== 리뷰 생성
+
+==== HTTP Request
+
+include::{snippets}/review-create/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-create/http-response.adoc[]
+include::{snippets}/review-create/response-fields.adoc[]
+
+=== 리뷰 상세 조회
+
+==== HTTP Request
+
+include::{snippets}/review-detail/http-request.adoc[]
+include::{snippets}/review-detail/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-detail/http-response.adoc[]
+include::{snippets}/review-detail/response-fields.adoc[]
+
+=== 리뷰 삭제
+
+==== HTTP Request
+
+include::{snippets}/review-delete/http-request.adoc[]
+include::{snippets}/review-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-delete/http-response.adoc[]
