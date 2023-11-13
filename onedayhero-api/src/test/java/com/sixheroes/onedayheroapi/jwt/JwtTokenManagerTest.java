@@ -1,8 +1,9 @@
 package com.sixheroes.onedayheroapi.jwt;
 
-import com.sixheroes.onedayheroapi.global.jwt.JwtProperties;
-import com.sixheroes.onedayheroapi.global.jwt.JwtTokenManager;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
+import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,9 +50,7 @@ class JwtTokenManagerTest {
         // when & then
         assertThatThrownBy(() ->
                 jwtTokenManager.getRole(INVALID_FORMAT_ACCESS_TOKEN)
-        )
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+        ).isInstanceOf(MalformedJwtException.class);
     }
 
     @DisplayName("만료된 액세스토큰을 검증할 수 있다.")
@@ -69,9 +68,7 @@ class JwtTokenManagerTest {
         // when & then
         assertThatThrownBy(() ->
                 jwtTokenManager.getId(expiredAccessToken)
-        )
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+        ).isInstanceOf(ExpiredJwtException.class);
     }
 
     private JwtProperties createProperties(Long accessTokenExpiryTime) {

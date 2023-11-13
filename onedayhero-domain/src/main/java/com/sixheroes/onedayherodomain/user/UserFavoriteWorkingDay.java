@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +22,7 @@ public class UserFavoriteWorkingDay {
 
     @Convert(converter = FavoriteDateConverter.class)
     @Column(name = "favorite_date", length = 45, nullable = true)
-    private List<Week> favoriteDate;
+    private List<Week> favoriteDate = new ArrayList<>();
 
     @Column(name = "favorite_start_time", nullable = true)
     private LocalTime favoriteStartTime;

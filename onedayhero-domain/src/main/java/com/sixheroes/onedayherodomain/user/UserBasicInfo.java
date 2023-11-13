@@ -19,14 +19,14 @@ import java.time.LocalDate;
 @Embeddable
 public class UserBasicInfo {
 
-    @Column(name = "nickname", length = 30, nullable = false)
+    @Column(name = "nickname", length = 30, nullable = true)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", length = 10, nullable = false)
+    @Column(name = "gender", length = 10, nullable = true)
     private UserGender gender;
 
-    @Column(name = "birth", nullable = false)
+    @Column(name = "birth", nullable = true)
     private LocalDate birth;
 
     @Column(name = "introduce", length = 200, nullable = true)

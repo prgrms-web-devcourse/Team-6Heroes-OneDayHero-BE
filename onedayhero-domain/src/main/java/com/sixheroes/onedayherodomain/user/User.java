@@ -49,6 +49,29 @@ public class User extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
+  
+    //처음 Oauth 를 통해 회원 가입
+    public static User singUpUser(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole
+    ) {
+        return new User(
+                email,
+                userSocialType,
+                userRole);
+    }
+
+    private User(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole) {
+        this.email = email;
+        this.userSocialType = userSocialType;
+        this.userRole = userRole;
+        this.heroScore = 30;
+        this.isHeroMode = false;
+    }
 
     @Builder
     private User(
@@ -75,7 +98,7 @@ public class User extends BaseEntity {
         this.userBasicInfo = userBasicInfo;
         this.userFavoriteWorkingDay = userFavoriteWorkingDay;
     }
-
+  
     public void changeHeroModeOn() {
         validHeroModeOff();
         this.isHeroMode = true;

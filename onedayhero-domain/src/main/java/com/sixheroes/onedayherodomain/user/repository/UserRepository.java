@@ -8,7 +8,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail_Email(String email_email);
 
     @Query("""
         select new com.sixheroes.onedayherodomain.user.repository.dto.UserQueryDto(

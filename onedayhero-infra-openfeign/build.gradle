@@ -1,0 +1,17 @@
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    // OPEN FEIGN
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

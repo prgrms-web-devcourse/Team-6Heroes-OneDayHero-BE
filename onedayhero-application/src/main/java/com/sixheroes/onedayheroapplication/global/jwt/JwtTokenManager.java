@@ -1,6 +1,5 @@
-package com.sixheroes.onedayheroapi.global.jwt;
+package com.sixheroes.onedayheroapplication.global.jwt;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class JwtTokenManager {
 
     public Long getId(
             String token
-    ) {
+    ) throws JwtException{
         return extractClaims(token).get(
                 jwtProperties.getClaimId(),
                 Long.class
@@ -28,7 +27,7 @@ public class JwtTokenManager {
 
     public String getRole(
             String token
-    ) {
+    ) throws JwtException {
         return extractClaims(token).get(
                 jwtProperties.getClaimRole(),
                 String.class
@@ -37,25 +36,11 @@ public class JwtTokenManager {
 
     private Claims extractClaims(
             String token
-    ) {
-        try {
-            return Jwts.parserBuilder()
+    ) throws JwtException {
+        return Jwts.parserBuilder()
                     .setSigningKey(getKey(jwtProperties.getSecretKey()))
                     .build()
                     .parseClaimsJws(token).getBody();
-        } catch (MalformedJwtException exception) {
-            log.warn("잘못된 형식의 JWT 토큰입니다.");
-
-            throw new IllegalStateException(ErrorCode.T_001.name());
-        } catch (ExpiredJwtException exception) {
-            log.warn("만료된 JWT 토큰입니다.");
-
-            throw new IllegalStateException(ErrorCode.T_001.name());
-        } catch (JwtException exception) {
-            log.warn("JWT 토큰 에러 발생");
-
-            throw new IllegalStateException(ErrorCode.T_001.name());
-        }
     }
 
     public String generateAccessToken(
