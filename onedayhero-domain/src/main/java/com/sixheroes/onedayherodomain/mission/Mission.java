@@ -11,7 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -53,6 +58,7 @@ public class Mission extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
+    // TODO : 미션 생성 시 전달 받는 값을 longitude, latitude 로 분리하고 생성자에서 Point 변환
     @Builder
     private Mission(
             MissionCategory missionCategory,
@@ -73,18 +79,24 @@ public class Mission extends BaseEntity {
         this.isDeleted = false;
     }
 
+    public static Point createPoint(double x, double y) {
+        var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        return geometryFactory.createPoint(new Coordinate(x, y));
+    }
+
     public static Mission createMission(
             MissionCategory missionCategory,
             Long citizenId,
             Long regionId,
-            Point location,
+            double longitude,
+            double latitude,
             MissionInfo missionInfo
     ) {
         return Mission.builder().
                 missionCategory(missionCategory)
                 .citizenId(citizenId)
                 .regionId(regionId)
-                .location(location)
+                .location(createPoint(longitude, latitude))
                 .missionInfo(missionInfo)
                 .bookmarkCount(0)
                 .missionStatus(MissionStatus.MATCHING)
@@ -92,9 +104,10 @@ public class Mission extends BaseEntity {
     }
 
     public void update(
-            Mission mission
+            Mission mission,
+            Long userId
     ) {
-        validOwn(mission.citizenId);
+        validOwn(userId);
         validAbleUpdate();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
@@ -102,13 +115,25 @@ public class Mission extends BaseEntity {
         this.location = mission.location;
     }
 
-    public void extend(Mission mission) {
-        validOwn(mission.citizenId);
+    public void extend(
+            Mission mission,
+            Long userId
+    ) {
+        validOwn(userId);
         validAbleExtend();
         this.missionCategory = mission.missionCategory;
         this.missionInfo = mission.missionInfo;
         this.regionId = mission.regionId;
         this.location = mission.location;
+        this.missionStatus = MissionStatus.MATCHING;
+    }
+
+    public void complete(
+            Long userId
+    ) {
+        validOwn(userId);
+        validAbleComplete();
+        this.missionStatus = MissionStatus.MISSION_COMPLETED;
     }
 
     public void validAbleDelete(
@@ -124,6 +149,13 @@ public class Mission extends BaseEntity {
     private void validAbleExtend() {
         if (!missionStatus.isExpired()) {
             log.debug("미션의 연장이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
+    }
+
+    private void validAbleComplete() {
+        if (!missionStatus.isMatchingCompleted()) {
+            log.debug("미션을 완료 상태로 변경이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
             throw new IllegalStateException(ErrorCode.T_001.name());
         }
     }
@@ -172,8 +204,26 @@ public class Mission extends BaseEntity {
     private void validateBookmarkCountAddable() {
         if (this.missionStatus != MissionStatus.MATCHING) {
             log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
-            throw new IllegalStateException(ErrorCode.EMC_002.name());
         }
+    }
+
+    // TODO 미션이 매칭중이 아닐 때 validMissionProposalPossible, validMissionProposalChangeStatus 검증
+    public void validMissionProposalPossible(
+        Long userId
+    ) {
+        validMissionOwner(userId);
+        validMissionStatusMatching();
+    }
+
+    public void validMissionProposalChangeStatus() {
+        validMissionStatusMatching();
+    }
+
+    // TODO 미션 상태 변화하는 메서드 지워야함.
+    public void changeMissionStatus(
+            MissionStatus missionStatus
+    ) {
+        this.missionStatus = missionStatus;
     }
 
     private void validOwn(
@@ -189,6 +239,23 @@ public class Mission extends BaseEntity {
         if (!missionStatus.isMatching()) {
             log.debug("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
             throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
+    }
+
+    private void validMissionOwner(
+        Long userId
+    ) {
+        if (!Objects.equals(this.citizenId, userId)) {
+            log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
+            throw new IllegalArgumentException(ErrorCode.EM_007.name());
+        }
+    }
+
+    // TODO validateBookmarkCountAddable과 행위가 같음
+    private void validMissionStatusMatching() {
+        if (!this.missionStatus.isMatching()) {
+            log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_008.name());
         }
     }
 }

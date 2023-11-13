@@ -3,21 +3,28 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.region.Region;
+import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 
@@ -34,10 +41,52 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
     @Autowired
     private MissionRepository missionRepository;
 
+    @Autowired
+    private MissionBookmarkRepository missionBookmarkRepository;
+
     @BeforeAll
-    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
-        MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
-        missionCategoryRepository.save(missionCategory);
+    public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
+        var missionCategories = Arrays.stream(MissionCategoryCode.values())
+                .map(MissionCategory::from)
+                .toList();
+
+        missionCategoryRepository.saveAll(missionCategories);
+
+        var region = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build();
+
+        regionRepository.save(region);
+    }
+
+    @DisplayName("유저는 미션 찜목록을 조회할 수 있다.")
+    @Test
+    void viewMeBookmarkMissions() {
+        // given
+        var bookmarkUserId = 1L;
+        var citizenId = 2L;
+        createFiveBookmarks(
+                citizenId,
+                bookmarkUserId
+        );
+
+        // when
+        var pageRequest = PageRequest.of(1, 3);
+        var response = missionBookmarkService.viewMyBookmarks(
+                pageRequest,
+                bookmarkUserId
+        );
+
+        // then
+        assertSoftly(soft -> {
+            soft.assertThat(response.missionBookmarkMeResponses().getContent().size()).isEqualTo(2);
+            soft.assertThat(response.missionBookmarkMeResponses().hasNext()).isFalse();
+        });
     }
 
     @DisplayName("시민은 매칭중인 미션을 찜 할 수 있다.")
@@ -64,6 +113,31 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
             soft.assertThat(response).isNotNull();
             soft.assertThat(mission.getBookmarkCount()).isEqualTo(1);
         });
+    }
+
+    @DisplayName("시민은 이미 찜한 미션에 또 찜할 수 없다.")
+    @Test
+    void createMissionBookmarkFail() {
+        // given
+        var bookmarkUserId = 1L;
+        var citizenId = 2L;
+        var mission = createMissionWithMissionStatus(
+                citizenId,
+                MissionStatus.MATCHING
+        );
+        missionBookmarkService.createMissionBookmark(
+                createMissionBookmarkCreateServiceRequest(
+                        mission.getId(),
+                        bookmarkUserId
+                )
+        );
+
+        // when
+        assertThatThrownBy(() -> missionBookmarkService.createMissionBookmark(createMissionBookmarkCreateServiceRequest(
+                mission.getId(),
+                bookmarkUserId
+        ))).isInstanceOf(IllegalStateException.class)
+                .hasMessage(ErrorCode.T_001.name());
     }
 
     @DisplayName("시민은 찜했던 미션에 대해 찜 취소를 할 수 있다.")
@@ -128,7 +202,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .missionCategory(missionCategoryRepository.findById(1L).get())
                 .citizenId(citizenId)
                 .regionId(1L)
-                .location(new Point(1234, 5678))
+                .location(Mission.createPoint(1234.56, 1234.78))
                 .bookmarkCount(0)
                 .build();
 
@@ -140,7 +214,10 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 .missionDate(LocalDate.of(2023, 10, 10))
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(10, 30))
-                .deadlineTime(LocalTime.of(10, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 10, 10),
+                        LocalTime.of(10, 0)
+                ))
                 .price(10000)
                 .title("서빙")
                 .content("서빙 도와주기")
@@ -149,5 +226,27 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                         LocalTime.MIDNIGHT
                 ))
                 .build();
+    }
+
+    private void createFiveBookmarks(
+            long citizenId,
+            long bookmarkUserId
+    ) {
+        IntStream.range(0, 10)
+                .forEach(i -> {
+                    var mission = createMissionWithMissionStatus(
+                            citizenId,
+                            MissionStatus.MATCHING
+                    );
+
+                    if (i <= 4) {
+                        missionBookmarkService.createMissionBookmark(
+                                createMissionBookmarkCreateServiceRequest(
+                                        mission.getId(),
+                                        bookmarkUserId
+                                )
+                        );
+                    }
+                });
     }
 }

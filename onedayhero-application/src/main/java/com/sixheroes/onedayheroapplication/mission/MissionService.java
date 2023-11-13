@@ -46,16 +46,26 @@ public class MissionService {
         return MissionResponse.from(savedMission, region);
     }
 
-    @Transactional
-    public void deleteMission(
-            Long missionId,
-            Long citizenId
+    public MissionResponse findOne(
+            Long missionId
     ) {
-        var mission = missionReader.findOne(missionId);
-        mission.validAbleDelete(citizenId);
+        var missionQueryResponse = missionReader.fetchFindOne(missionId);
 
-        deleteUserBookMarkByMissionId(missionId);
-        missionRepository.delete(mission);
+        return MissionResponse.from(missionQueryResponse);
+    }
+
+    public MissionResponses findAllByDynamicCondition(
+            Pageable pageable,
+            MissionFindFilterServiceRequest request
+    ) {
+        var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
+        return MissionResponses.from(sliceMissionQueryResponses);
+    }
+
+    public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
+        var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
+
+        return MissionProgressResponses.from(sliceMissionProgressQueryResponses);
     }
 
     @Transactional
@@ -70,7 +80,7 @@ public class MissionService {
 
         var requestMission = request.toEntity(missionCategory, serverTime);
 
-        mission.update(requestMission);
+        mission.update(requestMission, request.citizenId());
         return MissionResponse.from(mission, region);
     }
 
@@ -86,32 +96,32 @@ public class MissionService {
 
         var requestExtendMission = request.toEntity(missionCategory, serverTime);
 
-        mission.extend(requestExtendMission);
+        mission.extend(requestExtendMission, request.citizenId());
 
         return MissionResponse.from(mission, region);
     }
 
-    public MissionResponse findOne(
-            Long missionId
+    public MissionResponse completeMission(
+            Long missionId,
+            Long userId
     ) {
-        var missionQueryResponse = missionReader.fetchFindOne(missionId);
+        var mission = missionReader.findOne(missionId);
+        var region = regionReader.findOne(mission.getRegionId());
+        mission.complete(userId);
 
-        return MissionResponse.from(missionQueryResponse);
+        return MissionResponse.from(mission, region);
     }
 
-    public MissionResponses findAllByDynamicCondition(
-            Pageable pageable,
-            MissionFindFilterServiceRequest request
+    @Transactional
+    public void deleteMission(
+            Long missionId,
+            Long citizenId
     ) {
-        var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
+        var mission = missionReader.findOne(missionId);
+        mission.validAbleDelete(citizenId);
 
-        return MissionResponses.from(pageable, sliceMissionQueryResponses, sliceMissionQueryResponses.hasNext());
-    }
-
-    public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
-        var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
-
-        return MissionProgressResponses.from(pageable, sliceMissionProgressQueryResponses, sliceMissionProgressQueryResponses.hasNext());
+        deleteUserBookMarkByMissionId(missionId);
+        missionRepository.delete(mission);
     }
 
     private void deleteUserBookMarkByMissionId(

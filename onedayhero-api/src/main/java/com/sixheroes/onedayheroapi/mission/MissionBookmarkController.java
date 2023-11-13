@@ -25,7 +25,6 @@ public class MissionBookmarkController {
             @Valid @RequestBody MissionBookmarkCreateRequest request
     ) {
         var response = missionBookmarkService.createMissionBookmark(request.toService());
-
         return ResponseEntity.created(URI.create("/api/v1/missions/" + response.missionId())).body(ApiResponse.created(response));
     }
 
@@ -34,8 +33,6 @@ public class MissionBookmarkController {
             @Valid @RequestBody MissionBookmarkCancelRequest request
     ) {
         var response = missionBookmarkService.cancelMissionBookmark(request.toService());
-
         return ResponseEntity.ok().body(ApiResponse.ok(response));
     }
-
 }

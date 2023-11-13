@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.user.dto;
+package com.sixheroes.onedayheroapplication.user.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record UserBasicInfoServiceDto(
+public record UserBasicInfoServiceRequest(
     String nickname,
 
     String gender,

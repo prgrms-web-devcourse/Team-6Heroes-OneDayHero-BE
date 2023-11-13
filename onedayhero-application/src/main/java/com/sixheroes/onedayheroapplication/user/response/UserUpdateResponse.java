@@ -1,37 +1,25 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
-import com.sixheroes.onedayheroapplication.user.dto.UserBasicInfoServiceDto;
-import com.sixheroes.onedayheroapplication.user.dto.UserFavoriteWorkingDayServiceDto;
-import com.sixheroes.onedayherodomain.user.UserBasicInfo;
-import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
-import com.sixheroes.onedayherodomain.user.Week;
+import com.sixheroes.onedayherodomain.user.User;
+import lombok.Builder;
 
+@Builder
 public record UserUpdateResponse(
-    Long userId,
-    UserBasicInfoServiceDto basicInfo,
-    UserFavoriteWorkingDayServiceDto favoriteWorkingDay
+    Long id,
+    UserBasicInfoResponse basicInfo,
+    UserFavoriteWorkingDayResponse favoriteWorkingDay
 ) {
 
     public static UserUpdateResponse from(
-        Long userId,
-        UserBasicInfo userBasicInfo,
-        UserFavoriteWorkingDay userFavoriteWorkingDay
+        User user
     ) {
-        var userBasicInfoDto = new UserBasicInfoServiceDto(
-            userBasicInfo.getNickname(),
-            userBasicInfo.getGender().name(),
-            userBasicInfo.getBirth(),
-            userBasicInfo.getIntroduce()
-        );
+        var userBasicInfoResponse = UserBasicInfoResponse.from(user.getUserBasicInfo());
+        var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(user.getUserFavoriteWorkingDay());
 
-        var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayServiceDto(
-            userFavoriteWorkingDay.getFavoriteDate().stream()
-                .map(Week::name)
-                .toList(),
-            userFavoriteWorkingDay.getFavoriteStartTime(),
-            userFavoriteWorkingDay.getFavoriteEndTime()
-        );
-
-        return new UserUpdateResponse(userId, userBasicInfoDto, userFavoriteWorkingDayDto);
+        return UserUpdateResponse.builder()
+            .id(user.getId())
+            .basicInfo(userBasicInfoResponse)
+            .favoriteWorkingDay(userFavoriteWorkingDayResponse)
+            .build();
     }
 }

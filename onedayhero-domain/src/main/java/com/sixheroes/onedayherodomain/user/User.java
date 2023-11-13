@@ -1,24 +1,21 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherodomain.global.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {
@@ -50,9 +47,9 @@ public class User extends BaseEntity {
     @Column(name = "is_hero_mode", nullable = false)
     private Boolean isHeroMode;
 
-    @Column(name = "is_active", nullable = true)
-    private Boolean isActive;
-
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+  
     //처음 Oauth 를 통해 회원 가입
     public static User singUpUser(
             Email email,
@@ -91,7 +88,7 @@ public class User extends BaseEntity {
         this.userRole = userRole;
         this.heroScore = 30;
         this.isHeroMode = false;
-        this.isActive = true;
+        this.isDeleted = false;
     }
 
     public void updateUser(
@@ -100,5 +97,28 @@ public class User extends BaseEntity {
     ) {
         this.userBasicInfo = userBasicInfo;
         this.userFavoriteWorkingDay = userFavoriteWorkingDay;
+    }
+  
+    public void changeHeroModeOn() {
+        validHeroModeOff();
+        this.isHeroMode = true;
+    }
+
+    public void validPossibleMissionProposal() {
+        validHeroModeOn();
+    }
+
+    private void validHeroModeOn() {
+        if (Boolean.FALSE.equals(this.isHeroMode)) {
+            log.debug("해당 유저는 히어로 모드가 비활성화 상태입니다.");
+            throw new IllegalStateException(ErrorCode.EU_009.name());
+        }
+    }
+
+    private void validHeroModeOff() {
+        if (Boolean.TRUE.equals(this.isHeroMode)) {
+            log.debug("해당 유저는 히어로 모드가 활성화 상태입니다.");
+            throw new IllegalStateException(ErrorCode.EU_010.name());
+        }
     }
 }

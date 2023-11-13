@@ -5,14 +5,14 @@ import lombok.Builder;
 
 @Builder
 public record MissionMatchCreateResponse(
-        Long id,
+        Long missionMatchId,
         Long missionId,
         Long heroId
 ) {
 
     public static MissionMatchCreateResponse from(MissionMatch missionMatch) {
         return MissionMatchCreateResponse.builder()
-                .id(missionMatch.getId())
+                .missionMatchId(missionMatch.getId())
                 .missionId(missionMatch.getMissionId())
                 .heroId(missionMatch.getHeroId())
                 .build();

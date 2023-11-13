@@ -1,41 +1,68 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
+import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
+import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
+import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
-
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserReader userReader;
+
+    public UserResponse findUser(
+        Long userId
+    ) {
+        var userQueryDto = userReader.findOneWithUserImage(userId);
+
+        return UserResponse.from(userQueryDto);
+    }
+
+    public ProfileCitizenResponse findCitizenProfile(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProfileHeroResponse findHeroProfile(
+        Long userId
+    ) {
+        // TODO 히어로 모드가 활성화 되어있는지 확인
+        throw new UnsupportedOperationException();
+    }
 
     @Transactional
     public UserUpdateResponse updateUser(UserServiceUpdateRequest userServiceUpdateRequest) {
         var userId = userServiceUpdateRequest.userId();
-        var user = userRepository.findById(userId)
-                            .orElseThrow(() -> {
-                                log.debug("존재하지 않는 유저 아이디입니다. userId : {}", userId);
-                                return new NoSuchElementException(ErrorCode.EUC_001.name());
-                            });
+        var user = userReader.findOne(userId);
 
         var userBasicInfo = userServiceUpdateRequest.toUserBasicInfo();
         var userFavoriteWorkingDay = userServiceUpdateRequest.toUserFavoriteWorkingDay();
 
         user.updateUser(userBasicInfo, userFavoriteWorkingDay);
 
-        return UserUpdateResponse.from(
-            user.getId(),
-            user.getUserBasicInfo(),
-            user.getUserFavoriteWorkingDay()
-        );
+        return UserUpdateResponse.from(user);
+    }
+
+    @Transactional
+    public UserResponse turnHeroModeOn(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Transactional
+    public UserResponse turnHeroModeOff(
+        Long userId
+    ) {
+        throw new UnsupportedOperationException();
     }
 }

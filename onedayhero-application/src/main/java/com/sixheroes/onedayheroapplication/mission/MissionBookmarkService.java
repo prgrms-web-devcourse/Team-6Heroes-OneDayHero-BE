@@ -5,12 +5,18 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancel
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCreateResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkCancelResponse;
+import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
+import com.sixheroes.onedayheroquerydsl.mission.MissionBookmarkQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 
 @Slf4j
@@ -21,20 +27,44 @@ public class MissionBookmarkService {
 
     private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionBookmarkReader missionBookmarkReader;
+    private final MissionBookmarkQueryRepository missionBookmarkQueryRepository;
     private final MissionReader missionReader;
 
+    @Transactional(readOnly = true)
+    public MissionBookmarkMeViewResponse viewMyBookmarks(
+            Pageable pageable,
+            Long userId
+    ) {
+        var responses = missionBookmarkQueryRepository.viewMyBookmarks(
+                pageable,
+                userId
+        );
+
+        return MissionBookmarkMeViewResponse.of(
+                userId,
+                responses
+        );
+    }
+
     public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
-        //TODO : UserReader 를 통한 히어로 유저 존재 검증
         var mission = missionReader.findOne(request.missionId());
         var missionBookmark = MissionBookmark.builder()
                 .mission(mission)
                 .userId(request.userId())
                 .build();
 
-        var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
-        mission.addBookmarkCount();
+        try {
+            var savedMissionBookmark = missionBookmarkRepository.save(missionBookmark);
+            mission.addBookmarkCount();
 
-        return new MissionBookmarkCreateResponse(savedMissionBookmark);
+            return new MissionBookmarkCreateResponse(savedMissionBookmark);
+        } catch (DataIntegrityViolationException e) {
+            log.debug("이미 해당 미션에 찜을 한 상태입니다. missionId={}, userId={}",
+                    request.missionId(),
+                    request.userId()
+            );
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
     }
 
     public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelServiceRequest request) {
@@ -48,7 +78,7 @@ public class MissionBookmarkService {
         mission.subBookmarkCount();
 
         return MissionBookmarkCancelResponse.builder()
-                .id(findMissionBookmark.getId())
+                .missionBookmarkId(findMissionBookmark.getId())
                 .missionId(mission.getId())
                 .userId(findMissionBookmark.getUserId())
                 .build();

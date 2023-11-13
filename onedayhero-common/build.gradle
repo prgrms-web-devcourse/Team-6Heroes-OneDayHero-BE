@@ -1,14 +1,14 @@
-dependencies {
-
-}
-
 ext {
-    mysqlJdbcDriverVersion = '8.0.33'
+    mysqlVersion = '8.0.33'
 }
 
 dependencies {
     //MySQL
-    api "mysql:mysql-connector-java:${mysqlJdbcDriverVersion}"
+    api "mysql:mysql-connector-java:${mysqlVersion}"
+
+    //Spatial
+    api 'org.hibernate:hibernate-spatial:6.3.1.Final'
+    api 'com.querydsl:querydsl-spatial'
 }
 
 tasks.named('test') {
