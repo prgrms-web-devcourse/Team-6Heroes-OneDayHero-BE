@@ -65,7 +65,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 starScore,
                 createdAt
         );
-        given(reviewService.findReviewDetail(anyLong())).willReturn(response);
+        given(reviewService.viewReviewDetail(anyLong())).willReturn(response);
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", response.id())

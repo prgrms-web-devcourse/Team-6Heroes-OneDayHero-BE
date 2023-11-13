@@ -28,7 +28,7 @@ public class ReviewController {
     public ResponseEntity<ApiResponse<ReviewResponse>> detailReview(
             @PathVariable Long reviewId
     ) {
-        var response = reviewService.findReviewDetail(reviewId);
+        var response = reviewService.viewReviewDetail(reviewId);
 
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
