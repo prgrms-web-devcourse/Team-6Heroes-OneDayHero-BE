@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record UserBasicInfoDto(
+public record UserBasicInfoRequest(
     @NotBlank(message = "유저 이름은 필수이고 빈 문자여서는 안됩니다.")
     String nickname,
 

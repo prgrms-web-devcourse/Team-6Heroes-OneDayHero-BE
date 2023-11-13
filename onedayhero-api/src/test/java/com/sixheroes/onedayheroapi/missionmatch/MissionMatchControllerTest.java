@@ -53,7 +53,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
         ).andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value(201))
-                .andExpect(jsonPath("$.data.id").value(response.id()))
+                .andExpect(jsonPath("$.data.missionMatchId").value(response.missionMatchId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.data.heroId").value(response.heroId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -71,7 +71,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.missionMatchId").type(JsonFieldType.NUMBER)
                                         .description("생성된 미션 매칭 아이디"),
                                 fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                                         .description("매칭이 완료된 미션 아이디"),
@@ -100,7 +100,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.id").value(response.id()))
+                .andExpect(jsonPath("$.data.missionMatchId").value(response.missionMatchId()))
                 .andExpect(jsonPath("$.data.citizenId").value(response.citizenId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
@@ -116,7 +116,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.missionMatchId").type(JsonFieldType.NUMBER)
                                         .description("미션매칭 아이디"),
                                 fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
                                         .description("매칭완료를 취소한 시민 아이디"),
@@ -145,7 +145,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
 
     private MissionMatchCreateResponse createMissionMatchResponse() {
         return MissionMatchCreateResponse.builder()
-                .id(1L)
+                .missionMatchId(1L)
                 .missionId(2L)
                 .heroId(3L)
                 .build();
@@ -153,7 +153,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
 
     private MissionMatchCancelResponse createMissionMatchWithdrawResponse() {
         return MissionMatchCancelResponse.builder()
-                .id(1L)
+                .missionMatchId(1L)
                 .missionId(2L)
                 .citizenId(1L)
                 .build();

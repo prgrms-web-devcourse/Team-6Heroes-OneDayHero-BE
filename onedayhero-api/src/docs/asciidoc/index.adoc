@@ -14,6 +14,11 @@ endif::[]
 
 include::api/user/user.adoc[]
 
+[[Profile-API]]
+== Profile API
+
+include::api/user/profile.adoc[]
+
 [[Mission-API]]
 == Mission API
 
@@ -32,7 +37,7 @@ include::api/missionmatch/missionmatch.adoc[]
 [[Mission-proposal-API]]
 == Mission Proposal API
 
-include::api/missionproposal/mission-proposal.adoc[]
+include::api/missionproposal/missionproposal.adoc[]
 
 [[Review-API]]
 == Review API

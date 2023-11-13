@@ -30,7 +30,10 @@ public class MissionBookmarkReader {
                 });
     }
 
-    public MissionBookmark findByMissionIdAndUserId(Long missionId, Long userId) {
+    public MissionBookmark findByMissionIdAndUserId(
+            Long missionId,
+            Long userId
+    ) {
         return missionBookmarkRepository.findByMissionIdAndUserId(missionId, userId)
                 .orElseThrow(() -> {
                     log.debug(

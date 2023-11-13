@@ -11,9 +11,9 @@ public record UserUpadateRequest(
         Long userId,
 
         @Valid
-        UserBasicInfoDto basicInfo,
+        UserBasicInfoRequest basicInfo,
 
-        UserFavoriteWorkingDayDto favoriteWorkingDay
+        UserFavoriteWorkingDayRequest favoriteWorkingDay
 ) {
 
     public UserServiceUpdateRequest toService() {

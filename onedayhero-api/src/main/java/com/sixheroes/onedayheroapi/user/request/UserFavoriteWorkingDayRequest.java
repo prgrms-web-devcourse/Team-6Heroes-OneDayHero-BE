@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Builder
-public record UserFavoriteWorkingDayDto(
+public record UserFavoriteWorkingDayRequest(
     List<String> favoriteDate,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")

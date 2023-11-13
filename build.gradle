@@ -72,6 +72,18 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 
+
+    ext {
+        set('springCloudVersion', "2022.0.3")
+    }
+
+    // springCloudVersion global setting
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
     tasks.register("prepareKotlinBuildScriptModel") {}
 }
 
