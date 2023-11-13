@@ -131,6 +131,7 @@ class UserImageTest {
         String originalName
     ) {
         return UserImage.builder()
+            .user(createUser())
             .originalName(originalName)
             .uniqueName("고유 이름")
             .path("경로")
@@ -141,6 +142,7 @@ class UserImageTest {
         String uniqueName
     ) {
         return UserImage.builder()
+            .user(createUser())
             .originalName("원본 이름")
             .uniqueName(uniqueName)
             .path("경로")
@@ -151,9 +153,18 @@ class UserImageTest {
         String path
     ) {
         return UserImage.builder()
+            .user(createUser())
             .originalName("원본 이름")
             .uniqueName("고유 이름")
             .path(path)
+            .build();
+    }
+
+    private User createUser() {
+        return User.builder()
+            .email(Email.builder().email("123@abc.com").build())
+            .userSocialType(UserSocialType.KAKAO)
+            .userRole(UserRole.MEMBER)
             .build();
     }
 }

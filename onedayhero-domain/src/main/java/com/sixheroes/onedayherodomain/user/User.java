@@ -1,15 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherodomain.global.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +15,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = true")
+@Where(clause = "is_deleted = false")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {

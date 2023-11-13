@@ -5,14 +5,8 @@ import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequ
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.user.Email;
-import com.sixheroes.onedayherodomain.user.User;
-import com.sixheroes.onedayherodomain.user.UserBasicInfo;
-import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
-import com.sixheroes.onedayherodomain.user.UserGender;
-import com.sixheroes.onedayherodomain.user.UserRole;
-import com.sixheroes.onedayherodomain.user.UserSocialType;
-import com.sixheroes.onedayherodomain.user.Week;
+import com.sixheroes.onedayherodomain.user.*;
+import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,13 +18,17 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserImageRepository userImageRepository;
 
     @Autowired
     private UserService userService;
@@ -84,7 +82,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
     @Test
-    void updateUserW() {
+    void updateUserWhenNotExist() {
         // given
         var user = createUser();
         userRepository.save(user);
@@ -122,6 +120,63 @@ class UserServiceTest extends IntegrationApplicationTest {
         assertThatThrownBy(() -> userService.updateUser(userServiceUpdateRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EUC_000.name());
+    }
+
+    @DisplayName("유저의 프로필을 조회한다.")
+    @Test
+    void findUser() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+
+        var userImage = createUserImage(savedUser);
+        userImageRepository.save(userImage);
+
+        // when
+        var userResponse = userService.findUser(savedUser.getId());
+
+        // then
+        var userBasicInfo = savedUser.getUserBasicInfo();
+        assertThat(userResponse.basicInfo())
+            .extracting("nickname", "gender", "birth", "introduce")
+            .containsExactly(userBasicInfo.getNickname(), userBasicInfo.getGender().name(), userBasicInfo.getBirth(), userBasicInfo.getIntroduce());
+        var userFavoriteWorkingDay = savedUser.getUserFavoriteWorkingDay();
+        var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream().map(Week::name).toList();
+        assertThat(userResponse.favoriteWorkingDay())
+            .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
+            .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
+        assertThat(userResponse.image())
+            .extracting("originalName", "uniqueName", "path")
+            .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+        assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
+        assertThat(userResponse.isHeroMode()).isEqualTo(user.getIsHeroMode());
+    }
+
+    @DisplayName("유저의 프로필을 조회할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Test
+    void findUserWhenNotExist() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> userService.findUser(notExistUserId))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EUC_000.name());
+    }
+
+    private UserImage createUserImage(
+        User user
+    ) {
+        var originalName = "원본 이름";
+        var uniqueName = "고유 이름";
+        var path = "http://";
+
+        return UserImage.builder()
+            .user(user)
+            .originalName(originalName)
+            .uniqueName(uniqueName)
+            .path(path)
+            .build();
     }
 
     private User createUser() {
