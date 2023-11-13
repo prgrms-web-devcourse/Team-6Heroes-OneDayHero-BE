@@ -21,6 +21,10 @@ public class MissionChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //TODO 삭제 예정
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "mission_id", nullable = false)
     private Long missionId;
 
@@ -29,15 +33,21 @@ public class MissionChatRoom {
 
     @Builder
     private MissionChatRoom(
-            Long missionId
+            Long missionId,
+            String name
     ) {
         this.missionId = missionId;
+        this.name = name;
         this.isDisabled = false;
     }
 
-    public static MissionChatRoom createMissionChatRoom(Long missionId) {
+    public static MissionChatRoom createMissionChatRoom(
+            Long missionId,
+            String name
+    ) {
         return MissionChatRoom.builder()
                 .missionId(missionId)
+                .name(name)
                 .build();
     }
 

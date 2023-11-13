@@ -10,6 +10,10 @@ public class FavoriteDateConverter implements AttributeConverter<List<Week>, Str
 
     @Override
     public String convertToDatabaseColumn(List<Week> attribute) {
+        if (attribute == null) {
+            return null;
+        }
+
         return attribute.stream()
                     .map(Week::name)
                     .collect(Collectors.joining(","));
@@ -17,6 +21,10 @@ public class FavoriteDateConverter implements AttributeConverter<List<Week>, Str
 
     @Override
     public List<Week> convertToEntityAttribute(String dbData) {
+        if (dbData == null) {
+            return null;
+        }
+
         return Arrays.stream(dbData.split(","))
                     .map(Week::valueOf)
                     .toList();

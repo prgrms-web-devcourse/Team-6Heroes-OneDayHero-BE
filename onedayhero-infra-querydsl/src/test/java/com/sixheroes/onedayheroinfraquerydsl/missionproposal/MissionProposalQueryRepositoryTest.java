@@ -10,6 +10,7 @@ import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayheroinfraquerydsl.IntegrationQueryDslTest;
 import com.sixheroes.onedayheroquerydsl.missionproposal.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroquerydsl.missionproposal.dto.MissionProposalQueryDto;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
@@ -41,6 +43,32 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
 
     @Autowired
     private MissionCategoryRepository missionCategoryRepository;
+
+    @BeforeAll
+    public static void setUp(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
+        var missionCategories = Arrays.stream(MissionCategoryCode.values())
+                .map(MissionCategory::from)
+                .toList();
+
+        missionCategoryRepository.saveAll(missionCategories);
+
+        var regionA = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build();
+
+        var regionB = Region.builder()
+                .si("서울시")
+                .gu("강남구")
+                .dong("서초동")
+                .build();
+
+        regionRepository.saveAll(List.of(regionA, regionB));
+    }
 
     @DisplayName("히어로 아이디를 통해 제안받은 미션을 페이징 조회한다.")
     @Transactional

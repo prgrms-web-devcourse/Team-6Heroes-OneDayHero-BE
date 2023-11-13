@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record MissionBookmarkCreateResponse(
-        Long id,
+        Long missionBookmarkId,
         Long missionId,
         Long userId
 ) {

@@ -4,16 +4,18 @@ import lombok.Builder;
 
 @Builder
 public record HandledChatMessage(
-        Long senderId,
+        Long id,
+        String sender,
         String message,
-        String chatType
+        String type
 ) {
 
     public static HandledChatMessage createEnterHandledChatMessage(HandledChatMessage request) {
         return HandledChatMessage.builder()
-                .senderId(request.senderId)
-                .message(request.senderId + "님이 입장하셨습니다.")
-                .chatType(request.chatType)
+                .id(request.id())
+                .sender(request.sender)
+                .message(request.sender + "님이 입장하셨습니다.")
+                .type(request.type)
                 .build();
     }
 }

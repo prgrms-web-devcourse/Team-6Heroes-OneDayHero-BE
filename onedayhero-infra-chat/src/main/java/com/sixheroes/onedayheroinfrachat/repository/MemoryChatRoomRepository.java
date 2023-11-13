@@ -3,7 +3,6 @@ package com.sixheroes.onedayheroinfrachat.repository;
 import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 @Slf4j
-@Repository
 public class MemoryChatRoomRepository implements CustomMissionChatRoomRepository {
 
     private static Long missionChatRoomId = 0L;

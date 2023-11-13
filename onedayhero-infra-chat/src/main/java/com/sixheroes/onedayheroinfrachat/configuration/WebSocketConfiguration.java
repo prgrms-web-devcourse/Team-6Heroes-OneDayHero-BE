@@ -21,7 +21,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.enableSimpleBroker("/queue");
 
         // 발행자를 지정한다. 클라이언트에서 /chat/xxxx 를 사용하면 controller가 메시지를 받아 처리한다.
-        registry.setApplicationDestinationPrefixes("/chat");
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     /**
@@ -34,7 +34,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void registerStompEndpoints(
             StompEndpointRegistry registry
     ) {
-        registry.addEndpoint("/ws")
+        registry.addEndpoint("/ws-chat")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

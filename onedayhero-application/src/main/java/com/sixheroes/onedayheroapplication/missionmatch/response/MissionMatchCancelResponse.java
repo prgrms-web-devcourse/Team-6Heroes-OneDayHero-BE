@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record MissionMatchCancelResponse(
-        Long id,
+        Long missionMatchId,
         Long citizenId,
         Long missionId
 ) {

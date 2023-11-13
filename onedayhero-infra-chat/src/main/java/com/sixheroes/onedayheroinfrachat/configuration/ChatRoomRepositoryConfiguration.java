@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class ChatRoomRepositoryConfiguration {
 
-    @Profile("dev")
+    @Profile({"dev", "test"})
     @Bean
-    public CustomMissionChatRoomRepository missionChatRoomRepository() {
+    public CustomMissionChatRoomRepository customMissionChatRoomRepository() {
         return new MemoryChatRoomRepository();
     }
 }

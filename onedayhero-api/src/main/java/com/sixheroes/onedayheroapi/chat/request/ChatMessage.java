@@ -3,16 +3,18 @@ package com.sixheroes.onedayheroapi.chat.request;
 import com.sixheroes.onedayheroapplication.chat.request.HandledChatMessage;
 
 public record ChatMessage(
-        Long senderId,
+        Long id,
+        String sender,
         String message,
-        String chatType
+        String type
 ) {
 
     public HandledChatMessage toHandler() {
         return HandledChatMessage.builder()
-                .senderId(senderId)
+                .id(id)
+                .sender(sender)
                 .message(message)
-                .chatType(chatType)
+                .type(type)
                 .build();
     }
 }

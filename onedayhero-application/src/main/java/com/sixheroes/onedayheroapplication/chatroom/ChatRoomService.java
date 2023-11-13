@@ -1,12 +1,13 @@
 package com.sixheroes.onedayheroapplication.chatroom;
 
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomResponse;
-import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomResponses;
 import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
 import com.sixheroes.onedayheroinfrachat.repository.CustomMissionChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,9 +18,9 @@ public class ChatRoomService {
     private final CustomMissionChatRoomRepository missionChatRoomRepository;
 
     public MissionChatRoomResponse createChatRoom(
-            Long missionId
+            String roomName
     ) {
-        var missionChatRoom = MissionChatRoom.createMissionChatRoom(missionId);
+        var missionChatRoom = MissionChatRoom.createMissionChatRoom(1L, roomName);
         var savedMissionChatRoom = missionChatRoomRepository.save(missionChatRoom);
 
         return MissionChatRoomResponse.from(savedMissionChatRoom);
@@ -33,12 +34,12 @@ public class ChatRoomService {
         return MissionChatRoomResponse.from(missionChatRoom);
     }
 
-    public MissionChatRoomResponses findAll() {
+    public List<MissionChatRoomResponse> findAll() {
         var missionChatRoomResponses = missionChatRoomRepository.findAll()
                 .stream()
                 .map(MissionChatRoomResponse::from)
                 .toList();
 
-        return MissionChatRoomResponses.from(missionChatRoomResponses);
+        return missionChatRoomResponses;
     }
 }

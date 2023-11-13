@@ -1,35 +1,25 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
-import com.sixheroes.onedayherodomain.user.UserBasicInfo;
-import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
-import com.sixheroes.onedayherodomain.user.Week;
+import com.sixheroes.onedayherodomain.user.User;
+import lombok.Builder;
 
+@Builder
 public record UserUpdateResponse(
     Long id,
-    UserBasicInfoServiceResponse basicInfo,
-    UserFavoriteWorkingDayServiceResponse favoriteWorkingDay
+    UserBasicInfoResponse basicInfo,
+    UserFavoriteWorkingDayResponse favoriteWorkingDay
 ) {
 
-    public static UserUpdateResponse of(
-        Long userId,
-        UserBasicInfo userBasicInfo,
-        UserFavoriteWorkingDay userFavoriteWorkingDay
+    public static UserUpdateResponse from(
+        User user
     ) {
-        var userBasicInfoDto = new UserBasicInfoServiceResponse(
-            userBasicInfo.getNickname(),
-            userBasicInfo.getGender().name(),
-            userBasicInfo.getBirth(),
-            userBasicInfo.getIntroduce()
-        );
+        var userBasicInfoResponse = UserBasicInfoResponse.from(user.getUserBasicInfo());
+        var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(user.getUserFavoriteWorkingDay());
 
-        var userFavoriteWorkingDayDto = new UserFavoriteWorkingDayServiceResponse(
-            userFavoriteWorkingDay.getFavoriteDate().stream()
-                .map(Week::name)
-                .toList(),
-            userFavoriteWorkingDay.getFavoriteStartTime(),
-            userFavoriteWorkingDay.getFavoriteEndTime()
-        );
-
-        return new UserUpdateResponse(userId, userBasicInfoDto, userFavoriteWorkingDayDto);
+        return UserUpdateResponse.builder()
+            .id(user.getId())
+            .basicInfo(userBasicInfoResponse)
+            .favoriteWorkingDay(userFavoriteWorkingDayResponse)
+            .build();
     }
 }

@@ -1,15 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherodomain.global.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +15,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = true")
+@Where(clause = "is_deleted = false")
 @Table(name = "users")
 @Entity
 public class User extends BaseEntity {
@@ -57,6 +49,29 @@ public class User extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
+  
+    //처음 Oauth 를 통해 회원 가입
+    public static User singUpUser(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole
+    ) {
+        return new User(
+                email,
+                userSocialType,
+                userRole);
+    }
+
+    private User(
+            Email email,
+            UserSocialType userSocialType,
+            UserRole userRole) {
+        this.email = email;
+        this.userSocialType = userSocialType;
+        this.userRole = userRole;
+        this.heroScore = 30;
+        this.isHeroMode = false;
+    }
 
     @Builder
     private User(
@@ -83,7 +98,7 @@ public class User extends BaseEntity {
         this.userBasicInfo = userBasicInfo;
         this.userFavoriteWorkingDay = userFavoriteWorkingDay;
     }
-
+  
     public void changeHeroModeOn() {
         validHeroModeOff();
         this.isHeroMode = true;
