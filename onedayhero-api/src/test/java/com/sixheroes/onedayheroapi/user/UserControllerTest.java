@@ -260,7 +260,6 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
-    @Disabled
     @DisplayName("유저는 내가 찜한 미션 목록을 조회할 수 있다.")
     @Test
     void viewMeBookmarkMissions() throws Exception {
@@ -606,7 +605,6 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
-    @Disabled
     @DisplayName("내가 쓴 리뷰를 확인할 수 있다.")
     @Test
     void viewSentReviews() throws Exception {
@@ -721,7 +719,6 @@ class UserControllerTest extends RestDocsSupport {
                             )));
     }
 
-    @Disabled
     @DisplayName("내가 받은 리뷰를 확인할 수 있다.")
     @Test
     void viewReceivedReviews() throws Exception {

@@ -54,6 +54,6 @@ public abstract class RestDocsSupport {
     protected abstract Object setController();
 
     protected String getAccessToken() {
-        return "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTg2MTcxNCwiZXhwIjoxNjk5OTIxNzE0fQ.v_xYMcOc4WIno8rIgUTfyCRjyT1vQrsMGcZVrLASyEI";
+        return "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4";
     }
 }
