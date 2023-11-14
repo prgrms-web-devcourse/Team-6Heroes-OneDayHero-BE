@@ -11,17 +11,21 @@ import java.util.List;
 public record ReviewDetailResponse(
         Long id,
 
-        String nickname,
+        Long senderId,
+
+        String senderNickname,
+
+        Long receiverId,
 
         MissionCategoryResponse missionCategory,
 
         String missionTitle,
 
-        Integer starScore,
-
         String content,
 
-        List<ReviewResponse.ReviewImageResponse> reviewImageResponses,
+        Integer starScore,
+
+        List<ReviewImageResponse> reviewImageResponses,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         LocalDateTime createdAt
