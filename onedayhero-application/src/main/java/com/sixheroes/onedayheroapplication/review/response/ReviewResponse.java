@@ -13,6 +13,8 @@ public record ReviewResponse(
 
         Long senderId,
 
+        String senderNickname,
+
         Long receiverId,
 
         MissionCategoryResponse missionCategory,

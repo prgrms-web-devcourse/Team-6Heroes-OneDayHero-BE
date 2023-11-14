@@ -51,6 +51,7 @@ class ReviewControllerTest extends RestDocsSupport {
     void findReviewDetail() throws Exception {
         // given
         var senderId = 1L;
+        var senderNickname = "슈퍼 히어로 토끼";
         var receiverId = 2L;
         var missionTitle = "서빙 구함";
         var content = "리뷰 내용";
@@ -59,6 +60,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
         var response = createReview(
                 senderId,
+                senderNickname,
                 receiverId,
                 missionTitle,
                 content,
@@ -74,6 +76,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
+                .andExpect(jsonPath("$.data.senderNickname").value(response.senderNickname()))
                 .andExpect(jsonPath("$.data.receiverId").value(response.receiverId()))
                 .andExpect(jsonPath("$.data.missionCategory.id").value(response.missionCategory().id()))
                 .andExpect(jsonPath("$.data.missionCategory.code").value(response.missionCategory().code()))
@@ -94,9 +97,11 @@ class ReviewControllerTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                        .description("생성된 리뷰 아이디"),
+                                        .description("조회한 리뷰 아이디"),
                                 fieldWithPath("data.senderId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 작성 유저 아이디"),
+                                fieldWithPath("data.senderNickname").type(JsonFieldType.STRING)
+                                        .description("리뷰 작성 유저 닉네임"),
                                 fieldWithPath("data.receiverId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 대상 유저 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -136,6 +141,7 @@ class ReviewControllerTest extends RestDocsSupport {
     void createReview() throws Exception {
         // given
         var senderId = 1L;
+        var senderNickname = "슈퍼 히어로 토끼";
         var receiverId = 2L;
         var missionTitle = "서빙 구함";
         var content = "리뷰 내용";
@@ -155,6 +161,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
         var response = createReview(
                 senderId,
+                senderNickname,
                 receiverId,
                 missionTitle,
                 content,
@@ -176,6 +183,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .andExpect(header().string("Location", "/api/v1/reviews/" + response.id()))
                 .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
+                .andExpect(jsonPath("$.data.senderNickname").value(response.senderNickname()))
                 .andExpect(jsonPath("$.data.receiverId").value(response.receiverId()))
                 .andExpect(jsonPath("$.data.missionCategory.id").value(response.missionCategory().id()))
                 .andExpect(jsonPath("$.data.missionCategory.code").value(response.missionCategory().code()))
@@ -209,6 +217,8 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .description("생성된 리뷰 아이디"),
                                 fieldWithPath("data.senderId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 작성 유저 아이디"),
+                                fieldWithPath("data.senderNickname").type(JsonFieldType.STRING)
+                                        .description("리뷰 작성 유저 닉네임"),
                                 fieldWithPath("data.receiverId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 대상 유저 아이디"),
                                 fieldWithPath("data.missionCategory").type(JsonFieldType.OBJECT)
@@ -306,6 +316,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
     private ReviewResponse createReview(
             Long senderId,
+            String senderNickname,
             Long receiverId,
             String missionTitle,
             String content,
@@ -327,6 +338,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .id(1L)
                 .missionCategory(MissionCategoryResponse.builder().id(1L).name("서빙").code("MC_001").build())
                 .senderId(senderId)
+                .senderNickname(senderNickname)
                 .receiverId(receiverId)
                 .missionTitle(missionTitle)
                 .content(content)
