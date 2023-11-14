@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import lombok.Builder;
 import org.springframework.data.domain.Slice;
 

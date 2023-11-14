@@ -11,9 +11,7 @@ import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,26 +43,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private MissionService missionService;
-
-    @BeforeAll
-    public static void setUp(
-            @Autowired MissionCategoryRepository missionCategoryRepository,
-            @Autowired RegionRepository regionRepository
-    ) {
-        var missionCategories = Arrays.stream(MissionCategoryCode.values())
-                .map(MissionCategory::from)
-                .toList();
-
-        missionCategoryRepository.saveAll(missionCategories);
-
-        var region = Region.builder()
-                .si("서울시")
-                .gu("강남구")
-                .dong("역삼동")
-                .build();
-
-        regionRepository.save(region);
-    }
 
     @Transactional
     @DisplayName("시민은 미션을 생성 할 수 있다.")

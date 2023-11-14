@@ -1,9 +1,9 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionBookmarkMeQueryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionBookmarkMeQueryResponse;
 import lombok.Builder;
 
 import java.time.LocalDate;

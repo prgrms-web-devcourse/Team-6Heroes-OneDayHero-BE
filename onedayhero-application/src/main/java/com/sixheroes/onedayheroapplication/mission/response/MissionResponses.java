@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import org.springframework.data.domain.Slice;
 
 public record MissionResponses(

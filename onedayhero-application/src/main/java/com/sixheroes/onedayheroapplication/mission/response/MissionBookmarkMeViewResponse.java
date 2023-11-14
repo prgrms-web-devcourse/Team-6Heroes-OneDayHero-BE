@@ -1,13 +1,12 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionBookmarkMeQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionBookmarkMeQueryResponse;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
 
 public record MissionBookmarkMeViewResponse(
-    Long userId,
-    Slice<MissionBookmarkMeResponse> missionBookmarkMeResponses
+        Long userId,
+        Slice<MissionBookmarkMeResponse> missionBookmarkMeResponses
 ) {
 
     public static MissionBookmarkMeViewResponse of(

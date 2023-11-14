@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.region.response;
 
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
 
 @Builder

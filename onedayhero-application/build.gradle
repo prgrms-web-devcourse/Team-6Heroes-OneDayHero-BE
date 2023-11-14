@@ -10,10 +10,13 @@ dependencies {
 
     //AWS S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.575'
+
+    // OPEN FEIGN
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
-    implementation project(':onedayhero-infra-querydsl')
-    implementation project(':onedayhero-infra-openfeign')
 }
 
 tasks.named('test') {

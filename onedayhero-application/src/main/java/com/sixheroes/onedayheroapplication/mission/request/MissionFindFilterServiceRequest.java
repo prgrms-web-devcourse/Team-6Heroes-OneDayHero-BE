@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission.request;
 
+import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
-import com.sixheroes.onedayheroquerydsl.mission.request.MissionFindFilterQueryRequest;
 import lombok.Builder;
 
 import java.time.LocalDate;

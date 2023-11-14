@@ -15,7 +15,7 @@ import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public abstract class IntegrationApplicationTest {
+public abstract class IntegrationQueryDslTest {
 
     @BeforeAll
     public static void setUp(
