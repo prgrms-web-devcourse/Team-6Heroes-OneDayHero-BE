@@ -1,10 +1,9 @@
-package com.sixheroes.onedayheroquerydsl.review.response;
+package com.sixheroes.onedayheroapplication.review.response;
 
 import java.time.LocalDateTime;
 
-public record ReceivedReviewQueryResponse(
+public record SentReviewQueryResponse(
         Long reviewId,
-        Long senderId,
         String categoryName,
         String missionTitle,
         Integer starScore,

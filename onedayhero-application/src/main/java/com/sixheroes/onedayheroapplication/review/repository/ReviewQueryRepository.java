@@ -1,9 +1,9 @@
-package com.sixheroes.onedayheroquerydsl.review;
+package com.sixheroes.onedayheroapplication.review.repository;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sixheroes.onedayheroquerydsl.review.response.ReceivedReviewQueryResponse;
-import com.sixheroes.onedayheroquerydsl.review.response.SentReviewQueryResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewQueryResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

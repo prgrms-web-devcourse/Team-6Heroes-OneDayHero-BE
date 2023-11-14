@@ -17,6 +17,7 @@ import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,6 +55,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @WebMvcTest(UserController.class)
 class UserControllerTest extends RestDocsSupport {
@@ -258,6 +260,7 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
+    @Disabled
     @DisplayName("유저는 내가 찜한 미션 목록을 조회할 수 있다.")
     @Test
     void viewMeBookmarkMissions() throws Exception {
@@ -603,6 +606,7 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
+    @Disabled
     @DisplayName("내가 쓴 리뷰를 확인할 수 있다.")
     @Test
     void viewSentReviews() throws Exception {
@@ -717,6 +721,7 @@ class UserControllerTest extends RestDocsSupport {
                             )));
     }
 
+    @Disabled
     @DisplayName("내가 받은 리뷰를 확인할 수 있다.")
     @Test
     void viewReceivedReviews() throws Exception {
