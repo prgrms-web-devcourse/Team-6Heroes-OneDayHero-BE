@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
 
 @Builder
@@ -11,7 +11,7 @@ public record MissionCategoryResponse(
         String code,
         String name
 ) {
-    
+
     public static MissionCategoryResponse from(
             MissionQueryResponse response
     ) {

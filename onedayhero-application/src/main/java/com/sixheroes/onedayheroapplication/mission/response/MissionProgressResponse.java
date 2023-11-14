@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionProgressQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import lombok.Builder;
 
 import java.time.LocalDate;

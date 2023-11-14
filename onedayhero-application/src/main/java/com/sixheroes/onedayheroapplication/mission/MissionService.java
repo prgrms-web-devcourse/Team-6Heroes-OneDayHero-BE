@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapplication.mission;
 
+import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
@@ -10,7 +11,6 @@ import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

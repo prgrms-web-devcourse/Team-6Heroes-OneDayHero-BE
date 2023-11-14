@@ -59,9 +59,9 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         hero.changeHeroModeOn();
 
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-            citizenId,
-            mission.getId(),
-            hero.getId()
+                citizenId,
+                mission.getId(),
+                hero.getId()
         );
 
         // when
@@ -88,15 +88,15 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         hero.changeHeroModeOn();
 
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-            citizenId,
-            missionId,
-            hero.getId()
+                citizenId,
+                missionId,
+                hero.getId()
         );
 
         // when & then
         assertThatThrownBy(() -> missionProposalService.createMissionProposal(missionProposalCreateServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EM_008.name());
     }
 
     @DisplayName("미션 제안을 생성할 때 해당 히어로가 존재하지 않으면 예외가 발생한다.")
@@ -113,15 +113,15 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         var notExsistHeroId = 4L;
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-            citizenId,
-            mission.getId(),
-            notExsistHeroId
+                citizenId,
+                mission.getId(),
+                notExsistHeroId
         );
 
         // when & then
         assertThatThrownBy(() -> missionProposalService.createMissionProposal(missionProposalCreateServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EUC_000.name());
     }
 
     @DisplayName("미션 제안을 승낙한다.")
@@ -140,14 +140,14 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         var missionProposalApproveResponse = missionProposalService.approveMissionProposal(
-            missionProposal.getId(),
-            missionProposalApproveServiceRequest
+                missionProposal.getId(),
+                missionProposalApproveServiceRequest
         );
 
         // then
         assertThat(missionProposalApproveResponse.id()).isEqualTo(missionProposal.getId());
         assertThat(missionProposalApproveResponse.missionId()).isEqualTo(missionProposal.getMissionId());
-        assertThat(missionProposalApproveResponse.heroId()).isEqualTo(missionProposal.getId());
+        assertThat(missionProposalApproveResponse.heroId()).isEqualTo(missionProposal.getHeroId());
         assertThat(missionProposalApproveResponse.missionProposalStatus()).isEqualTo("APPROVE");
     }
 
@@ -163,8 +163,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.approveMissionProposal(missionProposalId, missionProposalApproveServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EMP_000.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EMP_000.name());
     }
 
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -180,8 +180,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.approveMissionProposal(missionProposal.getId(), missionProposalApproveServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EM_008.name());
     }
 
     @DisplayName("미션 제안을 거절한다.")
@@ -200,8 +200,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         var missionProposalRejectResponse = missionProposalService.rejectMissionProposal(
-            missionProposal.getId(),
-            missionProposalRejectServiceRequest
+                missionProposal.getId(),
+                missionProposalRejectServiceRequest
         );
 
         // then
@@ -223,8 +223,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(missionProposalId, missionProposalRejectServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EMP_000.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EMP_000.name());
     }
 
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -240,43 +240,43 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(missionProposal.getId(), missionProposalRejectServiceRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EM_008.name());
     }
 
     private MissionProposal createMissionProposal(
-        Long missionId,
-        Long heroId
+            Long missionId,
+            Long heroId
     ) {
         return MissionProposal.builder()
-            .missionId(missionId)
-            .heroId(heroId)
-            .build();
+                .missionId(missionId)
+                .heroId(heroId)
+                .build();
     }
 
     private Mission createMission(
-        Long citizenId,
-        MissionCategory missionCategory
+            Long citizenId,
+            MissionCategory missionCategory
     ) {
         return Mission.createMission(missionCategory,
-            citizenId,
-            1L,
-            123.123,
-            123.123,
-            createMissionInfo());
+                citizenId,
+                1L,
+                123.123,
+                123.123,
+                createMissionInfo());
     }
 
     private MissionInfo createMissionInfo() {
         return MissionInfo.builder()
-            .title("미션 제목")
-            .content("미션 내용입니다.")
-            .missionDate(LocalDate.of(2023, 10, 30))
-            .startTime(LocalTime.of(10, 0, 0))
-            .endTime(LocalTime.of(10, 30, 0))
-            .deadlineTime(LocalDateTime.of(2023, 10, 29, 20, 0, 0))
-            .price(1000)
-            .serverTime(LocalDateTime.of(2023, 10, 28, 10, 0, 0))
-            .build();
+                .title("미션 제목")
+                .content("미션 내용입니다.")
+                .missionDate(LocalDate.of(2023, 10, 30))
+                .startTime(LocalTime.of(10, 0, 0))
+                .endTime(LocalTime.of(10, 30, 0))
+                .deadlineTime(LocalDateTime.of(2023, 10, 29, 20, 0, 0))
+                .price(1000)
+                .serverTime(LocalDateTime.of(2023, 10, 28, 10, 0, 0))
+                .build();
     }
 
     private MissionCategory createMissionCategory() {
@@ -285,34 +285,34 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
     private User createUser() {
         return User.builder()
-            .userBasicInfo(createUserBasicInfo())
-            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .email(createEmail())
-            .build();
+                .userBasicInfo(createUserBasicInfo())
+                .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .email(createEmail())
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfo() {
         return UserBasicInfo.builder()
-            .nickname("이름")
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기소개")
-            .build();
+                .nickname("이름")
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기소개")
+                .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {
         return UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON, Week.THU))
-            .favoriteStartTime(LocalTime.of(12, 0, 0))
-            .favoriteEndTime(LocalTime.of(18, 0, 0))
-            .build();
+                .favoriteDate(List.of(Week.MON, Week.THU))
+                .favoriteStartTime(LocalTime.of(12, 0, 0))
+                .favoriteEndTime(LocalTime.of(18, 0, 0))
+                .build();
     }
 
     private Email createEmail() {
         return Email.builder()
-            .email("abc@123.com")
-            .build();
+                .email("abc@123.com")
+                .build();
     }
 }

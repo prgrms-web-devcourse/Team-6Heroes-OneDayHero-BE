@@ -1,10 +1,9 @@
 package com.sixheroes.onedayheroapplication.oauth.kakao;
 
-import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
-import com.sixheroes.onedayheroinfraopenfeign.feign.client.oauth.kakao.KakaoAuthServerFeignClient;
-import com.sixheroes.onedayheroinfraopenfeign.feign.client.oauth.kakao.KakaoResourceServerFeignClient;
 import com.sixheroes.onedayheroapplication.oauth.OauthClientService;
-import com.sixheroes.onedayherodomain.user.UserSocialType;
+import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
+import com.sixheroes.onedayheroapplication.oauth.infra.feign.client.oauth.kakao.KakaoAuthServerFeignClient;
+import com.sixheroes.onedayheroapplication.oauth.infra.feign.client.oauth.kakao.KakaoResourceServerFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +48,5 @@ public class KakaoOauthClientService implements OauthClientService {
                 "code", code,
                 "grant_type", "authorization_code"
         );
-    }}
+    }
+}

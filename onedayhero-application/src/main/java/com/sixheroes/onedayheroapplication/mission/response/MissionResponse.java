@@ -1,11 +1,11 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.Builder;
 
 import java.time.LocalDate;
