@@ -23,3 +23,16 @@ include::{snippets}/profile-hero-find/path-parameters.adoc[]
 
 include::{snippets}/profile-hero-find/http-response.adoc[]
 include::{snippets}/profile-hero-find/response-fields.adoc[]
+
+[[profile-received-reviews]]
+=== 유저가 받은 리뷰 조회
+
+==== HTTP Request
+
+include::{snippets}/profile-received-reviews/http-request.adoc[]
+include::{snippets}/profile-received-reviews/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/profile-received-reviews/http-response.adoc[]
+include::{snippets}/profile-received-reviews/response-fields.adoc[]

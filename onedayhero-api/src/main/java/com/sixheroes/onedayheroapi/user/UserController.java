@@ -50,7 +50,10 @@ public class UserController {
             @PageableDefault(size = 5) Pageable pageable,
             @AuthUser Long userId
     ) {
-        var viewResponse = reviewService.viewSentReviews(pageable, userId);
+        var viewResponse = reviewService.viewSentReviews(
+                pageable,
+                userId
+        );
 
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
@@ -60,7 +63,10 @@ public class UserController {
             @PageableDefault(size = 5) Pageable pageable,
             @AuthUser Long userId
     ) {
-        var viewResponse = reviewService.viewReceivedReviews(pageable, userId);
+        var viewResponse = reviewService.viewReceivedReviews(
+                pageable,
+                userId
+        );
 
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }

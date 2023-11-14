@@ -674,6 +674,7 @@ class UserControllerTest extends RestDocsSupport {
                                     fieldWithPath("data.sentReviewResponses.content[].starScore").type(JsonFieldType.NUMBER)
                                             .description("내가 준 별점"),
                                     fieldWithPath("data.sentReviewResponses.content[].createdAt").type(JsonFieldType.STRING)
+                                            .attributes(getDateTimeFormat())
                                             .description("내가 리뷰를 작성한 시간"),
                                     fieldWithPath("data.sentReviewResponses.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                                     .description("현재 페이지 번호"),
@@ -792,6 +793,7 @@ class UserControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.receivedReviewResponses.content[].starScore").type(JsonFieldType.NUMBER)
                                         .description("내가 받은 별점"),
                                 fieldWithPath("data.receivedReviewResponses.content[].createdAt").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
                                         .description("내가 리뷰를 받은 시간"),
                                 fieldWithPath("data.receivedReviewResponses.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 번호"),
