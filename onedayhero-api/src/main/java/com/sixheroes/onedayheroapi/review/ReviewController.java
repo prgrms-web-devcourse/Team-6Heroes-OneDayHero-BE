@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
 import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<ReviewResponse>> detailReview(
+    public ResponseEntity<ApiResponse<ReviewDetailResponse>> detailReview(
             @PathVariable Long reviewId
     ) {
         var response = reviewService.viewReviewDetail(reviewId);
@@ -48,7 +49,6 @@ public class ReviewController {
                 .body(ApiResponse.created(response));
     }
 
-    //리뷰 이미지 추가/제거 기능은 Patch 와는 맞지 않음
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
             @PathVariable Long reviewId,
