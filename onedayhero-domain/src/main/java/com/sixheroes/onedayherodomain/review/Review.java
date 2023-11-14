@@ -3,10 +3,14 @@ package com.sixheroes.onedayherodomain.review;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,6 +23,10 @@ public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name= "review_id")
+    private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
@@ -40,4 +48,40 @@ public class Review extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
+
+    @Builder
+    private Review(
+            Long categoryId,
+            String missionTitle,
+            Long senderId,
+            Long receiverId,
+            Integer starScore,
+            String content
+    ) {
+        this.categoryId = categoryId;
+        this.missionTitle = missionTitle;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.starScore = starScore;
+        this.content = content;
+        this.isDeleted = false;
+    }
+
+    public void update(
+            String content,
+            Integer starScore
+    ) {
+        this.content = content;
+        this.starScore = starScore;
+    }
+
+    public void setReviewImages(
+            List<ReviewImage> reviewImages
+    ) {
+        this.reviewImages.addAll(reviewImages);
+    }
+
+    public boolean hasImage() {
+        return !this.getReviewImages().isEmpty();
+    }
 }
