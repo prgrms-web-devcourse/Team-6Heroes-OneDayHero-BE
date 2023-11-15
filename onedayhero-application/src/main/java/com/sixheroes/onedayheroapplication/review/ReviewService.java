@@ -119,30 +119,34 @@ public class ReviewService {
             Optional<List<S3ImageUploadServiceRequest>> imageUploadRequests,
             Review review
     ) {
-        if (imageUploadRequests.isPresent()) {
-            var s3ImageUploadServiceResponses = s3ImageUploadService.uploadImages(
-                    imageUploadRequests.get(),
-                    properties.getReviewDir()
-            );
-            var reviewImages = s3ImageUploadServiceResponses
-                    .stream()
-                    .map(reviewImageMapper)
-                    .toList();
-
-            review.setReviewImages(reviewImages);
+        if (imageUploadRequests.isEmpty()) {
+            return;
         }
+
+        var s3ImageUploadServiceResponses = s3ImageUploadService.uploadImages(
+                imageUploadRequests.get(),
+                properties.getReviewDir()
+        );
+        var reviewImages = s3ImageUploadServiceResponses
+                .stream()
+                .map(reviewImageMapper)
+                .toList();
+
+        review.setReviewImages(reviewImages);
     }
 
     private void deleteReviewImages(
             Review review
     ) {
-        if (review.hasImage()) {
-            var s3ImageDeleteServiceRequests = review.getReviewImages()
-                    .stream()
-                    .map(s3DeleteRequestMapper)
-                    .toList();
-
-            s3ImageDeleteService.deleteImages(s3ImageDeleteServiceRequests);
+        if (!review.hasImage()) {
+            return;
         }
+
+        var s3ImageDeleteServiceRequests = review.getReviewImages()
+                .stream()
+                .map(s3DeleteRequestMapper)
+                .toList();
+        
+        s3ImageDeleteService.deleteImages(s3ImageDeleteServiceRequests);
     }
 }
