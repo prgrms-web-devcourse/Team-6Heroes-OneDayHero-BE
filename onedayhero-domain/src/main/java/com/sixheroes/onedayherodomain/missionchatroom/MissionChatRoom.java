@@ -30,6 +30,9 @@ public class MissionChatRoom {
     @Column(name = "mission_id", nullable = false)
     private Long missionId;
 
+    @Column(name = "head_count", nullable = false)
+    private Integer headCount;
+
     @OneToMany(mappedBy = "missionChatRoom", cascade = CascadeType.ALL)
     List<UserMissionChatRoom> userMissionChatRooms = new ArrayList<>();
 
@@ -43,6 +46,7 @@ public class MissionChatRoom {
     ) {
         this.missionId = missionId;
         this.userMissionChatRooms = createUserMissionChatRooms(userIds);
+        this.headCount = 2;
         this.isDisabled = false;
     }
 
