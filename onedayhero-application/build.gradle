@@ -1,5 +1,6 @@
 ext {
     jjwtVersion = '0.11.5'
+    springVersion = '6.0.13'
 }
 
 dependencies {
@@ -11,13 +12,22 @@ dependencies {
     //AWS S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.575'
 
+    // OPEN FEIGN
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Messaging
+    implementation "org.springframework:spring-messaging:${springVersion}"
+
+    // Embedded Redis
+    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+
+    // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
-    implementation project(':onedayhero-infra-querydsl')
-    implementation project(':onedayhero-infra-chat')
-    implementation project(':onedayhero-infra-openfeign')
-    implementation project(':onedayhero-infra-redis')
-    implementation project(':onedayhero-infra-dynamo')
+    implementation project(':onedayhero-chat')
 }
 
 tasks.named('test') {

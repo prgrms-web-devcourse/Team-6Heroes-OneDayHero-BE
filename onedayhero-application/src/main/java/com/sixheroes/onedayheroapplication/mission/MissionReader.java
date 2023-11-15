@@ -1,10 +1,10 @@
 package com.sixheroes.onedayheroapplication.mission;
 
+import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayheroquerydsl.mission.MissionQueryRepository;
-import com.sixheroes.onedayheroquerydsl.mission.response.MissionQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

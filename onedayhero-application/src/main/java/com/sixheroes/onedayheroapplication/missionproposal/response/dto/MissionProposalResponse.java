@@ -1,14 +1,14 @@
 package com.sixheroes.onedayheroapplication.missionproposal.response.dto;
 
-import com.sixheroes.onedayheroquerydsl.missionproposal.dto.MissionProposalQueryDto;
+import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.MissionProposalQueryDto;
 
 public record MissionProposalResponse(
-    Long id,
-    MissionForMissionProposalResponse mission
+        Long id,
+        MissionForMissionProposalResponse mission
 ) {
 
     public static MissionProposalResponse from(
-        MissionProposalQueryDto missionProposalQueryDto
+            MissionProposalQueryDto missionProposalQueryDto
     ) {
         var mission = MissionForMissionProposalResponse.from(missionProposalQueryDto);
 

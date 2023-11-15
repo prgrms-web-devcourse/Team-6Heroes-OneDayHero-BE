@@ -4,35 +4,29 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.sixheroes.onedayheroapplication.global.aws.AmazonProperties;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageDirectoryProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
+@Slf4j
 @RequiredArgsConstructor
 @EnableConfigurationProperties(S3ImageDirectoryProperties.class)
 @Configuration
 public class S3Configuration {
 
-    @Value("${cloud.aws.credentials.access-key:default}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secret-key:default}")
-    private String secretKey;
-
-    @Value("${cloud.aws.region.static:default}")
-    private String region;
+    private final AmazonProperties amazonProperties;
 
     @Bean
     public AmazonS3Client amazonS3Client() {
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+        BasicAWSCredentials credentials = new BasicAWSCredentials(amazonProperties.getAccessKey(), amazonProperties.getSecretKey());
 
         return (AmazonS3Client) AmazonS3ClientBuilder
                 .standard()
-                .withRegion(region)
+                .withRegion(amazonProperties.getRegion())
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .build();
     }

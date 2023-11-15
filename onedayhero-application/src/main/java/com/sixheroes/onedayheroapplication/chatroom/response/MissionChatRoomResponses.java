@@ -3,12 +3,12 @@ package com.sixheroes.onedayheroapplication.chatroom.response;
 import java.util.List;
 
 public record MissionChatRoomResponses(
-        List<MissionChatRoomResponse> missionChatRoomResponses
+        List<MissionChatRoomCreateResponse> missionCreateChatRoomRespons
 ) {
 
     public static MissionChatRoomResponses from(
-            List<MissionChatRoomResponse> missionChatRoomResponses
+            List<MissionChatRoomCreateResponse> missionCreateChatRoomRespons
     ) {
-        return new MissionChatRoomResponses(missionChatRoomResponses);
+        return new MissionChatRoomResponses(missionCreateChatRoomRespons);
     }
 }

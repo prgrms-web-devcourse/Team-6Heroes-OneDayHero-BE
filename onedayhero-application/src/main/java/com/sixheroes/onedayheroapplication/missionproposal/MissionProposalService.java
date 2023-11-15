@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalRejectServiceRequest;
@@ -10,7 +11,6 @@ import com.sixheroes.onedayheroapplication.missionproposal.response.MissionPropo
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponses;
 import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
-import com.sixheroes.onedayheroquerydsl.missionproposal.MissionProposalQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ public class MissionProposalService {
 
     @Transactional
     public MissionProposalCreateResponse createMissionProposal(
-        MissionProposalCreateServiceRequest request
+            MissionProposalCreateServiceRequest request
     ) {
         validMission(request.missionId(), request.userId());
         validHero(request.heroId());
@@ -45,8 +45,8 @@ public class MissionProposalService {
 
     @Transactional
     public MissionProposalApproveResponse approveMissionProposal(
-        Long missionProposalId,
-        MissionProposalApproveServiceRequest missionProposalApproveServiceRequest
+            Long missionProposalId,
+            MissionProposalApproveServiceRequest missionProposalApproveServiceRequest
     ) {
         var missionProposal = missionProposalReader.findOne(missionProposalId);
 
@@ -60,8 +60,8 @@ public class MissionProposalService {
 
     @Transactional
     public MissionProposalRejectResponse rejectMissionProposal(
-        Long missionProposalId,
-        MissionProposalRejectServiceRequest missionRequestRejectServiceRequest
+            Long missionProposalId,
+            MissionProposalRejectServiceRequest missionRequestRejectServiceRequest
     ) {
         var missionProposal = missionProposalReader.findOne(missionProposalId);
 
@@ -74,16 +74,16 @@ public class MissionProposalService {
     }
 
     public MissionProposalResponses findMissionProposal(
-        Long heroId,
-        Pageable pageable
+            Long heroId,
+            Pageable pageable
     ) {
         var slice = missionProposalQueryRepository.findByHeroIdAndPageable(heroId, pageable);
         return MissionProposalResponses.from(slice);
     }
 
     private void validMission(
-        Long missionId,
-        Long userId
+            Long missionId,
+            Long userId
     ) {
         var mission = missionReader.findOne(missionId);
 
@@ -91,7 +91,7 @@ public class MissionProposalService {
     }
 
     private void validMission(
-        Long missionId
+            Long missionId
     ) {
         var mission = missionReader.findOne(missionId);
 
@@ -99,7 +99,7 @@ public class MissionProposalService {
     }
 
     private void validHero(
-        Long heroId
+            Long heroId
     ) {
         var hero = userReader.findOne(heroId);
 

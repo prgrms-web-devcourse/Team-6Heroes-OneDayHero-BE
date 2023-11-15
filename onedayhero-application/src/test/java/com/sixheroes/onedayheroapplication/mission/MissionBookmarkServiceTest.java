@@ -4,13 +4,12 @@ import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayherodomain.mission.MissionInfo;
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,26 +41,6 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private MissionBookmarkRepository missionBookmarkRepository;
-
-    @BeforeAll
-    public static void setUp(
-            @Autowired MissionCategoryRepository missionCategoryRepository,
-            @Autowired RegionRepository regionRepository
-    ) {
-        var missionCategories = Arrays.stream(MissionCategoryCode.values())
-                .map(MissionCategory::from)
-                .toList();
-
-        missionCategoryRepository.saveAll(missionCategories);
-
-        var region = Region.builder()
-                .si("서울시")
-                .gu("강남구")
-                .dong("역삼동")
-                .build();
-
-        regionRepository.save(region);
-    }
 
     @DisplayName("유저는 미션 찜목록을 조회할 수 있다.")
     @Test

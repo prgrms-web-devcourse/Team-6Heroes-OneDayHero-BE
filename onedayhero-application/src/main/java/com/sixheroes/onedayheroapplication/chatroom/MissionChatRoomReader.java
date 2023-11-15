@@ -2,7 +2,7 @@ package com.sixheroes.onedayheroapplication.chatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
-import com.sixheroes.onedayheroinfrachat.repository.CustomMissionChatRoomRepository;
+import com.sixheroes.onedayherodomain.missionchatroom.repository.MissionChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,12 +14,15 @@ import java.util.NoSuchElementException;
 @Component
 public class MissionChatRoomReader {
 
-    private final CustomMissionChatRoomRepository missionChatRoomRepository;
+    private final MissionChatRoomRepository missionChatRoomRepository;
 
     public MissionChatRoom findById(
             Long missionChatRoomId
     ) {
         return missionChatRoomRepository.findById(missionChatRoomId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.T_001.name()));
+                .orElseThrow(() -> {
+                    log.debug("존재하지 않는 채팅방을 조회하였습니다. : {} ", missionChatRoomId);
+                    return new NoSuchElementException(ErrorCode.T_001.name());
+                });
     }
 }

@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class JwtTokenManagerTest {
 
     private final static String INVALID_FORMAT_ACCESS_TOKEN = "esJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5ODkxMTkyNCwiZXwIjoxNjk4OTEyNTI0fQ.k-sTH0U_HM3lv7augTF2Gx0497DKzDZiyRMzv_QZObQ";
-    private final static String TEST_SECRET_KEY = "EENY5W0eegTf1naQB2eDeaaaRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ";
-    private final static Long TEST_EXPIRY_TIME_MS = 600000L;
+    private final static String TEST_SECRET_KEY = "testtesttesttesttesttesttesttesttesttesttesttesttesttest";
+    private final static Long TEST_EXPIRY_TIME_MS = 60000000000L;
     private final static Long TEST_SHORT_EXPIRY_TIME_MS = 1L;
 
     @DisplayName("생성된 액세스토큰 PAYLOAD 에 유저 아이디, 유저 권한이 존재한다.")

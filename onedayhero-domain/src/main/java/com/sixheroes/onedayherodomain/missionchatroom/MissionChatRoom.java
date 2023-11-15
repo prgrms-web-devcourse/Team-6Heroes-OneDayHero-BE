@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE mission_chat_rooms SET is_disabled = true WHERE id = ?")
@@ -21,12 +24,11 @@ public class MissionChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //TODO 삭제 예정
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Column(name = "mission_id", nullable = false)
     private Long missionId;
+
+    @OneToMany(mappedBy = "missionChatRoom", cascade = CascadeType.ALL)
+    List<UserMissionChatRoom> userMissionChatRooms = new ArrayList<>();
 
     @Column(name = "is_disabled", nullable = false)
     private Boolean isDisabled;
@@ -34,20 +36,20 @@ public class MissionChatRoom {
     @Builder
     private MissionChatRoom(
             Long missionId,
-            String name
+            List<Long> userIds
     ) {
         this.missionId = missionId;
-        this.name = name;
+        this.userMissionChatRooms = createUserMissionChatRooms(userIds);
         this.isDisabled = false;
     }
 
     public static MissionChatRoom createMissionChatRoom(
             Long missionId,
-            String name
+            List<Long> userIds
     ) {
         return MissionChatRoom.builder()
                 .missionId(missionId)
-                .name(name)
+                .userIds(userIds)
                 .build();
     }
 
@@ -57,5 +59,11 @@ public class MissionChatRoom {
     ) {
         missionChatRoom.id = id;
         return missionChatRoom;
+    }
+
+    private List<UserMissionChatRoom> createUserMissionChatRooms(List<Long> userIds) {
+        return userIds.stream()
+                .map((userId) -> UserMissionChatRoom.createUserMissionChatRoom(userId, this))
+                .toList();
     }
 }

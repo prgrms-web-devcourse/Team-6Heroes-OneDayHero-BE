@@ -4,11 +4,12 @@ import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayherodomain.mission.MissionInfo;
+import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,12 +38,6 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private MissionMatchReader missionMatchReader;
-
-    @BeforeAll
-    public static void setUp(@Autowired MissionCategoryRepository missionCategoryRepository) {
-        MissionCategory missionCategory = MissionCategory.from(MissionCategoryCode.MC_001);
-        missionCategoryRepository.save(missionCategory);
-    }
 
     @DisplayName("시민은 본인이 작성한 미션이 매칭 중 상태일 때, 매칭완료 상태를 가지는 미션매칭을 생성할 수 있다.")
     @Test

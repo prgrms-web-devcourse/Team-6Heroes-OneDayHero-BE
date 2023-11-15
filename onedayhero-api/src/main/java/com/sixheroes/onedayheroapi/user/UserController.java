@@ -1,9 +1,13 @@
 package com.sixheroes.onedayheroapi.user;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
+import com.sixheroes.onedayheroapplication.review.ReviewService;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewViewResponse;
 import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
@@ -21,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final MissionBookmarkService missionBookmarkService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserResponse>> findUser(
@@ -41,24 +46,35 @@ public class UserController {
     }
 
     @GetMapping("/reviews/send")
-    public ResponseEntity<ApiResponse<?>> findSentReviews() {
-        return null;
+    public ResponseEntity<ApiResponse<SentReviewViewResponse>> viewSentReviews(
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthUser Long userId
+    ) {
+        var viewResponse = reviewService.viewSentReviews(pageable, userId);
+
+        return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 
     @GetMapping("/reviews/receive")
-    public ResponseEntity<ApiResponse<?>> findReceivedReviews() {
-        return null;
+    public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewReceivedReviews(
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthUser Long userId
+    ) {
+        var viewResponse = reviewService.viewReceivedReviews(pageable, userId);
+
+        return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 
     @GetMapping("/bookmarks")
     public ResponseEntity<ApiResponse<MissionBookmarkMeViewResponse>> viewBookmarks(
-            @PageableDefault(size = 3) Pageable pageable
-            //TODO: @Auth Long userID
+            @PageableDefault(size = 3) Pageable pageable,
+            @AuthUser Long userId
     ) {
         var viewResponse = missionBookmarkService.viewMyBookmarks(
                 pageable,
-                tempUserId()
+                userId
         );
+
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 
@@ -80,10 +96,5 @@ public class UserController {
         var userResponse = userService.turnHeroModeOff(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
-    }
-  
-    //TODO: 로그인 기능 추가 후 제거
-    private Long tempUserId() {
-        return 1L;
     }
 }

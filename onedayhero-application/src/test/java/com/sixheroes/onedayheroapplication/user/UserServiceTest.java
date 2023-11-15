@@ -49,23 +49,23 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
         var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
-            .nickname(nickname)
-            .gender(gender)
-            .birth(birth)
-            .introduce(introduce)
-            .build();
+                .nickname(nickname)
+                .gender(gender)
+                .birth(birth)
+                .introduce(introduce)
+                .build();
 
         var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
-            .favoriteDate(favoriteDate)
-            .favoriteStartTime(favoriteStartTime)
-            .favoriteEndTime(favoriteEndTime)
-            .build();
+                .favoriteDate(favoriteDate)
+                .favoriteStartTime(favoriteStartTime)
+                .favoriteEndTime(favoriteEndTime)
+                .build();
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userId(savedUser.getId())
-            .userBasicInfo(userBasicInfoServiceDto)
-            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-            .build();
+                .userId(savedUser.getId())
+                .userBasicInfo(userBasicInfoServiceDto)
+                .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+                .build();
 
         // when
         var userUpdateResponse = userService.updateUser(userServiceUpdateRequest);
@@ -73,11 +73,11 @@ class UserServiceTest extends IntegrationApplicationTest {
         // then
         assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
         assertThat(userUpdateResponse.basicInfo())
-            .extracting("nickname", "gender", "birth", "introduce")
-            .contains(nickname, gender, birth, introduce);
+                .extracting("nickname", "gender", "birth", "introduce")
+                .contains(nickname, gender, birth, introduce);
         assertThat(userUpdateResponse.favoriteWorkingDay())
-            .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
-            .contains(favoriteDate, favoriteStartTime, favoriteEndTime);
+                .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
+                .contains(favoriteDate, favoriteStartTime, favoriteEndTime);
     }
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
@@ -96,30 +96,30 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
         var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
-            .nickname(nickname)
-            .gender(gender)
-            .birth(birth)
-            .introduce(introduce)
-            .build();
+                .nickname(nickname)
+                .gender(gender)
+                .birth(birth)
+                .introduce(introduce)
+                .build();
 
         var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
-            .favoriteDate(favoriteDate)
-            .favoriteStartTime(favoriteStartTime)
-            .favoriteEndTime(favoriteEndTime)
-            .build();
+                .favoriteDate(favoriteDate)
+                .favoriteStartTime(favoriteStartTime)
+                .favoriteEndTime(favoriteEndTime)
+                .build();
 
         var notExsistUserId = 2L;
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userId(notExsistUserId)
-            .userBasicInfo(userBasicInfoServiceDto)
-            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-            .build();
+                .userId(notExsistUserId)
+                .userBasicInfo(userBasicInfoServiceDto)
+                .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+                .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUser(userServiceUpdateRequest))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EUC_000.name());
     }
 
     @DisplayName("유저의 프로필을 조회한다.")
@@ -138,16 +138,16 @@ class UserServiceTest extends IntegrationApplicationTest {
         // then
         var userBasicInfo = savedUser.getUserBasicInfo();
         assertThat(userResponse.basicInfo())
-            .extracting("nickname", "gender", "birth", "introduce")
-            .containsExactly(userBasicInfo.getNickname(), userBasicInfo.getGender().name(), userBasicInfo.getBirth(), userBasicInfo.getIntroduce());
+                .extracting("nickname", "gender", "birth", "introduce")
+                .containsExactly(userBasicInfo.getNickname(), userBasicInfo.getGender().name(), userBasicInfo.getBirth(), userBasicInfo.getIntroduce());
         var userFavoriteWorkingDay = savedUser.getUserFavoriteWorkingDay();
         var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream().map(Week::name).toList();
         assertThat(userResponse.favoriteWorkingDay())
-            .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
-            .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
+                .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
+                .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
         assertThat(userResponse.image())
-            .extracting("originalName", "uniqueName", "path")
-            .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+                .extracting("originalName", "uniqueName", "path")
+                .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
         assertThat(userResponse.isHeroMode()).isEqualTo(user.getIsHeroMode());
     }
@@ -160,55 +160,55 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> userService.findUser(notExistUserId))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EUC_000.name());
     }
 
     private UserImage createUserImage(
-        User user
+            User user
     ) {
         var originalName = "원본 이름";
         var uniqueName = "고유 이름";
         var path = "http://";
 
         return UserImage.builder()
-            .user(user)
-            .originalName(originalName)
-            .uniqueName(uniqueName)
-            .path(path)
-            .build();
+                .user(user)
+                .originalName(originalName)
+                .uniqueName(uniqueName)
+                .path(path)
+                .build();
     }
 
     private User createUser() {
         return User.builder()
-            .email(createEamil())
-            .userBasicInfo(createUserBasicInfo())
-            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .build();
+                .email(createEamil())
+                .userBasicInfo(createUserBasicInfo())
+                .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .build();
     }
 
     private Email createEamil() {
         return Email.builder()
-            .email("abc@123.com")
-            .build();
+                .email("abc@123.com")
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfo() {
         return UserBasicInfo.builder()
-            .nickname("닉네임")
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기 소개")
-            .build();
+                .nickname("닉네임")
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기 소개")
+                .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {
         return UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON, Week.FRI))
-            .favoriteStartTime(LocalTime.of(12, 0, 0))
-            .favoriteEndTime(LocalTime.of(18, 0, 0))
-            .build();
+                .favoriteDate(List.of(Week.MON, Week.FRI))
+                .favoriteStartTime(LocalTime.of(12, 0, 0))
+                .favoriteEndTime(LocalTime.of(18, 0, 0))
+                .build();
     }
 }
