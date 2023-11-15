@@ -1,0 +1,26 @@
+dependencies {
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Embedded Redis
+    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+
+    // Project
+    implementation project(':onedayhero-domain')
+    implementation project(':onedayhero-common')
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
