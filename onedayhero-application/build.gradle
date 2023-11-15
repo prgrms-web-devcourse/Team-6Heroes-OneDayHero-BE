@@ -14,15 +14,12 @@ dependencies {
 
     // OPEN FEIGN
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    
+
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Messaging
     implementation "org.springframework:spring-messaging:${springVersion}"
-
-    // Embedded Redis
-    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 
     // PROJECT
     implementation project(':onedayhero-common')

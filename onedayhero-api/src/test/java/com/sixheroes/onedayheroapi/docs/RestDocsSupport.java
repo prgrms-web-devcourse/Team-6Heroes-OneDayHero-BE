@@ -2,7 +2,6 @@ package com.sixheroes.onedayheroapi.docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUserArgumentResolver;
 import com.sixheroes.onedayheroapi.global.handler.GlobalExceptionHandler;
 import com.sixheroes.onedayheroapi.global.interceptor.JwtAuthInterceptor;
@@ -16,20 +15,24 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
+@ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension.class)
 @Import(JwtTestConfiguration.class)
 public abstract class RestDocsSupport {
 
     @Autowired
     private JwtProperties jwtProperties;
+
     @Autowired
     private JwtTokenManager jwtTokenManager;
+
     protected MockMvc mockMvc;
     protected ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
