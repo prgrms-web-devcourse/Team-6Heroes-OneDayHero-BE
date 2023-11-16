@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     private final UserService userService;
-    private final ReviewService reviewService;
 
     @GetMapping("/{userId}/citizen")
     public ResponseEntity<ApiResponse<ProfileCitizenResponse>> findProfileCitizen(
@@ -40,18 +39,5 @@ public class ProfileController {
         var heroProfile = userService.findHeroProfile(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(heroProfile));
-    }
-
-    @GetMapping("/{userId}/receive-reviews")
-    public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewUserReceivedReviews(
-            @PageableDefault(size = 5) Pageable pageable,
-            @PathVariable Long userId
-    ) {
-        var viewResponse = reviewService.viewReceivedReviews(
-                pageable,
-                userId
-        );
-
-        return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 }
