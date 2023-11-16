@@ -33,3 +33,16 @@ include::{snippets}/review-delete/path-parameters.adoc[]
 ==== HTTP Response
 
 include::{snippets}/review-delete/http-response.adoc[]
+
+[[profile-received-reviews]]
+=== 특정 유저가 받은 리뷰 조회
+
+==== HTTP Request
+
+include::{snippets}/user-received-reviews/http-request.adoc[]
+include::{snippets}/user-received-reviews/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-received-reviews/http-response.adoc[]
+include::{snippets}/user-received-reviews/response-fields.adoc[]

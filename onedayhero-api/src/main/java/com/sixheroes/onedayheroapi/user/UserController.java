@@ -48,11 +48,13 @@ public class UserController {
 
     @GetMapping("/reviews/send")
     public ResponseEntity<ApiResponse<Slice<SentReviewResponse>>> viewSentReviews(
-            @PageableDefault(size = 5) Pageable pageable
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthUser Long userId
+      
     ) {
         var viewResponse = reviewService.viewSentReviews(
                 pageable,
-                1L
+                userId
         );
 
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
@@ -89,7 +91,7 @@ public class UserController {
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOn(userId);
+        var userResponse = userService.turnOnHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
@@ -99,7 +101,7 @@ public class UserController {
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOff(userId);
+        var userResponse = userService.turnOffHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
