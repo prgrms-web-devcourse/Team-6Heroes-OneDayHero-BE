@@ -7,14 +7,15 @@ import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteSe
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
+import com.sixheroes.onedayheroapplication.review.repository.response.ReviewDetailQueryResponse;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
-import com.sixheroes.onedayheroapplication.review.response.SentReviewViewResponse;
+import com.sixheroes.onedayheroapplication.review.response.*;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
+import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class ReviewService {
 
     private final ReviewReader reviewReader;
     private final ReviewRepository reviewRepository;
+    private final ReviewImageRepository reviewImageRepository;
+    private final ReviewQueryRepository reviewQueryRepository;
     private final MissionReader missionReader;
     private final S3ImageDirectoryProperties properties;
     private final S3ImageUploadService s3ImageUploadService;
@@ -55,14 +58,33 @@ public class ReviewService {
     public ReviewDetailResponse viewReviewDetail(
             Long reviewId
     ) {
-        throw new UnsupportedOperationException();
+        var optionalReviewImages = reviewImageRepository.findByReviewId(reviewId);
+        var queryResponse = reviewQueryRepository.viewReviewDetail(reviewId);
+
+        if (queryResponse.isEmpty()) {
+            log.debug("리뷰 상세 조회에 필요한 데이터가 존재하지 않습니다.");
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
+
+        return ReviewDetailResponse.of(
+                queryResponse.get(),
+                optionalReviewImages
+        );
     }
 
     public SentReviewViewResponse viewSentReviews(
             Pageable pageable,
-            Long reviewId
+            Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var queryResponse = reviewQueryRepository.viewSentReviews(
+                pageable,
+                userId
+        );
+
+        return SentReviewViewResponse.of(
+                userId,
+                queryResponse
+        );
     }
 
     public ReceivedReviewViewResponse viewReceivedReviews(
@@ -146,7 +168,7 @@ public class ReviewService {
                 .stream()
                 .map(s3DeleteRequestMapper)
                 .toList();
-        
+
         s3ImageDeleteService.deleteImages(s3ImageDeleteServiceRequests);
     }
 }
