@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherocommon.converter.StringConverter;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayheromongodb.alarm.AlarmTemplate;
 import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmRepository;
 import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmTemplateRepository;
@@ -126,7 +127,8 @@ class AlarmServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> alarmService.notifyClient(alarmPayload))
-            .isInstanceOf(NoSuchElementException.class);
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EAT_000.name());
     }
 
     private AlarmTemplate createAlarmTemplate() {

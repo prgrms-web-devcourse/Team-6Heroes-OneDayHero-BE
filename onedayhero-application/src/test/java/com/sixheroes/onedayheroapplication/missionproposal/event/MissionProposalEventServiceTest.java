@@ -4,6 +4,7 @@ import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
@@ -98,7 +99,8 @@ class MissionProposalEventServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposalEventService.notifyMissionProposalCreate(missionProposalCreateEvent))
-            .isInstanceOf(NoSuchElementException.class);
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EMP_000.name());
     }
 
     public MissionProposal createMissionProposal(

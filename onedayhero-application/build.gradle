@@ -16,6 +16,7 @@ dependencies {
 
     // PROJECT
     implementation project(':onedayhero-common')
+    implementation project(':onedayhero-mongodb')
     implementation project(':onedayhero-domain')
 }
 
