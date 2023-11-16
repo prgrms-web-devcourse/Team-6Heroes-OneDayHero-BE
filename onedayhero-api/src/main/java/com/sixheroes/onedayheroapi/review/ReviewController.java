@@ -6,11 +6,14 @@ import com.sixheroes.onedayheroapi.global.s3.MultipartFileMapper;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
 import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +31,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/users/{userId}/receive")
-    public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewUserReceivedReviews(
+    public ResponseEntity<ApiResponse<Slice<ReceivedReviewResponse>>> viewUserReceivedReviews(
             @PageableDefault(size = 5) Pageable pageable,
             @PathVariable Long userId
     ) {
@@ -41,7 +44,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<ReviewResponse>> detailReview(
+    public ResponseEntity<ApiResponse<ReviewDetailResponse>> detailReview(
             @PathVariable Long reviewId
     ) {
         var response = reviewService.viewReviewDetail(reviewId);
@@ -64,7 +67,6 @@ public class ReviewController {
                 .body(ApiResponse.created(response));
     }
 
-    //리뷰 이미지 추가/제거 기능은 Patch 와는 맞지 않음
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
             @PathVariable Long reviewId,

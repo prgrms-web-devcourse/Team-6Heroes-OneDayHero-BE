@@ -1,39 +1,47 @@
 package com.sixheroes.onedayheroapplication.review.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
+import com.sixheroes.onedayherodomain.review.Review;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 @Builder
 public record ReviewResponse(
         Long id,
-
         Long senderId,
-
         Long receiverId,
-
-        MissionCategoryResponse missionCategory,
-
+        Long categoryId,
         String missionTitle,
-
-        String content,
-
         Integer starScore,
-
-        List<ReviewImageResponse> reviewImageResponses,
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-        LocalDateTime createdAt
+        String content,
+        List<ReviewImageResponse> reviewImageResponses
 ) {
 
-    @Builder
-    public record ReviewImageResponse(
-            Long id,
-            String uniqueName,
-            String path
+    public static ReviewResponse from(
+            Review review
     ) {
+        return ReviewResponse.builder()
+                .id(review.getId())
+                .categoryId(review.getCategoryId())
+                .missionTitle(review.getMissionTitle())
+                .senderId(review.getSenderId())
+                .receiverId(review.getReceiverId())
+                .starScore(review.getStarScore())
+                .content(review.getContent())
+                .reviewImageResponses(reviewImageResponseMapper.apply(review))
+                .build();
     }
+
+    private static Function<Review, List<ReviewImageResponse>> reviewImageResponseMapper = review -> {
+        if (review.hasImage()) {
+            return review.getReviewImages()
+                    .stream()
+                    .map(ReviewImageResponse::from)
+                    .toList();
+        }
+
+        return Collections.emptyList();
+    };
 }

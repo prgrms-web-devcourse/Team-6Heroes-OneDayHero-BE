@@ -181,29 +181,9 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    private void validateMissionOwnerIsValid(Long citizenId) {
-        if (!this.citizenId.equals(citizenId)) {
-            throw new IllegalStateException(ErrorCode.EM_008.name());
-        }
-    }
-
-    private void validateCurrentMissionStatusIsMatching() {
-        if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
-            throw new IllegalStateException(ErrorCode.EM_007.name());
-        }
-    }
-
-    private void validateCurrentMissionStatusIsMatchingCompleted() {
-        if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
-            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+    public void validateMissionCompleted() {
+        if (this.missionStatus != MissionStatus.MISSION_COMPLETED) {
             throw new IllegalStateException(ErrorCode.EM_009.name());
-        }
-    }
-
-    private void validateBookmarkCountAddable() {
-        if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
         }
     }
 
@@ -256,6 +236,32 @@ public class Mission extends BaseEntity {
         if (!this.missionStatus.isMatching()) {
             log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
             throw new IllegalStateException(ErrorCode.EM_008.name());
+        }
+    }
+
+    private void validateMissionOwnerIsValid(Long citizenId) {
+        if (!Objects.equals(this.citizenId, citizenId)) {
+            throw new IllegalStateException(ErrorCode.EM_008.name());
+        }
+    }
+
+    private void validateCurrentMissionStatusIsMatching() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_007.name());
+        }
+    }
+
+    private void validateCurrentMissionStatusIsMatchingCompleted() {
+        if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
+            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
+    }
+
+    private void validateBookmarkCountAddable() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
         }
     }
 }
