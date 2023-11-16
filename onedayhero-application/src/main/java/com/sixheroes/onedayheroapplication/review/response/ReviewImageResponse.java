@@ -11,8 +11,6 @@ public record ReviewImageResponse(
         String path
 
 ) {
-    static ReviewImageResponse EMPTY = ReviewImageResponse.builder()
-            .build();
 
     public static ReviewImageResponse from(
             ReviewImage reviewImage
