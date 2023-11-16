@@ -17,6 +17,10 @@ public class ReviewImage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "review_id", nullable = false)
+    private Review review;
+
     @Column(name = "original_name", length = 260, nullable = false)
     private String originalName;
 
@@ -47,5 +51,9 @@ public class ReviewImage extends BaseEntity {
                 .uniqueName(uniqueName)
                 .path(path)
                 .build();
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 }

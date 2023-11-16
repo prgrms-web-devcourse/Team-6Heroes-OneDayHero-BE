@@ -24,8 +24,7 @@ public class Review extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name= "review_id")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Column(name = "category_id", nullable = false)
@@ -78,7 +77,10 @@ public class Review extends BaseEntity {
     public void setReviewImages(
             List<ReviewImage> reviewImages
     ) {
-        this.reviewImages.addAll(reviewImages);
+        for (ReviewImage reviewImage : reviewImages) {
+            this.reviewImages.add(reviewImage);
+            reviewImage.setReview(this);
+        }
     }
 
     public boolean hasImage() {
