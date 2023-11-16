@@ -1,0 +1,17 @@
+dependencies {
+	api 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	implementation project(':onedayhero-common');
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jar {
+	enabled = true
+}
+
+bootJar {
+	enabled = false
+}
