@@ -49,11 +49,11 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when
         var request = createMissionMatchCreateServiceRequest(
-                citizenId,
                 mission,
                 heroId
         );
         var response = missionMatchService.createMissionMatch(
+                citizenId,
                 request
         );
         var createdMissionMatching = missionMatchReader.findByMissionId(mission.getId());
@@ -85,11 +85,13 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
-                citizenId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                citizenId,
+                request
+                )
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
@@ -106,11 +108,13 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
-                otherUserId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                otherUserId,
+                request
+                )
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_008.name());
@@ -124,8 +128,8 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         var heroId = 2L;
         var mission = createMission(citizenId);
         missionMatchService.createMissionMatch(
+                citizenId,
                 createMissionMatchCreateServiceRequest(
-                        citizenId,
                         mission,
                         heroId
                 )
@@ -133,10 +137,9 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when
         var request = createMissionMatchCancelServiceRequest(
-                citizenId,
                 mission.getId()
         );
-        var response = missionMatchService.cancelMissionMatch(request);
+        var response = missionMatchService.cancelMissionMatch(citizenId, request);
         var canceledMissionMatching = missionMatchReader.findByMissionId(mission.getId());
 
         // then
@@ -151,23 +154,19 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
     }
 
     private MissionMatchCreateServiceRequest createMissionMatchCreateServiceRequest(
-            Long userId,
             Mission mission,
             Long heroId
     ) {
         return MissionMatchCreateServiceRequest.builder()
-                .userId(userId)
                 .missionId(mission.getId())
                 .heroId(heroId)
                 .build();
     }
 
     private MissionMatchCancelServiceRequest createMissionMatchCancelServiceRequest(
-            Long citizenId,
             Long missionId
     ) {
         return MissionMatchCancelServiceRequest.builder()
-                .citizenId(citizenId)
                 .missionId(missionId)
                 .build();
     }

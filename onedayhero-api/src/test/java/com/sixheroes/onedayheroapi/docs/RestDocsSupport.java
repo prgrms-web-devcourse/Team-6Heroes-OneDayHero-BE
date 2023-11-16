@@ -47,6 +47,7 @@ public abstract class RestDocsSupport {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(), new AuthUserArgumentResolver(jwtProperties))
                 // @AuthUser Long userId 적용된 컨트롤러만 인터셉터 임시 적용
                 .addMappedInterceptors(new String[]{
+                        "/api/v1/mission-matches/**",
                         "/api/v1/bookmarks",
                         "/api/v1/me",
                         "/api/v1/me/change-hero",

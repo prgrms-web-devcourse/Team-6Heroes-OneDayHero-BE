@@ -23,14 +23,17 @@ public class MissionMatchService {
     private final MissionReader missionReader;
     private final MissionMatchReader missionMatchReader;
 
-    public MissionMatchCreateResponse createMissionMatch(MissionMatchCreateServiceRequest request) {
+    public MissionMatchCreateResponse createMissionMatch(
+            Long userId,
+            MissionMatchCreateServiceRequest request
+    ) {
         var mission = missionReader.findOne(request.missionId());
         var missionMatch = MissionMatch.createMissionMatch(
                 mission.getId(),
                 request.heroId()
         );
 
-        mission.completeMissionMatching(request.userId());
+        mission.completeMissionMatching(userId);
         var savedMissionMatch = missionMatchRepository.save(missionMatch);
 
         //TODO: 시민, 히어로에게 미션매칭 성사 알람
@@ -38,18 +41,21 @@ public class MissionMatchService {
         return MissionMatchCreateResponse.from(savedMissionMatch);
     }
 
-    public MissionMatchCancelResponse cancelMissionMatch(MissionMatchCancelServiceRequest request) {
+    public MissionMatchCancelResponse cancelMissionMatch(
+            Long userId,
+            MissionMatchCancelServiceRequest request
+    ) {
         var mission = missionReader.findOne(request.missionId());
         var missionMatch = missionMatchReader.findByMissionId(mission.getId());
 
-        mission.cancelMissionMatching(request.citizenId());
+        mission.cancelMissionMatching(userId);
         missionMatch.canceled();
 
         //TODO: 히어로에게 미션매칭 취소 알람
 
         return MissionMatchCancelResponse.builder()
                 .missionMatchId(missionMatch.getId())
-                .citizenId(request.citizenId())
+                .citizenId(userId)
                 .missionId(request.missionId())
                 .build();
     }
