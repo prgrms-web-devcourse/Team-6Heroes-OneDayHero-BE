@@ -48,9 +48,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -447,6 +445,8 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void turnHeroModeOn() throws Exception {
         // given
+        var userId = 1L;
+
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
         var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
@@ -455,7 +455,7 @@ class UserControllerTest extends RestDocsSupport {
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOn(anyLong())).willReturn(userResponse);
+        given(userService.turnOnHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-hero")
@@ -528,15 +528,17 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void turnHeorModeOff() throws Exception {
         // given
+        var userId = 1L;
+
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
         var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var heroScore = 60;
-        var isHeroMode = true;
+        var isHeroMode = false;
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOff(anyLong())).willReturn(userResponse);
+        given(userService.turnOffHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-citizen")
@@ -562,7 +564,7 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
-            .andDo(document("user-change-citizen",
+            .andDo(document("user-find",
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
                         .description("HTTP 응답 코드"),

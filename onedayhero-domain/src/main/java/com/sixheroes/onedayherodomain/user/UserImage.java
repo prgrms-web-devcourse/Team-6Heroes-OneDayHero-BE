@@ -17,7 +17,7 @@ public class UserImage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -30,7 +30,7 @@ public class UserImage extends BaseEntity {
     @Column(name = "path", length = 250, nullable = false)
     private String path;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private UserImage(
         @NonNull User user,
         String originalName,
@@ -43,6 +43,23 @@ public class UserImage extends BaseEntity {
         this.originalName = originalName;
         this.uniqueName = uniqueName;
         this.path = path;
+    }
+
+    public static UserImage createUserImage(
+        @NonNull User user,
+        String originalName,
+        String uniqueName,
+        String path
+    ) {
+        var userImage = UserImage.builder()
+            .user(user)
+            .originalName(originalName)
+            .uniqueName(uniqueName)
+            .path(path)
+            .build();
+
+        user.setUserImages(userImage);
+        return userImage;
     }
 
     private void validCreateUserImage(

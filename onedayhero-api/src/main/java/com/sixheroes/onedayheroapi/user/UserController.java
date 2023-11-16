@@ -83,7 +83,7 @@ public class UserController {
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOn(userId);
+        var userResponse = userService.turnOnHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
@@ -93,7 +93,7 @@ public class UserController {
         // TODO JWT 생기면 userId 받기
     ) {
         var userId = 1L;
-        var userResponse = userService.turnHeroModeOff(userId);
+        var userResponse = userService.turnOffHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
