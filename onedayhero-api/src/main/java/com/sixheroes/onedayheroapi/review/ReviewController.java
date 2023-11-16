@@ -7,7 +7,6 @@ import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
 import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import jakarta.validation.Valid;
