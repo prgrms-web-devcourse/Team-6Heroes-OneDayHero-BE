@@ -19,6 +19,8 @@ import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,6 +62,9 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.userId").value(response.userId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-bookmark-create",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                                         .description("미션 아이디")
@@ -103,6 +108,9 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-bookmark-cancel",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                                         .description("미션 아이디")
