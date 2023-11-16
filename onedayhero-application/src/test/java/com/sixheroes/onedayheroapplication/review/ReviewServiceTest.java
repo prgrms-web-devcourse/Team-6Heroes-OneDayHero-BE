@@ -35,8 +35,8 @@ class ReviewServiceTest extends IntegrationApplicationTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Transactional
     @DisplayName("유저는 완료된 미션에 대해 상대방에 대한 리뷰를 작성할 수 있다.")
+    @Transactional
     @Test
     void createReview() {
         // given
