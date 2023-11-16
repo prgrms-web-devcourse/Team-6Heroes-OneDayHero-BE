@@ -281,7 +281,7 @@ class ReviewControllerTest extends RestDocsSupport {
         var viewResponse = new ReceivedReviewViewResponse(userId, receivedReviewResponses);
         given(reviewService.viewReceivedReviews(any(Pageable.class), anyLong())).willReturn(viewResponse);
 
-        mockMvc.perform(get("/api/v1/reviews/receive/users/{userId}", userId)
+        mockMvc.perform(get("/api/v1/reviews/users/{userId}/receive", userId)
                         .param("page", "0")
                         .param("size", "5")
                         .param("sort", "")

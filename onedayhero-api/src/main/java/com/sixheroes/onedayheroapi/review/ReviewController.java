@@ -27,7 +27,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/receive/users/{userId}")
+    @GetMapping("/users/{userId}/receive")
     public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewUserReceivedReviews(
             @PageableDefault(size = 5) Pageable pageable,
             @PathVariable Long userId
