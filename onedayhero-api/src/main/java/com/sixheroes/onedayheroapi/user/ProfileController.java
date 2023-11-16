@@ -1,10 +1,13 @@
 package com.sixheroes.onedayheroapi.user;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
