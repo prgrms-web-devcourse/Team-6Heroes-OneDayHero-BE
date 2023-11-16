@@ -1,10 +1,11 @@
 package com.sixheroes.onedayheroapi.auth;
 
-import com.sixheroes.onedayheroapi.auth.response.oauth.KakaoAuthorizationCodeResponse;
+import com.sixheroes.onedayheroapi.auth.response.oauth.LoginRequest;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapplication.oauth.OauthLoginFacadeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,13 @@ public class AuthController {
     private final OauthProperties oauthProperties;
     private final OauthLoginFacadeService oauthLoginFacadeService;
 
-    @GetMapping("/kakao/callback")
+    @PostMapping("/kakao/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginKakao(
-            @ModelAttribute KakaoAuthorizationCodeResponse kakaoAuthorizationCodeResponse
+            @Valid @RequestBody LoginRequest loginRequest
     ) {
         var loginResponse = oauthLoginFacadeService.login(
                 oauthProperties.getKakao().getAuthorizationServer(),
-                kakaoAuthorizationCodeResponse.code()
+                loginRequest.code()
         );
 
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
