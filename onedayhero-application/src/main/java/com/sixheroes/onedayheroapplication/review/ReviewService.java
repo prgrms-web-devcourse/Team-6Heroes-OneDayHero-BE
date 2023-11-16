@@ -8,10 +8,12 @@ import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadSe
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
-import com.sixheroes.onedayheroapplication.review.repository.response.ReviewDetailQueryResponse;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.*;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
@@ -101,11 +103,8 @@ public class ReviewService {
         mission.validateMissionCompleted();
 
         var review = request.toEntity();
-        setReviewImages(
-                imageUploadRequests,
-                review
-        );
-
+        var reviewImageUploadResponse = s3ImageUploadService.uploadImages(imageUploadRequests, properties.getReviewDir());
+        setReviewImages(reviewImageUploadResponse, review);
         var createdReview = reviewRepository.save(review);
 
         return ReviewResponse.from(createdReview);
@@ -136,23 +135,16 @@ public class ReviewService {
     }
 
     private void setReviewImages(
-            Optional<List<S3ImageUploadServiceRequest>> imageUploadRequests,
+            Optional<List<S3ImageUploadServiceResponse>> response,
             Review review
     ) {
-        if (imageUploadRequests.isEmpty()) {
-            return;
-        }
+        response.ifPresent((image) -> {
+            var reviewImages = image.stream()
+                    .map(reviewImageMapper)
+                    .toList();
 
-        var s3ImageUploadServiceResponses = s3ImageUploadService.uploadImages(
-                imageUploadRequests.get(),
-                properties.getReviewDir()
-        );
-        var reviewImages = s3ImageUploadServiceResponses
-                .stream()
-                .map(reviewImageMapper)
-                .toList();
-
-        review.setReviewImages(reviewImages);
+            review.setReviewImages(reviewImages);
+        });
     }
 
     private void deleteReviewImages(

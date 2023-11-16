@@ -9,10 +9,10 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -25,29 +25,22 @@ public class S3ImageUploadService {
 
     private final AmazonS3 amazonS3;
 
-    public List<S3ImageUploadServiceResponse> uploadImages(
-            List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests,
+    public Optional<List<S3ImageUploadServiceResponse>> uploadImages(
+            Optional<List<S3ImageUploadServiceRequest>> s3ImageUploadServiceRequests,
             String dir
     ) {
-        return s3ImageUploadServiceRequests.stream()
+        if (s3ImageUploadServiceRequests.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(s3ImageUploadServiceRequests.get().stream()
                 .map(s3ImageUploadServiceRequest -> {
                     var originalName = s3ImageUploadServiceRequest.originalName();
-                    var uniqueName = createUniqueName(
-                            dir,
-                            originalName
-                    );
+                    var uniqueName = createUniqueName(dir, originalName);
+                    uploadImage(uniqueName, s3ImageUploadServiceRequest);
 
-                    uploadImage(
-                            uniqueName,
-                            s3ImageUploadServiceRequest
-                    );
-
-                    return new S3ImageUploadServiceResponse(
-                            originalName,
-                            uniqueName,
-                            getPath(uniqueName)
-                    );
-                }).toList();
+                    return new S3ImageUploadServiceResponse(originalName, uniqueName, getPath(uniqueName));
+                }).toList());
     }
 
     private void uploadImage(
