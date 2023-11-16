@@ -6,12 +6,14 @@ import com.sixheroes.onedayheroapi.global.s3.MultipartFileMapper;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
 import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/users/{userId}/receive")
-    public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewUserReceivedReviews(
+    public ResponseEntity<ApiResponse<Slice<ReceivedReviewResponse>>> viewUserReceivedReviews(
             @PageableDefault(size = 5) Pageable pageable,
             @PathVariable Long userId
     ) {

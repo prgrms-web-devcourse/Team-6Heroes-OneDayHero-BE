@@ -450,7 +450,7 @@ class UserControllerTest extends RestDocsSupport {
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOn(anyLong())).willReturn(userResponse);
+        given(userService.turnOnHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-hero")
@@ -531,7 +531,7 @@ class UserControllerTest extends RestDocsSupport {
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOff(anyLong())).willReturn(userResponse);
+        given(userService.turnOffHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-citizen")
