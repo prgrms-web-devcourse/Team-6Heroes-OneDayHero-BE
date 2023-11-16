@@ -153,6 +153,7 @@ class UserServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("유저의 프로필을 조회할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
     @Test
     void findUserWhenNotExist() {
         // given
@@ -164,6 +165,61 @@ class UserServiceTest extends IntegrationApplicationTest {
             .hasMessage(ErrorCode.EUC_000.name());
     }
 
+    @DisplayName("유저의 히어로 모드를 활성화한다.")
+    @Test
+    void turnOnHeroMode() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+
+        // when
+        userService.turnOnHeroMode(savedUser.getId());
+
+        // then
+        assertThat(savedUser.getIsHeroMode()).isTrue();
+    }
+
+    @DisplayName("유저의 히어로 모드를 활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
+    @Test
+    void turnOnHeroModeWhenNotExisit() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EUC_000.name());
+    }
+
+    @DisplayName("유저의 히어로 모드를 비활성화한다.")
+    @Test
+    void turnOffHeroMode() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+        savedUser.changeHeroModeOn();
+
+        // when
+        userService.turnOffHeroMode(savedUser.getId());
+
+        // then
+        assertThat(savedUser.getIsHeroMode()).isFalse();
+    }
+
+    @DisplayName("유저의 히어로 모드를 비활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
+    @Test
+    void turnOnHeroModeWhenNotExsist() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.EUC_000.name());
+    }
+
     private UserImage createUserImage(
         User user
     ) {
@@ -171,12 +227,12 @@ class UserServiceTest extends IntegrationApplicationTest {
         var uniqueName = "고유 이름";
         var path = "http://";
 
-        return UserImage.builder()
-            .user(user)
-            .originalName(originalName)
-            .uniqueName(uniqueName)
-            .path(path)
-            .build();
+        return UserImage.createUserImage(
+            user,
+            originalName,
+            uniqueName,
+            path
+        );
     }
 
     private User createUser() {

@@ -1,10 +1,7 @@
 package com.sixheroes.onedayheroapi.user;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapplication.review.ReviewService;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
-import com.sixheroes.onedayheroapplication.user.UserService;
+import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.response.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -43,11 +40,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileControllerTest extends RestDocsSupport {
 
     @MockBean
-    private UserService userService;
+    private ProfileService profileService;
 
     @Override
     protected Object setController() {
-        return new ProfileController(userService);
+        return new ProfileController(profileService);
     }
 
     @DisplayName("유저의 시민 프로필을 조회한다.")
@@ -56,16 +53,16 @@ class ProfileControllerTest extends RestDocsSupport {
         // given
         var userId = 1L;
 
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), null);
+        var userBasicInfoResponse = new ProfileCitizenResponse.UserBasicInfoForProfileCitizenResponse("이름", "MALE", LocalDate.of(1990, 1, 1));
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
         var heroScore = 60;
 
         var profileCitizenResponse = new ProfileCitizenResponse(userBasicInfoResponse, userImageResponse, heroScore);
 
-        given(userService.findCitizenProfile(anyLong())).willReturn(profileCitizenResponse);
+        given(profileService.findCitizenProfile(anyLong())).willReturn(profileCitizenResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/users/{userId}/citizen", userId)
+        mockMvc.perform(get("/api/v1/users/{userId}/citizen-profile", userId)
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -122,10 +119,10 @@ class ProfileControllerTest extends RestDocsSupport {
 
         var profileHeroResponse = new ProfileHeroResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore);
 
-        given(userService.findHeroProfile(anyLong())).willReturn(profileHeroResponse);
+        given(profileService.findHeroProfile(anyLong())).willReturn(profileHeroResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/users/{userId}/hero", userId)
+        mockMvc.perform(get("/api/v1/users/{userId}/hero-profile", userId)
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserImageTest {
 
@@ -130,34 +131,34 @@ class UserImageTest {
     private UserImage createUserImageWithOrignalName(
         String originalName
     ) {
-        return UserImage.builder()
-            .user(createUser())
-            .originalName(originalName)
-            .uniqueName("고유 이름")
-            .path("경로")
-            .build();
+        return UserImage.createUserImage(
+            createUser(),
+            originalName,
+            "고유 이름",
+            "경로"
+        );
     }
 
     private UserImage createUserImageWithUniqueName(
         String uniqueName
     ) {
-        return UserImage.builder()
-            .user(createUser())
-            .originalName("원본 이름")
-            .uniqueName(uniqueName)
-            .path("경로")
-            .build();
+        return UserImage.createUserImage(
+            createUser(),
+            "원본 이름",
+            uniqueName,
+            "경로"
+        );
     }
 
     private UserImage createUserImageWithPath(
         String path
     ) {
-        return UserImage.builder()
-            .user(createUser())
-            .originalName("원본 이름")
-            .uniqueName("고유 이름")
-            .path(path)
-            .build();
+        return UserImage.createUserImage(
+            createUser(),
+            "원본 이름",
+            "고유 이름",
+            path
+        );
     }
 
     private User createUser() {
