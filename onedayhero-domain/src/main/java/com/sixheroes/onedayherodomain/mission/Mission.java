@@ -240,7 +240,7 @@ public class Mission extends BaseEntity {
     }
 
     private void validateMissionOwnerIsValid(Long citizenId) {
-        if (!this.citizenId.equals(citizenId)) {
+        if (!Objects.equals(this.citizenId, citizenId)) {
             throw new IllegalStateException(ErrorCode.EM_008.name());
         }
     }
