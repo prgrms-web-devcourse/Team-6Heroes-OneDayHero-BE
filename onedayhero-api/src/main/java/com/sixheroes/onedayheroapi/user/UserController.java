@@ -6,14 +6,15 @@ import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
-import com.sixheroes.onedayheroapplication.review.response.SentReviewViewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
 import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,21 +47,26 @@ public class UserController {
     }
 
     @GetMapping("/reviews/send")
-    public ResponseEntity<ApiResponse<SentReviewViewResponse>> viewSentReviews(
-            @PageableDefault(size = 5) Pageable pageable,
-            @AuthUser Long userId
+    public ResponseEntity<ApiResponse<Slice<SentReviewResponse>>> viewSentReviews(
+            @PageableDefault(size = 5) Pageable pageable
     ) {
-        var viewResponse = reviewService.viewSentReviews(pageable, userId);
+        var viewResponse = reviewService.viewSentReviews(
+                pageable,
+                1L
+        );
 
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 
     @GetMapping("/reviews/receive")
-    public ResponseEntity<ApiResponse<ReceivedReviewViewResponse>> viewReceivedReviews(
+    public ResponseEntity<ApiResponse<Slice<ReceivedReviewResponse>>> viewReceivedReviews(
             @PageableDefault(size = 5) Pageable pageable,
             @AuthUser Long userId
     ) {
-        var viewResponse = reviewService.viewReceivedReviews(pageable, userId);
+        var viewResponse = reviewService.viewReceivedReviews(
+                pageable,
+                userId
+        );
 
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }

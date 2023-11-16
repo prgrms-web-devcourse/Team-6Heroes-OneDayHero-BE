@@ -20,6 +20,7 @@ import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +73,7 @@ public class ReviewService {
         );
     }
 
-    public SentReviewViewResponse viewSentReviews(
+    public Slice<SentReviewResponse> viewSentReviews(
             Pageable pageable,
             Long userId
     ) {
@@ -81,15 +82,12 @@ public class ReviewService {
                 userId
         );
 
-        return SentReviewViewResponse.of(
-                userId,
-                queryResponse
-        );
+        return queryResponse.map(SentReviewResponse::from);
     }
 
-    public ReceivedReviewViewResponse viewReceivedReviews(
+    public Slice<ReceivedReviewResponse> viewReceivedReviews(
             Pageable pageable,
-            Long reviewId
+            Long userId
     ) {
         throw new UnsupportedOperationException();
     }

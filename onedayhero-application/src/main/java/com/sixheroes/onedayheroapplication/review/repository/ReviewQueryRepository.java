@@ -68,6 +68,22 @@ public class ReviewQueryRepository {
             Pageable pageable,
             Long userId
     ) {
+        var content = queryFactory
+                .select(
+                        Projections.constructor(
+                                ReceivedReviewQueryResponse.class,
+                                review.id,
+                                review.senderId,
+                                missionCategory.name,
+                                review.missionTitle,
+                                review.starScore,
+                                review.createdAt
+                        )
+                )
+                .from(review)
+                .join(missionCategory).on(review.categoryId.eq(missionCategory.id));
+
+
         throw new UnsupportedOperationException();
     }
 

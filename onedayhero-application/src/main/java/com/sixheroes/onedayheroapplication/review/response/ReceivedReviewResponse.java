@@ -11,6 +11,8 @@ public record ReceivedReviewResponse(
 
         Long senderId,
 
+        String senderNickname,
+
         String categoryName,
 
         String missionTitle,
