@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -97,7 +96,7 @@ public class ReviewService {
     @Transactional
     public ReviewResponse create(
             ReviewCreateServiceRequest request,
-            Optional<List<S3ImageUploadServiceRequest>> imageUploadRequests
+            List<S3ImageUploadServiceRequest> imageUploadRequests
     ) {
         var mission = missionReader.findOne(request.missionId());
         mission.validateMissionCompleted();
@@ -135,16 +134,18 @@ public class ReviewService {
     }
 
     private void setReviewImages(
-            Optional<List<S3ImageUploadServiceResponse>> response,
+            List<S3ImageUploadServiceResponse> response,
             Review review
     ) {
-        response.ifPresent((image) -> {
-            var reviewImages = image.stream()
-                    .map(reviewImageMapper)
-                    .toList();
+        if (response.isEmpty()) {
+            return;
+        }
 
-            review.setReviewImages(reviewImages);
-        });
+        var reviewImages = response.stream()
+                .map(reviewImageMapper)
+                .toList();
+
+        review.setReviewImages(reviewImages);
     }
 
     private void deleteReviewImages(

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
+import java.util.Collections;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -55,7 +55,7 @@ class ReviewServiceTest extends IntegrationApplicationTest {
         );
         var response = reviewService.create(
                 request,
-                Optional.empty()
+                Collections.emptyList()
         );
 
         // then
@@ -89,7 +89,7 @@ class ReviewServiceTest extends IntegrationApplicationTest {
         );
         var reviewCreateResponse = reviewService.create(
                 createServiceRequest,
-                Optional.empty()
+                Collections.emptyList()
         );
 
         // when
@@ -125,7 +125,7 @@ class ReviewServiceTest extends IntegrationApplicationTest {
         );
         var reviewCreateResponse = reviewService.create(
                 createServiceRequest,
-                Optional.empty()
+                Collections.emptyList()
         );
 
         // when

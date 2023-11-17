@@ -2,12 +2,11 @@ package com.sixheroes.onedayheroapi.review;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,11 +20,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -73,7 +70,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", response.id())
-                .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(response.id()))
@@ -168,17 +165,17 @@ class ReviewControllerTest extends RestDocsSupport {
                 content,
                 starScore
         );
-        given(reviewService.create(any(ReviewCreateServiceRequest.class), any(Optional.class))).willReturn(response);
+        given(reviewService.create(any(ReviewCreateServiceRequest.class), anyList())).willReturn(response);
 
         // when & then
         mockMvc.perform(
-                multipart(HttpMethod.POST, "/api/v1/reviews")
-                        .file(reviewCreateRequest)
-                        .file(imageA)
-                        .file(imageB)
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .accept(MediaType.APPLICATION_JSON)
-        )
+                        multipart(HttpMethod.POST, "/api/v1/reviews")
+                                .file(reviewCreateRequest)
+                                .file(imageA)
+                                .file(imageB)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/v1/reviews/" + response.id()))
                 .andExpect(jsonPath("$.data.id").value(response.id()))
@@ -206,7 +203,7 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .description("리뷰 내용"),
                                 fieldWithPath("starScore").type(JsonFieldType.NUMBER)
                                         .description("별점")
-                ),
+                        ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("HTTP 응답 코드"),
@@ -240,7 +237,7 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .attributes(getDateTimeFormat())
                                         .description("서버 응답 시간")
                         )
-        ));
+                ));
     }
 
     @DisplayName("리뷰를 제거할 수 있다.")
