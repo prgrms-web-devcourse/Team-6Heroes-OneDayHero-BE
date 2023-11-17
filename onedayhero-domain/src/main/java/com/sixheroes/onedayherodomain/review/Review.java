@@ -74,13 +74,10 @@ public class Review extends BaseEntity {
         this.starScore = starScore;
     }
 
-    public void setReviewImages(
-            List<ReviewImage> reviewImages
+    public void addImage(
+            ReviewImage reviewImage
     ) {
-        for (ReviewImage reviewImage : reviewImages) {
             this.reviewImages.add(reviewImage);
-            reviewImage.setReview(this);
-        }
     }
 
     public boolean hasImage() {

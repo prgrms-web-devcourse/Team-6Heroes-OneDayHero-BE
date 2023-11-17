@@ -145,7 +145,7 @@ public class ReviewService {
                 .map(reviewImageMapper)
                 .toList();
 
-        review.setReviewImages(reviewImages);
+        reviewImages.forEach(review::addImage);
     }
 
     private void deleteReviewImages(
