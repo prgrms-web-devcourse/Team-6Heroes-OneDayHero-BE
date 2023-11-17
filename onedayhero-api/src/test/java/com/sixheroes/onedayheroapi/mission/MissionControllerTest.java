@@ -428,18 +428,22 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionImagePaths = List.of("path://1", "path://2");
         var missionResponse = createMissionResponse(missionId, regionResponse, missionCategoryResponse, missionInfoResponse, missionImagePaths);
 
-        given(missionService.findOne(any(Long.class)))
+        given(missionService.findOne(any(Long.class), any(Long.class)))
                 .willReturn(missionResponse);
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/{missionId}", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", "1")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-findOne",
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
+                        ),
+                        queryParameters(
+                                parameterWithName("userId").description("유저 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -498,6 +502,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 진행 상태 (MATCHING)"),
                                 fieldWithPath("data.paths").type(JsonFieldType.ARRAY)
                                         .description("미션에 등록된 사진들"),
+                                fieldWithPath("data.isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("북마크 여부"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간")
                                         .attributes(getDateTimeFormat())
@@ -526,6 +532,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.isBookmarked").value(missionResponse.isBookmarked()))
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
@@ -592,7 +599,10 @@ public class MissionControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
                                 fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
+                                        .optional()
                                         .description("이미지 사진 경로"),
+                                fieldWithPath("data.content[].isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("북마크 상태"),
                                 fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 번호"),
                                 fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
@@ -647,6 +657,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionProgressResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionProgressResponse.missionStatus()))
                 .andExpect(jsonPath("$.data.content[0].imagePath").value(missionProgressResponse.imagePath()))
+                .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionProgressResponse.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
                 .andExpect(jsonPath("$.data.pageable.pageSize").value(sliceMissionResponse.getPageable().getPageSize()))
                 .andExpect(jsonPath("$.data.pageable.sort.empty").value(sliceMissionResponse.getPageable().getSort().isEmpty()))
@@ -778,6 +789,8 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 상태"),
                                 fieldWithPath("data.content[].paths").type(JsonFieldType.ARRAY)
                                         .description("이미지 사진 경로"),
+                                fieldWithPath("data.content[].isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("북마크 여부"),
                                 fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 번호"),
                                 fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
@@ -845,6 +858,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionResponseA.missionStatus()))
                 .andExpect(jsonPath("$.data.content[0].paths[0]").value(missionResponseA.paths().get(0)))
                 .andExpect(jsonPath("$.data.content[0].paths[1]").value(missionResponseA.paths().get(1)))
+                .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionResponseA.isBookmarked()))
                 .andExpect(jsonPath("$.data.content[1].id").value(missionResponseB.id()))
                 .andExpect(jsonPath("$.data.content[1].missionCategory.id").value(missionResponseB.missionCategory().id()))
                 .andExpect(jsonPath("$.data.content[1].missionCategory.code").value(missionResponseB.missionCategory().code()))
@@ -867,6 +881,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[1].missionStatus").value(missionResponseB.missionStatus()))
                 .andExpect(jsonPath("$.data.content[1].paths[0]").value(missionResponseB.paths().get(0)))
                 .andExpect(jsonPath("$.data.content[1].paths[1]").value(missionResponseB.paths().get(1)))
+                .andExpect(jsonPath("$.data.content[1].isBookmarked").value(missionResponseB.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponses.getPageable().getPageNumber()))
                 .andExpect(jsonPath("$.data.pageable.pageSize").value(sliceMissionResponses.getPageable().getPageSize()))
                 .andExpect(jsonPath("$.data.pageable.sort.empty").value(sliceMissionResponses.getPageable().getSort().isEmpty()))
@@ -903,6 +918,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .latitude(123.45)
                 .missionStatus("MATCHING")
                 .paths(paths)
+                .isBookmarked(true)
                 .build();
     }
 
@@ -1048,6 +1064,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .bookmarkCount(1)
                 .missionStatus("MATCHING")
                 .imagePath("s3://path")
+                .isBookmarked(true)
                 .build();
     }
 

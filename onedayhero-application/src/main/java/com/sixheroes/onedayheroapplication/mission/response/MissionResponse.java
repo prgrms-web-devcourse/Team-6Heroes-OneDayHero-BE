@@ -25,12 +25,14 @@ public record MissionResponse(
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
         String missionStatus,
-        List<String> paths
+        List<String> paths,
+        boolean isBookmarked
 ) {
 
     public static MissionResponse from(
             MissionQueryResponse response,
-            List<MissionImage> missionImages
+            List<MissionImage> missionImages,
+            boolean isBookmarked
     ) {
         return MissionResponse.builder()
                 .id(response.id())
@@ -51,6 +53,7 @@ public record MissionResponse(
                 .paths(missionImages.stream()
                         .map(MissionImage::getPath)
                         .toList())
+                .isBookmarked(isBookmarked)
                 .build();
     }
 

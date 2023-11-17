@@ -31,9 +31,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
+@Transactional
 class MissionServiceTest extends IntegrationApplicationTest {
 
-    @Transactional
     @DisplayName("시민은 미션을 생성 할 수 있다.")
     @Test
     void createMission() {
@@ -85,7 +85,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
     }
 
 
-    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 수행 날짜가 생성 날짜보다 이전 일 수 없다.")
     @Test
     void createMissionWithMissionDateBeforeToday() {
@@ -106,7 +105,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_003.name());
     }
 
-    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
     @Test
     void createMissionWithEndTimeBeforeStartTime() {
@@ -127,7 +125,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_004.name());
     }
 
-    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
     @Test
     void createMissionWithDeadLineTimeAfterStartTime() {
@@ -151,7 +148,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_005.name());
     }
 
-    @Transactional
     @DisplayName("시민은 미션을 삭제 할 수 있다.")
     @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING_COMPLETED")
     @ParameterizedTest
@@ -786,7 +782,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var savedMission = missionRepository.save(mission);
 
         // when
-        var result = missionService.findOne(savedMission.getId());
+        var result = missionService.findOne(citizenId, savedMission.getId());
 
         // then
         assertThat(result)
@@ -798,7 +794,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "latitude",
                         "missionInfo",
                         "bookmarkCount",
-                        "missionStatus"
+                        "missionStatus",
+                        "isBookmarked"
                 )
                 .containsExactly(
                         MissionCategoryResponse.from(missionCategory),
@@ -808,17 +805,9 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         mission.getLocation().getY(),
                         result.missionInfo(),
                         0,
-                        MissionStatus.MATCHING.name()
+                        MissionStatus.MATCHING.name(),
+                        false
                 );
-    }
-
-    private S3ImageUploadServiceRequest createS3ImageUploadServiceRequest(String imageName) {
-        return S3ImageUploadServiceRequest.builder()
-                .originalName(imageName)
-                .contentType(ContentType.MULTIPART_FORM_DATA.toString())
-                .inputStream(InputStream.nullInputStream())
-                .contentSize(Long.MAX_VALUE)
-                .build();
     }
 
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
@@ -891,6 +880,15 @@ class MissionServiceTest extends IntegrationApplicationTest {
         return MissionBookmark.builder()
                 .userId(citizenId)
                 .mission(mission)
+                .build();
+    }
+
+    private S3ImageUploadServiceRequest createS3ImageUploadServiceRequest(String imageName) {
+        return S3ImageUploadServiceRequest.builder()
+                .originalName(imageName)
+                .contentType(ContentType.MULTIPART_FORM_DATA.toString())
+                .inputStream(InputStream.nullInputStream())
+                .contentSize(Long.MAX_VALUE)
                 .build();
     }
 }

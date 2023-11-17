@@ -24,7 +24,7 @@ public class MissionReader {
     public Mission findOne(Long missionId) {
         return missionRepository.findById(missionId)
                 .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
+                    log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
                     return new NoSuchElementException(ErrorCode.EM_008.name());
                 });
     }
@@ -32,7 +32,7 @@ public class MissionReader {
     public MissionQueryResponse fetchFindOne(Long missionId) {
         return missionQueryRepository.fetchOne(missionId)
                 .orElseThrow(() -> {
-                    log.warn("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
+                    log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
                     return new NoSuchElementException(ErrorCode.EM_008.name());
                 });
     }

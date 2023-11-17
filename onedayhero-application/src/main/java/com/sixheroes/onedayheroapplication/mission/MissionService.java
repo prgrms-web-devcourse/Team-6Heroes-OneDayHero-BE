@@ -65,11 +65,15 @@ public class MissionService {
     }
 
     public MissionResponse findOne(
+            Long userId,
             Long missionId
     ) {
         var missionQueryResponse = missionReader.fetchFindOne(missionId);
         var missionImages = missionImageRepository.findByMission_Id(missionId);
-        return MissionResponse.from(missionQueryResponse, missionImages);
+        var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(missionId, userId);
+
+        var isBookmarked = optionalMissionBookmark.isPresent();
+        return MissionResponse.from(missionQueryResponse, missionImages, isBookmarked);
     }
 
     public Slice<MissionResponse> findAllByDynamicCondition(
@@ -77,7 +81,7 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var missionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses);
+        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses, request.userId());
 
         return SliceResultConverter.consume(result, pageable);
     }
@@ -87,7 +91,7 @@ public class MissionService {
             Long userId
     ) {
         var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
-        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses);
+        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses, userId);
 
         return SliceResultConverter.consume(missionProgressResponses, pageable);
     }
@@ -150,24 +154,34 @@ public class MissionService {
         missionRepository.delete(mission);
     }
 
-    private List<MissionResponse> makeMissionResponseWithImages(List<MissionQueryResponse> missionQueryResponses) {
+    private List<MissionResponse> makeMissionResponseWithImages(
+            List<MissionQueryResponse> missionQueryResponses,
+            Long userId
+    ) {
         return missionQueryResponses.stream()
                 .map(response -> {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
-                    return MissionResponse.from(response, missionImages);
+                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(response.id(), userId);
+                    return MissionResponse.from(response, missionImages, optionalMissionBookmark.isPresent());
                 })
                 .collect(Collectors.toList());
     }
 
-    private List<MissionProgressResponse> makeProgressMissionResponseWithImages(List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses) {
+    private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
+            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses,
+            Long userId
+    ) {
         return sliceMissionProgressQueryResponses.stream()
-                .map((queryResponse) -> {
+                .map(queryResponse -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
-                    if (!missionImages.isEmpty()) {
-                        return MissionProgressResponse.from(queryResponse, missionImages.get(0).getPath());
-                    }
-                    return MissionProgressResponse.from(queryResponse, null);
-                }).toList();
+                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
+
+                    var imagePath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    var isBookmarked = optionalMissionBookmark.isPresent();
+
+                    return MissionProgressResponse.from(queryResponse, imagePath, isBookmarked);
+                })
+                .toList();
     }
 
     private void deleteUserBookMarkByMissionId(
