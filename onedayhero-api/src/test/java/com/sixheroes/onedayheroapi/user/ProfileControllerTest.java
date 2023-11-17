@@ -8,30 +8,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
-import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getTimeFormat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -112,12 +105,7 @@ class ProfileControllerTest extends RestDocsSupport {
         // given
         var userId = 1L;
 
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
-        var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var heroScore = 60;
-
-        var profileHeroResponse = new ProfileHeroResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore);
+        var profileHeroResponse = createProfileHeroResponse();
 
         given(profileService.findHeroProfile(anyLong())).willReturn(profileHeroResponse);
 
@@ -130,20 +118,21 @@ class ProfileControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
             .andExpect(jsonPath("$.data.basicInfo").exists())
-            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoResponse.nickname()))
-            .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoResponse.gender()))
-            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userBasicInfoResponse.birth())))
-            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userBasicInfoResponse.introduce()))
+            .andExpect(jsonPath("$.data.basicInfo.nickname").value(profileHeroResponse.basicInfo().nickname()))
+            .andExpect(jsonPath("$.data.basicInfo.gender").value(profileHeroResponse.basicInfo().gender()))
+            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(profileHeroResponse.basicInfo().birth())))
+            .andExpect(jsonPath("$.data.basicInfo.introduce").value(profileHeroResponse.basicInfo().introduce()))
             .andExpect(jsonPath("$.data.image").exists())
-            .andExpect(jsonPath("$.data.image.originalName").value(userImageResponse.originalName()))
-            .andExpect(jsonPath("$.data.image.uniqueName").value(userImageResponse.uniqueName()))
-            .andExpect(jsonPath("$.data.image.path").value(userImageResponse.path()))
+            .andExpect(jsonPath("$.data.image.originalName").value(profileHeroResponse.image().originalName()))
+            .andExpect(jsonPath("$.data.image.uniqueName").value(profileHeroResponse.image().uniqueName()))
+            .andExpect(jsonPath("$.data.image.path").value(profileHeroResponse.image().path()))
             .andExpect(jsonPath("$.data.favoriteWorkingDay").exists())
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate").isArray())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userFavoriteWorkingDayResponse.favoriteDate().get(0)))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteStartTime())))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
-            .andExpect(jsonPath("$.data.heroScore").value(heroScore))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(profileHeroResponse.favoriteWorkingDay().favoriteDate().get(0)))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(profileHeroResponse.favoriteWorkingDay().favoriteStartTime())))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(profileHeroResponse.favoriteWorkingDay().favoriteEndTime())))
+            .andExpect(jsonPath("$.data.favoriteRegions").exists())
+            .andExpect(jsonPath("$.data.heroScore").value(profileHeroResponse.heroScore()))
             .andDo(document("profile-hero-find",
                 pathParameters(
                     parameterWithName("userId").description("유저 아이디")
@@ -184,8 +173,60 @@ class ProfileControllerTest extends RestDocsSupport {
                         .attributes(getTimeFormat())
                         .type(JsonFieldType.STRING)
                         .description("희망 근무 종료 시간"),
+                    fieldWithPath("data.favoriteRegions")
+                        .optional()
+                        .type(JsonFieldType.OBJECT)
+                        .description("선호 지역"),
+                    fieldWithPath("data.favoriteRegions.서울시")
+                        .optional()
+                        .type(JsonFieldType.OBJECT)
+                        .description("시 이름"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구")
+                        .optional()
+                        .type(JsonFieldType.ARRAY)
+                        .description("구 이름"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].id")
+                        .optional()
+                        .type(JsonFieldType.NUMBER)
+                        .description("지역 아이디"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].dong")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("동 이름"),
                     fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수")
                 )
             ));
+    }
+
+    private ProfileHeroResponse createProfileHeroResponse() {
+        return ProfileHeroResponse.builder()
+            .basicInfo(createUserBasicInfoResponse())
+            .image(createUserImageResponse())
+            .favoriteWorkingDay(createUserFavoriteWorkingDayResponse())
+            .favoriteRegions(createRegionResponses())
+            .heroScore(30)
+            .heroScore(60)
+            .build();
+    }
+
+    private Map<String, Map<String, List<RegionForUserResponse>>> createRegionResponses() {
+        return Map.of("서울시",
+            Map.of("강남구",
+                List.of(new RegionForUserResponse(1L, "역삼동"),
+                    new RegionForUserResponse(2L, "청담동")
+                )
+            ));
+    }
+
+    private UserBasicInfoResponse createUserBasicInfoResponse() {
+        return new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
+    }
+
+    private UserImageResponse createUserImageResponse() {
+        return new UserImageResponse("profile.jpg", "unique.jpg", "http://");
+    }
+
+    private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {
+        return new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
     }
 }
