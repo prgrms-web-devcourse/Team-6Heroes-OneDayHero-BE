@@ -28,15 +28,16 @@ public class UserController {
     private final MissionBookmarkService missionBookmarkService;
     private final ReviewService reviewService;
 
-    @GetMapping("/{userId}")
+    @GetMapping
     public ResponseEntity<ApiResponse<UserResponse>> findUser(
-        @PathVariable Long userId // TODO JWT 생성 시 변경
+            @AuthUser Long userId
     ) {
         var userResponse = userService.findUser(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
 
+    //TODO: @AuthUser 추가
     @PatchMapping
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
         @Valid @RequestBody UserUpadateRequest userUpadateRequest
@@ -88,9 +89,8 @@ public class UserController {
 
     @PatchMapping("/change-hero")
     public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOn(
-        // TODO JWT 생기면 userId 받기
+            @AuthUser Long userId
     ) {
-        var userId = 1L;
         var userResponse = userService.turnOnHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
@@ -98,9 +98,8 @@ public class UserController {
 
     @PatchMapping("/change-citizen")
     public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOff(
-        // TODO JWT 생기면 userId 받기
+            @AuthUser Long userId
     ) {
-        var userId = 1L;
         var userResponse = userService.turnOffHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
