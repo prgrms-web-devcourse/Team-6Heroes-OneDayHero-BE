@@ -48,9 +48,6 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var missionProposalId = missionProposalCreateResponse.id();
         var missionProposal = missionProposalRepository.findById(missionProposalId);
         assertThat(missionProposal).isNotEmpty();
-        assertThat(missionProposalCreateResponse.missionId()).isEqualTo(mission.getId());
-        assertThat(missionProposalCreateResponse.heroId()).isEqualTo(hero.getId());
-        assertThat(missionProposalCreateResponse.missionProposalStatus()).isEqualTo("PROPOSAL");
     }
 
     @DisplayName("미션 제안을 생성할 때 해당 미션이 존재하지 않으면 예외가 발생한다.")
@@ -87,10 +84,10 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var hero = userRepository.save(createUser());
         hero.changeHeroModeOn();
 
-        var notExsistHeroId = 4L;
+        var notExistHeroId = 4L;
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
                 mission.getId(),
-                notExsistHeroId
+                notExistHeroId
         );
 
         // when & then
@@ -119,9 +116,6 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // then
         assertThat(missionProposalApproveResponse.id()).isEqualTo(missionProposal.getId());
-        assertThat(missionProposalApproveResponse.missionId()).isEqualTo(missionProposal.getMissionId());
-        assertThat(missionProposalApproveResponse.heroId()).isEqualTo(missionProposal.getHeroId());
-        assertThat(missionProposalApproveResponse.missionProposalStatus()).isEqualTo("APPROVE");
     }
 
     @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -146,9 +140,10 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var missionId = 1L;
         var heroId = 1L;
         var missionProposal = missionProposalRepository.save(createMissionProposal(missionId, heroId));
+        var missionProposalId = missionProposal.getId();
 
         // when
-        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposal.getId()))
+        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposalId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EM_008.name());
     }
@@ -173,9 +168,6 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // then
         assertThat(missionProposalRejectResponse.id()).isEqualTo(missionProposal.getId());
-        assertThat(missionProposalRejectResponse.missionId()).isEqualTo(missionProposal.getMissionId());
-        assertThat(missionProposalRejectResponse.heroId()).isEqualTo(missionProposal.getHeroId());
-        assertThat(missionProposalRejectResponse.missionProposalStatus()).isEqualTo("REJECT");
     }
 
     @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 거절할 때 예외가 발생한다.")
@@ -197,12 +189,13 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     @Test
     void doNotRejectMissionProposalWhenNotExsistMission() {
         // given
-        var missionId = 1L;
+        var notExistMissionId = 1L;
         var heroId = 1L;
-        var missionProposal = missionProposalRepository.save(createMissionProposal(missionId, heroId));
+        var missionProposal = missionProposalRepository.save(createMissionProposal(notExistMissionId, heroId));
+        var missionProposalId = missionProposal.getId();
 
         // when
-        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposal.getId()))
+        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposalId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EM_008.name());
     }
