@@ -78,6 +78,7 @@ public class Review extends BaseEntity {
             ReviewImage reviewImage
     ) {
             this.reviewImages.add(reviewImage);
+            reviewImage.setReview(this);
     }
 
     public boolean hasImage() {

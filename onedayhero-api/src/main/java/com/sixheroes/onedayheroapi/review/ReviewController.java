@@ -66,14 +66,16 @@ public class ReviewController {
                 .body(ApiResponse.created(response));
     }
 
-    @PatchMapping("/{reviewId}")
+    @PostMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
             @PathVariable Long reviewId,
-            @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
+            @Valid @RequestPart ReviewUpdateRequest reviewUpdateRequest,
+            @RequestPart(required = false) List<MultipartFile> images
     ) {
         var response = reviewService.update(
                 reviewId,
-                reviewUpdateRequest.toService()
+                reviewUpdateRequest.toService(),
+                MultipartFileMapper.mapToServiceRequests(images)
         );
 
         return ResponseEntity.ok(ApiResponse.ok(response));

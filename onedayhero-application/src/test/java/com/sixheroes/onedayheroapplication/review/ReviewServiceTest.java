@@ -61,13 +61,6 @@ class ReviewServiceTest extends IntegrationApplicationTest {
         // then
         assertSoftly(soft -> {
             soft.assertThat(response).isNotNull();
-            soft.assertThat(response.senderId()).isEqualTo(request.senderId());
-            soft.assertThat(response.receiverId()).isEqualTo(request.receiverId());
-            soft.assertThat(response.categoryId()).isEqualTo(request.categoryId());
-            soft.assertThat(response.missionTitle()).isEqualTo(request.missionTitle());
-            soft.assertThat(response.starScore()).isEqualTo(request.starScore());
-            soft.assertThat(response.content()).isEqualTo(request.content());
-            soft.assertThat(response.reviewImageResponses()).hasSize(0);
         });
     }
 
@@ -96,14 +89,14 @@ class ReviewServiceTest extends IntegrationApplicationTest {
         var request = createReviewUpdateServiceRequest();
         var response = reviewService.update(
                 reviewCreateResponse.id(),
-                request
+                request,
+                Collections.emptyList()
         );
 
         // then
         assertSoftly(soft -> {
             soft.assertThat(response).isNotNull();
-            soft.assertThat(response.content()).isEqualTo(request.content());
-            soft.assertThat(response.starScore()).isEqualTo(request.starScore());
+            soft.assertThat(response.id()).isEqualTo(reviewCreateResponse.id());
         });
     }
 

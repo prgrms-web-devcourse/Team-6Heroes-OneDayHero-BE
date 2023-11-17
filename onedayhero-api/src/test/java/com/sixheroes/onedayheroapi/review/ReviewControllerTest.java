@@ -2,8 +2,10 @@ package com.sixheroes.onedayheroapi.review;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
+import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
@@ -70,8 +72,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", response.id())
-                        .accept(MediaType.APPLICATION_JSON)
-                )
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
@@ -158,13 +159,7 @@ class ReviewControllerTest extends RestDocsSupport {
         var imageA = createImageA();
         var imageB = createImageB();
 
-        var response = createReviewResponse(
-                senderId,
-                receiverId,
-                missionTitle,
-                content,
-                starScore
-        );
+        var response = createReviewResponse();
         given(reviewService.create(any(ReviewCreateServiceRequest.class), anyList())).willReturn(response);
 
         // when & then
@@ -179,13 +174,6 @@ class ReviewControllerTest extends RestDocsSupport {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/v1/reviews/" + response.id()))
                 .andExpect(jsonPath("$.data.id").value(response.id()))
-                .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
-                .andExpect(jsonPath("$.data.receiverId").value(response.receiverId()))
-                .andExpect(jsonPath("$.data.categoryId").value(response.categoryId()))
-                .andExpect(jsonPath("$.data.missionTitle").value(response.missionTitle()))
-                .andExpect(jsonPath("$.data.content").value(response.content()))
-                .andExpect(jsonPath("$.data.starScore").value(response.starScore()))
-                .andExpect(jsonPath("$.data.reviewImageResponses.size()").value(response.reviewImageResponses().size()))
                 .andDo(print())
                 .andDo(document("review-create",
                         requestPartFields("reviewCreateRequest",
@@ -211,28 +199,55 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                                         .description("생성된 리뷰 아이디"),
-                                fieldWithPath("data.senderId").type(JsonFieldType.NUMBER)
-                                        .description("리뷰 작성 유저 아이디"),
-                                fieldWithPath("data.receiverId").type(JsonFieldType.NUMBER)
-                                        .description("리뷰 대상 유저 아이디"),
-                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER)
-                                        .description("미션 카테고리 아이디"),
-                                fieldWithPath("data.missionTitle").type(JsonFieldType.STRING)
-                                        .description("리뷰가 발생된 미션 제목"),
-                                fieldWithPath("data.starScore").type(JsonFieldType.NUMBER)
-                                        .description("별점"),
-                                fieldWithPath("data.content").type(JsonFieldType.STRING)
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )
+                ));
+    }
+
+    @DisplayName("리뷰를 수정할 수 있다.")
+    @Test
+    void updateReview() throws Exception {
+        // given
+        var content = "리뷰 내용";
+        var starScore = 5;
+        var request = createReviewUpdateRequest(
+                content,
+                starScore
+        );
+
+        var reviewUpdateRequest = createReviewUpdateRequestToMultipartFile(objectMapper.writeValueAsString(request));
+        var imageA = createImageA();
+
+        var response = createReviewResponse();
+        given(reviewService.update(anyLong(), any(ReviewUpdateServiceRequest.class), anyList())).willReturn(response);
+
+        // when & then
+        mockMvc.perform(
+                        multipart(HttpMethod.POST, "/api/v1/reviews/{reviewId}", 1L)
+                                .file(reviewUpdateRequest)
+                                .file(imageA)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(response.id()))
+                .andDo(print())
+                .andDo(document("review-update",
+                        requestPartFields("reviewUpdateRequest",
+                                fieldWithPath("content").type(JsonFieldType.STRING)
                                         .description("리뷰 내용"),
-                                fieldWithPath("data.reviewImageResponses[]").type(JsonFieldType.ARRAY)
-                                        .description("리뷰 이미지 응답 데이터 배열"),
-                                fieldWithPath("data.reviewImageResponses[].id").type(JsonFieldType.NUMBER)
-                                        .description("리뷰 이미지 아이디"),
-                                fieldWithPath("data.reviewImageResponses[].originalName").type(JsonFieldType.STRING)
-                                        .description("리뷰 이미지 오리지널 네임"),
-                                fieldWithPath("data.reviewImageResponses[].uniqueName").type(JsonFieldType.STRING)
-                                        .description("리뷰 이미지 유니크 네임"),
-                                fieldWithPath("data.reviewImageResponses[].path").type(JsonFieldType.STRING)
-                                        .description("리뷰 이미지 S3 주소"),
+                                fieldWithPath("starScore").type(JsonFieldType.NUMBER)
+                                        .description("별점")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                        .description("수정된 리뷰 아이디"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .attributes(getDateTimeFormat())
                                         .description("서버 응답 시간")
@@ -274,11 +289,33 @@ class ReviewControllerTest extends RestDocsSupport {
                 .build();
     }
 
+    private ReviewUpdateRequest createReviewUpdateRequest(
+            String content,
+            Integer starScore
+    ) {
+        return ReviewUpdateRequest.builder()
+                .content(content)
+                .starScore(starScore)
+                .build();
+    }
+
+
     private MockMultipartFile createReviewCreateRequestToMultipartFile(
             String json
     ) {
         return new MockMultipartFile(
                 "reviewCreateRequest",
+                "json",
+                MediaType.APPLICATION_JSON.toString(),
+                json.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    private MockMultipartFile createReviewUpdateRequestToMultipartFile(
+            String json
+    ) {
+        return new MockMultipartFile(
+                "reviewUpdateRequest",
                 "json",
                 MediaType.APPLICATION_JSON.toString(),
                 json.getBytes(StandardCharsets.UTF_8)
@@ -342,34 +379,9 @@ class ReviewControllerTest extends RestDocsSupport {
     }
 
     private ReviewResponse createReviewResponse(
-            Long senderId,
-            Long receiverId,
-            String missionTitle,
-            String content,
-            Integer starScore
     ) {
-        var savedImageA = ReviewImageResponse.builder()
-                .id(1L)
-                .originalName("A 원본 이미지 이름")
-                .uniqueName("A")
-                .path("S3 이미지 주소A")
-                .build();
-        var savedImageB = ReviewImageResponse.builder()
-                .id(2L)
-                .originalName("B 원본 이미지 이름")
-                .uniqueName("B")
-                .path("S3 이미지 주소B")
-                .build();
-
         return ReviewResponse.builder()
                 .id(1L)
-                .categoryId(1L)
-                .senderId(senderId)
-                .receiverId(receiverId)
-                .missionTitle(missionTitle)
-                .content(content)
-                .starScore(starScore)
-                .reviewImageResponses(List.of(savedImageA, savedImageB))
                 .build();
     }
 }

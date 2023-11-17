@@ -103,24 +103,32 @@ public class ReviewService {
 
         var review = request.toEntity();
         var reviewImageUploadResponse = s3ImageUploadService.uploadImages(imageUploadRequests, properties.getReviewDir());
-        setReviewImages(reviewImageUploadResponse, review);
+        addReviewImages(reviewImageUploadResponse, review);
+
         var createdReview = reviewRepository.save(review);
 
-        return ReviewResponse.from(createdReview);
+        return ReviewResponse
+                .builder()
+                .id(createdReview.getId())
+                .build();
     }
 
     @Transactional
     public ReviewResponse update(
             Long reviewId,
-            ReviewUpdateServiceRequest request
+            ReviewUpdateServiceRequest request,
+            List<S3ImageUploadServiceRequest> imageUploadRequests
     ) {
         var review = reviewReader.findById(reviewId);
-        review.update(
-                request.content(),
-                request.starScore()
-        );
+        review.update(request.content(), request.starScore());
 
-        return ReviewResponse.from(review);
+        var reviewImageUploadResponse = s3ImageUploadService.uploadImages(imageUploadRequests, properties.getReviewDir());
+        addReviewImages(reviewImageUploadResponse, review);
+
+        return ReviewResponse
+                .builder()
+                .id(review.getId())
+                .build();
     }
 
     @Transactional
@@ -133,7 +141,7 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    private void setReviewImages(
+    private void addReviewImages(
             List<S3ImageUploadServiceResponse> response,
             Review review
     ) {
