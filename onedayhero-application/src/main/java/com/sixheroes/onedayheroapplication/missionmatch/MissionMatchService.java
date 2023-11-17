@@ -3,8 +3,7 @@ package com.sixheroes.onedayheroapplication.missionmatch;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchResponse;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatch;
 import com.sixheroes.onedayherodomain.missionmatch.repository.MissionMatchRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class MissionMatchService {
     private final MissionReader missionReader;
     private final MissionMatchReader missionMatchReader;
 
-    public MissionMatchCreateResponse createMissionMatch(
+    public MissionMatchResponse createMissionMatch(
             Long userId,
             MissionMatchCreateServiceRequest request
     ) {
@@ -38,10 +37,13 @@ public class MissionMatchService {
 
         //TODO: 시민, 히어로에게 미션매칭 성사 알람
 
-        return MissionMatchCreateResponse.from(savedMissionMatch);
+        return MissionMatchResponse
+                .builder()
+                .id(savedMissionMatch.getId())
+                .build();
     }
 
-    public MissionMatchCancelResponse cancelMissionMatch(
+    public MissionMatchResponse cancelMissionMatch(
             Long userId,
             MissionMatchCancelServiceRequest request
     ) {
@@ -53,10 +55,8 @@ public class MissionMatchService {
 
         //TODO: 히어로에게 미션매칭 취소 알람
 
-        return MissionMatchCancelResponse.builder()
-                .missionMatchId(missionMatch.getId())
-                .citizenId(userId)
-                .missionId(request.missionId())
+        return MissionMatchResponse.builder()
+                .id(missionMatch.getId())
                 .build();
     }
 }

@@ -4,8 +4,7 @@ import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -58,9 +57,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(201))
-                .andExpect(jsonPath("$.data.missionMatchId").value(response.missionMatchId()))
-                .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
-                .andExpect(jsonPath("$.data.heroId").value(response.heroId()))
+                .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-match-create",
                         requestHeaders(
@@ -77,12 +74,8 @@ class MissionMatchControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.missionMatchId").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
                                         .description("생성된 미션 매칭 아이디"),
-                                fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
-                                        .description("매칭이 완료된 미션 아이디"),
-                                fieldWithPath("data.heroId").type(JsonFieldType.NUMBER)
-                                        .description("미션에 매칭된 히어로 아이디"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간").attributes(getDateTimeFormat())
                         )
@@ -107,9 +100,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.missionMatchId").value(response.missionMatchId()))
-                .andExpect(jsonPath("$.data.citizenId").value(response.citizenId()))
-                .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
+                .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-match-cancel",
                         requestHeaders(
@@ -124,12 +115,8 @@ class MissionMatchControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.missionMatchId").type(JsonFieldType.NUMBER)
-                                        .description("미션매칭 아이디"),
-                                fieldWithPath("data.citizenId").type(JsonFieldType.NUMBER)
-                                        .description("매칭완료를 취소한 시민 아이디"),
-                                fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
-                                        .description("매칭완료가 취소된 미션 아이디"),
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                        .description("취소된 미션 매칭 아이디"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간").attributes(getDateTimeFormat())
                         )
@@ -149,19 +136,15 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .build();
     }
 
-    private MissionMatchCreateResponse createMissionMatchResponse() {
-        return MissionMatchCreateResponse.builder()
-                .missionMatchId(1L)
-                .missionId(2L)
-                .heroId(3L)
+    private MissionMatchResponse createMissionMatchResponse() {
+        return MissionMatchResponse.builder()
+                .id(1L)
                 .build();
     }
 
-    private MissionMatchCancelResponse createMissionMatchWithdrawResponse() {
-        return MissionMatchCancelResponse.builder()
-                .missionMatchId(1L)
-                .missionId(2L)
-                .citizenId(1L)
+    private MissionMatchResponse createMissionMatchWithdrawResponse() {
+        return MissionMatchResponse.builder()
+                .id(1L)
                 .build();
     }
 }
