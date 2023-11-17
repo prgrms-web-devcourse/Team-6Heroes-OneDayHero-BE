@@ -1,9 +1,13 @@
 package com.sixheroes.onedayheroapi.mission.request;
 
+import com.sixheroes.onedayheroapi.global.s3.MultipartFileMapper;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Builder
 public record MissionUpdateRequest(
@@ -26,7 +30,7 @@ public record MissionUpdateRequest(
         MissionInfoRequest missionInfo
 ) {
 
-    public MissionUpdateServiceRequest toService() {
+    public MissionUpdateServiceRequest toService(List<MultipartFile> multipartFiles) {
         return MissionUpdateServiceRequest.builder()
                 .missionCategoryId(missionCategoryId)
                 .citizenId(citizenId)
@@ -34,6 +38,7 @@ public record MissionUpdateRequest(
                 .latitude(latitude)
                 .longitude(longitude)
                 .missionInfo(missionInfo.toService())
+                .imageFiles(MultipartFileMapper.mapToServiceRequests(multipartFiles))
                 .build();
     }
 }

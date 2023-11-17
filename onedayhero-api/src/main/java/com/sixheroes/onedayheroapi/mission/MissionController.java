@@ -3,19 +3,22 @@ package com.sixheroes.onedayheroapi.mission;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.*;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
+import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/missions")
@@ -34,7 +37,7 @@ public class MissionController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<MissionResponses>> findMissions(
+    public ResponseEntity<ApiResponse<Slice<MissionResponse>>> findMissions(
             @PageableDefault(size = 5) Pageable pageable,
             MissionFindFilterRequest request
     ) {
@@ -45,7 +48,7 @@ public class MissionController {
     }
 
     @GetMapping("/progress/{userId}")
-    public ResponseEntity<ApiResponse<MissionProgressResponses>> findProgressMission(
+    public ResponseEntity<ApiResponse<Slice<MissionProgressResponse>>> findProgressMission(
             @PageableDefault(size = 5) Pageable pageable,
             @PathVariable Long userId
     ) {
@@ -55,31 +58,33 @@ public class MissionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<MissionResponse>> createMission(
-            @Valid @RequestBody MissionCreateRequest request
+    public ResponseEntity<ApiResponse<MissionIdResponse>> createMission(
+            @Valid @RequestPart MissionCreateRequest missionCreateRequest,
+            @RequestPart List<MultipartFile> multipartFiles
     ) {
         var registerDateTime = LocalDateTime.now();
-        var result = missionService.createMission(request.toService(), registerDateTime);
+        var result = missionService.createMission(missionCreateRequest.toService(multipartFiles), registerDateTime);
 
         return ResponseEntity.created(URI.create("/api/v1/missions/" + result.id()))
                 .body(ApiResponse.created(result));
     }
 
-    @PatchMapping("/{missionId}")
-    public ResponseEntity<ApiResponse<MissionResponse>> updateMission(
+    @PostMapping("/{missionId}")
+    public ResponseEntity<ApiResponse<MissionIdResponse>> updateMission(
             @PathVariable Long missionId,
-            @Valid @RequestBody MissionUpdateRequest request
+            @Valid @RequestPart MissionUpdateRequest missionUpdateRequest,
+            @RequestPart List<MultipartFile> multipartFiles
     ) {
         var modifiedDateTime = LocalDateTime.now();
-        var result = missionService.updateMission(missionId, request.toService(), modifiedDateTime);
+        var result = missionService.updateMission(missionId, missionUpdateRequest.toService(multipartFiles), modifiedDateTime);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @PatchMapping("/{missionId}/extend")
-    public ResponseEntity<ApiResponse<MissionResponse>> extendMission(
+    public ResponseEntity<ApiResponse<MissionIdResponse>> extendMission(
             @PathVariable Long missionId,
-            @Valid @RequestBody MissionUpdateRequest request
+            @Valid @RequestBody MissionExtendRequest request
     ) {
         var modifiedDateTime = LocalDateTime.now();
         var result = missionService.extendMission(missionId, request.toService(), modifiedDateTime);
@@ -88,7 +93,7 @@ public class MissionController {
     }
 
     @PatchMapping("/{missionId}/complete")
-    public ResponseEntity<ApiResponse<MissionResponse>> completeMission(
+    public ResponseEntity<ApiResponse<MissionIdResponse>> completeMission(
             @PathVariable Long missionId,
             @Valid @RequestBody MissionCompleteRequest request
     ) {

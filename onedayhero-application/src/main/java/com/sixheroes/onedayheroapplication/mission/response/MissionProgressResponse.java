@@ -19,11 +19,14 @@ public record MissionProgressResponse(
 
         Integer bookmarkCount,
 
-        String missionStatus
+        String missionStatus,
+
+        String imagePath
 ) {
 
     public static MissionProgressResponse from(
-            MissionProgressQueryResponse response
+            MissionProgressQueryResponse response,
+            String imagePath
     ) {
         return MissionProgressResponse.builder()
                 .id(response.id())
@@ -32,6 +35,7 @@ public record MissionProgressResponse(
                 .missionDate(response.missionDate())
                 .bookmarkCount(response.bookmarkCount())
                 .missionStatus(response.missionStatus().name())
+                .imagePath(imagePath)
                 .build();
     }
 }
