@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapi.mission;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.MissionBookmarkCancelRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionBookmarkCreateRequest;
@@ -22,17 +23,19 @@ public class MissionBookmarkController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<MissionBookmarkCreateResponse>> createMissionBookmark(
+            @AuthUser Long userId,
             @Valid @RequestBody MissionBookmarkCreateRequest request
     ) {
-        var response = missionBookmarkService.createMissionBookmark(request.toService());
+        var response = missionBookmarkService.createMissionBookmark(userId, request.toService());
         return ResponseEntity.created(URI.create("/api/v1/missions/" + response.missionId())).body(ApiResponse.created(response));
     }
 
     @DeleteMapping
     public ResponseEntity<ApiResponse<MissionBookmarkCancelResponse>> cancelMissionBookmark(
+            @AuthUser Long userId,
             @Valid @RequestBody MissionBookmarkCancelRequest request
     ) {
-        var response = missionBookmarkService.cancelMissionBookmark(request.toService());
+        var response = missionBookmarkService.cancelMissionBookmark(userId, request.toService());
         return ResponseEntity.ok().body(ApiResponse.ok(response));
     }
 }

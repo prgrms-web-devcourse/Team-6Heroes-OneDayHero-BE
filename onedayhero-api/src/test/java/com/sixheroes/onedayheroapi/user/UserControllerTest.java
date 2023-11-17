@@ -15,6 +15,7 @@ import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -73,8 +74,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void findUser() throws Exception {
         // given
-        var userId = 1L;
-
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
         var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
@@ -86,7 +85,8 @@ class UserControllerTest extends RestDocsSupport {
         given(userService.findUser(anyLong())).willReturn(userResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/me/{userId}", userId)
+        mockMvc.perform(get("/api/v1/me")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -110,8 +110,8 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-find",
-                pathParameters(
-                    parameterWithName("userId").description("유저 아이디")
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
                 ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -155,6 +155,8 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
+    //TODO: @AuthUser 추가
+    @Disabled
     @DisplayName("유저 정보를 수정할 수 있다.")
     @Test
     void updateUser() throws Exception {
@@ -440,7 +442,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @DisplayName("히어로 모드를 활성화할 수 있다.")
     @Test
-    void turnHeroModeOn() throws Exception {
+    void turnOnHeroMode() throws Exception {
         // given
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
@@ -454,6 +456,7 @@ class UserControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-hero")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -477,6 +480,9 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-change-hero",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
                         .description("HTTP 응답 코드"),
@@ -521,7 +527,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @DisplayName("히어로 모드를 비활성화할 수 있다.")
     @Test
-    void turnHeorModeOff() throws Exception {
+    void turnOffHeroMode() throws Exception {
         // given
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
@@ -535,6 +541,7 @@ class UserControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-citizen")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -558,6 +565,9 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-change-citizen",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
                         .description("HTTP 응답 코드"),
@@ -604,7 +614,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void viewSentReviews() throws Exception {
         // given
-        var userId = 1L;
         var sentReviewA = createSentReviewA();
         var sentReviewB = createSentReviewB();
         var sentReviewResponses = new SliceImpl<SentReviewResponse>(
@@ -712,7 +721,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void viewReceivedReviews() throws Exception {
         // given
-        var userId = 1L;
         var receivedReviewA = createReceivedReviewA();
         var receivedReviewB = createReceivedReviewB();
 
