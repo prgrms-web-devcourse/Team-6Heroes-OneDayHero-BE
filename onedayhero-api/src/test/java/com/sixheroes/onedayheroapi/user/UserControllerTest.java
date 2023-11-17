@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convertDateToString;
@@ -38,15 +39,12 @@ import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convert
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -74,13 +72,7 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void findUser() throws Exception {
         // given
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
-        var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var heroScore = 60;
-        var isHeroMode = true;
-
-        var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
+        var userResponse = createUserResponse();
 
         given(userService.findUser(anyLong())).willReturn(userResponse);
 
@@ -94,21 +86,22 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
             .andExpect(jsonPath("$.data.basicInfo").exists())
-            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoResponse.nickname()))
-            .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoResponse.gender()))
-            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userBasicInfoResponse.birth())))
-            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userBasicInfoResponse.introduce()))
+            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userResponse.basicInfo().nickname()))
+            .andExpect(jsonPath("$.data.basicInfo.gender").value(userResponse.basicInfo().gender()))
+            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userResponse.basicInfo().birth())))
+            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userResponse.basicInfo().introduce()))
             .andExpect(jsonPath("$.data.image").exists())
-            .andExpect(jsonPath("$.data.image.originalName").value(userImageResponse.originalName()))
-            .andExpect(jsonPath("$.data.image.uniqueName").value(userImageResponse.uniqueName()))
-            .andExpect(jsonPath("$.data.image.path").value(userImageResponse.path()))
+            .andExpect(jsonPath("$.data.image.originalName").value(userResponse.image().originalName()))
+            .andExpect(jsonPath("$.data.image.uniqueName").value(userResponse.image().uniqueName()))
+            .andExpect(jsonPath("$.data.image.path").value(userResponse.image().path()))
             .andExpect(jsonPath("$.data.favoriteWorkingDay").exists())
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate").isArray())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userFavoriteWorkingDayResponse.favoriteDate().get(0)))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteStartTime())))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
-            .andExpect(jsonPath("$.data.heroScore").value(heroScore))
-            .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userResponse.favoriteWorkingDay().favoriteDate().get(0)))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userResponse.favoriteWorkingDay().favoriteStartTime())))
+            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userResponse.favoriteWorkingDay().favoriteEndTime())))
+            .andExpect(jsonPath("$.data.favoriteRegions").exists())
+            .andExpect(jsonPath("$.data.heroScore").value(userResponse.heroScore()))
+            .andExpect(jsonPath("$.data.isHeroMode").value(userResponse.isHeroMode()))
             .andDo(document("user-find",
                 requestHeaders(
                         headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
@@ -149,6 +142,26 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getTimeFormat())
                         .type(JsonFieldType.STRING)
                         .description("희망 근무 종료 시간"),
+                    fieldWithPath("data.favoriteRegions")
+                        .optional()
+                        .type(JsonFieldType.OBJECT)
+                        .description("선호 지역"),
+                    fieldWithPath("data.favoriteRegions.서울시")
+                        .optional()
+                        .type(JsonFieldType.OBJECT)
+                        .description("시 이름"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구")
+                        .optional()
+                        .type(JsonFieldType.ARRAY)
+                        .description("구 이름"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].id")
+                        .optional()
+                        .type(JsonFieldType.NUMBER)
+                        .description("지역 아이디"),
+                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].dong")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("동 이름"),
                     fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수"),
                     fieldWithPath("data.isHeroMode").type(JsonFieldType.BOOLEAN).description("히어로 모드 활성 여부")
                 )
@@ -164,37 +177,29 @@ class UserControllerTest extends RestDocsSupport {
         var userId = 1L;
         var userBasicInfoRequest = new UserBasicInfoRequest("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userFavoriteWorkingDayRequest = new UserFavoriteWorkingDayRequest(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var userUpadateRequest = new UserUpadateRequest(userId, userBasicInfoRequest, userFavoriteWorkingDayRequest);
+        var userFavoriteRegions = List.of(1L, 2L);
+        var userUpadateRequest = new UserUpadateRequest(userBasicInfoRequest, userFavoriteWorkingDayRequest, userFavoriteRegions);
 
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기소개");
-        var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var userUpdateResponse = new UserUpdateResponse(userId, userBasicInfoResponse, userFavoriteWorkingDayResponse);
+        var userUpdateResponse = new UserUpdateResponse(userId);
 
-        given(userService.updateUser(any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
+        given(userService.updateUser(anyLong(), any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userUpadateRequest)))
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userUpadateRequest)))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
             .andExpect(jsonPath("$.data.id").value(userId))
-            .andExpect(jsonPath("$.data.basicInfo").exists())
-            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoResponse.nickname()))
-            .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoResponse.gender()))
-            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userBasicInfoResponse.birth())))
-            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userBasicInfoResponse.introduce()))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay").exists())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate").isArray())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userFavoriteWorkingDayResponse.favoriteDate().get(0)))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteStartTime())))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
             .andDo(document("user-update",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
                     fieldWithPath("basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
                     fieldWithPath("basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
                     fieldWithPath("basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
@@ -218,7 +223,11 @@ class UserControllerTest extends RestDocsSupport {
                         .optional()
                         .attributes(getTimeFormat())
                         .type(JsonFieldType.STRING)
-                        .description("희망 근무 종료 시간")
+                        .description("희망 근무 종료 시간"),
+                    fieldWithPath("favoriteRegions")
+                        .optional()
+                        .type(JsonFieldType.ARRAY)
+                        .description("선호 지역")
                 ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -228,31 +237,7 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat()),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디"),
-                    fieldWithPath("data.basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
-                    fieldWithPath("data.basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
-                    fieldWithPath("data.basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
-                    fieldWithPath("data.basicInfo.birth").type(JsonFieldType.STRING)
-                        .attributes(getDateFormat())
-                        .description("태어난 날짜"),
-                    fieldWithPath("data.basicInfo.introduce")
-                        .optional()
-                        .description("자기 소개"),
-                    fieldWithPath("data.favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteDate")
-                        .optional()
-                        .type(JsonFieldType.ARRAY)
-                        .description("희망 근무 요일"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteStartTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 시작 시간"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteEndTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 종료 시간")
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디")
                 )
             ));
     }
@@ -444,15 +429,10 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void turnOnHeroMode() throws Exception {
         // given
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
-        var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var heroScore = 60;
-        var isHeroMode = true;
+        var userId = 1L;
 
-        var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
-
-        given(userService.turnOnHeroMode(anyLong())).willReturn(userResponse);
+        var userUpdateResponse = new UserUpdateResponse(userId);
+        given(userService.turnOnHeroMode(anyLong())).willReturn(userUpdateResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-hero")
@@ -463,22 +443,7 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.basicInfo").exists())
-            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoResponse.nickname()))
-            .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoResponse.gender()))
-            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userBasicInfoResponse.birth())))
-            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userBasicInfoResponse.introduce()))
-            .andExpect(jsonPath("$.data.image").exists())
-            .andExpect(jsonPath("$.data.image.originalName").value(userImageResponse.originalName()))
-            .andExpect(jsonPath("$.data.image.uniqueName").value(userImageResponse.uniqueName()))
-            .andExpect(jsonPath("$.data.image.path").value(userImageResponse.path()))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay").exists())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate").isArray())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userFavoriteWorkingDayResponse.favoriteDate().get(0)))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteStartTime())))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
-            .andExpect(jsonPath("$.data.heroScore").value(heroScore))
-            .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
+            .andExpect(jsonPath("$.data.id").value(userId))
             .andDo(document("user-change-hero",
                 requestHeaders(
                         headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
@@ -491,36 +456,8 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat()),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
-                    fieldWithPath("data.basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
-                    fieldWithPath("data.basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
-                    fieldWithPath("data.basicInfo.birth").type(JsonFieldType.STRING)
-                        .attributes(getDateFormat())
-                        .description("태어난 날짜"),
-                    fieldWithPath("data.basicInfo.introduce")
-                        .optional()
-                        .description("자기 소개"),
-                    fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
-                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING).description("원본 이름"),
-                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING).description("고유 이름"),
-                    fieldWithPath("data.image.path").type(JsonFieldType.STRING).description("이미지 경로"),
-                    fieldWithPath("data.favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteDate")
-                        .optional()
-                        .type(JsonFieldType.ARRAY)
-                        .description("희망 근무 요일"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteStartTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 시작 시간"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteEndTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 종료 시간"),
-                    fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수"),
-                    fieldWithPath("data.isHeroMode").type(JsonFieldType.BOOLEAN).description("히어로 모드 활성 여부")
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                        .description("유저 아이디")
                 )
             ));
     }
@@ -529,15 +466,10 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void turnOffHeroMode() throws Exception {
         // given
-        var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
-        var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
-        var heroScore = 60;
-        var isHeroMode = true;
+        var userId = 1L;
 
-        var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
-
-        given(userService.turnOffHeroMode(anyLong())).willReturn(userResponse);
+        var userUpdateResponse = new UserUpdateResponse(userId);
+        given(userService.turnOffHeroMode(anyLong())).willReturn(userUpdateResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-citizen")
@@ -548,22 +480,7 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.serverDateTime").exists())
             .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.data.basicInfo").exists())
-            .andExpect(jsonPath("$.data.basicInfo.nickname").value(userBasicInfoResponse.nickname()))
-            .andExpect(jsonPath("$.data.basicInfo.gender").value(userBasicInfoResponse.gender()))
-            .andExpect(jsonPath("$.data.basicInfo.birth").value(DateTimeConverter.convertDateToString(userBasicInfoResponse.birth())))
-            .andExpect(jsonPath("$.data.basicInfo.introduce").value(userBasicInfoResponse.introduce()))
-            .andExpect(jsonPath("$.data.image").exists())
-            .andExpect(jsonPath("$.data.image.originalName").value(userImageResponse.originalName()))
-            .andExpect(jsonPath("$.data.image.uniqueName").value(userImageResponse.uniqueName()))
-            .andExpect(jsonPath("$.data.image.path").value(userImageResponse.path()))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay").exists())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate").isArray())
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteDate.[0]").value(userFavoriteWorkingDayResponse.favoriteDate().get(0)))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteStartTime())))
-            .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userFavoriteWorkingDayResponse.favoriteEndTime())))
-            .andExpect(jsonPath("$.data.heroScore").value(heroScore))
-            .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
+            .andExpect(jsonPath("$.data.id").value(userId))
             .andDo(document("user-change-citizen",
                 requestHeaders(
                         headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
@@ -576,36 +493,7 @@ class UserControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat()),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
-                    fieldWithPath("data.basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
-                    fieldWithPath("data.basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
-                    fieldWithPath("data.basicInfo.birth").type(JsonFieldType.STRING)
-                        .attributes(getDateFormat())
-                        .description("태어난 날짜"),
-                    fieldWithPath("data.basicInfo.introduce")
-                        .optional()
-                        .description("자기 소개"),
-                    fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
-                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING).description("원본 이름"),
-                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING).description("고유 이름"),
-                    fieldWithPath("data.image.path").type(JsonFieldType.STRING).description("이미지 경로"),
-                    fieldWithPath("data.favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteDate")
-                        .optional()
-                        .type(JsonFieldType.ARRAY)
-                        .description("희망 근무 요일"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteStartTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 시작 시간"),
-                    fieldWithPath("data.favoriteWorkingDay.favoriteEndTime")
-                        .optional()
-                        .attributes(getTimeFormat())
-                        .type(JsonFieldType.STRING)
-                        .description("희망 근무 종료 시간"),
-                    fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수"),
-                    fieldWithPath("data.isHeroMode").type(JsonFieldType.BOOLEAN).description("히어로 모드 활성 여부")
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디")
                 )
             ));
     }
@@ -942,5 +830,37 @@ class UserControllerTest extends RestDocsSupport {
                 .starScore(3)
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    private UserResponse createUserResponse() {
+        return new UserResponse(
+            createUserBasicInfoResponse(),
+            createUserImageResponse(),
+            createUserFavoriteWorkingDayResponse(),
+            createRegionResponses(),
+            30,
+            false
+        );
+    }
+
+    private Map<String, Map<String, List<RegionForUserResponse>>> createRegionResponses() {
+        return Map.of("서울시",
+            Map.of("강남구",
+                List.of(new RegionForUserResponse(1L, "역삼동"),
+                        new RegionForUserResponse(2L, "청담동")
+                )
+            ));
+    }
+
+    private UserBasicInfoResponse createUserBasicInfoResponse() {
+        return new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
+    }
+
+    private UserImageResponse createUserImageResponse() {
+        return new UserImageResponse("profile.jpg", "unique.jpg", "http://");
+    }
+
+    private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {
+        return new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
     }
 }
