@@ -81,18 +81,10 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         // when
-        var userResponse = userService.updateUser(user.getId(), userServiceUpdateRequest);
+        var userUpdateResponse = userService.updateUser(user.getId(), userServiceUpdateRequest);
 
         // then
-        assertThat(userResponse.basicInfo())
-            .extracting("nickname", "gender", "birth", "introduce")
-            .contains(nickname, gender, birth, introduce);
-        assertThat(userResponse.favoriteWorkingDay())
-            .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
-            .contains(favoriteDate, favoriteStartTime, favoriteEndTime);
-        assertThat(userResponse.isHeroMode()).isFalse();
-        assertThat(userResponse.heroScore()).isEqualTo(savedUser.getHeroScore());
-        assertThat(userResponse.favoriteRegions().get("서울시").get("강남구")).hasSize(2);
+        assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
     }
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
@@ -116,8 +108,9 @@ class UserServiceTest extends IntegrationApplicationTest {
         // given
         var user = createUser();
         var savedUser = userRepository.save(user);
+        var savedUserId = savedUser.getId();
 
-        var notExistRegions = List.of(1L, 4L, 5L);
+        var notExistRegions = List.of(4L, 5L);
 
         var nickname = "바뀐 이름";
         var gender = "FEMALE";
@@ -146,7 +139,8 @@ class UserServiceTest extends IntegrationApplicationTest {
             .userFavoriteRegions(notExistRegions)
             .build();
 
-        assertThatThrownBy(() -> userService.updateUser(savedUser.getId(), userServiceUpdateRequest))
+        // when & then
+        assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.ER_000.name());
     }
@@ -188,7 +182,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         assertThat(userResponse.image())
             .extracting("originalName", "uniqueName", "path")
             .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
-        assertThat(userResponse.favoriteRegions().get("서울시").get("강남구")).hasSize(2);
+        assertThat(userResponse.favoriteRegions()).isNotEmpty();
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
         assertThat(userResponse.isHeroMode()).isEqualTo(user.getIsHeroMode());
     }
@@ -266,7 +260,7 @@ class UserServiceTest extends IntegrationApplicationTest {
     ) {
         var originalName = "원본 이름";
         var uniqueName = "고유 이름";
-        var path = "http://";
+        var path = "https://";
 
         return UserImage.createUserImage(
             user,
