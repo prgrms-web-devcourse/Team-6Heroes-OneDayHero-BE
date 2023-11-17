@@ -30,19 +30,19 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<UserResponse>> findUser(
-            @AuthUser Long userId
+        @AuthUser Long userId
     ) {
         var userResponse = userService.findUser(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
     }
 
-    //TODO: @AuthUser 추가
     @PatchMapping
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
+        @AuthUser Long userId,
         @Valid @RequestBody UserUpadateRequest userUpadateRequest
     ) {
-        var userUpdateResponse = userService.updateUser(userUpadateRequest.toService());
+        var userUpdateResponse = userService.updateUser(userId, userUpadateRequest.toService());
 
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
@@ -88,20 +88,20 @@ public class UserController {
     }
 
     @PatchMapping("/change-hero")
-    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOn(
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> turnHeroModeOn(
             @AuthUser Long userId
     ) {
-        var userResponse = userService.turnOnHeroMode(userId);
+        var userUpdateResponse = userService.turnOnHeroMode(userId);
 
-        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+        return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
 
     @PatchMapping("/change-citizen")
-    public ResponseEntity<ApiResponse<UserResponse>> turnHeroModeOff(
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> turnHeroModeOff(
             @AuthUser Long userId
     ) {
-        var userResponse = userService.turnOffHeroMode(userId);
+        var userUpdateResponse = userService.turnOffHeroMode(userId);
 
-        return ResponseEntity.ok(ApiResponse.ok(userResponse));
+        return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
 }

@@ -58,7 +58,7 @@ public class UserImage extends BaseEntity {
             .path(path)
             .build();
 
-        user.setUserImages(userImage);
+        user.setUserImage(userImage);
         return userImage;
     }
 

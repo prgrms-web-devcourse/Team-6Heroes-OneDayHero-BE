@@ -2,8 +2,11 @@ package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.region.Region;
+import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.user.*;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,12 @@ class ProfileServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private UserImageRepository userImageRepository;
+
+    @Autowired
+    private RegionRepository regionRepository;
+
+    @Autowired
+    private UserRegionRepository userRegionRepository;
 
     @DisplayName("상대의 시민 프로필을 조회한다.")
     @Test
@@ -78,6 +87,15 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         var userImage = createUserImage(savedUser);
         userImageRepository.save(userImage);
 
+        var userRegions = regionRepository.findAll().stream()
+            .map(Region::getId)
+            .map(regionId -> UserRegion.builder()
+                .user(user)
+                .regionId(regionId)
+                .build())
+            .toList();
+        userRegionRepository.saveAll(userRegions);
+
         // when
         var userResponse = profileService.findHeroProfile(savedUser.getId());
 
@@ -94,6 +112,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         assertThat(userResponse.image())
             .extracting("originalName", "uniqueName", "path")
             .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+        assertThat(userResponse.favoriteRegions().get("서울시").get("강남구")).hasSize(2);
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
     }
 
