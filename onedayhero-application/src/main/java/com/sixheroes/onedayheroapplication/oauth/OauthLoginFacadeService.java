@@ -25,7 +25,7 @@ public class OauthLoginFacadeService {
     ) {
         for (OauthLoginService oauthLoginService : oauthLoginServices) {
             if (oauthLoginService.supports(authorizationServer)) {
-                log.debug("로그인시도2");
+                System.out.println("로그인2");
                 var userAuthResponse = oauthLoginService.login(code);
 
                 return new LoginResponse(

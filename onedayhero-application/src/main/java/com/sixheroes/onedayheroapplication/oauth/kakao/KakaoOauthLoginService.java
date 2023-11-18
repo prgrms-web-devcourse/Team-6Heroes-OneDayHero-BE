@@ -26,10 +26,12 @@ public class KakaoOauthLoginService implements OauthLoginService {
 
     @Override
     public UserAuthResponse login(String code) {
+        System.out.println("로그인3");
         var accessToken = kakaoOauthClient.requestToken(code);
+        System.out.println("로그인4");
         var userEmail = kakaoOauthClient.requestResource(accessToken);
 
-        log.debug("로그인시도3");
+        System.out.println("로그인5");
 
         return loginService.login(
                 kakaoOauthClient.getSocialType(),

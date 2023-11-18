@@ -24,12 +24,19 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> loginKakao(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
-       log.debug("로그인 시도 {}", loginRequest.code());
+        System.out.println("로그인1");
         var loginResponse = oauthLoginFacadeService.login(
                 oauthProperties.getKakao().getAuthorizationServer(),
                 loginRequest.code()
         );
-        log.debug("회원가입 성공 {}", loginRequest.code());
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
+    }
+
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<ApiResponse<LoginResponse>> callback(
+            @RequestParam String code
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(new LoginResponse(1L, code)));
     }
 }
