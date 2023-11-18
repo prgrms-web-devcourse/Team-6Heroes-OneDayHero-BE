@@ -1,8 +1,6 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
-import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
-import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +19,9 @@ public class UserService {
     public UserResponse findUser(
         Long userId
     ) {
-        var userQueryDto = userReader.findOneWithUserImage(userId);
+        var userQueryDto = userReader.findOne(userId);
 
         return UserResponse.from(userQueryDto);
-    }
-
-    public ProfileCitizenResponse findCitizenProfile(
-        Long userId
-    ) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ProfileHeroResponse findHeroProfile(
-        Long userId
-    ) {
-        // TODO 히어로 모드가 활성화 되어있는지 확인
-        throw new UnsupportedOperationException();
     }
 
     @Transactional
@@ -53,16 +38,22 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse turnHeroModeOn(
+    public UserResponse turnOnHeroMode(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOne(userId);
+        user.changeHeroModeOn();
+
+        return UserResponse.from(user);
     }
 
     @Transactional
-    public UserResponse turnHeroModeOff(
+    public UserResponse turnOffHeroMode(
         Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var user = userReader.findOne(userId);
+        user.changeHeroModeOff();
+
+        return UserResponse.from(user);
     }
 }
