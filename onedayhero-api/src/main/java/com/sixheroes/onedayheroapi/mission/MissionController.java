@@ -103,6 +103,6 @@ public class MissionController {
             @Valid @RequestBody MissionDeleteRequest request
     ) {
         missionService.deleteMission(missionId, request.citizenId());
-        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

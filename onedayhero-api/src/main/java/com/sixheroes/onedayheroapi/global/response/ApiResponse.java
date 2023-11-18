@@ -22,7 +22,7 @@ public record ApiResponse<T>(
         return new ApiResponse<>(HttpStatus.CREATED.value(), data, LocalDateTime.now());
     }
 
-    public static <T> ApiResponse<T> noContent(T data) {
-        return new ApiResponse<>(HttpStatus.NO_CONTENT.value(), data, LocalDateTime.now());
+    public static <T> ApiResponse<T> noContent() {
+        return new ApiResponse<>(HttpStatus.NO_CONTENT.value(), null, LocalDateTime.now());
     }
 }

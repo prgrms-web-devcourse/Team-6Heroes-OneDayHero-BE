@@ -38,6 +38,6 @@ public class MissionBookmarkController {
     ) {
         missionBookmarkService.cancelMissionBookmark(userId, request.toService());
 
-        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

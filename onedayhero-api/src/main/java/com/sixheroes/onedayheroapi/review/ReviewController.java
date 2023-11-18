@@ -85,6 +85,6 @@ public class ReviewController {
     ) {
         reviewService.delete(reviewId);
 
-        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }
