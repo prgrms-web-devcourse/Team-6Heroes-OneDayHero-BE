@@ -110,7 +110,7 @@ class UserServiceTest extends IntegrationApplicationTest {
         var savedUser = userRepository.save(user);
         var savedUserId = savedUser.getId();
 
-        var notExistRegions = List.of(4L, 5L);
+        var notExistRegions = List.of(100L, 101L);
 
         var nickname = "바뀐 이름";
         var gender = "FEMALE";
@@ -217,7 +217,7 @@ class UserServiceTest extends IntegrationApplicationTest {
     @DisplayName("유저의 히어로 모드를 활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
     @Transactional(readOnly = true)
     @Test
-    void turnOnHeroModeWhenNotExisit() {
+    void turnOnHeroModeWhenNotExist() {
         // given
         var notExistUserId = 2L;
 
@@ -245,7 +245,7 @@ class UserServiceTest extends IntegrationApplicationTest {
     @DisplayName("유저의 히어로 모드를 비활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
     @Transactional(readOnly = true)
     @Test
-    void turnOnHeroModeWhenNotExsist() {
+    void turnOffHeroModeWhenNotExist() {
         // given
         var notExistUserId = 2L;
 
