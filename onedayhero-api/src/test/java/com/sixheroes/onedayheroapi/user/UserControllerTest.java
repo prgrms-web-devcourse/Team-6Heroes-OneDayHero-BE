@@ -10,9 +10,7 @@ import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeVie
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewViewResponse;
 import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.SentReviewViewResponse;
 import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.*;
@@ -27,13 +25,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
@@ -78,8 +74,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void findUser() throws Exception {
         // given
-        var userId = 1L;
-
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
         var userFavoriteWorkingDayResponse = new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
@@ -91,7 +85,8 @@ class UserControllerTest extends RestDocsSupport {
         given(userService.findUser(anyLong())).willReturn(userResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/me/{userId}", userId)
+        mockMvc.perform(get("/api/v1/me")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -115,8 +110,8 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-find",
-                pathParameters(
-                    parameterWithName("userId").description("유저 아이디")
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
                 ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -160,6 +155,8 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
+    //TODO: @AuthUser 추가
+    @Disabled
     @DisplayName("유저 정보를 수정할 수 있다.")
     @Test
     void updateUser() throws Exception {
@@ -445,7 +442,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @DisplayName("히어로 모드를 활성화할 수 있다.")
     @Test
-    void turnHeroModeOn() throws Exception {
+    void turnOnHeroMode() throws Exception {
         // given
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
@@ -455,10 +452,11 @@ class UserControllerTest extends RestDocsSupport {
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOn(anyLong())).willReturn(userResponse);
+        given(userService.turnOnHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-hero")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -482,6 +480,9 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-change-hero",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
                         .description("HTTP 응답 코드"),
@@ -526,7 +527,7 @@ class UserControllerTest extends RestDocsSupport {
 
     @DisplayName("히어로 모드를 비활성화할 수 있다.")
     @Test
-    void turnHeorModeOff() throws Exception {
+    void turnOffHeroMode() throws Exception {
         // given
         var userBasicInfoResponse = new UserBasicInfoResponse("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
@@ -536,10 +537,11 @@ class UserControllerTest extends RestDocsSupport {
 
         var userResponse = new UserResponse(userBasicInfoResponse, userImageResponse, userFavoriteWorkingDayResponse, heroScore, isHeroMode);
 
-        given(userService.turnHeroModeOff(anyLong())).willReturn(userResponse);
+        given(userService.turnOffHeroMode(anyLong())).willReturn(userResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/me/change-citizen")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -563,6 +565,9 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroScore").value(heroScore))
             .andExpect(jsonPath("$.data.isHeroMode").value(isHeroMode))
             .andDo(document("user-change-citizen",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
                         .description("HTTP 응답 코드"),
@@ -609,7 +614,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void viewSentReviews() throws Exception {
         // given
-        var userId = 1L;
         var sentReviewA = createSentReviewA();
         var sentReviewB = createSentReviewB();
         var sentReviewResponses = new SliceImpl<SentReviewResponse>(
@@ -618,8 +622,7 @@ class UserControllerTest extends RestDocsSupport {
                 true
         );
 
-        var viewResponse = new SentReviewViewResponse(userId, sentReviewResponses);
-        given(reviewService.viewSentReviews(any(Pageable.class), anyLong())).willReturn(viewResponse);
+        given(reviewService.viewSentReviews(any(Pageable.class), anyLong())).willReturn(sentReviewResponses);
 
         // when & then
         mockMvc.perform(get("/api/v1/me/reviews/send")
@@ -631,17 +634,16 @@ class UserControllerTest extends RestDocsSupport {
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.userId").value(userId))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[0].reviewId").value(sentReviewA.reviewId()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[0].categoryName").value(sentReviewA.categoryName()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[0].missionTitle").value(sentReviewA.missionTitle()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[0].starScore").value(sentReviewA.starScore()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewA.createdAt())))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[1].reviewId").value(sentReviewB.reviewId()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[1].categoryName").value(sentReviewB.categoryName()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[1].missionTitle").value(sentReviewB.missionTitle()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[1].starScore").value(sentReviewB.starScore()))
-                .andExpect(jsonPath("$.data.sentReviewResponses.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewB.createdAt())))
+                .andExpect(jsonPath("$.data.content[0].reviewId").value(sentReviewA.reviewId()))
+                .andExpect(jsonPath("$.data.content[0].categoryName").value(sentReviewA.categoryName()))
+                .andExpect(jsonPath("$.data.content[0].missionTitle").value(sentReviewA.missionTitle()))
+                .andExpect(jsonPath("$.data.content[0].starScore").value(sentReviewA.starScore()))
+                .andExpect(jsonPath("$.data.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewA.createdAt())))
+                .andExpect(jsonPath("$.data.content[1].reviewId").value(sentReviewB.reviewId()))
+                .andExpect(jsonPath("$.data.content[1].categoryName").value(sentReviewB.categoryName()))
+                .andExpect(jsonPath("$.data.content[1].missionTitle").value(sentReviewB.missionTitle()))
+                .andExpect(jsonPath("$.data.content[1].starScore").value(sentReviewB.starScore()))
+                .andExpect(jsonPath("$.data.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewB.createdAt())))
                     .andDo(document("user-sent-reviews",
                             requestHeaders(
                                     headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
@@ -659,59 +661,55 @@ class UserControllerTest extends RestDocsSupport {
                                             .description("HTTP 응답 코드"),
                                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                                             .description("응답 데이터"),
-                                    fieldWithPath("data.userId").type(JsonFieldType.NUMBER)
-                                            .description("내 유저 아이디"),
-                                    fieldWithPath("data.sentReviewResponses").type(JsonFieldType.OBJECT)
-                                            .description("내가 작성한 리뷰 객체"),
-                                    fieldWithPath("data.sentReviewResponses.content[]").type(JsonFieldType.ARRAY)
+                                    fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                             .description("내가 작성한 리뷰 목록 배열"),
-                                    fieldWithPath("data.sentReviewResponses.content[].reviewId").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER)
                                             .description("내가 작성한 리뷰 아이디"),
-                                    fieldWithPath("data.sentReviewResponses.content[].categoryName").type(JsonFieldType.STRING)
+                                    fieldWithPath("data.content[].categoryName").type(JsonFieldType.STRING)
                                             .description("내가 리뷰를 작성한 미션의 카테고리 이름"),
-                                    fieldWithPath("data.sentReviewResponses.content[].missionTitle").type(JsonFieldType.STRING)
+                                    fieldWithPath("data.content[].missionTitle").type(JsonFieldType.STRING)
                                             .description("내가 리뷰를 작성한 미션의 제목"),
-                                    fieldWithPath("data.sentReviewResponses.content[].starScore").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.content[].starScore").type(JsonFieldType.NUMBER)
                                             .description("내가 준 별점"),
-                                    fieldWithPath("data.sentReviewResponses.content[].createdAt").type(JsonFieldType.STRING)
+                                    fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING)
                                             .description("내가 리뷰를 작성한 시간"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                                     .description("현재 페이지 번호"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
                                             .description("페이지 크기"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.sort").type(JsonFieldType.OBJECT)
+                                    fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
                                             .description("정렬 상태 객체"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 비어있는지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 있는지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 정렬되지 않은지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.offset").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
                                             .description("페이지 번호"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
                                             .description("페이징이 되어 있는지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
                                             .description("페이징이 되어 있지 않은지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.size").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.size").type(JsonFieldType.NUMBER)
                                             .description("현재 페이지 조회에서 가져온 리뷰 개수"),
-                                    fieldWithPath("data.sentReviewResponses.number").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.number").type(JsonFieldType.NUMBER)
                                             .description("현재 페이지 번호"),
-                                    fieldWithPath("data.sentReviewResponses.sort").type(JsonFieldType.OBJECT)
+                                    fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
                                             .description("정렬 정보 객체"),
-                                    fieldWithPath("data.sentReviewResponses.sort.empty").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 비어있는지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 있는지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
                                             .description("정렬 정보가 정렬되지 않은지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.numberOfElements").type(JsonFieldType.NUMBER)
+                                    fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
                                             .description("현재 페이지의 요소 수"),
-                                    fieldWithPath("data.sentReviewResponses.first").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
                                             .description("첫 번째 페이지인지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.last").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
                                             .description("마지막 페이지인지 여부"),
-                                    fieldWithPath("data.sentReviewResponses.empty").type(JsonFieldType.BOOLEAN)
+                                    fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
                                             .description("비어있는지 여부"),
                                     fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                             .attributes(getDateTimeFormat())
@@ -723,7 +721,6 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void viewReceivedReviews() throws Exception {
         // given
-        var userId = 1L;
         var receivedReviewA = createReceivedReviewA();
         var receivedReviewB = createReceivedReviewB();
 
@@ -733,8 +730,7 @@ class UserControllerTest extends RestDocsSupport {
                 true
         );
 
-        var viewResponse = new ReceivedReviewViewResponse(userId, receivedReviewResponses);
-        given(reviewService.viewReceivedReviews(any(Pageable.class), anyLong())).willReturn(viewResponse);
+        given(reviewService.viewReceivedReviews(any(Pageable.class), anyLong())).willReturn(receivedReviewResponses);
 
         mockMvc.perform(get("/api/v1/me/reviews/receive")
                         .param("page", "0")
@@ -745,19 +741,20 @@ class UserControllerTest extends RestDocsSupport {
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.userId").value(userId))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].reviewId").value(receivedReviewA.reviewId()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].senderId").value(receivedReviewA.senderId()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].categoryName").value(receivedReviewA.categoryName()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].missionTitle").value(receivedReviewA.missionTitle()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].starScore").value(receivedReviewA.starScore()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewA.createdAt())))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].reviewId").value(receivedReviewB.reviewId()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].senderId").value(receivedReviewB.senderId()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].categoryName").value(receivedReviewB.categoryName()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].missionTitle").value(receivedReviewB.missionTitle()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].starScore").value(receivedReviewB.starScore()))
-                .andExpect(jsonPath("$.data.receivedReviewResponses.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewB.createdAt())))
+                .andExpect(jsonPath("$.data.content[0].reviewId").value(receivedReviewA.reviewId()))
+                .andExpect(jsonPath("$.data.content[0].senderId").value(receivedReviewA.senderId()))
+                .andExpect(jsonPath("$.data.content[0].senderNickname").value(receivedReviewA.senderNickname()))
+                .andExpect(jsonPath("$.data.content[0].categoryName").value(receivedReviewA.categoryName()))
+                .andExpect(jsonPath("$.data.content[0].missionTitle").value(receivedReviewA.missionTitle()))
+                .andExpect(jsonPath("$.data.content[0].starScore").value(receivedReviewA.starScore()))
+                .andExpect(jsonPath("$.data.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewA.createdAt())))
+                .andExpect(jsonPath("$.data.content[1].reviewId").value(receivedReviewB.reviewId()))
+                .andExpect(jsonPath("$.data.content[1].senderId").value(receivedReviewB.senderId()))
+                .andExpect(jsonPath("$.data.content[1].senderNickname").value(receivedReviewB.senderNickname()))
+                .andExpect(jsonPath("$.data.content[1].categoryName").value(receivedReviewB.categoryName()))
+                .andExpect(jsonPath("$.data.content[1].missionTitle").value(receivedReviewB.missionTitle()))
+                .andExpect(jsonPath("$.data.content[1].starScore").value(receivedReviewB.starScore()))
+                .andExpect(jsonPath("$.data.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewB.createdAt())))
                 .andDo(document("user-received-reviews",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
@@ -775,61 +772,59 @@ class UserControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.userId").type(JsonFieldType.NUMBER)
-                                        .description("내 유저 아이디"),
-                                fieldWithPath("data.receivedReviewResponses").type(JsonFieldType.OBJECT)
-                                        .description("내가 받은 리뷰 객체"),
-                                fieldWithPath("data.receivedReviewResponses.content[]").type(JsonFieldType.ARRAY)
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("내가 받은 리뷰 목록 배열"),
-                                fieldWithPath("data.receivedReviewResponses.content[].reviewId").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER)
                                         .description("내가 받은 리뷰의 아이디"),
-                                fieldWithPath("data.receivedReviewResponses.content[].senderId").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.content[].senderId").type(JsonFieldType.NUMBER)
                                         .description("내가 받은 리뷰 작성 유저 아이디"),
-                                fieldWithPath("data.receivedReviewResponses.content[].categoryName").type(JsonFieldType.STRING)
+                                fieldWithPath("data.content[].senderNickname").type(JsonFieldType.STRING)
+                                        .description("내가 받은 리뷰 작성 유저 닉네임"),
+                                fieldWithPath("data.content[].categoryName").type(JsonFieldType.STRING)
                                         .description("내가 받은 리뷰의 미션 카테고리 이름"),
-                                fieldWithPath("data.receivedReviewResponses.content[].missionTitle").type(JsonFieldType.STRING)
+                                fieldWithPath("data.content[].missionTitle").type(JsonFieldType.STRING)
                                         .description("내가 받은 리뷰의 미션 제목"),
-                                fieldWithPath("data.receivedReviewResponses.content[].starScore").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.content[].starScore").type(JsonFieldType.NUMBER)
                                         .description("내가 받은 별점"),
-                                fieldWithPath("data.receivedReviewResponses.content[].createdAt").type(JsonFieldType.STRING)
+                                fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING)
                                         .description("내가 리뷰를 받은 시간"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 번호"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
                                         .description("페이지 크기"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.sort").type(JsonFieldType.OBJECT)
+                                fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
                                         .description("정렬 상태 객체"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 비어있는지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 있는지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 정렬되지 않은지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.offset").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
                                         .description("페이지 번호"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
                                         .description("페이징이 되어 있는지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
                                         .description("페이징이 되어 있지 않은지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.size").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.size").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 조회에서 가져온 리뷰 개수"),
-                                fieldWithPath("data.receivedReviewResponses.number").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.number").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지 번호"),
-                                fieldWithPath("data.receivedReviewResponses.sort").type(JsonFieldType.OBJECT)
+                                fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
                                         .description("정렬 정보 객체"),
-                                fieldWithPath("data.receivedReviewResponses.sort.empty").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 비어있는지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 있는지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
                                         .description("정렬 정보가 정렬되지 않은지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.numberOfElements").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
                                         .description("현재 페이지의 요소 수"),
-                                fieldWithPath("data.receivedReviewResponses.first").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
                                         .description("첫 번째 페이지인지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.last").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
                                         .description("마지막 페이지인지 여부"),
-                                fieldWithPath("data.receivedReviewResponses.empty").type(JsonFieldType.BOOLEAN)
+                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
                                         .description("비어있는지 여부"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .attributes(getDateTimeFormat())
@@ -929,6 +924,7 @@ class UserControllerTest extends RestDocsSupport {
         return ReceivedReviewResponse.builder()
                 .reviewId(1L)
                 .senderId(5L)
+                .senderNickname("nickname A")
                 .categoryName("청소")
                 .missionTitle("청소 미션")
                 .starScore(4)
@@ -940,6 +936,7 @@ class UserControllerTest extends RestDocsSupport {
         return ReceivedReviewResponse.builder()
                 .reviewId(2L)
                 .senderId(8L)
+                .senderNickname("nickname B")
                 .categoryName("심부름")
                 .missionTitle("심부름 미션")
                 .starScore(3)

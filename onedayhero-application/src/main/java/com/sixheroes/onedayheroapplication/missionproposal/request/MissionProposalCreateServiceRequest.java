@@ -5,7 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record MissionProposalCreateServiceRequest(
-    Long userId,
     Long missionId,
     Long heroId
 ) {

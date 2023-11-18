@@ -45,11 +45,14 @@ public class MissionBookmarkService {
         );
     }
 
-    public MissionBookmarkCreateResponse createMissionBookmark(MissionBookmarkCreateServiceRequest request) {
+    public MissionBookmarkCreateResponse createMissionBookmark(
+            Long userId,
+            MissionBookmarkCreateServiceRequest request
+    ) {
         var mission = missionReader.findOne(request.missionId());
         var missionBookmark = MissionBookmark.builder()
                 .mission(mission)
-                .userId(request.userId())
+                .userId(userId)
                 .build();
 
         try {
@@ -60,17 +63,20 @@ public class MissionBookmarkService {
         } catch (DataIntegrityViolationException e) {
             log.debug("이미 해당 미션에 찜을 한 상태입니다. missionId={}, userId={}",
                     request.missionId(),
-                    request.userId()
+                    userId
             );
             throw new IllegalStateException(ErrorCode.T_001.name());
         }
     }
 
-    public MissionBookmarkCancelResponse cancelMissionBookmark(MissionBookmarkCancelServiceRequest request) {
+    public MissionBookmarkCancelResponse cancelMissionBookmark(
+            Long userId,
+            MissionBookmarkCancelServiceRequest request
+    ) {
         var mission = missionReader.findOne(request.missionId());
         var findMissionBookmark = missionBookmarkReader.findByMissionIdAndUserId(
                 request.missionId(),
-                request.userId()
+                userId
         );
 
         missionBookmarkRepository.delete(findMissionBookmark);

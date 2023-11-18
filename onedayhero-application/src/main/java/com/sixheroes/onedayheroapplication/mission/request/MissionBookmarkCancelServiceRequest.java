@@ -4,7 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record MissionBookmarkCancelServiceRequest(
-        Long missionId,
-        Long userId
+        Long missionId
 ) {
 }

@@ -4,14 +4,12 @@
 ==== HTTP Request
 
 include::{snippets}/mission-proposal-create/http-request.adoc[]
+include::{snippets}/mission-proposal-create/request-headers.adoc[]
 include::{snippets}/mission-proposal-create/request-fields.adoc[]
 
 ==== HTTP Response
 
 include::{snippets}/mission-proposal-create/http-response.adoc[]
-
-include::{snippets}/mission-proposal-create/response-fields.adoc[]
-
 include::{snippets}/mission-proposal-create/response-fields.adoc[]
 
 [[mission-proposal-approve]]
@@ -20,8 +18,8 @@ include::{snippets}/mission-proposal-create/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/mission-proposal-approve/http-request.adoc[]
+include::{snippets}/mission-proposal-approve/request-headers.adoc[]
 include::{snippets}/mission-proposal-approve/path-parameters.adoc[]
-include::{snippets}/mission-proposal-approve/request-fields.adoc[]
 
 ==== HTTP Response
 
@@ -34,8 +32,7 @@ include::{snippets}/mission-proposal-approve/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/mission-proposal-reject/http-request.adoc[]
-include::{snippets}/mission-proposal-reject/path-parameters.adoc[]
-include::{snippets}/mission-proposal-reject/request-fields.adoc[]
+include::{snippets}/mission-proposal-reject/request-headers.adoc[]
 
 ==== HTTP Response
 
@@ -48,6 +45,7 @@ include::{snippets}/mission-proposal-reject/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/mission-proposal-find/http-request.adoc[]
+include::{snippets}/mission-proposal-find/request-headers.adoc[]
 include::{snippets}/mission-proposal-find/query-parameters.adoc[]
 
 ==== HTTP Response

@@ -5,16 +5,12 @@ import jakarta.validation.constraints.NotNull;
 
 public record MissionBookmarkCancelRequest(
         @NotNull(message = "미션 아이디는 필수 값 입니다.")
-        Long missionId,
-
-        @NotNull(message = "유저 아이디는 필수 값 입니다.")
-        Long userId
+        Long missionId
 ) {
 
     public MissionBookmarkCancelServiceRequest toService() {
         return MissionBookmarkCancelServiceRequest.builder()
                 .missionId(missionId)
-                .userId(userId)
                 .build();
     }
 }
