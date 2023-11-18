@@ -61,9 +61,7 @@ public class ReviewController {
                 MultipartFileMapper.mapToServiceRequests(images)
         );
 
-        return ResponseEntity.created(
-                URI.create("/api/v1/reviews/" + response.id()))
-                .body(ApiResponse.created(response));
+        return ResponseEntity.created(URI.create("/api/v1/reviews/" + response.id())).body(ApiResponse.created(response));
     }
 
     @PostMapping("/{reviewId}")
@@ -87,9 +85,6 @@ public class ReviewController {
     ) {
         reviewService.delete(reviewId);
 
-        return new ResponseEntity<>(
-                ApiResponse.noContent(null),
-                HttpStatus.NO_CONTENT
-        );
+        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
     }
 }

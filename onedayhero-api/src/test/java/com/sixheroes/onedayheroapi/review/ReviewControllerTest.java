@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -72,6 +73,7 @@ class ReviewControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/reviews/{reviewId}", response.id())
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(response.id()))
@@ -168,6 +170,7 @@ class ReviewControllerTest extends RestDocsSupport {
                                 .file(reviewCreateRequest)
                                 .file(imageA)
                                 .file(imageB)
+                                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -228,6 +231,7 @@ class ReviewControllerTest extends RestDocsSupport {
                         multipart(HttpMethod.POST, "/api/v1/reviews/{reviewId}", 1L)
                                 .file(reviewUpdateRequest)
                                 .file(imageA)
+                                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -262,7 +266,9 @@ class ReviewControllerTest extends RestDocsSupport {
         willDoNothing().given(reviewService).delete(anyLong());
 
         // when & then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/reviews/{reviewId}", reviewId))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/reviews/{reviewId}", reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                )
                 .andDo(document("review-delete",
                         pathParameters(
                                 parameterWithName("reviewId")

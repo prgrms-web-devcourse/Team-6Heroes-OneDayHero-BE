@@ -126,14 +126,13 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         );
 
         // when
-        var response = missionBookmarkService.cancelMissionBookmark(
+        missionBookmarkService.cancelMissionBookmark(
                 bookmarkUserId,
                 createMissionBookmarkCancelServiceRequest(mission.getId())
         );
 
         // then
         assertSoftly(soft -> {
-            soft.assertThat(response).isNotNull();
             soft.assertThat(mission.getBookmarkCount()).isEqualTo(0);
         });
     }
