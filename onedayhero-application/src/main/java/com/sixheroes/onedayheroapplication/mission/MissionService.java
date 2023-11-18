@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -155,18 +154,15 @@ public class MissionService {
                 .map(response -> {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
                     return MissionResponse.from(response, missionImages);
-                })
-                .collect(Collectors.toList());
+                }).toList();
     }
 
     private List<MissionProgressResponse> makeProgressMissionResponseWithImages(List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses) {
         return sliceMissionProgressQueryResponses.stream()
                 .map((queryResponse) -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
-                    if (!missionImages.isEmpty()) {
-                        return MissionProgressResponse.from(queryResponse, missionImages.get(0).getPath());
-                    }
-                    return MissionProgressResponse.from(queryResponse, null);
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    return MissionProgressResponse.from(queryResponse, thumbNailPath);
                 }).toList();
     }
 
