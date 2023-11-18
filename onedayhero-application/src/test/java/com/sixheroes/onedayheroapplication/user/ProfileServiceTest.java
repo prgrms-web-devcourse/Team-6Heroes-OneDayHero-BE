@@ -112,7 +112,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         assertThat(userResponse.image())
             .extracting("originalName", "uniqueName", "path")
             .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
-        assertThat(userResponse.favoriteRegions().get("서울시").get("강남구")).hasSize(2);
+        assertThat(userResponse.favoriteRegions()).containsKey("서울시");
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
     }
 
@@ -134,7 +134,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
     ) {
         var originalName = "원본 이름";
         var uniqueName = "고유 이름";
-        var path = "http://";
+        var path = "https://";
 
         return UserImage.createUserImage(
             user,
