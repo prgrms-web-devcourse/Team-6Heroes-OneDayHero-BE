@@ -6,13 +6,14 @@ import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
-import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponses;
+import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,7 +33,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<ApiResponse<MissionChatRoomFindResponses>> findByChatRoomId(
+    public ResponseEntity<ApiResponse<List<MissionChatRoomFindResponse>>> findByChatRoomId(
             @PathVariable Long userId
     ) {
         var result = chatRoomService.findJoinedChatRoom(userId);

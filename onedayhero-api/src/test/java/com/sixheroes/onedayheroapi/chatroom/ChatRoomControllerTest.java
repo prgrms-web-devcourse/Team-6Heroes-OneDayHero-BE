@@ -8,7 +8,6 @@ import com.sixheroes.onedayheroapplication.chatroom.request.CreateMissionChatRoo
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponse;
-import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponses;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,7 +105,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
         // given
         var userId = 1L;
 
-        var response = MissionChatRoomFindResponses.from(
+        var response =
                 List.of(
                         MissionChatRoomFindResponse.builder()
                                 .id(1L)
@@ -132,8 +131,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                                 ))
                                 .headCount(2)
                                 .build()
-                )
-        );
+                );
 
         given(chatRoomService.findJoinedChatRoom(any(Long.class)))
                 .willReturn(response);
