@@ -10,13 +10,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.snippet.Attributes;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,13 +45,14 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
         // given
         var request = createMissionBookmarkCreateApplicationRequest();
         var response = createMissionBookmarkCreateResponse();
-        given(missionBookmarkService.createMissionBookmark(any(MissionBookmarkCreateServiceRequest.class)))
+        given(missionBookmarkService.createMissionBookmark(anyLong(), any(MissionBookmarkCreateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
         mockMvc.perform(post("/api/v1/bookmarks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
         ).andDo(print())
                 .andExpect(header().string("Location", "/api/v1/missions/" + request.missionId()))
                 .andExpect(status().isCreated())
@@ -57,11 +62,12 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.userId").value(response.userId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-bookmark-create",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
-                                        .description("미션 아이디"),
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
+                                        .description("미션 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -87,26 +93,27 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
         // given
         var request = createMissionBookmarkCancelApplicationRequest();
         var response = createMissionBookmarkCancelResponse();
-        given(missionBookmarkService.cancelMissionBookmark(any(MissionBookmarkCancelServiceRequest.class)))
+        given(missionBookmarkService.cancelMissionBookmark(anyLong(), any(MissionBookmarkCancelServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
         mockMvc.perform(delete("/api/v1/bookmarks")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .content(objectMapper.writeValueAsString(request))
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.missionBookmarkId").value(response.missionBookmarkId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
-                .andExpect(jsonPath("$.data.userId").value(response.userId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-bookmark-cancel",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
-                                        .description("미션 아이디"),
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
+                                        .description("미션 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -129,7 +136,6 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
     private MissionBookmarkCreateServiceRequest createMissionBookmarkCreateApplicationRequest() {
         return MissionBookmarkCreateServiceRequest.builder()
                 .missionId(1L)
-                .userId(10L)
                 .build();
     }
 
@@ -137,14 +143,13 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
         return MissionBookmarkCreateResponse.builder()
                 .missionBookmarkId(1L)
                 .missionId(1L)
-                .userId(10L)
+                .userId(1L)
                 .build();
     }
 
     private MissionBookmarkCancelServiceRequest createMissionBookmarkCancelApplicationRequest() {
         return MissionBookmarkCancelServiceRequest.builder()
                 .missionId(1L)
-                .userId(10L)
                 .build();
     }
 
@@ -152,7 +157,7 @@ class MissionBookmarkControllerTest extends RestDocsSupport {
         return MissionBookmarkCancelResponse.builder()
                 .missionBookmarkId(1L)
                 .missionId(1L)
-                .userId(10L)
+                .userId(1L)
                 .build();
     }
 }
