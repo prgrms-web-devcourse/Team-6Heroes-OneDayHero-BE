@@ -19,7 +19,7 @@ public class MissionMatchController {
 
     private final MissionMatchService missionMatchService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResponse<MissionMatchResponse>> createMissionMatch(
             @AuthUser Long userId,
             @Valid @RequestBody MissionMatchCreateRequest request

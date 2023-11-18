@@ -50,7 +50,7 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(post("/api/v1/mission-matches/create")
+        mockMvc.perform(post("/api/v1/mission-matches")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
