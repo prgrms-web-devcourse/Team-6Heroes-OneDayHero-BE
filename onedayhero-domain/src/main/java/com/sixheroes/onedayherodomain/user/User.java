@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Getter
@@ -65,17 +66,22 @@ public class User extends BaseEntity {
         return new User(
                 email,
                 userSocialType,
-                userRole);
+                userRole,
+                UserBasicInfo.defaultNickname()
+        );
     }
 
     private User(
             Email email,
             UserSocialType userSocialType,
-            UserRole userRole) {
+            UserRole userRole,
+            UserBasicInfo userBasicInfo
+    ) {
         this.email = email;
         this.userSocialType = userSocialType;
         this.userRole = userRole;
         this.heroScore = 30;
+        this.userBasicInfo = userBasicInfo;
         this.isHeroMode = false;
         this.isDeleted = false;
     }

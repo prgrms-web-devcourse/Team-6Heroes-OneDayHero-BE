@@ -24,7 +24,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> loginKakao(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
-        System.out.println("로그인1");
         var loginResponse = oauthLoginFacadeService.login(
                 oauthProperties.getKakao().getAuthorizationServer(),
                 loginRequest.code()

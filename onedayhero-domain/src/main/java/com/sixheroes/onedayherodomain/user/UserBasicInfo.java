@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Slf4j
 @Getter
@@ -31,6 +32,17 @@ public class UserBasicInfo {
 
     @Column(name = "introduce", length = 200, nullable = true)
     private String introduce;
+
+    //닉네임 조회 시 오류 방지를 위해 임시 설정
+    public static UserBasicInfo defaultNickname() {
+        return new UserBasicInfo("user-" + UUID.randomUUID().toString().substring(0, 10));
+    }
+
+    private UserBasicInfo(
+            String nickname
+    ) {
+        this.nickname = nickname;
+    }
 
     @Builder
     private UserBasicInfo(
