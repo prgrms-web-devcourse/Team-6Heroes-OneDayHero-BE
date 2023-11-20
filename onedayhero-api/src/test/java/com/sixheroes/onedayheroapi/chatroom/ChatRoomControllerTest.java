@@ -56,6 +56,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
         var response = MissionChatRoomCreateResponse.builder()
                 .id(1L)
                 .missionId(request.missionId())
+                .headCount(2)
                 .build();
 
         given(chatRoomService.createChatRoom(any(CreateMissionChatRoomServiceRequest.class)))
@@ -84,6 +85,8 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                                         .description("채팅방 아이디"),
                                 fieldWithPath("data.missionId").type(JsonFieldType.NUMBER)
                                         .description("미션 아이디"),
+                                fieldWithPath("data.headCount").type(JsonFieldType.NUMBER)
+                                        .description("채팅방 인원 수"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간")
                                         .attributes(getDateTimeFormat())
@@ -93,6 +96,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
+                .andExpect(jsonPath("$.data.headCount").value(response.headCount()))
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 

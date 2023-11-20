@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCrea
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponses;
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
+import com.sixheroes.onedayherochat.application.repository.request.MissionChatRoomRedisRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.UserMissionChatRoom;
@@ -33,7 +34,7 @@ public class ChatRoomService {
     ) {
         var missionChatRoom = MissionChatRoom.createMissionChatRoom(request.missionId(), request.userIds());
         var savedMissionChatRoom = missionChatRoomRepository.save(missionChatRoom);
-        missionChatRoomRedisRepository.create(savedMissionChatRoom);
+        missionChatRoomRedisRepository.create(MissionChatRoomRedisRequest.from(missionChatRoom));
 
         return MissionChatRoomCreateResponse.from(savedMissionChatRoom);
     }

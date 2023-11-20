@@ -1,5 +1,6 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -55,6 +56,9 @@ public class UserMissionChatRoom {
     }
 
     public void exit() {
+        if (!isJoined) {
+            throw new IllegalStateException(ErrorCode.T_001.name());
+        }
         isJoined = false;
     }
 }

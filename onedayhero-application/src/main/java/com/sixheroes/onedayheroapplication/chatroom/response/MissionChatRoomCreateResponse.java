@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record MissionChatRoomCreateResponse(
         Long id,
-        Long missionId
+        Long missionId,
+        Integer headCount
 ) {
 
     public static MissionChatRoomCreateResponse from(
@@ -15,6 +16,7 @@ public record MissionChatRoomCreateResponse(
         return MissionChatRoomCreateResponse.builder()
                 .id(missionChatRoom.getId())
                 .missionId(missionChatRoom.getMissionId())
+                .headCount(missionChatRoom.getHeadCount())
                 .build();
     }
 }
