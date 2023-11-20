@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ChatMessageController {
@@ -18,6 +20,7 @@ public class ChatMessageController {
             @DestinationVariable("chatRoomId") Long chatRoomId,
             ChatMessageRequest message
     ) {
-        chatService.send(chatRoomId, message);
+        var serverTime = LocalDateTime.now();
+        chatService.send(chatRoomId, message, serverTime);
     }
 }
