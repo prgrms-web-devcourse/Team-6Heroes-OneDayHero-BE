@@ -5,7 +5,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
@@ -13,7 +12,6 @@ import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -31,11 +29,11 @@ public class MissionQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Slice<MissionQueryResponse> findByDynamicCondition(
+    public List<MissionQueryResponse> findByDynamicCondition(
             Pageable pageable,
             MissionFindFilterQueryRequest request
     ) {
-        var content = queryFactory.select(
+        return queryFactory.select(
                         Projections.constructor(MissionQueryResponse.class,
                                 mission.id,
                                 mission.missionCategory.id,
@@ -69,15 +67,13 @@ public class MissionQueryRepository {
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(mission.createdAt.asc())
                 .fetch();
-
-        return SliceResultConverter.consume(content, pageable);
     }
 
-    public Slice<MissionProgressQueryResponse> findProgressMissionByUserId(
+    public List<MissionProgressQueryResponse> findProgressMissionByUserId(
             Pageable pageable,
             Long userId
     ) {
-        var content = queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
+        return queryFactory.select(Projections.constructor(MissionProgressQueryResponse.class,
                         mission.id,
                         mission.missionInfo.title,
                         mission.missionCategory.id,
@@ -99,8 +95,6 @@ public class MissionQueryRepository {
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(mission.createdAt.asc())
                 .fetch();
-
-        return SliceResultConverter.consume(content, pageable);
     }
 
     private BooleanExpression missionStatusIsProgress() {

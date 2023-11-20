@@ -1,16 +1,10 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.IntegrationQueryDslTest;
-import com.sixheroes.onedayheroapplication.mission.repository.MissionBookmarkQueryRepository;
 import com.sixheroes.onedayherodomain.mission.*;
-import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
-
-    @Autowired
-    private MissionBookmarkQueryRepository missionBookmarkQueryRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionBookmarkRepository missionBookmarkRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
 
     @DisplayName("내 미션 찜목록을 조회할 수 있다.")
     @Test
