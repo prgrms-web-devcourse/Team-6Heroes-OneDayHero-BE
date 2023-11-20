@@ -11,9 +11,6 @@ import java.time.LocalTime;
 
 @Builder
 public record MissionExtendRequest(
-        @NotNull(message = "시민 아이디는 필수 값 입니다.")
-        Long citizenId,
-
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @NotNull(message = "미션 수행일은 필수 값 입니다.")
         LocalDate missionDate,
@@ -31,8 +28,11 @@ public record MissionExtendRequest(
         LocalDateTime deadlineTime
 ) {
 
-    public MissionExtendServiceRequest toService() {
+    public MissionExtendServiceRequest toService(
+            Long userId
+    ) {
         return MissionExtendServiceRequest.builder()
+                .userId(userId)
                 .missionDate(missionDate)
                 .startTime(startTime)
                 .endTime(endTime)

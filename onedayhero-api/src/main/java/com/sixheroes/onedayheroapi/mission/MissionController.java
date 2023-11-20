@@ -1,7 +1,11 @@
 package com.sixheroes.onedayheroapi.mission;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
-import com.sixheroes.onedayheroapi.mission.request.*;
+import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionExtendRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
+import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
@@ -30,7 +34,7 @@ public class MissionController {
     @GetMapping("/{missionId}")
     public ResponseEntity<ApiResponse<MissionResponse>> findMission(
             @PathVariable Long missionId,
-            @RequestParam Long userId
+            @AuthUser Long userId
     ) {
         var result = missionService.findOne(userId, missionId);
 
@@ -39,19 +43,19 @@ public class MissionController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<Slice<MissionResponse>>> findMissions(
+            @AuthUser Long userId,
             @PageableDefault(size = 5) Pageable pageable,
-            MissionFindFilterRequest request
+            @Valid @ModelAttribute MissionFindFilterRequest request
     ) {
-        var serviceRequest = request.toService();
-        var result = missionService.findAllByDynamicCondition(pageable, serviceRequest);
+        var result = missionService.findAllByDynamicCondition(pageable, request.toService(userId));
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
-    @GetMapping("/progress/{userId}")
+    @GetMapping("/progress")
     public ResponseEntity<ApiResponse<Slice<MissionProgressResponse>>> findProgressMission(
             @PageableDefault(size = 5) Pageable pageable,
-            @PathVariable Long userId
+            @AuthUser Long userId
     ) {
         var result = missionService.findProgressMission(pageable, userId);
 
@@ -60,11 +64,12 @@ public class MissionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<MissionIdResponse>> createMission(
+            @AuthUser Long userId,
             @Valid @RequestPart MissionCreateRequest missionCreateRequest,
             @RequestPart List<MultipartFile> multipartFiles
     ) {
         var registerDateTime = LocalDateTime.now();
-        var result = missionService.createMission(missionCreateRequest.toService(multipartFiles), registerDateTime);
+        var result = missionService.createMission(missionCreateRequest.toService(multipartFiles, userId), registerDateTime);
 
         return ResponseEntity.created(URI.create("/api/v1/missions/" + result.id()))
                 .body(ApiResponse.created(result));
@@ -73,42 +78,44 @@ public class MissionController {
     @PostMapping("/{missionId}")
     public ResponseEntity<ApiResponse<MissionIdResponse>> updateMission(
             @PathVariable Long missionId,
+            @AuthUser Long userId,
             @Valid @RequestPart MissionUpdateRequest missionUpdateRequest,
             @RequestPart List<MultipartFile> multipartFiles
     ) {
         var modifiedDateTime = LocalDateTime.now();
-        var result = missionService.updateMission(missionId, missionUpdateRequest.toService(multipartFiles), modifiedDateTime);
+        var result = missionService.updateMission(missionId, missionUpdateRequest.toService(multipartFiles, userId), modifiedDateTime);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @PatchMapping("/{missionId}/extend")
     public ResponseEntity<ApiResponse<MissionIdResponse>> extendMission(
+            @AuthUser Long userId,
             @PathVariable Long missionId,
             @Valid @RequestBody MissionExtendRequest request
     ) {
         var modifiedDateTime = LocalDateTime.now();
-        var result = missionService.extendMission(missionId, request.toService(), modifiedDateTime);
+        var result = missionService.extendMission(missionId, request.toService(userId), modifiedDateTime);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @PatchMapping("/{missionId}/complete")
     public ResponseEntity<ApiResponse<MissionIdResponse>> completeMission(
-            @PathVariable Long missionId,
-            @Valid @RequestBody MissionCompleteRequest request
+            @AuthUser Long userId,
+            @PathVariable Long missionId
     ) {
-        var result = missionService.completeMission(missionId, request.userId());
+        var result = missionService.completeMission(missionId, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @DeleteMapping("/{missionId}")
     public ResponseEntity<ApiResponse<Void>> deleteMission(
-            @PathVariable Long missionId,
-            @Valid @RequestBody MissionDeleteRequest request
+            @AuthUser Long userId,
+            @PathVariable Long missionId
     ) {
-        missionService.deleteMission(missionId, request.citizenId());
+        missionService.deleteMission(missionId, userId);
         return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }
