@@ -58,7 +58,7 @@ public class User extends BaseEntity {
     private Boolean isDeleted;
   
     //처음 Oauth 를 통해 회원 가입
-    public static User singUpUser(
+    public static User signUp(
             Email email,
             UserSocialType userSocialType,
             UserRole userRole

@@ -25,13 +25,13 @@ public class UserSignUpService {
         var createdEmail = Email.builder()
                 .email(email)
                 .build();
-        var createdUser = User.singUpUser(
+        var createdUser = User.signUp(
                 createdEmail,
                 UserSocialType.findByName(userSocialType),
                 UserRole.MEMBER
         );
-        var singUpUser = userRepository.save(createdUser);
+        var signUpUser = userRepository.save(createdUser);
 
-        return UserAuthResponse.from(singUpUser);
+        return UserAuthResponse.from(signUpUser);
     }
 }

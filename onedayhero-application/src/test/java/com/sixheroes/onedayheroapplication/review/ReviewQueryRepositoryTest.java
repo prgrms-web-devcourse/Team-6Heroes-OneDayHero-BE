@@ -64,7 +64,7 @@ public class ReviewQueryRepositoryTest extends IntegrationQueryDslTest {
                 .email("userA@email.com")
                 .build();
 
-        return User.singUpUser(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
+        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
     }
 
     private User createUserB() {
@@ -72,7 +72,7 @@ public class ReviewQueryRepositoryTest extends IntegrationQueryDslTest {
                 .email("userB@email.com")
                 .build();
 
-        return User.singUpUser(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
+        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
     }
 
     private User createUserC() {
@@ -80,7 +80,7 @@ public class ReviewQueryRepositoryTest extends IntegrationQueryDslTest {
                 .email("userC@email.com")
                 .build();
 
-        return User.singUpUser(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
+        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
     }
 
     private Review createReview(
