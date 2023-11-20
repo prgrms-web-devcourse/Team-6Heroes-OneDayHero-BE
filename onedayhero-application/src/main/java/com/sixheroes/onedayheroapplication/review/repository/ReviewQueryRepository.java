@@ -84,6 +84,7 @@ public class ReviewQueryRepository {
                 .join(user).on(review.senderId.eq(user.id))
                 .leftJoin(userImage).on(userImage.user.id.eq(review.senderId))
                 .where(review.receiverId.eq(userId))
+                .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
