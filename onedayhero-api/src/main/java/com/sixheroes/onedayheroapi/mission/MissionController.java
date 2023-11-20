@@ -29,9 +29,10 @@ public class MissionController {
 
     @GetMapping("/{missionId}")
     public ResponseEntity<ApiResponse<MissionResponse>> findMission(
-            @PathVariable Long missionId
+            @PathVariable Long missionId,
+            @RequestParam Long userId
     ) {
-        var result = missionService.findOne(missionId);
+        var result = missionService.findOne(userId, missionId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
