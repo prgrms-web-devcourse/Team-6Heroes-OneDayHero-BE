@@ -14,6 +14,9 @@ dependencies {
     // OPEN FEIGN
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    // Spring Caching
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
