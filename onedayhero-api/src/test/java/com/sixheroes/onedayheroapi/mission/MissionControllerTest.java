@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -31,6 +32,8 @@ import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -53,6 +56,8 @@ public class MissionControllerTest extends RestDocsSupport {
     @Test
     void createMission() throws Exception {
         // given
+        var citizenId = 1L;
+
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
@@ -64,7 +69,6 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateRequest = MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .longitude(123.45)
                 .latitude(123.45)
@@ -91,6 +95,7 @@ public class MissionControllerTest extends RestDocsSupport {
                         .file(missionCreateRequestPart)
                         .file(imageA)
                         .file(imageB)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(MediaType.APPLICATION_JSON)
                 )
@@ -98,11 +103,12 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(header().string("Location", "/api/v1/missions/" + missionId))
                 .andExpect(status().isCreated())
                 .andDo(document("mission-create",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         requestPartFields("missionCreateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("regionId").type(JsonFieldType.NUMBER)
                                         .description("지역 아이디"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
@@ -154,26 +160,21 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionId = 1L;
         var citizenId = 1L;
 
-        var request = MissionDeleteRequest.builder()
-                .citizenId(citizenId)
-                .build();
-
-
         willDoNothing().given(missionService).deleteMission(any(Long.class), any(Long.class));
 
         // when & then
         mockMvc.perform(delete("/api/v1/missions/{missionId}", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent())
                 .andDo(document("mission-delete",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("citizenId").description("시민 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -224,18 +225,20 @@ public class MissionControllerTest extends RestDocsSupport {
         mockMvc.perform(multipart("/api/v1/missions/{missionId}", missionId)
                         .file(missionUpdateRequestPart)
                         .file(image)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-update",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
                         requestPartFields("missionUpdateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("regionId").type(JsonFieldType.NUMBER)
                                         .description("지역 아이디"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
@@ -295,7 +298,6 @@ public class MissionControllerTest extends RestDocsSupport {
         );
 
         var missionExtendRequest = MissionExtendRequest.builder()
-                .citizenId(citizenId)
                 .missionDate(missionDate)
                 .startTime(startTime)
                 .endTime(endTime)
@@ -313,16 +315,18 @@ public class MissionControllerTest extends RestDocsSupport {
         mockMvc.perform(patch("/api/v1/missions/{missionId}/extend", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(missionExtendRequest))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-extend",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("missionDate").type(JsonFieldType.STRING)
                                         .description("미션 수행 일")
                                         .attributes(getDateFormat()),
@@ -356,14 +360,9 @@ public class MissionControllerTest extends RestDocsSupport {
     @DisplayName("유저는 미션을 완료 상태로 변경 할 수 있다.")
     @Test
     void completeMission() throws Exception {
-
         // given
         var missionId = 1L;
         var userId = 1L;
-
-        var missionCompleteRequest = MissionCompleteRequest.builder()
-                .userId(userId)
-                .build();
 
         var missionIdResponse = MissionIdResponse.from(missionId);
 
@@ -373,17 +372,16 @@ public class MissionControllerTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(patch("/api/v1/missions/{missionId}/complete", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(missionCompleteRequest))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-complete",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -430,8 +428,8 @@ public class MissionControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/{missionId}", missionId)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", "1")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -439,8 +437,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
-                        queryParameters(
-                                parameterWithName("userId").description("유저 아이디")
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -548,18 +546,18 @@ public class MissionControllerTest extends RestDocsSupport {
                 .willReturn(sliceMissionResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/missions/progress/{userId}", citizenId)
+        mockMvc.perform(get("/api/v1/missions/progress")
                         .param("page", "0")
                         .param("size", "4")
                         .param("sort", "")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-progress-find",
-                        pathParameters(
-                                parameterWithName("userId")
-                                        .description("시민 아이디")
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
                         ),
                         queryParameters(
                                 parameterWithName("page").optional()
@@ -858,11 +856,16 @@ public class MissionControllerTest extends RestDocsSupport {
                         .param("missionDates", "2023-10-31", "2023-11-02")
                         .param("regionIds", "1", "3")
                         .flashAttr("request", request)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("mission-find-DynamicCondition", queryParameters(
+                .andDo(document("mission-find-DynamicCondition",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
                                 parameterWithName("page").optional()
                                         .description("페이지 번호"),
                                 parameterWithName("size").optional()
@@ -1077,7 +1080,6 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionResponse.builder()
                 .id(1L)
                 .missionCategory(missionCategoryResponse)
-                .citizenId(missionCreateRequest.citizenId())
                 .region(regionResponse)
                 .longitude(missionCreateRequest.longitude())
                 .latitude(missionCreateRequest.latitude())
@@ -1113,7 +1115,6 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionResponse.builder()
                 .id(1L)
                 .missionCategory(missionCategoryResponse)
-                .citizenId(missionUpdateRequest.citizenId())
                 .region(regionResponse)
                 .longitude(missionUpdateRequest.longitude())
                 .latitude(missionUpdateRequest.latitude())
@@ -1178,7 +1179,6 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .latitude(1234252.23)
                 .longitude(1234277.388)
@@ -1191,7 +1191,6 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionUpdateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .latitude(1234252.23)
                 .longitude(1234277.388)

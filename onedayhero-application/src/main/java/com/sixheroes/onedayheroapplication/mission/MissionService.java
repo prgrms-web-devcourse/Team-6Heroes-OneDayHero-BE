@@ -106,7 +106,7 @@ public class MissionService {
         var mission = missionReader.findOne(missionId);
 
         var requestMission = request.toEntity(missionCategory, serverTime);
-        mission.update(requestMission, request.citizenId());
+        mission.update(requestMission, request.userId());
 
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
         var missionImages = imageResponse.stream()
@@ -127,7 +127,7 @@ public class MissionService {
         var mission = missionReader.findOne(missionId);
         var requestExtendMission = request.toVo(mission.getMissionInfo(), serverTime);
 
-        mission.extend(requestExtendMission, request.citizenId());
+        mission.extend(requestExtendMission, request.userId());
 
         return MissionIdResponse.from(mission.getId());
     }
