@@ -1,18 +1,12 @@
 package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.IntegrationQueryDslTest;
-import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.MissionProposalQueryDto;
 import com.sixheroes.onedayherodomain.mission.*;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
-import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,21 +20,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
-
-    @Autowired
-    private MissionProposalQueryRepository missionProposalQueryRepository;
-
-    @Autowired
-    private MissionProposalRepository missionProposalRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
 
     @DisplayName("히어로 아이디를 통해 제안받은 미션을 페이징 조회한다.")
     @Transactional

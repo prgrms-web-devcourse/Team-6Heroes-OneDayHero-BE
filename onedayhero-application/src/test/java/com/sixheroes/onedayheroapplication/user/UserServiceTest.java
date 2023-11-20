@@ -6,11 +6,8 @@ import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDaySe
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,15 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserImageRepository userImageRepository;
-
-    @Autowired
-    private UserService userService;
 
     @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일을 변경할 수 있다.")
     @Test
@@ -153,6 +141,7 @@ class UserServiceTest extends IntegrationApplicationTest {
     }
 
     @DisplayName("유저의 프로필을 조회할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
     @Test
     void findUserWhenNotExist() {
         // given
@@ -164,6 +153,61 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EUC_000.name());
     }
 
+    @DisplayName("유저의 히어로 모드를 활성화한다.")
+    @Test
+    void turnOnHeroMode() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+
+        // when
+        userService.turnOnHeroMode(savedUser.getId());
+
+        // then
+        assertThat(savedUser.getIsHeroMode()).isTrue();
+    }
+
+    @DisplayName("유저의 히어로 모드를 활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
+    @Test
+    void turnOnHeroModeWhenNotExisit() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EUC_000.name());
+    }
+
+    @DisplayName("유저의 히어로 모드를 비활성화한다.")
+    @Test
+    void turnOffHeroMode() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+        savedUser.changeHeroModeOn();
+
+        // when
+        userService.turnOffHeroMode(savedUser.getId());
+
+        // then
+        assertThat(savedUser.getIsHeroMode()).isFalse();
+    }
+
+    @DisplayName("유저의 히어로 모드를 비활성화할 때 존재하지 않는 유저이면 예외가 발생한다.")
+    @Transactional(readOnly = true)
+    @Test
+    void turnOnHeroModeWhenNotExsist() {
+        // given
+        var notExistUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(ErrorCode.EUC_000.name());
+    }
+
     private UserImage createUserImage(
             User user
     ) {
@@ -171,12 +215,12 @@ class UserServiceTest extends IntegrationApplicationTest {
         var uniqueName = "고유 이름";
         var path = "http://";
 
-        return UserImage.builder()
-                .user(user)
-                .originalName(originalName)
-                .uniqueName(uniqueName)
-                .path(path)
-                .build();
+        return UserImage.createUserImage(
+                user,
+                originalName,
+                uniqueName,
+                path
+        );
     }
 
     private User createUser() {

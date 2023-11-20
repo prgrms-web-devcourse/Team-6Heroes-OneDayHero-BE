@@ -7,14 +7,11 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -27,18 +24,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @Transactional
 class MissionMatchServiceTest extends IntegrationApplicationTest {
 
-    @Autowired
-    private MissionMatchService missionMatchService;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionMatchReader missionMatchReader;
-
     @DisplayName("시민은 본인이 작성한 미션이 매칭 중 상태일 때, 매칭완료 상태를 가지는 미션매칭을 생성할 수 있다.")
     @Test
     void createMissionMatching() {
@@ -49,11 +34,11 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when
         var request = createMissionMatchCreateServiceRequest(
-                citizenId,
                 mission,
                 heroId
         );
         var response = missionMatchService.createMissionMatch(
+                citizenId,
                 request
         );
         var createdMissionMatching = missionMatchReader.findByMissionId(mission.getId());
@@ -85,11 +70,13 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
-                citizenId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                citizenId,
+                request
+                )
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_007.name());
@@ -106,11 +93,13 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when & then
         var request = createMissionMatchCreateServiceRequest(
-                otherUserId,
                 mission,
                 heroId
         );
-        assertThatThrownBy(() -> missionMatchService.createMissionMatch(request)
+        assertThatThrownBy(() -> missionMatchService.createMissionMatch(
+                otherUserId,
+                request
+                )
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_008.name());
@@ -124,8 +113,8 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
         var heroId = 2L;
         var mission = createMission(citizenId);
         missionMatchService.createMissionMatch(
+                citizenId,
                 createMissionMatchCreateServiceRequest(
-                        citizenId,
                         mission,
                         heroId
                 )
@@ -133,10 +122,9 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
 
         // when
         var request = createMissionMatchCancelServiceRequest(
-                citizenId,
                 mission.getId()
         );
-        var response = missionMatchService.cancelMissionMatch(request);
+        var response = missionMatchService.cancelMissionMatch(citizenId, request);
         var canceledMissionMatching = missionMatchReader.findByMissionId(mission.getId());
 
         // then
@@ -151,23 +139,19 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
     }
 
     private MissionMatchCreateServiceRequest createMissionMatchCreateServiceRequest(
-            Long userId,
             Mission mission,
             Long heroId
     ) {
         return MissionMatchCreateServiceRequest.builder()
-                .userId(userId)
                 .missionId(mission.getId())
                 .heroId(heroId)
                 .build();
     }
 
     private MissionMatchCancelServiceRequest createMissionMatchCancelServiceRequest(
-            Long citizenId,
             Long missionId
     ) {
         return MissionMatchCancelServiceRequest.builder()
-                .citizenId(citizenId)
                 .missionId(missionId)
                 .build();
     }

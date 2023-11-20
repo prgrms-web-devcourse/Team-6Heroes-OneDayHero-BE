@@ -1,13 +1,9 @@
 package com.sixheroes.onedayheroapi.missionproposal;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalApproveRequest;
 import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalCreateRequest;
-import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalRejectRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalRejectServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
@@ -21,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -34,6 +31,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -56,20 +55,20 @@ class MissionProposalControllerTest extends RestDocsSupport {
     @Test
     void createMissionProposal() throws Exception {
         // given
-        var userId = 1L;
         var missionId = 1L;
         var heroId = 1L;
         var missionProposalId = 1L;
         var missionStatus = "PROPOSAL";
 
-        var missionProposalCreateRequest = new MissionProposalCreateRequest(userId, missionId, heroId);
+        var missionProposalCreateRequest = new MissionProposalCreateRequest(missionId, heroId);
         var missionProposalCreateResponse = new MissionProposalCreateResponse(missionProposalId, missionId, heroId, missionStatus);
 
-        given(missionProposalService.createMissionProposal(any(MissionProposalCreateServiceRequest.class)))
+        given(missionProposalService.createMissionProposal(anyLong(), any(MissionProposalCreateServiceRequest.class)))
             .willReturn(missionProposalCreateResponse);
 
         // when & then
         mockMvc.perform(post("/api/v1/mission-proposals")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(missionProposalCreateRequest))
             ).andDo(print())
@@ -83,9 +82,10 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroId").value(missionProposalCreateResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalCreateResponse.missionProposalStatus()))
             .andDo(document("mission-proposal-create",
+                    requestHeaders(
+                            headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                    ),
                     requestFields(
-                        fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                            .description("유저 아이디"),
                         fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                             .description("미션 아이디"),
                         fieldWithPath("heroId").type(JsonFieldType.NUMBER)
@@ -120,16 +120,14 @@ class MissionProposalControllerTest extends RestDocsSupport {
         var heroId = 1L;
         var missionStatus = "APPROVE";
 
-        var missionProposalApproveRequest = new MissionProposalApproveRequest(heroId);
         var missionProposalApproveResponse = new MissionProposalApproveResponse(missionProposalId, missionId, heroId, missionStatus);
 
-        given(missionProposalService.approveMissionProposal(anyLong(), any(MissionProposalApproveServiceRequest.class)))
+        given(missionProposalService.approveMissionProposal(anyLong(), anyLong()))
             .willReturn(missionProposalApproveResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/mission-proposals/{missionProposalId}/approve", missionProposalId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(missionProposalApproveRequest))
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
             ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
@@ -140,12 +138,11 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroId").value(missionProposalApproveResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalApproveResponse.missionProposalStatus()))
             .andDo(document("mission-proposal-approve",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 pathParameters(
                     parameterWithName("missionProposalId").description("미션 제안 아이디")
-                ),
-                requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                        .description("유저 아이디")
                 ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -162,8 +159,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("미션 요청 상태"),
                     fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                         .description("서버 응답 시간")
-                        .attributes(getDateTimeFormat()
-                        )
+                        .attributes(getDateTimeFormat())
                 )));
     }
 
@@ -176,16 +172,14 @@ class MissionProposalControllerTest extends RestDocsSupport {
         var heroId = 1L;
         var missionStatus = "REJECT";
 
-        var missionProposalRejectRequest = new MissionProposalRejectRequest(heroId);
         var missionProposalRejectResponse = new MissionProposalRejectResponse(missionProposalId, missionId, heroId, missionStatus);
 
-        given(missionProposalService.rejectMissionProposal(anyLong(), any(MissionProposalRejectServiceRequest.class)))
+        given(missionProposalService.rejectMissionProposal(anyLong(), anyLong()))
             .willReturn(missionProposalRejectResponse);
 
         // when & then
         mockMvc.perform(patch("/api/v1/mission-proposals/{missionProposalId}/reject", missionProposalId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(missionProposalRejectRequest))
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
             ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
@@ -196,12 +190,11 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.heroId").value(missionProposalRejectResponse.heroId()))
             .andExpect(jsonPath("$.data.missionProposalStatus").value(missionProposalRejectResponse.missionProposalStatus()))
             .andDo(document("mission-proposal-reject",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
                 pathParameters(
                     parameterWithName("missionProposalId").description("미션 제안 아이디")
-                ),
-                requestFields(
-                    fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                        .description("유저 아이디")
                 ),
                 responseFields(
                     fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -218,8 +211,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("미션 요청 상태"),
                     fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                         .description("서버 응답 시간")
-                        .attributes(getDateTimeFormat()
-                        )
+                        .attributes(getDateTimeFormat())
                 )));
     }
 
@@ -251,6 +243,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
         when(missionProposalService.findMissionProposal(anyLong(), any(Pageable.class))).thenReturn(new MissionProposalResponses(slice));
 
         mockMvc.perform(get("/api/v1/mission-proposals")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .param("heroId", "1")
                 .param("page", "0")
                 .param("size", "5")
@@ -290,7 +283,11 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.missionProposals.last").value(false))
             .andExpect(jsonPath("$.data.missionProposals.empty").value(false))
             .andExpect(jsonPath("$.serverDateTime").exists())
-            .andDo(document("mission-proposal-find", queryParameters(
+            .andDo(document("mission-proposal-find",
+                requestHeaders(
+                        headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
+                queryParameters(
                     parameterWithName("page").optional()
                         .description("페이지 번호"),
                     parameterWithName("size").optional()

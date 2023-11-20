@@ -14,8 +14,11 @@ public record ReviewCreateRequest(
         @NotNull(message = "리뷰 수신자의 아이디는 필수 값 입니다.")
         Long receiverId,
 
+        @NotNull(message = "미션의 아이디는 필수 값 입니다.")
+        Long missionId,
+
         @NotNull(message = "미션의 카테고리 아이디는 필수 값 입니다.")
-        Long missionCategoryId,
+        Long categoryId,
 
         @NotBlank(message = "미션의 제목은 필수 값이며 공백 일 수 없습니다.")
         String missionTitle,
@@ -31,7 +34,8 @@ public record ReviewCreateRequest(
                 return ReviewCreateServiceRequest.builder()
                         .senderId(senderId)
                         .receiverId(receiverId)
-                        .missionCategoryId(missionCategoryId)
+                        .missionId(missionId)
+                        .categoryId(categoryId)
                         .missionTitle(missionTitle)
                         .content(content)
                         .starScore(starScore)

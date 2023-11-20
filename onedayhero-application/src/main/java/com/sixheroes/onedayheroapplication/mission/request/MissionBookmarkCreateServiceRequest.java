@@ -4,8 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record MissionBookmarkCreateServiceRequest(
-        Long missionId,
-        Long userId
-
+        Long missionId
 ) {
 }

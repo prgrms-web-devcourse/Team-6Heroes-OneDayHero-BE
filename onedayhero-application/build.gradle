@@ -18,10 +18,14 @@ dependencies {
     // Messaging
     implementation "org.springframework:spring-messaging:${springVersion}"
 
+    // Spring Caching
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-chat')
+    implementation project(':onedayhero-mongo')
 }
 
 tasks.named('test') {

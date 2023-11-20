@@ -104,9 +104,12 @@ public class ChatRoomService {
         return MissionChatRoomCreateResponse.from(missionChatRoom);
     }
 
-    private UserMissionChatRoom getUserChatRoom(Long userId, List<UserMissionChatRoom> findMissionChatRooms) {
+    private UserMissionChatRoom getUserChatRoom(
+            Long userId,
+            List<UserMissionChatRoom> findMissionChatRooms
+    ) {
         return findMissionChatRooms.stream()
-                .filter(userMissionChatRoom -> userMissionChatRoom.getUserId().equals(userId))
+                .filter(userMissionChatRoom -> userMissionChatRoom.isFindByUserId(userId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.T_001.name()));
     }

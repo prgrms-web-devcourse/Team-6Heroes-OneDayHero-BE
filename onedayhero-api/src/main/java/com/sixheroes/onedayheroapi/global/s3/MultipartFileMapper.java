@@ -7,31 +7,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
 public final class MultipartFileMapper {
 
-    public static Optional<List<S3ImageUploadServiceRequest>> mapToServiceRequests(
+    public static List<S3ImageUploadServiceRequest> mapToServiceRequests(
             List<MultipartFile> multipartFiles
     ) {
         if (multipartFiles == null) {
-            return Optional.empty();
+            return Collections.emptyList();
         }
 
-        return Optional.of(
-                multipartFiles.stream()
-                        .map(multipartFile -> {
-                            try {
-                                return mapToServiceRequest(multipartFile);
-                            } catch (IOException e) {
-                                log.warn("이미지 업로드 과정에서 에러가 발생했습니다.");
-                                throw new RuntimeException(ErrorCode.S_001.name());
-                            }
-                        }).toList()
-        );
+        return multipartFiles.stream()
+                .map(multipartFile -> {
+                    try {
+                        return mapToServiceRequest(multipartFile);
+                    } catch (IOException e) {
+                        log.warn("이미지 업로드 과정에서 에러가 발생했습니다.");
+                        throw new RuntimeException(ErrorCode.S_001.name());
+                    }
+                }).toList();
     }
 
     private static S3ImageUploadServiceRequest mapToServiceRequest(

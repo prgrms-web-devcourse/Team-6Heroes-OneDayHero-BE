@@ -16,6 +16,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -55,10 +57,12 @@ public class Mission extends BaseEntity {
     @Column(name = "status", length = 20, nullable = false)
     private MissionStatus missionStatus;
 
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL)
+    List<MissionImage> missionImages = new ArrayList<>();
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
-    // TODO : 미션 생성 시 전달 받는 값을 longitude, latitude 로 분리하고 생성자에서 Point 변환
     @Builder
     private Mission(
             MissionCategory missionCategory,
@@ -103,6 +107,15 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
+    public void addMissionImages(
+            List<MissionImage> missionImages
+    ) {
+        missionImages.forEach(missionImage -> {
+            missionImage.setMission(this);
+            this.missionImages.add(missionImage);
+        });
+    }
+
     public void update(
             Mission mission,
             Long userId
@@ -116,15 +129,12 @@ public class Mission extends BaseEntity {
     }
 
     public void extend(
-            Mission mission,
+            MissionInfo missionInfo,
             Long userId
     ) {
         validOwn(userId);
         validAbleExtend();
-        this.missionCategory = mission.missionCategory;
-        this.missionInfo = mission.missionInfo;
-        this.regionId = mission.regionId;
-        this.location = mission.location;
+        this.missionInfo = missionInfo;
         this.missionStatus = MissionStatus.MATCHING;
     }
 
@@ -181,35 +191,15 @@ public class Mission extends BaseEntity {
         this.bookmarkCount -= 1;
     }
 
-    private void validateMissionOwnerIsValid(Long citizenId) {
-        if (!this.citizenId.equals(citizenId)) {
-            throw new IllegalStateException(ErrorCode.EM_008.name());
-        }
-    }
-
-    private void validateCurrentMissionStatusIsMatching() {
-        if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
-            throw new IllegalStateException(ErrorCode.EM_007.name());
-        }
-    }
-
-    private void validateCurrentMissionStatusIsMatchingCompleted() {
-        if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
-            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+    public void validateMissionCompleted() {
+        if (this.missionStatus != MissionStatus.MISSION_COMPLETED) {
             throw new IllegalStateException(ErrorCode.EM_009.name());
-        }
-    }
-
-    private void validateBookmarkCountAddable() {
-        if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
         }
     }
 
     // TODO 미션이 매칭중이 아닐 때 validMissionProposalPossible, validMissionProposalChangeStatus 검증
     public void validMissionProposalPossible(
-        Long userId
+            Long userId
     ) {
         validMissionOwner(userId);
         validMissionStatusMatching();
@@ -243,7 +233,7 @@ public class Mission extends BaseEntity {
     }
 
     private void validMissionOwner(
-        Long userId
+            Long userId
     ) {
         if (!Objects.equals(this.citizenId, userId)) {
             log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
@@ -256,6 +246,32 @@ public class Mission extends BaseEntity {
         if (!this.missionStatus.isMatching()) {
             log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
             throw new IllegalStateException(ErrorCode.EM_008.name());
+        }
+    }
+
+    private void validateMissionOwnerIsValid(Long citizenId) {
+        if (!Objects.equals(this.citizenId, citizenId)) {
+            throw new IllegalStateException(ErrorCode.EM_008.name());
+        }
+    }
+
+    private void validateCurrentMissionStatusIsMatching() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_007.name());
+        }
+    }
+
+    private void validateCurrentMissionStatusIsMatchingCompleted() {
+        if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
+            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new IllegalStateException(ErrorCode.EM_009.name());
+        }
+    }
+
+    private void validateBookmarkCountAddable() {
+        if (this.missionStatus != MissionStatus.MATCHING) {
+            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
         }
     }
 }

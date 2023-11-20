@@ -47,6 +47,10 @@ public class UserMissionChatRoom {
                 .build();
     }
 
+    public boolean isFindByUserId(Long userId) {
+        return this.userId.equals(userId);
+    }
+
     public boolean isJoined() {
         return isJoined;
     }
