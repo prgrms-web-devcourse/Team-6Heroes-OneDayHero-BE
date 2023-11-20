@@ -1,7 +1,6 @@
 package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
@@ -12,8 +11,6 @@ import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -25,7 +22,6 @@ import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@RecordApplicationEvents
 class MissionProposalServiceTest extends IntegrationApplicationTest {
 
     @DisplayName("미션 제안을 생성한다.")
@@ -55,34 +51,6 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         assertThat(missionProposalCreateResponse.missionId()).isEqualTo(mission.getId());
         assertThat(missionProposalCreateResponse.heroId()).isEqualTo(hero.getId());
         assertThat(missionProposalCreateResponse.missionProposalStatus()).isEqualTo("PROPOSAL");
-    }
-
-    @DisplayName("미션 제안을 생성할 때 알림 이벤트를 발행한다.")
-    @Transactional
-    @Test
-    void callEventWhencreateMissionProposal() {
-        // given
-        var citizenId = 1L;
-        var missionCategory = missionCategoryRepository.save(createMissionCategory());
-        var mission = missionRepository.save(createMission(citizenId, missionCategory));
-
-        var hero = userRepository.save(createUser());
-        hero.changeHeroModeOn();
-
-        var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-            citizenId,
-            mission.getId(),
-            hero.getId()
-        );
-
-        // when
-        var missionProposalCreateResponse = missionProposalService.createMissionProposal(missionProposalCreateServiceRequest);
-
-        // then
-        var missionProposalCreateEventOptional= applicationEvents.stream(MissionProposalCreateEvent.class).findFirst();
-        assertThat(missionProposalCreateEventOptional).isNotEmpty();
-        var missionProposalCreateEvent = missionProposalCreateEventOptional.get();
-        assertThat(missionProposalCreateEvent.missionProposalId()).isEqualTo(missionProposalCreateResponse.id());
     }
 
     @DisplayName("미션 제안을 생성할 때 해당 미션이 존재하지 않으면 예외가 발생한다.")

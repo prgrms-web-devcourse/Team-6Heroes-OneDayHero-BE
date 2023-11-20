@@ -1,63 +1,43 @@
 package com.sixheroes.onedayheroapplication;
 
-import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
-import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
-import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
-import com.sixheroes.onedayheroapplication.mission.MissionService;
-import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchReader;
-import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
+import com.sixheroes.onedayheroapplication.alarm.AlarmService;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
-import com.sixheroes.onedayheroapplication.review.ReviewService;
-import com.sixheroes.onedayheroapplication.user.ProfileService;
-import com.sixheroes.onedayheroapplication.user.UserService;
-import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
-import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
-import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import com.sixheroes.onedayheromongo.alarm.mongo.AlarmRepository;
+import com.sixheroes.onedayheromongo.alarm.mongo.AlarmTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
 import java.util.Arrays;
 import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public abstract class IntegrationApplicationTest {
+@RecordApplicationEvents
+public abstract class IntegrationApplicationEventTest {
 
     @Autowired
-    protected MissionBookmarkRepository missionBookmarkRepository;
+    protected ApplicationEvents applicationEvents;
+
+    @MockBean
+    protected AlarmTemplateRepository alarmTemplateRepository;
+
+    @MockBean
+    protected AlarmRepository alarmRepository;
 
     @Autowired
-    protected MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    protected MissionRepository missionRepository;
-
-    @Autowired
-    protected RegionRepository regionRepository;
-
-    @Autowired
-    protected MissionService missionService;
-
-    @Autowired
-    protected MissionBookmarkService missionBookmarkService;
-
-    @Autowired
-    protected MissionMatchService missionMatchService;
-
-    @Autowired
-    protected MissionMatchReader missionMatchReader;
+    protected AlarmService alarmService;
 
     @Autowired
     protected MissionProposalService missionProposalService;
@@ -69,30 +49,11 @@ public abstract class IntegrationApplicationTest {
     protected MissionProposalRepository missionProposalRepository;
 
     @Autowired
-    protected ReviewService reviewService;
+    protected MissionCategoryRepository missionCategoryRepository;
 
     @Autowired
-    protected ReviewRepository reviewRepository;
+    protected MissionRepository missionRepository;
 
-    @Autowired
-    protected ProfileService profileService;
-
-    @Autowired
-    protected UserImageRepository userImageRepository;
-
-    @Autowired
-    protected UserService userService;
-
-    @MockBean
-    protected S3ImageUploadService s3ImageUploadService;
-
-    @Autowired
-    protected ChatRoomService chatRoomService;
-
-    @MockBean
-    protected MissionChatRoomRedisRepository missionChatRoomRedisRepository;
-
-    @BeforeAll
     public static void setUp(
             @Autowired MissionCategoryRepository missionCategoryRepository,
             @Autowired RegionRepository regionRepository

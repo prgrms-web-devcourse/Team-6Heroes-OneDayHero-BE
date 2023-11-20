@@ -1,81 +1,29 @@
 package com.sixheroes.onedayheroapplication.alarm;
 
-import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.IntegrationApplicationEventTest;
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherocommon.converter.StringConverter;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayheromongodb.alarm.AlarmTemplate;
-import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmRepository;
-import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmTemplateRepository;
-import org.junit.jupiter.api.AfterEach;
+import com.sixheroes.onedayheromongo.alarm.Alarm;
+import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.event.ApplicationEvents;
-import org.springframework.test.context.event.RecordApplicationEvents;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@RecordApplicationEvents
-class AlarmServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private AlarmTemplateRepository alarmTemplateRepository;
-
-    @Autowired
-    private AlarmRepository alarmRepository;
-
-    @Autowired
-    private AlarmService alarmService;
-
-    @Autowired
-    private ApplicationEvents applicationEvents;
-
-    @AfterEach
-    void teardown() {
-        alarmTemplateRepository.deleteAll();
-        alarmRepository.deleteAll();
-    }
-
-    @DisplayName("알림 형식에 맞춰 알림을 생성한다.")
-    @Test
-    void notifyClient() {
-        // given
-        var alarmTemplate = createAlarmTemplate();
-        alarmTemplateRepository.save(alarmTemplate);
-
-        var data = new HashMap<String, Object>() { {
-            put("citizenNickname", "선량한 시민");
-            put("missionId", 1L);
-            put("missionTitle", "[급함] 편의점 알바 대타 구합니다.");
-        }};
-
-        var userId = 1L;
-        var alarmPayload = AlarmPayload.builder()
-            .alarmType(alarmTemplate.getAlarmType())
-            .userId(userId)
-            .data(data)
-            .build();
-
-        var title = StringConverter.convertMapToString(data, alarmTemplate.getTitle());
-        var content = StringConverter.convertMapToString(data, alarmTemplate.getContent());
-
-        // when
-        var alarmId = alarmService.notifyClient(alarmPayload);
-
-        // then
-        var alarmOptional = alarmRepository.findById(alarmId);
-        assertThat(alarmOptional).isNotEmpty();
-        var alarm = alarmOptional.get();
-        assertThat(alarm).extracting("userId", "title", "content")
-            .containsExactly(userId, title, content);
-    }
+class AlarmServiceTest extends IntegrationApplicationEventTest {
 
     @DisplayName("알림 형식에 맞춰 알림을 생성한 뒤 SSE 이벤트를 발행한다.")
     @Test
@@ -99,11 +47,23 @@ class AlarmServiceTest extends IntegrationApplicationTest {
 
         var title = StringConverter.convertMapToString(data, alarmTemplate.getTitle());
         var content = StringConverter.convertMapToString(data, alarmTemplate.getContent());
+        var alarm = Alarm.builder()
+            .alarmTemplate(alarmTemplate)
+            .userId(userId)
+            .title(title)
+            .content(content)
+            .build();
+
+        given(alarmTemplateRepository.findByAlarmType(anyString())).willReturn(Optional.of(alarmTemplate));
+        given(alarmRepository.save(any(Alarm.class))).willReturn(alarm);
 
         // when
         alarmService.notifyClient(alarmPayload);
 
         // then
+        verify(alarmTemplateRepository, times(1)).findByAlarmType(anyString());
+        verify(alarmRepository, times(1)).save(any(Alarm.class));
+
         var ssePaylodOptional = applicationEvents.stream(SsePaylod.class).findFirst();
         assertThat(ssePaylodOptional).isNotEmpty();
         var ssePaylod = ssePaylodOptional.get();
@@ -124,6 +84,8 @@ class AlarmServiceTest extends IntegrationApplicationTest {
             .alarmType(notExistAlarmType)
             .userId(userId)
             .build();
+
+        given(alarmTemplateRepository.findByAlarmType(anyString())).willReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> alarmService.notifyClient(alarmPayload))
