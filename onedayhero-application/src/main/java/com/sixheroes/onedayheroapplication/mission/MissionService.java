@@ -1,23 +1,32 @@
 package com.sixheroes.onedayheroapplication.mission;
 
+import com.sixheroes.onedayheroapplication.global.s3.S3ImageDirectoryProperties;
+import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
+import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
+import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponses;
+import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
+import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponses;
-import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
+import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,89 +36,109 @@ public class MissionService {
 
     private final MissionCategoryReader missionCategoryReader;
     private final MissionReader missionReader;
-    private final RegionReader regionReader;
     private final MissionRepository missionRepository;
+    private final MissionImageRepository missionImageRepository;
     private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionQueryRepository missionQueryRepository;
+    private final S3ImageUploadService s3ImageUploadService;
+    private final S3ImageDirectoryProperties directoryProperties;
 
     @Transactional
-    public MissionResponse createMission(
+    public MissionIdResponse createMission(
             MissionCreateServiceRequest request,
             LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
-        var region = regionReader.findOne(request.regionId());
         var mission = request.toEntity(missionCategory, serverTime);
 
+        var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
+
+        var missionImages = imageResponse.stream()
+                .map(MissionImageMapper::createMissionImage)
+                .toList();
+
+        mission.addMissionImages(missionImages);
         var savedMission = missionRepository.save(mission);
 
-        return MissionResponse.from(savedMission, region);
+        return MissionIdResponse.from(savedMission.getId());
     }
 
     public MissionResponse findOne(
+            Long userId,
             Long missionId
     ) {
         var missionQueryResponse = missionReader.fetchFindOne(missionId);
+        var missionImages = missionImageRepository.findByMission_Id(missionId);
+        var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(missionId, userId);
 
-        return MissionResponse.from(missionQueryResponse);
+        var isBookmarked = optionalMissionBookmark.isPresent();
+        return MissionResponse.from(missionQueryResponse, missionImages, isBookmarked);
     }
 
-    public MissionResponses findAllByDynamicCondition(
+    public Slice<MissionResponse> findAllByDynamicCondition(
             Pageable pageable,
             MissionFindFilterServiceRequest request
     ) {
-        var sliceMissionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        return MissionResponses.from(sliceMissionQueryResponses);
+        var missionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
+        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses, request.userId());
+
+        return SliceResultConverter.consume(result, pageable);
     }
 
-    public MissionProgressResponses findProgressMission(Pageable pageable, Long userId) {
+    public Slice<MissionProgressResponse> findProgressMission(
+            Pageable pageable,
+            Long userId
+    ) {
         var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
+        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses, userId);
 
-        return MissionProgressResponses.from(sliceMissionProgressQueryResponses);
+        return SliceResultConverter.consume(missionProgressResponses, pageable);
     }
 
     @Transactional
-    public MissionResponse updateMission(
+    public MissionIdResponse updateMission(
             Long missionId,
             MissionUpdateServiceRequest request,
             LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
-        var region = regionReader.findOne(request.regionId());
         var mission = missionReader.findOne(missionId);
 
         var requestMission = request.toEntity(missionCategory, serverTime);
-
         mission.update(requestMission, request.citizenId());
-        return MissionResponse.from(mission, region);
+
+        var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
+        var missionImages = imageResponse.stream()
+                .map(MissionImageMapper::createMissionImage)
+                .toList();
+
+        mission.addMissionImages(missionImages);
+
+        return MissionIdResponse.from(mission.getId());
     }
 
     @Transactional
-    public MissionResponse extendMission(
+    public MissionIdResponse extendMission(
             Long missionId,
-            MissionUpdateServiceRequest request,
+            MissionExtendServiceRequest request,
             LocalDateTime serverTime
     ) {
-        var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
-        var region = regionReader.findOne(request.regionId());
         var mission = missionReader.findOne(missionId);
-
-        var requestExtendMission = request.toEntity(missionCategory, serverTime);
+        var requestExtendMission = request.toVo(mission.getMissionInfo(), serverTime);
 
         mission.extend(requestExtendMission, request.citizenId());
 
-        return MissionResponse.from(mission, region);
+        return MissionIdResponse.from(mission.getId());
     }
 
-    public MissionResponse completeMission(
+    public MissionIdResponse completeMission(
             Long missionId,
             Long userId
     ) {
         var mission = missionReader.findOne(missionId);
-        var region = regionReader.findOne(mission.getRegionId());
         mission.complete(userId);
 
-        return MissionResponse.from(mission, region);
+        return MissionIdResponse.from(mission.getId());
     }
 
     @Transactional
@@ -122,6 +151,33 @@ public class MissionService {
 
         deleteUserBookMarkByMissionId(missionId);
         missionRepository.delete(mission);
+    }
+
+    private List<MissionResponse> makeMissionResponseWithImages(
+            List<MissionQueryResponse> missionQueryResponses,
+            Long userId
+    ) {
+        return missionQueryResponses.stream()
+                .map(response -> {
+                    var missionImages = missionImageRepository.findByMission_Id(response.id());
+                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(response.id(), userId);
+                    return MissionResponse.from(response, missionImages, optionalMissionBookmark.isPresent());
+                })
+                .toList();
+    }
+
+    private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
+            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses,
+            Long userId
+    ) {
+        return sliceMissionProgressQueryResponses.stream()
+                .map(queryResponse -> {
+                    var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
+                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    var isBookmarked = optionalMissionBookmark.isPresent();
+                    return MissionProgressResponse.from(queryResponse, thumbNailPath, isBookmarked);
+                }).toList();
     }
 
     private void deleteUserBookMarkByMissionId(

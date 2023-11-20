@@ -6,11 +6,8 @@ import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDaySe
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,15 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserImageRepository userImageRepository;
-
-    @Autowired
-    private UserService userService;
 
     @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일을 변경할 수 있다.")
     @Test

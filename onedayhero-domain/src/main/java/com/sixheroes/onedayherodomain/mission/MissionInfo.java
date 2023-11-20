@@ -68,6 +68,21 @@ public class MissionInfo {
         this.price = price;
     }
 
+    public MissionInfo extend(LocalDate missionDate,
+                              LocalTime startTime,
+                              LocalTime endTime,
+                              LocalDateTime deadlineTime,
+                              LocalDateTime serverTime
+    ) {
+        validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, serverTime);
+        this.missionDate = missionDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.deadlineTime = deadlineTime;
+
+        return this;
+    }
+
     private void validMissionTitle(String title) {
         validTitleIsEmpty(title);
         validTitleInRange(title);

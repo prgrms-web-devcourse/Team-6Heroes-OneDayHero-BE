@@ -30,8 +30,9 @@ public class UserSignUpService {
                 UserSocialType.findByName(userSocialType),
                 UserRole.MEMBER
         );
+        System.out.println("로그인6");
         var singUpUser = userRepository.save(createdUser);
-
+        System.out.println("로그인8");
         return UserAuthResponse.from(singUpUser);
     }
 }

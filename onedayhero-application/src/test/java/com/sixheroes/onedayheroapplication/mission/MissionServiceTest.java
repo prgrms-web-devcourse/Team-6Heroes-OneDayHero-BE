@@ -1,50 +1,39 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
-import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
+import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.given;
 
+@Transactional
 class MissionServiceTest extends IntegrationApplicationTest {
 
-    @Autowired
-    private MissionBookmarkRepository missionBookmarkRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private MissionService missionService;
-
-    @Transactional
     @DisplayName("시민은 미션을 생성 할 수 있다.")
     @Test
     void createMission() {
@@ -57,41 +46,45 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var missionInfoServiceRequest = createMissionInfoServiceRequest(missionDate, startTime, endTime, deadlineTime);
-        var missionCreateServiceRequest = createMissionCreateServiceRequest(missionInfoServiceRequest);
 
-        var missionCategoryId = missionCreateServiceRequest.missionCategoryId();
-        var missionCategory = missionCategoryRepository.findById(missionCategoryId).get();
-        var region = regionRepository.findById(1L).get();
+        var s3ImageUploadServiceRequestA = createS3ImageUploadServiceRequest("image.jpg");
+        var s3ImageUploadServiceRequestB = createS3ImageUploadServiceRequest("image.jpg");
 
+        var missionCreateServiceRequest =
+                MissionCreateServiceRequest.builder()
+                        .missionCategoryId(1L)
+                        .regionId(1L)
+                        .latitude(123.45)
+                        .longitude(123.45)
+                        .citizenId(1L)
+                        .missionInfo(missionInfoServiceRequest)
+                        .imageFiles(List.of(s3ImageUploadServiceRequestA, s3ImageUploadServiceRequestB))
+                        .build();
+
+        var S3ImageUploadResponse = List.of(S3ImageUploadServiceResponse.builder()
+                        .originalName("image.jpg")
+                        .uniqueName("unique123.jpg")
+                        .path("s3://path")
+                        .build()
+                ,
+                S3ImageUploadServiceResponse.builder()
+                        .originalName("image.jpg")
+                        .uniqueName("unique122344.jpg")
+                        .path("s3://path1")
+                        .build()
+        );
+
+        given(s3ImageUploadService.uploadImages(anyList(), any(String.class)))
+                .willReturn(S3ImageUploadResponse);
 
         // when
         var result = missionService.createMission(missionCreateServiceRequest, serverTime);
 
         // then
-        assertThat(result)
-                .extracting(
-                        "missionCategory",
-                        "citizenId",
-                        "region",
-                        "longitude",
-                        "latitude",
-                        "missionInfo",
-                        "bookmarkCount",
-                        "missionStatus"
-                )
-                .containsExactly(
-                        MissionCategoryResponse.from(missionCategory),
-                        missionCreateServiceRequest.citizenId(),
-                        RegionResponse.from(region),
-                        missionCreateServiceRequest.longitude(),
-                        missionCreateServiceRequest.latitude(),
-                        result.missionInfo(),
-                        0,
-                        MissionStatus.MATCHING.name()
-                );
+        assertThat(result.id()).isNotNull();
     }
 
-    @Transactional
+
     @DisplayName("시민이 미션을 생성 할 때 미션의 수행 날짜가 생성 날짜보다 이전 일 수 없다.")
     @Test
     void createMissionWithMissionDateBeforeToday() {
@@ -112,7 +105,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_003.name());
     }
 
-    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
     @Test
     void createMissionWithEndTimeBeforeStartTime() {
@@ -133,7 +125,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_004.name());
     }
 
-    @Transactional
     @DisplayName("시민이 미션을 생성 할 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
     @Test
     void createMissionWithDeadLineTimeAfterStartTime() {
@@ -157,7 +148,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_005.name());
     }
 
-    @Transactional
     @DisplayName("시민은 미션을 삭제 할 수 있다.")
     @EnumSource(value = MissionStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "MATCHING_COMPLETED")
     @ParameterizedTest
@@ -287,8 +277,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var endTime = LocalTime.of(10, 30);
         var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
-        var region = regionRepository.findById(1L).get();
-
         var mission = createMission(
                 missionCategory,
                 citizenId,
@@ -310,7 +298,6 @@ class MissionServiceTest extends IntegrationApplicationTest {
         );
 
         var updateCategoryId = 2L;
-        var updateMissionCategory = missionCategoryRepository.findById(updateCategoryId).get();
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
@@ -325,27 +312,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var result = missionService.updateMission(mission.getId(), missionUpdateServiceRequest, serverTime);
 
         // then
-        assertThat(result)
-                .extracting(
-                        "missionCategory",
-                        "citizenId",
-                        "region",
-                        "longitude",
-                        "latitude",
-                        "missionInfo",
-                        "bookmarkCount",
-                        "missionStatus"
-                )
-                .containsExactly(
-                        MissionCategoryResponse.from(updateMissionCategory),
-                        missionUpdateServiceRequest.citizenId(),
-                        RegionResponse.from(region),
-                        missionUpdateServiceRequest.longitude(),
-                        missionUpdateServiceRequest.latitude(),
-                        result.missionInfo(),
-                        0,
-                        MissionStatus.MATCHING.name()
-                );
+        assertThat(result.id()).isEqualTo(mission.getId());
     }
 
     @DisplayName("시민은 본인이 만든 미션만 수정 할 수 있다.")
@@ -660,26 +627,16 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 LocalTime.MIDNIGHT
         );
 
-        var missionInfoServiceRequest = createMissionInfoServiceRequest(
-                savedMission.getMissionInfo().getMissionDate().plusDays(2),
-                savedMission.getMissionInfo().getStartTime().plusHours(2),
-                savedMission.getMissionInfo().getEndTime().plusHours(3),
-                savedMission.getMissionInfo().getDeadlineTime().plusHours(1)
-        );
-
-        var updateCategoryId = 2L;
-
-        var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
-                .missionCategoryId(updateCategoryId)
+        var missionExtendServiceRequest = MissionExtendServiceRequest.builder()
                 .citizenId(citizenId)
-                .regionId(1L)
-                .latitude(1235678.48)
-                .longitude(1235678.48)
-                .missionInfo(missionInfoServiceRequest)
+                .missionDate(missionDate.plusDays(2))
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionUpdateServiceRequest, today))
+        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionExtendServiceRequest, today))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.T_001.name());
     }
@@ -715,27 +672,18 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 LocalTime.MIDNIGHT
         );
 
-        var missionInfoServiceRequest = createMissionInfoServiceRequest(
-                savedMission.getMissionInfo().getMissionDate().plusDays(2),
-                savedMission.getMissionInfo().getStartTime().plusHours(2),
-                savedMission.getMissionInfo().getEndTime().plusHours(3),
-                savedMission.getMissionInfo().getDeadlineTime().plusHours(1)
-        );
-
-        var updateCategoryId = 2L;
         var unknownCitizenId = 2L;
 
-        var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
-                .missionCategoryId(updateCategoryId)
+        var missionExtendServiceRequest = MissionExtendServiceRequest.builder()
                 .citizenId(unknownCitizenId)
-                .regionId(1L)
-                .latitude(1235678.48)
-                .longitude(1235678.48)
-                .missionInfo(missionInfoServiceRequest)
+                .missionDate(missionDate.plusDays(2))
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionUpdateServiceRequest, today))
+        assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionExtendServiceRequest, today))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.EM_100.name());
     }
@@ -770,7 +718,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionResponse = missionService.completeMission(savedMission.getId(), citizenId);
 
         // then
-        assertThat(missionResponse.missionStatus()).isEqualTo(MissionStatus.MISSION_COMPLETED.name());
+        assertThat(missionResponse.id()).isEqualTo(mission.getId());
     }
 
     @DisplayName("시민은 본인이 만든 미션이 아니면 미션을 완료 상태로 변경 할 수 없다.")
@@ -834,7 +782,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var savedMission = missionRepository.save(mission);
 
         // when
-        var result = missionService.findOne(savedMission.getId());
+        var result = missionService.findOne(citizenId, savedMission.getId());
 
         // then
         assertThat(result)
@@ -846,7 +794,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "latitude",
                         "missionInfo",
                         "bookmarkCount",
-                        "missionStatus"
+                        "missionStatus",
+                        "isBookmarked"
                 )
                 .containsExactly(
                         MissionCategoryResponse.from(missionCategory),
@@ -856,7 +805,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         mission.getLocation().getY(),
                         result.missionInfo(),
                         0,
-                        MissionStatus.MATCHING.name()
+                        MissionStatus.MATCHING.name(),
+                        false
                 );
     }
 
@@ -870,6 +820,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .latitude(1234252.23)
                 .longitude(1234277.388)
                 .missionInfo(missionInfoServiceRequest)
+                .imageFiles(Collections.emptyList())
                 .build();
     }
 
@@ -929,6 +880,15 @@ class MissionServiceTest extends IntegrationApplicationTest {
         return MissionBookmark.builder()
                 .userId(citizenId)
                 .mission(mission)
+                .build();
+    }
+
+    private S3ImageUploadServiceRequest createS3ImageUploadServiceRequest(String imageName) {
+        return S3ImageUploadServiceRequest.builder()
+                .originalName(imageName)
+                .contentType(ContentType.MULTIPART_FORM_DATA.toString())
+                .inputStream(InputStream.nullInputStream())
+                .contentSize(Long.MAX_VALUE)
                 .build();
     }
 }

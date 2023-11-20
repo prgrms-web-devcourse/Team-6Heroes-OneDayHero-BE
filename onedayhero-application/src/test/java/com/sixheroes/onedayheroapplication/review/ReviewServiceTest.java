@@ -6,12 +6,8 @@ import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceReq
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -22,18 +18,6 @@ import java.util.Collections;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class ReviewServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     @DisplayName("유저는 완료된 미션에 대해 상대방에 대한 리뷰를 작성할 수 있다.")
     @Transactional

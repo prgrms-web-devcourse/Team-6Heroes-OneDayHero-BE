@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayherodomain.mission.MissionImage;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.region.Region;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Builder
 public record MissionResponse(
@@ -22,10 +24,16 @@ public record MissionResponse(
         Double latitude,
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
-        String missionStatus
+        String missionStatus,
+        List<String> paths,
+        boolean isBookmarked
 ) {
 
-    public static MissionResponse from(MissionQueryResponse response) {
+    public static MissionResponse from(
+            MissionQueryResponse response,
+            List<MissionImage> missionImages,
+            boolean isBookmarked
+    ) {
         return MissionResponse.builder()
                 .id(response.id())
                 .missionCategory(
@@ -42,10 +50,18 @@ public record MissionResponse(
                 )
                 .bookmarkCount(response.bookmarkCount())
                 .missionStatus(response.missionStatus().name())
+                .paths(missionImages.stream()
+                        .map(MissionImage::getPath)
+                        .toList())
+                .isBookmarked(isBookmarked)
                 .build();
     }
 
-    public static MissionResponse from(Mission mission, Region region) {
+    public static MissionResponse from(
+            Mission mission,
+            Region region,
+            List<MissionImage> missionImages
+    ) {
         return MissionResponse.builder()
                 .id(mission.getId())
                 .missionCategory(
@@ -60,6 +76,9 @@ public record MissionResponse(
                 .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
                 .bookmarkCount(mission.getBookmarkCount())
                 .missionStatus(mission.getMissionStatus().name())
+                .paths(missionImages.stream()
+                        .map(MissionImage::getPath)
+                        .toList())
                 .build();
     }
 
