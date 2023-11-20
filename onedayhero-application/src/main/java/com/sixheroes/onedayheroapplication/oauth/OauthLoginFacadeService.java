@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapplication.user.response.UserAuthResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class OauthLoginFacadeService {
             }
         }
 
-        throw new IllegalStateException(ErrorCode.S_001.name());
+        throw new IllegalStateException(ErrorCode.L_001.name());
     }
 
     private String getAccessToken(UserAuthResponse userAuthResponse) {

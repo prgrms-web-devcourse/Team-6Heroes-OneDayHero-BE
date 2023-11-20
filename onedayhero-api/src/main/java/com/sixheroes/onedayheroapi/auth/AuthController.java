@@ -28,9 +28,9 @@ public class AuthController {
                 oauthProperties.getKakao().getAuthorizationServer(),
                 loginRequest.code()
         );
+
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
     }
-
 
     @GetMapping("/kakao/callback")
     public ResponseEntity<ApiResponse<LoginResponse>> callback(

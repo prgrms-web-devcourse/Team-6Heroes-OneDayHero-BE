@@ -73,7 +73,10 @@ public enum ErrorCode {
     // SERVER_001
     S_001(500, "서버에서 알 수 없는 오류가 발생했습니다."),
     // Authorization_001
-    A_001(403, "권한이 없는 요청이 들어왔습니다.");
+    A_001(403, "권한이 없는 요청이 들어왔습니다."),
+
+    // LOGIN
+    L_001(400, "로그인 과정에서 에러가 발생했습니다. 다시 시도해주세요");
 
     private final int status;
     private final String message;
