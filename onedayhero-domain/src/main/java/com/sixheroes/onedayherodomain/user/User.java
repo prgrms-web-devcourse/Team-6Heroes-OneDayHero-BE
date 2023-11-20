@@ -77,6 +77,7 @@ public class User extends BaseEntity {
         this.userRole = userRole;
         this.heroScore = 30;
         this.isHeroMode = false;
+        this.isDeleted = false;
     }
 
     @Builder
