@@ -72,6 +72,12 @@ public class UserImage extends BaseEntity {
         validPathLength(path);
     }
 
+    public void validOwner(
+        Long userId
+    ) {
+        user.validOwner(userId);
+    }
+
     private void validOriginalNameLength(String originalName) {
         if (originalName.length() > 260) {
             log.debug("original name이 260자를 초과했습니다. originalName.length() : {}", originalName.length());

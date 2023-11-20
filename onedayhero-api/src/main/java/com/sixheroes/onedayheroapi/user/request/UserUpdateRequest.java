@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
-public record UserUpadateRequest(
+public record UserUpdateRequest(
         @Valid
         UserBasicInfoRequest basicInfo,
 
