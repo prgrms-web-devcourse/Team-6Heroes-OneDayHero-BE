@@ -31,11 +31,4 @@ public class AuthController {
 
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
     }
-
-    @GetMapping("/kakao/callback")
-    public ResponseEntity<ApiResponse<LoginResponse>> callback(
-            @RequestParam String code
-    ) {
-        return ResponseEntity.ok(ApiResponse.ok(new LoginResponse(1L, code)));
-    }
 }
