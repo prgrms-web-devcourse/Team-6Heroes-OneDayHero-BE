@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.alarm;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayheromongodb.alarm.AlarmTemplate;
-import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmTemplateRepository;
+import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
+import com.sixheroes.onedayheromongo.alarm.mongo.AlarmTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

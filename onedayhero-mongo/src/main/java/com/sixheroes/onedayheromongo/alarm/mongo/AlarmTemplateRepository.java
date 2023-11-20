@@ -1,6 +1,6 @@
-package com.sixheroes.onedayheromongodb.alarm.mongo;
+package com.sixheroes.onedayheromongo.alarm.mongo;
 
-import com.sixheroes.onedayheromongodb.alarm.AlarmTemplate;
+import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

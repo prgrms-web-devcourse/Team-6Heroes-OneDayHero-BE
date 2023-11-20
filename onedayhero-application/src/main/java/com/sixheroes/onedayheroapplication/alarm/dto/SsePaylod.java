@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.alarm.dto;
 
-import com.sixheroes.onedayheromongodb.alarm.Alarm;
+import com.sixheroes.onedayheromongo.alarm.Alarm;
 import lombok.Builder;
 
 @Builder

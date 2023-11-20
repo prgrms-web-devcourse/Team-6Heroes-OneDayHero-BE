@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheromongodb;
+package com.sixheroes.onedayheromongo;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

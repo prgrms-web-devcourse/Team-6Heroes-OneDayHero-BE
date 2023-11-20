@@ -2,7 +2,7 @@ package com.sixheroes.onedayheroapplication.alarm;
 
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
-import com.sixheroes.onedayheromongodb.alarm.mongo.AlarmRepository;
+import com.sixheroes.onedayheromongo.alarm.mongo.AlarmRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class AlarmService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-            public String notifyClient(
+    public void notifyClient(
         AlarmPayload alarmPayload
     ) {
         var alarmType = alarmPayload.alarmType();
@@ -27,6 +27,5 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         applicationEventPublisher.publishEvent(SsePaylod.of(alarmType, alarm));
-        return alarm.getId();
     }
 }

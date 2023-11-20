@@ -1,8 +1,8 @@
 package com.sixheroes.onedayheroapplication.alarm.dto;
 
 import com.sixheroes.onedayherocommon.converter.StringConverter;
-import com.sixheroes.onedayheromongodb.alarm.Alarm;
-import com.sixheroes.onedayheromongodb.alarm.AlarmTemplate;
+import com.sixheroes.onedayheromongo.alarm.Alarm;
+import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
 import lombok.Builder;
 
 import java.util.Map;

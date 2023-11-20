@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheromongodb.alarm;
+package com.sixheroes.onedayheromongo.alarm;
 
 import lombok.Builder;
 import lombok.Getter;
