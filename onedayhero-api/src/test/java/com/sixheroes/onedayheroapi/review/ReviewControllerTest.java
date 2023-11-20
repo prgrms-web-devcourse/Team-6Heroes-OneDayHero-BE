@@ -4,13 +4,19 @@ import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,10 +31,12 @@ import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTi
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -255,6 +263,132 @@ class ReviewControllerTest extends RestDocsSupport {
                         )));
     }
 
+    @DisplayName("특정 유저가 받은 리뷰를 확인할 수 있다.")
+    @Test
+    void viewReceivedReviews() throws Exception {
+        // given
+        var reviewReceiver = 1L;
+        var receivedReviewA = createReceivedReviewA();
+        var receivedReviewB = createReceivedReviewB();
+
+        var receivedReviewResponses = new SliceImpl<ReceivedReviewResponse>(
+                List.of(receivedReviewA, receivedReviewB),
+                PageRequest.of(0, 5),
+                true
+        );
+
+        given(reviewService.viewReceivedReviews(any(Pageable.class), anyLong())).willReturn(receivedReviewResponses);
+
+        mockMvc.perform(get("/api/v1/reviews/users/{userId}/receive", reviewReceiver)
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("sort", "")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.content[0].reviewId").value(receivedReviewA.reviewId()))
+                .andExpect(jsonPath("$.data.content[0].senderId").value(receivedReviewA.senderId()))
+                .andExpect(jsonPath("$.data.content[0].senderNickname").value(receivedReviewA.senderNickname()))
+                .andExpect(jsonPath("$.data.content[0].profileImage").isArray())
+                .andExpect(jsonPath("$.data.content[0].categoryName").value(receivedReviewA.categoryName()))
+                .andExpect(jsonPath("$.data.content[0].missionTitle").value(receivedReviewA.missionTitle()))
+                .andExpect(jsonPath("$.data.content[0].starScore").value(receivedReviewA.starScore()))
+                .andExpect(jsonPath("$.data.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewA.createdAt())))
+                .andExpect(jsonPath("$.data.content[1].reviewId").value(receivedReviewB.reviewId()))
+                .andExpect(jsonPath("$.data.content[1].senderId").value(receivedReviewB.senderId()))
+                .andExpect(jsonPath("$.data.content[1].senderNickname").value(receivedReviewB.senderNickname()))
+                .andExpect(jsonPath("$.data.content[1].profileImage").isArray())
+                .andExpect(jsonPath("$.data.content[1].categoryName").value(receivedReviewB.categoryName()))
+                .andExpect(jsonPath("$.data.content[1].missionTitle").value(receivedReviewB.missionTitle()))
+                .andExpect(jsonPath("$.data.content[1].starScore").value(receivedReviewB.starScore()))
+                .andExpect(jsonPath("$.data.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(receivedReviewB.createdAt())))
+                .andDo(document("specific-user-received-reviews",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("userId")
+                                        .description("특정 유저 아이디")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").optional()
+                                        .description("페이지 번호"),
+                                parameterWithName("size").optional()
+                                        .description("데이터 크기"),
+                                parameterWithName("sort").optional()
+                                        .description("정렬 기준 필드")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("특정 유저가 받은 리뷰 목록 배열"),
+                                fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER)
+                                        .description("특정 유저가 받은 리뷰의 아이디"),
+                                fieldWithPath("data.content[].senderId").type(JsonFieldType.NUMBER)
+                                        .description("특정 유저가 받은 리뷰를 작성한 유저의 아이디"),
+                                fieldWithPath("data.content[].senderNickname").type(JsonFieldType.STRING)
+                                        .description("특정 유저가 받은 리뷰를 작성한 유저의 닉네임"),
+                                fieldWithPath("data.content[].profileImage").type(JsonFieldType.ARRAY)
+                                        .description("특정 유저가 받은 리뷰를 작성한 유저의 프로필 이미지 경로")
+                                        .optional(),
+                                fieldWithPath("data.content[].categoryName").type(JsonFieldType.STRING)
+                                        .description("툭정 유저가 받은 리뷰의 미션 카테고리 이름"),
+                                fieldWithPath("data.content[].missionTitle").type(JsonFieldType.STRING)
+                                        .description("특정 유저가 받은 리뷰의 미션 제목"),
+                                fieldWithPath("data.content[].starScore").type(JsonFieldType.NUMBER)
+                                        .description("특정 유저가 받은 별점"),
+                                fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING)
+                                        .description("특정 유저가 리뷰를 받은 시간"),
+                                fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                        .description("페이지 크기"),
+                                fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
+                                        .description("정렬 상태 객체"),
+                                fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
+                                        .description("페이지 번호"),
+                                fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있는지 여부"),
+                                fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있지 않은지 여부"),
+                                fieldWithPath("data.size").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 조회에서 가져온 리뷰 개수"),
+                                fieldWithPath("data.number").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
+                                        .description("정렬 정보 객체"),
+                                fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지의 요소 수"),
+                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
+                                        .description("첫 번째 페이지인지 여부"),
+                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
+                                        .description("마지막 페이지인지 여부"),
+                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("비어있는지 여부"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )));
+    }
+
+
     private ReviewCreateRequest createReviewCreateRequest(
             Long senderId,
             Long receiverId,
@@ -370,6 +504,32 @@ class ReviewControllerTest extends RestDocsSupport {
                 .content(content)
                 .starScore(starScore)
                 .reviewImageResponses(List.of(savedImageA, savedImageB))
+                .build();
+    }
+
+    private ReceivedReviewResponse createReceivedReviewA() {
+        return ReceivedReviewResponse.builder()
+                .reviewId(1L)
+                .senderId(5L)
+                .senderNickname("nickname A")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
+                .categoryName("청소")
+                .missionTitle("청소 미션")
+                .starScore(4)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private ReceivedReviewResponse createReceivedReviewB() {
+        return ReceivedReviewResponse.builder()
+                .reviewId(2L)
+                .senderId(8L)
+                .senderNickname("nickname B")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
+                .categoryName("심부름")
+                .missionTitle("심부름 미션")
+                .starScore(3)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

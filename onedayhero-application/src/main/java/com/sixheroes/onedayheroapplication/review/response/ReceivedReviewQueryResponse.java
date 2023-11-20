@@ -6,6 +6,7 @@ public record ReceivedReviewQueryResponse(
         Long reviewId,
         Long senderId,
         String senderNickname,
+        String profileImage,
         String categoryName,
         String missionTitle,
         Integer starScore,

@@ -31,7 +31,7 @@ public class UserSignUpService {
                 UserRole.MEMBER
         );
         var singUpUser = userRepository.save(createdUser);
-        
+
         return UserAuthResponse.from(singUpUser);
     }
 }

@@ -6,26 +6,19 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.review.repository.response.ReviewDetailQueryResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewQueryResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
 import com.sixheroes.onedayheroapplication.review.response.SentReviewQueryResponse;
-import com.sixheroes.onedayherodomain.mission.MissionCategory;
-import com.sixheroes.onedayherodomain.mission.QMissionCategory;
-import com.sixheroes.onedayherodomain.review.QReview;
-import com.sixheroes.onedayherodomain.review.QReviewImage;
-import com.sixheroes.onedayherodomain.user.QUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.sixheroes.onedayherodomain.mission.QMissionCategory.missionCategory;
 import static com.sixheroes.onedayherodomain.review.QReview.review;
-import static com.sixheroes.onedayherodomain.review.QReviewImage.reviewImage;
 import static com.sixheroes.onedayherodomain.user.QUser.user;
+import static com.sixheroes.onedayherodomain.user.QUserImage.userImage;
 
 
 @Slf4j
@@ -47,11 +40,15 @@ public class ReviewQueryRepository {
                                 missionCategory.name,
                                 review.missionTitle,
                                 review.starScore,
+                                user.userBasicInfo.nickname,
+                                userImage.path,
                                 review.createdAt
                         )
                 )
                 .from(review)
                 .join(missionCategory).on(review.categoryId.eq(missionCategory.id))
+                .join(user).on(review.senderId.eq(user.id))
+                .leftJoin(userImage).on(userImage.user.id.eq(userId))
                 .where(review.senderId.eq(userId))
                 .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -74,6 +71,8 @@ public class ReviewQueryRepository {
                                 ReceivedReviewQueryResponse.class,
                                 review.id,
                                 review.senderId,
+                                user.userBasicInfo.nickname,
+                                userImage.path,
                                 missionCategory.name,
                                 review.missionTitle,
                                 review.starScore,
@@ -81,10 +80,18 @@ public class ReviewQueryRepository {
                         )
                 )
                 .from(review)
-                .join(missionCategory).on(review.categoryId.eq(missionCategory.id));
+                .join(missionCategory).on(review.categoryId.eq(missionCategory.id))
+                .join(user).on(review.senderId.eq(user.id))
+                .leftJoin(userImage).on(userImage.user.id.eq(review.senderId))
+                .where(review.receiverId.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
 
-
-        throw new UnsupportedOperationException();
+        return SliceResultConverter.consume(
+                content,
+                pageable
+        );
     }
 
     public Optional<ReviewDetailQueryResponse> viewReviewDetail(
