@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.review;
 
 import com.sixheroes.onedayheroapplication.IntegrationQueryDslTest;
+import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
@@ -64,7 +65,12 @@ public class ReviewQueryRepositoryTest extends IntegrationQueryDslTest {
                 .email("userA@email.com")
                 .build();
 
-        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
+        return User.signUp(
+                createdEmail,
+                UserSocialType.KAKAO,
+                UserRole.ADMIN,
+                UserBasicInfo.initStatus(DefaultNicknameGenerator.generate())
+        );
     }
 
     private User createUserB() {
@@ -72,16 +78,24 @@ public class ReviewQueryRepositoryTest extends IntegrationQueryDslTest {
                 .email("userB@email.com")
                 .build();
 
-        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
-    }
+        return User.signUp(
+                createdEmail,
+                UserSocialType.KAKAO,
+                UserRole.ADMIN,
+                UserBasicInfo.initStatus(DefaultNicknameGenerator.generate())
+        );    }
 
     private User createUserC() {
         var createdEmail = Email.builder()
                 .email("userC@email.com")
                 .build();
 
-        return User.signUp(createdEmail, UserSocialType.KAKAO, UserRole.ADMIN);
-    }
+        return User.signUp(
+                createdEmail,
+                UserSocialType.KAKAO,
+                UserRole.ADMIN,
+                UserBasicInfo.initStatus(DefaultNicknameGenerator.generate())
+        );    }
 
     private Review createReview(
             Long senderId,
