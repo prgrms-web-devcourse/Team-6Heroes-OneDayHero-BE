@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapplication;
 
+import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
@@ -19,6 +20,7 @@ import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,10 +81,16 @@ public abstract class IntegrationApplicationTest {
     protected UserImageRepository userImageRepository;
 
     @Autowired
+    protected UserRegionRepository userRegionRepository;
+
+    @Autowired
     protected UserService userService;
 
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;
+
+    @MockBean
+    protected S3ImageDeleteService s3ImageDeleteService;
 
     @BeforeAll
     public static void setUp(

@@ -1,8 +1,6 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
-import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageDeleteServiceResponse;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
@@ -11,15 +9,9 @@ import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDaySe
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,27 +31,6 @@ import static org.mockito.Mockito.verify;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserImageRepository userImageRepository;
-
-    @Autowired
-    private UserRegionRepository userRegionRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @MockBean
-    private S3ImageUploadService s3ImageUploadService;
-
-    @MockBean
-    private S3ImageDeleteService s3ImageDeleteService;
 
     @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일, 선호하는 지역, 유저 이미지를 변경할 수 있다.")
     @Test
