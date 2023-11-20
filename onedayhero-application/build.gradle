@@ -28,6 +28,7 @@ dependencies {
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-chat')
+    implementation project(':onedayhero-mongo')
 }
 
 tasks.named('test') {
