@@ -7,7 +7,6 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.user.*;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 class MissionProposalRepositoryTest extends IntegrationRepositoryTest {
@@ -53,7 +54,8 @@ class MissionProposalRepositoryTest extends IntegrationRepositoryTest {
         var missionProposalCreateEventDto = missionProposalRepository.findMissionProposalCreateEventDtoById(missionProposal.getId());
 
         // then
-        Assertions.assertThat(missionProposalCreateEventDto)
+        assertThat(missionProposalCreateEventDto).isNotEmpty();
+        assertThat(missionProposalCreateEventDto.get())
             .extracting("heroId", "citizenNickname", "missionId", "missionTitle")
             .containsExactly(
                 missionProposal.getHeroId(),
