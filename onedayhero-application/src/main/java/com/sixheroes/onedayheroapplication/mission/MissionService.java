@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -164,7 +163,7 @@ public class MissionService {
                     var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(response.id(), userId);
                     return MissionResponse.from(response, missionImages, optionalMissionBookmark.isPresent());
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
@@ -175,13 +174,10 @@ public class MissionService {
                 .map(queryResponse -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
                     var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
-
-                    var imagePath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
                     var isBookmarked = optionalMissionBookmark.isPresent();
-
-                    return MissionProgressResponse.from(queryResponse, imagePath, isBookmarked);
-                })
-                .toList();
+                    return MissionProgressResponse.from(queryResponse, thumbNailPath, isBookmarked);
+                }).toList();
     }
 
     private void deleteUserBookMarkByMissionId(
