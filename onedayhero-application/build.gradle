@@ -1,5 +1,6 @@
 ext {
     jjwtVersion = '0.11.5'
+    springVersion = '6.0.13'
 }
 
 dependencies {
@@ -14,9 +15,20 @@ dependencies {
     // OPEN FEIGN
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Messaging
+    implementation "org.springframework:spring-messaging:${springVersion}"
+
+    // Spring Caching
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
+    implementation project(':onedayhero-chat')
+    implementation project(':onedayhero-mongo')
 }
 
 tasks.named('test') {

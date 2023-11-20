@@ -16,6 +16,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -55,10 +57,12 @@ public class Mission extends BaseEntity {
     @Column(name = "status", length = 20, nullable = false)
     private MissionStatus missionStatus;
 
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL)
+    List<MissionImage> missionImages = new ArrayList<>();
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
-    // TODO : 미션 생성 시 전달 받는 값을 longitude, latitude 로 분리하고 생성자에서 Point 변환
     @Builder
     private Mission(
             MissionCategory missionCategory,
@@ -103,6 +107,15 @@ public class Mission extends BaseEntity {
                 .build();
     }
 
+    public void addMissionImages(
+            List<MissionImage> missionImages
+    ) {
+        missionImages.forEach(missionImage -> {
+            missionImage.setMission(this);
+            this.missionImages.add(missionImage);
+        });
+    }
+
     public void update(
             Mission mission,
             Long userId
@@ -116,15 +129,12 @@ public class Mission extends BaseEntity {
     }
 
     public void extend(
-            Mission mission,
+            MissionInfo missionInfo,
             Long userId
     ) {
         validOwn(userId);
         validAbleExtend();
-        this.missionCategory = mission.missionCategory;
-        this.missionInfo = mission.missionInfo;
-        this.regionId = mission.regionId;
-        this.location = mission.location;
+        this.missionInfo = missionInfo;
         this.missionStatus = MissionStatus.MATCHING;
     }
 
@@ -189,7 +199,7 @@ public class Mission extends BaseEntity {
 
     // TODO 미션이 매칭중이 아닐 때 validMissionProposalPossible, validMissionProposalChangeStatus 검증
     public void validMissionProposalPossible(
-        Long userId
+            Long userId
     ) {
         validMissionOwner(userId);
         validMissionStatusMatching();
@@ -223,7 +233,7 @@ public class Mission extends BaseEntity {
     }
 
     private void validMissionOwner(
-        Long userId
+            Long userId
     ) {
         if (!Objects.equals(this.citizenId, userId)) {
             log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);

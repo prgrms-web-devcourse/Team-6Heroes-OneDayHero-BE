@@ -1,0 +1,38 @@
+[[chatroom-create]]
+=== 시민은 채팅방을 만들 수 있다.
+
+==== HTTP Request
+
+include::{snippets}/chatRoom-create/http-request.adoc[]
+include::{snippets}/chatRoom-create/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/chatRoom-create/http-response.adoc[]
+include::{snippets}/chatRoom-create/response-fields.adoc[]
+
+[[chatRoom-joined]]
+=== 유저는 현재 자신이 들어가 있는 채팅방을 조회 할 수 있다.
+
+==== HTTP Request
+
+include::{snippets}/chatRoom-joined/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/chatRoom-joined/http-response.adoc[]
+include::{snippets}/chatRoom-joined/response-fields.adoc[]
+
+[[chatRoom-exit]]
+=== 유저는 현재 자신이 들어가 있는 채팅방을 나갈 수 있다.
+
+==== HTTP Request
+
+include::{snippets}/chatRoom-exit/path-parameters.adoc[]
+include::{snippets}/chatRoom-exit/http-request.adoc[]
+include::{snippets}/chatRoom-exit/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/chatRoom-exit/http-response.adoc[]
+include::{snippets}/chatRoom-exit/response-fields.adoc[]

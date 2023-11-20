@@ -2,7 +2,6 @@ package com.sixheroes.onedayheroapi.docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUserArgumentResolver;
 import com.sixheroes.onedayheroapi.global.handler.GlobalExceptionHandler;
 import com.sixheroes.onedayheroapi.global.interceptor.JwtAuthInterceptor;
@@ -30,8 +29,10 @@ public abstract class RestDocsSupport {
 
     @Autowired
     private JwtProperties jwtProperties;
+
     @Autowired
     private JwtTokenManager jwtTokenManager;
+
     protected MockMvc mockMvc;
     protected ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 

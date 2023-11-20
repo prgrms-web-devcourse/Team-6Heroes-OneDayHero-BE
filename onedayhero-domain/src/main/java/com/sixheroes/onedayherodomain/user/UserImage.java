@@ -32,10 +32,10 @@ public class UserImage extends BaseEntity {
 
     @Builder(access = AccessLevel.PRIVATE)
     private UserImage(
-        @NonNull User user,
-        String originalName,
-        String uniqueName,
-        String path
+            @NonNull User user,
+            String originalName,
+            String uniqueName,
+            String path
     ) {
         validCreateUserImage(originalName, uniqueName, path);
 
@@ -46,26 +46,26 @@ public class UserImage extends BaseEntity {
     }
 
     public static UserImage createUserImage(
-        @NonNull User user,
-        String originalName,
-        String uniqueName,
-        String path
+            @NonNull User user,
+            String originalName,
+            String uniqueName,
+            String path
     ) {
         var userImage = UserImage.builder()
-            .user(user)
-            .originalName(originalName)
-            .uniqueName(uniqueName)
-            .path(path)
-            .build();
+                .user(user)
+                .originalName(originalName)
+                .uniqueName(uniqueName)
+                .path(path)
+                .build();
 
         user.setUserImages(userImage);
         return userImage;
     }
 
     private void validCreateUserImage(
-        String originalName,
-        String uniqueName,
-        String path
+            String originalName,
+            String uniqueName,
+            String path
     ) {
         validOriginalNameLength(originalName);
         validUniqueNameLength(uniqueName);
