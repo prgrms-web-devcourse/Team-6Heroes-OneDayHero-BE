@@ -6,6 +6,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
@@ -97,10 +98,6 @@ public class MissionQueryRepository {
                 .fetch();
     }
 
-    private BooleanExpression missionStatusIsProgress() {
-        return mission.missionStatus.notIn(MissionStatus.MISSION_COMPLETED, MissionStatus.EXPIRED);
-    }
-
     public Optional<MissionQueryResponse> fetchOne(
             Long missionId
     ) {
@@ -133,6 +130,42 @@ public class MissionQueryRepository {
                 .fetchOne();
 
         return Optional.ofNullable(queryResult);
+    }
+
+    public List<MissionCompletedQueryResponse> findCompletedMissionByUserId(
+            Pageable pageable,
+            Long userId
+    ) {
+        return queryFactory.select(Projections.constructor(MissionCompletedQueryResponse.class,
+                        mission.id,
+                        mission.missionInfo.title,
+                        mission.missionCategory.id,
+                        mission.missionCategory.missionCategoryCode,
+                        mission.missionCategory.name,
+                        region.si,
+                        region.gu,
+                        region.dong,
+                        mission.missionInfo.missionDate,
+                        mission.bookmarkCount,
+                        mission.missionStatus
+                ))
+                .from(mission)
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .where(userIdEq(userId), missionStatusIsCompleted())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(mission.missionInfo.missionDate.desc())
+                .fetch();
+    }
+
+    private BooleanExpression missionStatusIsProgress() {
+        return mission.missionStatus.notIn(MissionStatus.MISSION_COMPLETED, MissionStatus.EXPIRED);
+    }
+
+    private BooleanExpression missionStatusIsCompleted() {
+        return mission.missionStatus.eq(MissionStatus.MISSION_COMPLETED);
     }
 
     private BooleanBuilder userIdEq(Long userId) {

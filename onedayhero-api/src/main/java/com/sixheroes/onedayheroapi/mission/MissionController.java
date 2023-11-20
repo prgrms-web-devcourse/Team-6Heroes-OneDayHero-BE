@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapi.mission;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.mission.request.*;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
+import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -54,6 +55,16 @@ public class MissionController {
             @PathVariable Long userId
     ) {
         var result = missionService.findProgressMission(pageable, userId);
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @GetMapping("/completed/{userId}")
+    public ResponseEntity<ApiResponse<Slice<MissionCompletedResponse>>> findCompletedMission(
+            @PageableDefault(size = 5) Pageable pageable,
+            @PathVariable Long userId
+    ) {
+        var result = missionService.findCompletedMissionByUserId(pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

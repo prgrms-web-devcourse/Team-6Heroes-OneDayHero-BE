@@ -19,9 +19,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
 
-    @Transactional
     @DisplayName("미션을 한 번의 쿼리로 단 건 조회 할 수 있다.")
     @Test
     void findOneWithFetchJoin() {
@@ -48,7 +48,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         assertThat(missionQueryResponse).isNotEmpty();
     }
 
-    @Transactional
     @DisplayName("미션을 필터에 따라 다르게 적용 할 수 있다.")
     @Test
     void findAllByDynamicCondition() {
@@ -89,7 +88,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         assertThat(result).hasSize(2);
     }
 
-    @Transactional
     @DisplayName("미션을 필터에 따라 다르게 적용 할 수 있다. 카테고리 아이디만")
     @Test
     void findAllByDynamicConditionWithCategoryIds() {
@@ -128,7 +126,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         assertThat(result).hasSize(1);
     }
 
-    @Transactional
     @DisplayName("미션을 필터에 따라 다르게 적용 할 수 있다. 조건 X")
     @Test
     void findAllByDynamicConditionWithEmptyCondition() {
@@ -165,7 +162,6 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         assertThat(result).hasSize(2);
     }
 
-    @Transactional
     @DisplayName("유저가 현재 진행중인 미션 목록을 조회 할 수 있다.")
     @Test
     void findProgressMissionByUserId() {
@@ -183,10 +179,10 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
         var citizenId = 1L;
 
-        var mission = createMission(citizenId, missionCategory, missionInfo, 1L);
-        var completedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MISSION_COMPLETED);
-        var matchedMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.MATCHING_COMPLETED);
-        var expiredMission = createMission(citizenId, missionCategory, missionInfo, 1L, MissionStatus.EXPIRED);
+        var mission = createMission(citizenId, missionCategory, missionInfo, region.getId());
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.EXPIRED);
 
 
         var pageRequest = PageRequest.of(0, 3);
@@ -223,6 +219,63 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                         mission.getMissionInfo().getMissionDate(),
                         mission.getBookmarkCount(),
                         mission.getMissionStatus()
+                );
+    }
+
+    @DisplayName("유저가 현재 완료 된 미션 목록을 조회 할 수 있다.")
+    @Test
+    void findCompletedMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var mission = createMission(citizenId, missionCategory, missionInfo, region.getId());
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.EXPIRED);
+
+        var pageRequest = PageRequest.of(0, 3);
+
+        missionRepository.saveAll(List.of(mission, completedMission, matchedMission, expiredMission));
+
+        // when
+        var missionQueryResponse = missionQueryRepository.findCompletedMissionByUserId(pageRequest, citizenId);
+
+        // then
+        assertThat(missionQueryResponse).hasSize(1);
+        assertThat(missionQueryResponse.get(0))
+                .extracting(
+                        "title",
+                        "categoryId",
+                        "categoryCode",
+                        "categoryName",
+                        "si",
+                        "gu",
+                        "dong",
+                        "missionDate",
+                        "bookmarkCount",
+                        "missionStatus")
+                .containsExactly(
+                        mission.getMissionInfo().getTitle(),
+                        mission.getMissionCategory().getId(),
+                        mission.getMissionCategory().getMissionCategoryCode(),
+                        mission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        region.getSi(),
+                        region.getGu(),
+                        region.getDong(),
+                        mission.getMissionInfo().getMissionDate(),
+                        mission.getBookmarkCount(),
+                        MissionStatus.MISSION_COMPLETED
                 );
     }
 
