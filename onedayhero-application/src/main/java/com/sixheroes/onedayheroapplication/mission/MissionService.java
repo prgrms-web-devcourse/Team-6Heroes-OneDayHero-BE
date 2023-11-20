@@ -5,12 +5,14 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -141,6 +143,16 @@ public class MissionService {
         return MissionIdResponse.from(mission.getId());
     }
 
+    public Slice<MissionCompletedResponse> findCompletedMissionByUserId(
+            Pageable pageable,
+            Long userId
+    ) {
+        var completedMissions = missionQueryRepository.findCompletedMissionByUserId(pageable, userId);
+        var missionCompletedResponses = makeCompletedMissionResponseWithImages(completedMissions, userId);
+
+        return SliceResultConverter.consume(missionCompletedResponses, pageable);
+    }
+
     @Transactional
     public void deleteMission(
             Long missionId,
@@ -177,6 +189,20 @@ public class MissionService {
                     var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
                     var isBookmarked = optionalMissionBookmark.isPresent();
                     return MissionProgressResponse.from(queryResponse, thumbNailPath, isBookmarked);
+                }).toList();
+    }
+
+    private List<MissionCompletedResponse> makeCompletedMissionResponseWithImages(
+            List<MissionCompletedQueryResponse> sliceMissionCompletedQueryResponses,
+            Long userId
+    ) {
+        return sliceMissionCompletedQueryResponses.stream()
+                .map(queryResponse -> {
+                    var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
+                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    var isBookmarked = optionalMissionBookmark.isPresent();
+                    return MissionCompletedResponse.from(queryResponse, thumbNailPath, isBookmarked);
                 }).toList();
     }
 

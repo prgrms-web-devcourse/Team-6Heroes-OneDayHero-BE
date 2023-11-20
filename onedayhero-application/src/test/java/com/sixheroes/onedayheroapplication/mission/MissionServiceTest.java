@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
@@ -810,6 +811,126 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 );
     }
 
+    @DisplayName("시민은 진행중인 미션을 조회 할 수 있다.")
+    @Test
+    void findProgressMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.EXPIRED);
+
+        var pageRequest = PageRequest.of(0, 3);
+
+        missionRepository.saveAll(List.of(matchingMission, completedMission, matchedMission, expiredMission));
+
+        // when
+        var progressMission = missionService.findProgressMission(pageRequest, citizenId);
+
+        // then
+        assertThat(progressMission).hasSize(2);
+        assertThat(progressMission.getContent().get(0))
+                .extracting(
+                        "missionCategory.id",
+                        "missionCategory.code",
+                        "missionCategory.name",
+                        "bookmarkCount",
+                        "missionStatus",
+                        "imagePath",
+                        "isBookmarked"
+                ).containsExactly(
+                        matchingMission.getMissionCategory().getId(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchingMission.getBookmarkCount(),
+                        matchingMission.getMissionStatus().name(),
+                        null,
+                        false
+                );
+        assertThat(progressMission.getContent().get(1))
+                .extracting(
+                        "missionCategory.id",
+                        "missionCategory.code",
+                        "missionCategory.name",
+                        "bookmarkCount",
+                        "missionStatus",
+                        "imagePath",
+                        "isBookmarked"
+                ).containsExactly(
+                        matchedMission.getMissionCategory().getId(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchedMission.getBookmarkCount(),
+                        matchedMission.getMissionStatus().name(),
+                        null,
+                        false
+                );
+    }
+
+    @DisplayName("시민은 완료된 미션을 조회 할 수 있다.")
+    @Test
+    void findCompletedMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
+        var expiredMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.EXPIRED);
+
+        var pageRequest = PageRequest.of(0, 3);
+
+        missionRepository.saveAll(List.of(matchingMission, completedMission, matchedMission, expiredMission));
+
+        // when
+        var findCompletedMission = missionService.findCompletedMissionByUserId(pageRequest, citizenId);
+
+        // then
+        assertThat(findCompletedMission).hasSize(1);
+        assertThat(findCompletedMission.getContent().get(0))
+                .extracting(
+                        "missionCategory.id",
+                        "missionCategory.code",
+                        "missionCategory.name",
+                        "bookmarkCount",
+                        "missionStatus",
+                        "imagePath",
+                        "isBookmarked"
+                ).containsExactly(
+                        completedMission.getMissionCategory().getId(),
+                        completedMission.getMissionCategory().getMissionCategoryCode().name(),
+                        completedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        completedMission.getBookmarkCount(),
+                        completedMission.getMissionStatus().name(),
+                        null,
+                        false
+                );
+    }
+
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {
@@ -889,6 +1010,43 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 .contentType(ContentType.MULTIPART_FORM_DATA.toString())
                 .inputStream(InputStream.nullInputStream())
                 .contentSize(Long.MAX_VALUE)
+                .build();
+    }
+
+    private Mission createMission(
+            Long citizenId,
+            MissionCategory missionCategory,
+            MissionInfo missionInfo,
+            Long regionId,
+            MissionStatus missionStatus
+    ) {
+        return Mission.builder()
+                .missionCategory(missionCategory)
+                .missionInfo(missionInfo)
+                .regionId(regionId)
+                .citizenId(citizenId)
+                .location(Mission.createPoint(123456.78, 123456.78))
+                .missionStatus(missionStatus)
+                .bookmarkCount(0)
+                .build();
+    }
+
+    private MissionInfo createMissionInfo(
+            LocalDate missionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalDateTime deadlineTime,
+            LocalDateTime serverTime
+    ) {
+        return MissionInfo.builder()
+                .title("제목")
+                .content("내용")
+                .missionDate(missionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .deadlineTime(deadlineTime)
+                .price(10000)
+                .serverTime(serverTime)
                 .build();
     }
 }

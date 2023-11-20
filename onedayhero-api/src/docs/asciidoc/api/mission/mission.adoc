@@ -4,7 +4,7 @@
 ==== HTTP Request
 
 include::{snippets}/mission-create/http-request.adoc[]
-include::{snippets}/mission-create/request-fields.adoc[]
+include::{snippets}/mission-create/request-part-missionCreateRequest-fields.adoc[]
 
 ==== HTTP Response
 
@@ -50,6 +50,19 @@ include::{snippets}/mission-progress-find/http-request.adoc[]
 include::{snippets}/mission-progress-find/http-response.adoc[]
 include::{snippets}/mission-progress-find/response-fields.adoc[]
 
+[[mission-completed-find]]
+=== 유저는 완료된 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-completed-find/path-parameters.adoc[]
+include::{snippets}/mission-completed-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-completed-find/http-response.adoc[]
+include::{snippets}/mission-completed-find/response-fields.adoc[]
+
 [[mission-update]]
 === 시민은 미션을 수정 할 수 있다.
 
@@ -57,7 +70,7 @@ include::{snippets}/mission-progress-find/response-fields.adoc[]
 
 include::{snippets}/mission-update/path-parameters.adoc[]
 include::{snippets}/mission-update/http-request.adoc[]
-include::{snippets}/mission-update/request-fields.adoc[]
+include::{snippets}/mission-update/request-part-missionUpdateRequest-fields.adoc[]
 
 ==== HTTP Response
 

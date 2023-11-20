@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
@@ -24,6 +25,16 @@ public record MissionCategoryResponse(
 
     public static MissionCategoryResponse from(
             MissionProgressQueryResponse response
+    ) {
+        return MissionCategoryResponse.builder()
+                .id(response.categoryId())
+                .code(response.categoryCode().name())
+                .name(response.categoryName())
+                .build();
+    }
+
+    public static MissionCategoryResponse from(
+            MissionCompletedQueryResponse response
     ) {
         return MissionCategoryResponse.builder()
                 .id(response.categoryId())
