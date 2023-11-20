@@ -1,17 +1,20 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE mission_chat_rooms SET is_disabled = true WHERE id = ?")
@@ -53,17 +56,17 @@ public class MissionChatRoom {
                 .build();
     }
 
-    public MissionChatRoom createMemoryMissionChatRoom(
-            Long id,
-            MissionChatRoom missionChatRoom
-    ) {
-        missionChatRoom.id = id;
-        return missionChatRoom;
-    }
-
     private List<UserMissionChatRoom> createUserMissionChatRooms(List<Long> userIds) {
+        validUserCount(userIds);
         return userIds.stream()
                 .map((userId) -> UserMissionChatRoom.createUserMissionChatRoom(userId, this))
                 .toList();
+    }
+
+    private void validUserCount(List<Long> userIds) {
+        if (userIds.size() != 2) {
+            log.debug("채팅방을 생성하는데 필요한 인원이 들어오지 않았습니다. userCount : {}", userIds.size());
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
+        }
     }
 }
