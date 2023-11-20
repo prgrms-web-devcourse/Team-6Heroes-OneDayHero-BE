@@ -1,18 +1,13 @@
 package com.sixheroes.onedayheroapplication.mission;
 
 import com.sixheroes.onedayheroapplication.IntegrationQueryDslTest;
-import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +20,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionQueryRepository missionQueryRepository;
 
     @Transactional
     @DisplayName("미션을 한 번의 쿼리로 단 건 조회 할 수 있다.")
@@ -212,13 +195,12 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                 List.of(mission, completedMission, matchedMission, expiredMission)
         );
 
-
         // when
         var missionQueryResponse = missionQueryRepository.findProgressMissionByUserId(pageRequest, citizenId);
 
         // then
         assertThat(missionQueryResponse).hasSize(2);
-        assertThat(missionQueryResponse.getContent().get(0))
+        assertThat(missionQueryResponse.get(0))
                 .extracting(
                         "title",
                         "categoryId",

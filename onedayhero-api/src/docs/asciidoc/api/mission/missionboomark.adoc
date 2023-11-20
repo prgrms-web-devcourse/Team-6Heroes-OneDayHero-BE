@@ -4,6 +4,7 @@
 ==== HTTP Request
 
 include::{snippets}/mission-bookmark-create/http-request.adoc[]
+include::{snippets}/mission-bookmark-create/request-headers.adoc[]
 include::{snippets}/mission-bookmark-create/request-fields.adoc[]
 
 ==== HTTP Response
@@ -17,6 +18,7 @@ include::{snippets}/mission-bookmark-create/response-fields.adoc[]
 
 ==== HTTP Request
 include::{snippets}/mission-bookmark-cancel/http-request.adoc[]
+include::{snippets}/mission-bookmark-cancel/request-headers.adoc[]
 include::{snippets}/mission-bookmark-cancel/request-fields.adoc[]
 
 ==== HTTP Response

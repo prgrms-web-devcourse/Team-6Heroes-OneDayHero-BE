@@ -2,24 +2,17 @@ package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalRejectServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
-import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.event.ApplicationEvents;
+
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,24 +28,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @RecordApplicationEvents
 class MissionProposalServiceTest extends IntegrationApplicationTest {
 
-    @Autowired
-    private MissionProposalService missionProposalService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionProposalRepository missionProposalRepository;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private ApplicationEvents applicationEvents;
-
     @DisplayName("미션 제안을 생성한다.")
     @Transactional
     @Test
@@ -66,13 +41,12 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         hero.changeHeroModeOn();
 
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-                citizenId,
                 mission.getId(),
                 hero.getId()
         );
 
         // when
-        var missionProposalCreateResponse = missionProposalService.createMissionProposal(missionProposalCreateServiceRequest);
+        var missionProposalCreateResponse = missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest);
 
         // then
         var missionProposalId = missionProposalCreateResponse.id();
@@ -123,13 +97,12 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         hero.changeHeroModeOn();
 
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-                citizenId,
                 missionId,
                 hero.getId()
         );
 
         // when & then
-        assertThatThrownBy(() -> missionProposalService.createMissionProposal(missionProposalCreateServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EM_008.name());
     }
@@ -148,13 +121,12 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         var notExsistHeroId = 4L;
         var missionProposalCreateServiceRequest = new MissionProposalCreateServiceRequest(
-                citizenId,
                 mission.getId(),
                 notExsistHeroId
         );
 
         // when & then
-        assertThatThrownBy(() -> missionProposalService.createMissionProposal(missionProposalCreateServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EUC_000.name());
     }
@@ -171,12 +143,10 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposal = missionProposalRepository.save(createMissionProposal(mission.getId(), heroId));
 
-        var missionProposalApproveServiceRequest = new MissionProposalApproveServiceRequest(heroId);
-
         // when
         var missionProposalApproveResponse = missionProposalService.approveMissionProposal(
-                missionProposal.getId(),
-                missionProposalApproveServiceRequest
+                heroId,
+                missionProposal.getId()
         );
 
         // then
@@ -194,10 +164,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposalId = 1L;
 
-        var missionProposalApproveServiceRequest = new MissionProposalApproveServiceRequest(heroId);
-
         // when
-        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(missionProposalId, missionProposalApproveServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposalId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EMP_000.name());
     }
@@ -211,10 +179,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposal = missionProposalRepository.save(createMissionProposal(missionId, heroId));
 
-        var missionProposalApproveServiceRequest = new MissionProposalApproveServiceRequest(heroId);
-
         // when
-        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(missionProposal.getId(), missionProposalApproveServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposal.getId()))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EM_008.name());
     }
@@ -231,12 +197,10 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposal = missionProposalRepository.save(createMissionProposal(mission.getId(), heroId));
 
-        var missionProposalRejectServiceRequest = new MissionProposalRejectServiceRequest(heroId);
-
         // when
         var missionProposalRejectResponse = missionProposalService.rejectMissionProposal(
-                missionProposal.getId(),
-                missionProposalRejectServiceRequest
+                heroId,
+                missionProposal.getId()
         );
 
         // then
@@ -254,10 +218,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposalId = 1L;
 
-        var missionProposalRejectServiceRequest = new MissionProposalRejectServiceRequest(heroId);
-
         // when
-        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(missionProposalId, missionProposalRejectServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposalId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EMP_000.name());
     }
@@ -271,10 +233,8 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var heroId = 1L;
         var missionProposal = missionProposalRepository.save(createMissionProposal(missionId, heroId));
 
-        var missionProposalRejectServiceRequest = new MissionProposalRejectServiceRequest(heroId);
-
         // when
-        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(missionProposal.getId(), missionProposalRejectServiceRequest))
+        assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposal.getId()))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(ErrorCode.EM_008.name());
     }

@@ -7,12 +7,8 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
-import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,18 +25,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @Transactional
 @ActiveProfiles("test")
 class MissionBookmarkServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private MissionBookmarkService missionBookmarkService;
-
-    @Autowired
-    private MissionCategoryRepository missionCategoryRepository;
-
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @Autowired
-    private MissionBookmarkRepository missionBookmarkRepository;
 
     @DisplayName("유저는 미션 찜목록을 조회할 수 있다.")
     @Test
@@ -80,10 +64,8 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
         // when
         var response = missionBookmarkService.createMissionBookmark(
-                createMissionBookmarkCreateServiceRequest(
-                        mission.getId(),
-                        bookmarkUserId
-                )
+                bookmarkUserId,
+                createMissionBookmarkCreateServiceRequest(mission.getId())
         );
 
         // then
@@ -104,17 +86,15 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 MissionStatus.MATCHING
         );
         missionBookmarkService.createMissionBookmark(
-                createMissionBookmarkCreateServiceRequest(
-                        mission.getId(),
-                        bookmarkUserId
-                )
+                bookmarkUserId,
+                createMissionBookmarkCreateServiceRequest(mission.getId())
         );
 
         // when
-        assertThatThrownBy(() -> missionBookmarkService.createMissionBookmark(createMissionBookmarkCreateServiceRequest(
-                mission.getId(),
-                bookmarkUserId
-        ))).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> missionBookmarkService.createMissionBookmark(
+                bookmarkUserId,
+                createMissionBookmarkCreateServiceRequest(mission.getId())
+        )).isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorCode.T_001.name());
     }
 
@@ -129,18 +109,14 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
                 MissionStatus.MATCHING
         );
         missionBookmarkService.createMissionBookmark(
-                createMissionBookmarkCreateServiceRequest(
-                        mission.getId(),
-                        bookmarkUserId
-                )
+                bookmarkUserId,
+                createMissionBookmarkCreateServiceRequest(mission.getId())
         );
 
         // when
         var response = missionBookmarkService.cancelMissionBookmark(
-                createMissionBookmarkCancelServiceRequest(
-                        mission.getId(),
-                        bookmarkUserId
-                )
+                bookmarkUserId,
+                createMissionBookmarkCancelServiceRequest(mission.getId())
         );
 
         // then
@@ -151,22 +127,18 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
     }
 
     private MissionBookmarkCreateServiceRequest createMissionBookmarkCreateServiceRequest(
-            Long missionId,
-            Long bookmarkUserId
+            Long missionId
     ) {
         return MissionBookmarkCreateServiceRequest.builder()
                 .missionId(missionId)
-                .userId(bookmarkUserId)
                 .build();
     }
 
     private MissionBookmarkCancelServiceRequest createMissionBookmarkCancelServiceRequest(
-            Long missionId,
-            Long userId
+            Long missionId
     ) {
         return MissionBookmarkCancelServiceRequest.builder()
                 .missionId(missionId)
-                .userId(userId)
                 .build();
     }
 
@@ -219,10 +191,8 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
                     if (i <= 4) {
                         missionBookmarkService.createMissionBookmark(
-                                createMissionBookmarkCreateServiceRequest(
-                                        mission.getId(),
-                                        bookmarkUserId
-                                )
+                                bookmarkUserId,
+                                createMissionBookmarkCreateServiceRequest(mission.getId())
                         );
                     }
                 });

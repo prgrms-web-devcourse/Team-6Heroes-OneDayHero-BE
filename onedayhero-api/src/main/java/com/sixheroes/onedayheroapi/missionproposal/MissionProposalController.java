@@ -1,9 +1,8 @@
 package com.sixheroes.onedayheroapi.missionproposal;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
-import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalApproveRequest;
 import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalCreateRequest;
-import com.sixheroes.onedayheroapi.missionproposal.request.MissionProposalRejectRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
@@ -26,9 +25,10 @@ public class MissionProposalController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<MissionProposalCreateResponse>> createMissionProposal(
+        @AuthUser Long userId,
         @Valid @RequestBody MissionProposalCreateRequest missionRequestCreateRequest
     ) {
-        var missionProposal = missionProposalService.createMissionProposal(missionRequestCreateRequest.toService());
+        var missionProposal = missionProposalService.createMissionProposal(userId, missionRequestCreateRequest.toService());
 
         return ResponseEntity.created(URI.create("/api/v1/mission-proposals/" + missionProposal.id()))
             .body(ApiResponse.created(missionProposal));
@@ -36,11 +36,12 @@ public class MissionProposalController {
 
     @PatchMapping("/{missionProposalId}/approve")
     public ResponseEntity<ApiResponse<MissionProposalApproveResponse>> approveMissionRequest(
-        @PathVariable Long missionProposalId,
-        @Valid @RequestBody MissionProposalApproveRequest missionProposalApproveRequest) {
+            @AuthUser Long userId,
+            @PathVariable Long missionProposalId
+    ) {
         var missionProposalApproveResponse = missionProposalService.approveMissionProposal(
-            missionProposalId,
-            missionProposalApproveRequest.toService()
+                userId,
+                missionProposalId
         );
 
         return ResponseEntity.ok(ApiResponse.ok(missionProposalApproveResponse));
@@ -48,12 +49,12 @@ public class MissionProposalController {
 
     @PatchMapping("/{missionRequestId}/reject")
     public ResponseEntity<ApiResponse<MissionProposalRejectResponse>> rejectMissionRequest(
-        @PathVariable Long missionRequestId,
-        @Valid @RequestBody MissionProposalRejectRequest missionRequestRejectRequest
+            @AuthUser Long userId,
+            @PathVariable Long missionRequestId
     ) {
         var missionRequestRejectResponse = missionProposalService.rejectMissionProposal(
-            missionRequestId,
-            missionRequestRejectRequest.toService()
+                userId,
+                missionRequestId
         );
 
         return ResponseEntity.ok(ApiResponse.ok(missionRequestRejectResponse));

@@ -10,12 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -43,24 +47,26 @@ class MissionMatchControllerTest extends RestDocsSupport {
         var request = createMissionMatchCreateServiceRequest();
         var response = createMissionMatchResponse();
 
-        given(missionMatchService.createMissionMatch(any(MissionMatchCreateServiceRequest.class)))
+        given(missionMatchService.createMissionMatch(anyLong(), any(MissionMatchCreateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(post("/api/v1/mission-matches")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+        mockMvc.perform(post("/api/v1/mission-matches/create")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         ).andDo(print())
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(201))
                 .andExpect(jsonPath("$.data.missionMatchId").value(response.missionMatchId()))
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.data.heroId").value(response.heroId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-match-create",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디"),
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                                         .description("미션 아이디"),
                                 fieldWithPath("heroId").type(JsonFieldType.NUMBER)
@@ -90,13 +96,14 @@ class MissionMatchControllerTest extends RestDocsSupport {
         var request = createMissionMatchWithdrawServiceRequest();
         var response = createMissionMatchWithdrawResponse();
 
-        given(missionMatchService.cancelMissionMatch(any(MissionMatchCancelServiceRequest.class)))
+        given(missionMatchService.cancelMissionMatch(anyLong(), any(MissionMatchCancelServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
         mockMvc.perform(put("/api/v1/mission-matches/cancel")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
@@ -105,9 +112,10 @@ class MissionMatchControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionId").value(response.missionId()))
                 .andExpect(jsonPath("$.serverDateTime").exists())
                 .andDo(document("mission-match-cancel",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                        ),
                         requestFields(
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("missionId").type(JsonFieldType.NUMBER)
                                         .description("미션 아이디")
                         ),
@@ -130,7 +138,6 @@ class MissionMatchControllerTest extends RestDocsSupport {
 
     private MissionMatchCreateServiceRequest createMissionMatchCreateServiceRequest() {
         return MissionMatchCreateServiceRequest.builder()
-                .userId(1L)
                 .missionId(2L)
                 .heroId(3L)
                 .build();
@@ -138,7 +145,6 @@ class MissionMatchControllerTest extends RestDocsSupport {
 
     private MissionMatchCancelServiceRequest createMissionMatchWithdrawServiceRequest() {
         return MissionMatchCancelServiceRequest.builder()
-                .citizenId(1L)
                 .missionId(2L)
                 .build();
     }

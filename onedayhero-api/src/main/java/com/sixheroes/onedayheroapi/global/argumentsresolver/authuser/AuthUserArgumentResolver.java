@@ -35,7 +35,10 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         var id = request.getAttribute(jwtProperties.getClaimId());
 
         if (ObjectUtils.isEmpty(id)) {
-            throw new IllegalStateException(ErrorCode.S_001.name());
+            //TODO: 제거예정, 임시적으로 accessToken 이 없으면 userId=1L 설정
+            return 1L;
+
+//            throw new IllegalStateException(ErrorCode.S_001.name());
         }
 
         return id;

@@ -3,9 +3,7 @@ package com.sixheroes.onedayheroapplication.missionproposal;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalApproveServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalRejectServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
@@ -36,9 +34,10 @@ public class MissionProposalService {
 
     @Transactional
     public MissionProposalCreateResponse createMissionProposal(
+            Long userId,
             MissionProposalCreateServiceRequest request
     ) {
-        validMission(request.missionId(), request.userId());
+        validMission(request.missionId(), userId);
         validHero(request.heroId());
 
         var missionProposal = request.toEntity();
@@ -52,30 +51,30 @@ public class MissionProposalService {
 
     @Transactional
     public MissionProposalApproveResponse approveMissionProposal(
-            Long missionProposalId,
-            MissionProposalApproveServiceRequest missionProposalApproveServiceRequest
+            Long userId,
+            Long missionProposalId
     ) {
         var missionProposal = missionProposalReader.findOne(missionProposalId);
 
         var missionId = missionProposal.getMissionId();
         validMission(missionId);
 
-        missionProposal.changeMissionProposalStatusApprove(missionProposalApproveServiceRequest.userId());
+        missionProposal.changeMissionProposalStatusApprove(userId);
 
         return MissionProposalApproveResponse.from(missionProposal);
     }
 
     @Transactional
     public MissionProposalRejectResponse rejectMissionProposal(
-            Long missionProposalId,
-            MissionProposalRejectServiceRequest missionRequestRejectServiceRequest
+            Long userId,
+            Long missionProposalId
     ) {
         var missionProposal = missionProposalReader.findOne(missionProposalId);
 
         var missionId = missionProposal.getMissionId();
         validMission(missionId);
 
-        missionProposal.changeMissionProposalStatusReject(missionRequestRejectServiceRequest.userId());
+        missionProposal.changeMissionProposalStatusReject(userId);
 
         return MissionProposalRejectResponse.from(missionProposal);
     }

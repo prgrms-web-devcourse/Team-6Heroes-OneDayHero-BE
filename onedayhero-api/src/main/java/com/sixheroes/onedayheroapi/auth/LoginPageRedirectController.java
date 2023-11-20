@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapi.auth;
 
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,10 @@ public class LoginPageRedirectController {
             HttpServletResponse httpServletResponse
     ) throws IOException {
         httpServletResponse.sendRedirect(oauthKakaoProperties.getKakao().getLoginPageRedirectUri());
+    }
+
+    @GetMapping("/test")
+    public String test(@AuthUser Long userId) {
+        return "[TEST] userId: " + userId;
     }
 }

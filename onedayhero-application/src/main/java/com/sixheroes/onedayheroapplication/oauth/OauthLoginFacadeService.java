@@ -6,10 +6,12 @@ import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserAuthResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class OauthLoginFacadeService {
@@ -23,6 +25,7 @@ public class OauthLoginFacadeService {
     ) {
         for (OauthLoginService oauthLoginService : oauthLoginServices) {
             if (oauthLoginService.supports(authorizationServer)) {
+                System.out.println("로그인2");
                 var userAuthResponse = oauthLoginService.login(code);
 
                 return new LoginResponse(

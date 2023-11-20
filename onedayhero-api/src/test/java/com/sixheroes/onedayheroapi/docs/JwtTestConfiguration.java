@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 @TestConfiguration
 public class JwtTestConfiguration {
 
-    private final static String TEST_SECRET_KEY = "EENY5W0eegTf1naQB2eDeaaaRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ";
-    private final static Long TEST_EXPIRY_TIME_MS = 60000000L;
+    private final static String TEST_SECRET_KEY = "testtesttesttesttesttesttesttesttesttesttesttesttesttest";
+    private final static Long TEST_EXPIRY_TIME_MS = 60000000000L;
 
     @Bean
     public JwtProperties jwtProperties() {

@@ -17,6 +17,10 @@ public enum UserSocialType {
         return Arrays.stream(UserSocialType.values())
                 .filter((userSocialType) -> userSocialType.name().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException(ErrorCode.S_001.name()));
+                .orElseThrow(() -> {
+                    System.out.println("로그인7");
+
+                    throw new IllegalStateException(ErrorCode.S_001.name());
+                });
     }
 }
