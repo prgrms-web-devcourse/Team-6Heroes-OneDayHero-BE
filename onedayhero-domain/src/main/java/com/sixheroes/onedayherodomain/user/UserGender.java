@@ -11,7 +11,8 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public enum UserGender {
     MALE("남자"),
-    FEMALE("여자");
+    FEMALE("여자"),
+    OTHER("기타");
 
     private final String description;
 

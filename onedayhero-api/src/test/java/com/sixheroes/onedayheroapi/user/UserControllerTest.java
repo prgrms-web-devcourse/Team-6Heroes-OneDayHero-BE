@@ -530,11 +530,15 @@ class UserControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].categoryName").value(sentReviewA.categoryName()))
                 .andExpect(jsonPath("$.data.content[0].missionTitle").value(sentReviewA.missionTitle()))
                 .andExpect(jsonPath("$.data.content[0].starScore").value(sentReviewA.starScore()))
+                .andExpect(jsonPath("$.data.content[0].senderNickname").value(sentReviewA.senderNickname()))
+                .andExpect(jsonPath("$.data.content[0].profileImage").isArray())
                 .andExpect(jsonPath("$.data.content[0].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewA.createdAt())))
                 .andExpect(jsonPath("$.data.content[1].reviewId").value(sentReviewB.reviewId()))
                 .andExpect(jsonPath("$.data.content[1].categoryName").value(sentReviewB.categoryName()))
                 .andExpect(jsonPath("$.data.content[1].missionTitle").value(sentReviewB.missionTitle()))
                 .andExpect(jsonPath("$.data.content[1].starScore").value(sentReviewB.starScore()))
+                .andExpect(jsonPath("$.data.content[1].senderNickname").value(sentReviewB.senderNickname()))
+                .andExpect(jsonPath("$.data.content[1].profileImage").isArray())
                 .andExpect(jsonPath("$.data.content[1].createdAt").value(DateTimeConverter.convertLocalDateTimeToString(sentReviewB.createdAt())))
                     .andDo(document("user-sent-reviews",
                             requestHeaders(
@@ -563,6 +567,11 @@ class UserControllerTest extends RestDocsSupport {
                                             .description("내가 리뷰를 작성한 미션의 제목"),
                                     fieldWithPath("data.content[].starScore").type(JsonFieldType.NUMBER)
                                             .description("내가 준 별점"),
+                                    fieldWithPath("data.content[].senderNickname").type(JsonFieldType.STRING)
+                                            .description("내 닉네임"),
+                                    fieldWithPath("data.content[].profileImage").type(JsonFieldType.ARRAY)
+                                            .description("내 프로필 이미지 경로")
+                                            .optional(),
                                     fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING)
                                             .description("내가 리뷰를 작성한 시간"),
                                     fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
@@ -636,6 +645,7 @@ class UserControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].reviewId").value(receivedReviewA.reviewId()))
                 .andExpect(jsonPath("$.data.content[0].senderId").value(receivedReviewA.senderId()))
                 .andExpect(jsonPath("$.data.content[0].senderNickname").value(receivedReviewA.senderNickname()))
+                .andExpect(jsonPath("$.data.content[0].profileImage").isArray())
                 .andExpect(jsonPath("$.data.content[0].categoryName").value(receivedReviewA.categoryName()))
                 .andExpect(jsonPath("$.data.content[0].missionTitle").value(receivedReviewA.missionTitle()))
                 .andExpect(jsonPath("$.data.content[0].starScore").value(receivedReviewA.starScore()))
@@ -643,6 +653,7 @@ class UserControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[1].reviewId").value(receivedReviewB.reviewId()))
                 .andExpect(jsonPath("$.data.content[1].senderId").value(receivedReviewB.senderId()))
                 .andExpect(jsonPath("$.data.content[1].senderNickname").value(receivedReviewB.senderNickname()))
+                .andExpect(jsonPath("$.data.content[1].profileImage").isArray())
                 .andExpect(jsonPath("$.data.content[1].categoryName").value(receivedReviewB.categoryName()))
                 .andExpect(jsonPath("$.data.content[1].missionTitle").value(receivedReviewB.missionTitle()))
                 .andExpect(jsonPath("$.data.content[1].starScore").value(receivedReviewB.starScore()))
@@ -672,6 +683,9 @@ class UserControllerTest extends RestDocsSupport {
                                         .description("내가 받은 리뷰 작성 유저 아이디"),
                                 fieldWithPath("data.content[].senderNickname").type(JsonFieldType.STRING)
                                         .description("내가 받은 리뷰 작성 유저 닉네임"),
+                                fieldWithPath("data.content[].profileImage").type(JsonFieldType.ARRAY)
+                                        .description("내가 받은 리뷰를 작성한 유저의 프로필 이미지 경로")
+                                        .optional(),
                                 fieldWithPath("data.content[].categoryName").type(JsonFieldType.STRING)
                                         .description("내가 받은 리뷰의 미션 카테고리 이름"),
                                 fieldWithPath("data.content[].missionTitle").type(JsonFieldType.STRING)
@@ -798,6 +812,8 @@ class UserControllerTest extends RestDocsSupport {
                 .categoryName("심부름")
                 .missionTitle("심부름 미션")
                 .starScore(3)
+                .senderNickname("리뷰 작성자 닉네임")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -808,6 +824,8 @@ class UserControllerTest extends RestDocsSupport {
                 .categoryName("청소")
                 .missionTitle("청소 미션")
                 .starScore(4)
+                .senderNickname("리뷰 작성자 닉네임")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -817,6 +835,7 @@ class UserControllerTest extends RestDocsSupport {
                 .reviewId(1L)
                 .senderId(5L)
                 .senderNickname("nickname A")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
                 .categoryName("청소")
                 .missionTitle("청소 미션")
                 .starScore(4)
@@ -829,6 +848,7 @@ class UserControllerTest extends RestDocsSupport {
                 .reviewId(2L)
                 .senderId(8L)
                 .senderNickname("nickname B")
+                .profileImage(List.of("s3 프로필 이미지 주소"))
                 .categoryName("심부름")
                 .missionTitle("심부름 미션")
                 .starScore(3)

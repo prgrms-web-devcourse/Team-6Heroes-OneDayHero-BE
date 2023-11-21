@@ -1,15 +1,15 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.user.response.UserAuthResponse;
-import com.sixheroes.onedayherodomain.user.Email;
-import com.sixheroes.onedayherodomain.user.User;
-import com.sixheroes.onedayherodomain.user.UserRole;
-import com.sixheroes.onedayherodomain.user.UserSocialType;
+import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
+import com.sixheroes.onedayherodomain.user.*;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -25,14 +25,16 @@ public class UserSignUpService {
         var createdEmail = Email.builder()
                 .email(email)
                 .build();
-        var createdUser = User.singUpUser(
+
+        var createdUser = User.signUp(
                 createdEmail,
                 UserSocialType.findByName(userSocialType),
-                UserRole.MEMBER
+                UserRole.MEMBER,
+                UserBasicInfo.initStatus(DefaultNicknameGenerator.generate())
         );
-        System.out.println("로그인6");
-        var singUpUser = userRepository.save(createdUser);
-        System.out.println("로그인8");
-        return UserAuthResponse.from(singUpUser);
+
+        var user = userRepository.save(createdUser);
+
+        return UserAuthResponse.from(user);
     }
 }

@@ -46,18 +46,12 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
             request.setAttribute(jwtProperties.getClaimId(), id);
 
             return true;
-        } catch (MalformedJwtException exception) {
-            log.warn("잘못된 형식의 JWT 토큰입니다.");
-
-            throw new IllegalStateException(ErrorCode.T_001.name());
         } catch (ExpiredJwtException exception) {
-            log.warn("만료된 JWT 토큰입니다.");
 
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            throw new IllegalStateException(ErrorCode.A_002.name());
         } catch (JwtException exception) {
-            log.warn("JWT 토큰 에러 발생");
 
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            throw new IllegalStateException(ErrorCode.A_003.name());
         }
     }
 

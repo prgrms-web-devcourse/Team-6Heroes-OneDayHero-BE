@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
+import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
 import com.sixheroes.onedayherodomain.user.*;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
@@ -23,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
@@ -41,6 +43,36 @@ class UserServiceTest extends IntegrationApplicationTest {
 
     @Autowired
     private UserService userService;
+
+    @DisplayName("처음 OAUTH 로그인을 시도하면 기본 설정값으로 유저가 저장된다.")
+    @Test
+    void signUp() {
+        // given
+        var initUserbasicInfo = UserBasicInfo.initStatus(DefaultNicknameGenerator.generate());
+        var email = Email.builder()
+                .email("test@email.com")
+                .build();
+        var user = User.signUp(
+                email,
+                UserSocialType.findByName("KAKAO"),
+                UserRole.MEMBER,
+                initUserbasicInfo
+        );
+
+        // when
+        var createdUser = userRepository.save(user);
+
+
+        // then
+        assertSoftly(soft -> {
+            soft.assertThat(createdUser.getEmail().getEmail()).isEqualTo(email.getEmail());
+            soft.assertThat(createdUser.getUserBasicInfo().getNickname()).isEqualTo(initUserbasicInfo.getNickname());
+            soft.assertThat(createdUser.getUserBasicInfo().getIntroduce()).isEqualTo("-");
+            soft.assertThat(createdUser.getUserBasicInfo().getGender()).isEqualTo(UserGender.OTHER);
+            soft.assertThat(createdUser.getUserBasicInfo().getBirth()).isEqualTo(LocalDate.of(2023, 1, 1));
+        });
+    }
+
 
     @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일, 선호하는 지역을 변경할 수 있다.")
     @Test
