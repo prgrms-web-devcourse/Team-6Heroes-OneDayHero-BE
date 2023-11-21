@@ -35,6 +35,6 @@ public class UserSignUpService {
 
         var user = userRepository.save(createdUser);
 
-        return UserAuthResponse.from(user);
+        return UserAuthResponse.signUpResponse(user);
     }
 }

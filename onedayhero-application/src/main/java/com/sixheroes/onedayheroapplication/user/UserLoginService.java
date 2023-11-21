@@ -20,7 +20,7 @@ public class UserLoginService {
             String email
     ) {
         return userRepository.findByEmail_Email(email)
-                .map(UserAuthResponse::from)
+                .map(UserAuthResponse::loginResponse)
                 .orElseGet(() -> signUpService.singUp(userSocialType, email));
     }
 }
