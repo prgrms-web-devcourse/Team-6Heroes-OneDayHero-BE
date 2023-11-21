@@ -11,6 +11,19 @@ include::{snippets}/review-create/request-part-reviewCreateRequest-fields.adoc[]
 include::{snippets}/review-create/http-response.adoc[]
 include::{snippets}/review-create/response-fields.adoc[]
 
+[[review-update]]
+=== 리뷰 수정
+
+==== HTTP Request
+
+include::{snippets}/review-update/http-request.adoc[]
+include::{snippets}/review-update/request-part-reviewUpdateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-update/http-response.adoc[]
+include::{snippets}/review-update/response-fields.adoc[]
+
 === 리뷰 상세 조회
 
 ==== HTTP Request

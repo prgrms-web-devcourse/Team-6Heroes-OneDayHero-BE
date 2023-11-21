@@ -12,6 +12,7 @@ dependencies {
     // Project
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-common')
+    implementation project(':onedayhero-mongo')
 }
 
 jar {

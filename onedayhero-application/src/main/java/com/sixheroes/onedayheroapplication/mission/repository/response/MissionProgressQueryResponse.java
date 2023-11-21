@@ -28,6 +28,8 @@ public record MissionProgressQueryResponse(
 
         Integer bookmarkCount,
 
-        MissionStatus missionStatus
+        MissionStatus missionStatus,
+
+        Long bookmarkId
 ) {
 }

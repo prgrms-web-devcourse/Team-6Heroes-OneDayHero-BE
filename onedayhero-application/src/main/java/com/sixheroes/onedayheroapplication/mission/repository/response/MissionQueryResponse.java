@@ -50,6 +50,8 @@ public record MissionQueryResponse(
 
         Integer bookmarkCount,
 
-        MissionStatus missionStatus
+        MissionStatus missionStatus,
+
+        Long bookmarkId
 ) {
 }

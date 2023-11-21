@@ -11,18 +11,20 @@ import java.util.List;
 @Builder
 public record MissionUpdateServiceRequest(
         Long missionCategoryId,
-        Long citizenId,
         Long regionId,
+        Long userId,
         Double latitude,
         Double longitude,
         MissionInfoServiceRequest missionInfo,
         List<S3ImageUploadServiceRequest> imageFiles
 ) {
 
-    public Mission toEntity(MissionCategory missionCategory, LocalDateTime serverTime) {
+    public Mission toEntity(
+            MissionCategory missionCategory,
+            LocalDateTime serverTime
+    ) {
         return Mission.builder()
                 .missionCategory(missionCategory)
-                .citizenId(citizenId)
                 .regionId(regionId)
                 .location(Mission.createPoint(longitude, latitude))
                 .missionInfo(missionInfo.toVo(serverTime))
