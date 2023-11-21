@@ -21,7 +21,7 @@ public record UserResponse(
         User user,
         List<Region> regions
     ) {
-        var userBasicInfoResponse = com.sixheroes.onedayheroapplication.user.response.UserBasicInfoResponse.from(user.getUserBasicInfo());
+        var userBasicInfoResponse = UserBasicInfoResponse.from(user.getUserBasicInfo());
         var userImageResponse = user.getUserImages().stream()
             .map(UserImageResponse::from)
             .findFirst()

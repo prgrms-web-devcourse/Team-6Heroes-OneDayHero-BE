@@ -5,6 +5,7 @@ import com.sixheroes.onedayherodomain.user.UserBasicInfo;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Builder
 public record UserBasicInfoResponse(
@@ -17,10 +18,16 @@ public record UserBasicInfoResponse(
 
     String introduce
 ) {
+    static final UserBasicInfoResponse EMPTY = UserBasicInfoResponse.builder()
+                                                                .build();
 
     public static UserBasicInfoResponse from(
         UserBasicInfo basicInfo
     ) {
+        if (Objects.isNull(basicInfo)) {
+            return EMPTY;
+        }
+
         return UserBasicInfoResponse.builder()
             .nickname(basicInfo.getNickname())
             .gender(basicInfo.getGender().name())
