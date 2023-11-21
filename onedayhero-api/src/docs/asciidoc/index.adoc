@@ -43,3 +43,13 @@ include::api/missionproposal/missionproposal.adoc[]
 == Review API
 
 include::api/review/review.adoc[]
+
+[[SSE-API]]
+== SSE API
+
+include::api/sse/sse.adoc[]
+
+[[Alarm-API]]
+== Alarm API
+
+include::api/alarm/alarm.adoc[]
