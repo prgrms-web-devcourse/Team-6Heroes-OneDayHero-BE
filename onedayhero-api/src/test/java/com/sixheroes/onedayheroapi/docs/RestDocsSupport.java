@@ -47,6 +47,8 @@ public abstract class RestDocsSupport {
                         .withResponseDefaults(prettyPrint()))
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(), new AuthUserArgumentResolver(jwtProperties))
                 .addMappedInterceptors(new String[]{
+                        "/api/v1/alarms/**",
+                        "/api/v1/sse/**",
                         "/api/v1/chat-rooms/users",
                         "/api/v1/chat-rooms/*/exit",
                         "/api/v1/mission-proposals/**",
