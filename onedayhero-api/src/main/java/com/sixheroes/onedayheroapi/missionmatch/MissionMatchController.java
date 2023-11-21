@@ -5,8 +5,7 @@ import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchCreateRequest;
 import com.sixheroes.onedayheroapi.missionmatch.request.MissionMatchCancelRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCreateResponse;
-import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchCancelResponse;
+import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,8 @@ public class MissionMatchController {
 
     private final MissionMatchService missionMatchService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<MissionMatchCreateResponse>> createMissionMatch(
+    @PostMapping
+    public ResponseEntity<ApiResponse<MissionMatchResponse>> createMissionMatch(
             @AuthUser Long userId,
             @Valid @RequestBody MissionMatchCreateRequest request
     ) {
@@ -31,7 +30,7 @@ public class MissionMatchController {
     }
 
     @PutMapping("/cancel")
-    public ResponseEntity<ApiResponse<MissionMatchCancelResponse>> cancelMissionMatch(
+    public ResponseEntity<ApiResponse<MissionMatchResponse>> cancelMissionMatch(
             @AuthUser Long userId,
             @Valid @RequestBody MissionMatchCancelRequest request
     ) {

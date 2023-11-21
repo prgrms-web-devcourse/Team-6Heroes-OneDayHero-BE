@@ -122,6 +122,6 @@ public class UserController {
     ) {
         userService.deleteUserImage(userId, userImageId);
 
-        return new ResponseEntity<>(ApiResponse.noContent(null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

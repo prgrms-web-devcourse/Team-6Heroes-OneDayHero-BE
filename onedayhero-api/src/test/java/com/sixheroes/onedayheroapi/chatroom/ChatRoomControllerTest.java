@@ -1,6 +1,5 @@
 package com.sixheroes.onedayheroapi.chatroom;
 
-import com.sixheroes.onedayheroapi.chatroom.request.ChatRoomExitRequest;
 import com.sixheroes.onedayheroapi.chatroom.request.CreateMissionChatRoomRequest;
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -25,6 +25,8 @@ import java.util.List;
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -139,15 +141,17 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(get("/api/v1/chat-rooms/users/{userId}", userId)
+        mockMvc.perform(get("/api/v1/chat-rooms/users")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("chatRoom-joined",
-                        pathParameters(
-                                parameterWithName("userId").description("유저 아이디")
-                        ), responseFields(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
@@ -199,14 +203,11 @@ public class ChatRoomControllerTest extends RestDocsSupport {
     void exitChatRoom() throws Exception {
         // given
         var chatRoomId = 1L;
-
-        var request = ChatRoomExitRequest.builder()
-                .userId(1L)
-                .build();
+        var userId = 1L;
 
         var response = MissionChatRoomExitResponse.builder()
                 .id(chatRoomId)
-                .userId(request.userId())
+                .userId(userId)
                 .missionId(1L)
                 .build();
 
@@ -216,16 +217,15 @@ public class ChatRoomControllerTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(patch("/api/v1/chat-rooms/{chatRoomId}/exit", chatRoomId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("chatRoom-exit",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("chatRoomId").description("채팅방 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
                         ), responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("HTTP 응답 코드"),
