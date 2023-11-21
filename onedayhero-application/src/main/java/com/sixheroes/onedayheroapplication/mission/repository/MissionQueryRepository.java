@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.sixheroes.onedayherodomain.mission.QMission.mission;
+import static com.sixheroes.onedayherodomain.mission.QMissionBookmark.missionBookmark;
 import static com.sixheroes.onedayherodomain.mission.QMissionCategory.missionCategory;
 import static com.sixheroes.onedayherodomain.region.QRegion.region;
 
@@ -54,12 +55,15 @@ public class MissionQueryRepository {
                                 mission.missionInfo.deadlineTime,
                                 mission.missionInfo.price,
                                 mission.bookmarkCount,
-                                mission.missionStatus
+                                mission.missionStatus,
+                                missionBookmark.id
                         ))
                 .from(mission)
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(region.id.eq(mission.regionId))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(request.userId()))
                 .where(userIdEq(request.userId()),
                         missionCategoryIdsIn(request.missionCategoryIds()),
                         regionIdsIn(request.regionIds()),
@@ -85,12 +89,15 @@ public class MissionQueryRepository {
                         region.dong,
                         mission.missionInfo.missionDate,
                         mission.bookmarkCount,
-                        mission.missionStatus
+                        mission.missionStatus,
+                        missionBookmark.id
                 ))
                 .from(mission)
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(mission.regionId.eq(region.id))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
                 .where(userIdEq(userId), missionStatusIsProgress())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -99,7 +106,8 @@ public class MissionQueryRepository {
     }
 
     public Optional<MissionQueryResponse> fetchOne(
-            Long missionId
+            Long missionId,
+            Long userId
     ) {
         var queryResult = queryFactory.select(Projections.constructor(MissionQueryResponse.class,
                         mission.id,
@@ -120,12 +128,15 @@ public class MissionQueryRepository {
                         mission.missionInfo.deadlineTime,
                         mission.missionInfo.price,
                         mission.bookmarkCount,
-                        mission.missionStatus
+                        mission.missionStatus,
+                        missionBookmark.id
                 ))
                 .from(mission)
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(region.id.eq(mission.regionId))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
                 .where(mission.id.eq(missionId))
                 .fetchOne();
 
@@ -147,12 +158,15 @@ public class MissionQueryRepository {
                         region.dong,
                         mission.missionInfo.missionDate,
                         mission.bookmarkCount,
-                        mission.missionStatus
+                        mission.missionStatus,
+                        missionBookmark.id
                 ))
                 .from(mission)
                 .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(mission.regionId.eq(region.id))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
                 .where(userIdEq(userId), missionStatusIsCompleted())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
