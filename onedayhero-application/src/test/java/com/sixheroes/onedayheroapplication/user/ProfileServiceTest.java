@@ -112,7 +112,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         assertThat(userResponse.image())
             .extracting("originalName", "uniqueName", "path")
             .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
-        assertThat(userResponse.favoriteRegions()).containsKey("서울시");
+        assertThat(userResponse.favoriteRegions()).isNotEmpty();
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
     }
 

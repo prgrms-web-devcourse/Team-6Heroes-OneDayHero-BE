@@ -1,19 +1,18 @@
 package com.sixheroes.onedayheroapplication.user.response;
 
-import com.sixheroes.onedayheroapplication.user.RegionResponseMapper;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.User;
 import lombok.Builder;
 
 import java.util.List;
-import java.util.Map;
 
 @Builder
 public record ProfileHeroResponse(
     UserBasicInfoResponse basicInfo,
     UserImageResponse image,
     UserFavoriteWorkingDayResponse favoriteWorkingDay,
-    Map<String, Map<String, List<RegionForUserResponse>>> favoriteRegions,
+    List<RegionResponse> favoriteRegions,
     Integer heroScore
 ) {
 
@@ -27,7 +26,9 @@ public record ProfileHeroResponse(
             .findFirst()
             .orElseGet(UserImageResponse::empty);
         var userFavoriteWorkingDayResponse = UserFavoriteWorkingDayResponse.from(user.getUserFavoriteWorkingDay());
-        var favoriteRegions = RegionResponseMapper.toFavoriteRegions(regions);
+        var favoriteRegions = regions.stream()
+            .map(RegionResponse::from)
+            .toList();
 
         return ProfileHeroResponse.builder()
             .basicInfo(userBasicInfoResponse)
