@@ -32,7 +32,6 @@ public class AuthController {
         );
 
         if (loginResponse.signUp()) {
-            //유저 정보 입력 페이지 생성 후 URI 설정
             return ResponseEntity.created(URI.create("")).body(ApiResponse.created(loginResponse));
         }
 
