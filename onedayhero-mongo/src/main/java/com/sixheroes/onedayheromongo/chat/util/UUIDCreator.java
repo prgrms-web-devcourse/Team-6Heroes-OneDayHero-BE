@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheromongo.application.chat.util;
+package com.sixheroes.onedayheromongo.chat.util;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
-package com.sixheroes.onedayheromongo.application.chat.repository;
+package com.sixheroes.onedayheromongo.chat.repository;
 
-import com.sixheroes.onedayherodomain.mongo.chat.ChatMessage;
+import com.sixheroes.onedayheromongo.chat.ChatMessage;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

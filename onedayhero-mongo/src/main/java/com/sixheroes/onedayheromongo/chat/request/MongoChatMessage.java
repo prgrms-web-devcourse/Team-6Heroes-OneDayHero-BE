@@ -1,6 +1,6 @@
-package com.sixheroes.onedayheromongo.application.chat.request;
+package com.sixheroes.onedayheromongo.chat.request;
 
-import com.sixheroes.onedayherodomain.mongo.chat.ChatMessage;
+import com.sixheroes.onedayheromongo.chat.ChatMessage;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

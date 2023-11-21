@@ -1,9 +1,9 @@
-package com.sixheroes.onedayheromongo.application.chat;
+package com.sixheroes.onedayheromongo.chat.application;
 
-import com.sixheroes.onedayheromongo.application.chat.repository.ChatMessageRepository;
-import com.sixheroes.onedayheromongo.application.chat.request.MongoChatMessage;
-import com.sixheroes.onedayheromongo.application.chat.response.ChatMessageResponse;
-import com.sixheroes.onedayheromongo.application.chat.util.UUIDCreator;
+import com.sixheroes.onedayheromongo.chat.repository.ChatMessageRepository;
+import com.sixheroes.onedayheromongo.chat.request.MongoChatMessage;
+import com.sixheroes.onedayheromongo.chat.response.ChatMessageResponse;
+import com.sixheroes.onedayheromongo.chat.util.UUIDCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

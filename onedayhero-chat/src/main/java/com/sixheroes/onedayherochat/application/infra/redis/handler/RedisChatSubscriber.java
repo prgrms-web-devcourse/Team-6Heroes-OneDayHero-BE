@@ -1,4 +1,4 @@
-package com.sixheroes.onedayherochat.application.infra.redis.sub;
+package com.sixheroes.onedayherochat.application.infra.redis.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixheroes.onedayherochat.presentation.request.ChatMessageRequest;

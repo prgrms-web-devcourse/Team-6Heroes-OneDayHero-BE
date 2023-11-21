@@ -1,7 +1,7 @@
-package com.sixheroes.onedayheromongo.application.chat.response;
+package com.sixheroes.onedayheromongo.chat.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sixheroes.onedayherodomain.mongo.chat.ChatMessage;
+import com.sixheroes.onedayheromongo.chat.ChatMessage;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
