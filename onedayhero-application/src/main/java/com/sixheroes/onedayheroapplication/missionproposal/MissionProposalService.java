@@ -45,7 +45,7 @@ public class MissionProposalService {
         var missionProposalEvent = MissionProposalCreateEvent.from(missionProposal);
         applicationEventPublisher.publishEvent(missionProposalEvent);
 
-        return MissionProposalCreateResponse.from(savedMissionProposal);
+        return MissionProposalIdResponse.from(savedMissionProposal);
     }
 
     @Transactional
