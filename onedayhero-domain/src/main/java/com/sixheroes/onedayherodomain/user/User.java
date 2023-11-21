@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<UserImage> userImages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -112,6 +112,15 @@ public class User extends BaseEntity {
     public void changeHeroModeOff() {
         validHeroModeOn();
         this.isHeroMode = false;
+    }
+
+    protected void validOwner(
+        Long userId
+    ) {
+        if (!Objects.equals(this.id, userId)) {
+            log.debug("유저의 아이디가 일치하지 않습니다. id = {}, userId = {}", this.id, userId);
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
+        }
     }
 
     public void validPossibleHeroProfile() {

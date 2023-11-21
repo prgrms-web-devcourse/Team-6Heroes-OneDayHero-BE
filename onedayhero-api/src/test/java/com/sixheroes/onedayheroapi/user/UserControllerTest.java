@@ -3,7 +3,7 @@ package com.sixheroes.onedayheroapi.user;
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.user.request.UserBasicInfoRequest;
 import com.sixheroes.onedayheroapi.user.request.UserFavoriteWorkingDayRequest;
-import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
+import com.sixheroes.onedayheroapi.user.request.UserUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
@@ -15,7 +15,6 @@ import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,25 +23,32 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convertDateToString;
 import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convertTimetoString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -172,8 +178,6 @@ class UserControllerTest extends RestDocsSupport {
             ));
     }
 
-    //TODO: @AuthUser 추가
-    @Disabled
     @DisplayName("유저 정보를 수정할 수 있다.")
     @Test
     void updateUser() throws Exception {
@@ -182,17 +186,23 @@ class UserControllerTest extends RestDocsSupport {
         var userBasicInfoRequest = new UserBasicInfoRequest("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userFavoriteWorkingDayRequest = new UserFavoriteWorkingDayRequest(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userFavoriteRegions = List.of(1L, 2L);
-        var userUpadateRequest = new UserUpadateRequest(userBasicInfoRequest, userFavoriteWorkingDayRequest, userFavoriteRegions);
+        var userUpadateRequest = new UserUpdateRequest(userBasicInfoRequest, userFavoriteWorkingDayRequest, userFavoriteRegions);
+        var userUpdateRequestToMultipartFile = createUserUpdateRequestToMultipartFile(objectMapper.writeValueAsString(userUpadateRequest));
+
+        var userImage = createUserImage();
 
         var userUpdateResponse = new UserUpdateResponse(userId);
 
-        given(userService.updateUser(anyLong(), any(UserServiceUpdateRequest.class))).willReturn(userUpdateResponse);
+        given(userService.updateUser(anyLong(), any(UserServiceUpdateRequest.class), anyList())).willReturn(userUpdateResponse);
 
         // when & then
-        mockMvc.perform(patch("/api/v1/me")
-                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userUpadateRequest)))
+        mockMvc.perform(
+            MockMvcRequestBuilders.multipart(HttpMethod.POST, "/api/v1/me")
+                .file(userUpdateRequestToMultipartFile)
+                .file(userImage)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken()))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
@@ -203,7 +213,7 @@ class UserControllerTest extends RestDocsSupport {
                 requestHeaders(
                     headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
                 ),
-                requestFields(
+                requestPartFields("userUpdateRequest",
                     fieldWithPath("basicInfo").type(JsonFieldType.OBJECT).description("유저 기본 정보"),
                     fieldWithPath("basicInfo.nickname").type(JsonFieldType.STRING).description("닉네임"),
                     fieldWithPath("basicInfo.gender").type(JsonFieldType.STRING).description("성별"),
@@ -242,6 +252,42 @@ class UserControllerTest extends RestDocsSupport {
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
                     fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디")
+                )
+            ));
+    }
+
+    @DisplayName("유저는 프로필 이미지를 삭제할 수 있다.")
+    @Test
+    void deleteUserImage() throws Exception {
+        // given
+        var userImageId = 1L;
+
+        doNothing().when(userService).deleteUserImage(anyLong(), anyLong());
+
+        // when & then
+        mockMvc.perform(delete("/api/v1/me/user-images/{userImageId}", userImageId)
+            .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent())
+            .andExpect(jsonPath("$.status").value(204))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andExpect(jsonPath("$.data").doesNotExist())
+            .andDo(document("user-image-delete",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
+                pathParameters(
+                    parameterWithName("userImageId").description("유저 이미지 아이디")
+                ),
+                responseFields(
+                    fieldWithPath("status").type(JsonFieldType.NUMBER)
+                        .description("HTTP 응답 코드"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                        .description("서버 응답 시간")
+                        .attributes(getDateTimeFormat()),
+                    fieldWithPath("data").type(JsonFieldType.NULL)
+                        .description("응답 데이터")
                 )
             ));
     }
@@ -895,5 +941,25 @@ class UserControllerTest extends RestDocsSupport {
 
     private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {
         return new UserFavoriteWorkingDayResponse(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
+    }
+
+    private MockMultipartFile createUserUpdateRequestToMultipartFile(
+        String json
+    ) {
+        return new MockMultipartFile(
+            "userUpdateRequest",
+            "json",
+            MediaType.APPLICATION_JSON.toString(),
+            json.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    private MockMultipartFile createUserImage() {
+        return new MockMultipartFile(
+            "images",
+            "imageA.jpeg",
+            "image/jpeg",
+            "<<jpeg data>>".getBytes()
+        );
     }
 }

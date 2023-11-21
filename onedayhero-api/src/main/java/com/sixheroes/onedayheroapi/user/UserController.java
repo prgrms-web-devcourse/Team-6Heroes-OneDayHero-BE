@@ -2,7 +2,8 @@ package com.sixheroes.onedayheroapi.user;
 
 import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
-import com.sixheroes.onedayheroapi.user.request.UserUpadateRequest;
+import com.sixheroes.onedayheroapi.global.s3.MultipartFileMapper;
+import com.sixheroes.onedayheroapi.user.request.UserUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionBookmarkMeViewResponse;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
@@ -16,8 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/me")
@@ -35,16 +40,6 @@ public class UserController {
         var userResponse = userService.findUser(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userResponse));
-    }
-
-    @PatchMapping
-    public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
-        @AuthUser Long userId,
-        @Valid @RequestBody UserUpadateRequest userUpadateRequest
-    ) {
-        var userUpdateResponse = userService.updateUser(userId, userUpadateRequest.toService());
-
-        return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
     }
 
     @GetMapping("/reviews/send")
@@ -87,6 +82,21 @@ public class UserController {
         return ResponseEntity.ok().body(ApiResponse.ok(viewResponse));
     }
 
+    @PostMapping
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
+        @AuthUser Long userId,
+        @Valid @RequestPart UserUpdateRequest userUpdateRequest,
+        @RequestPart(required = false) List<MultipartFile> userImages
+    ) {
+        var userUpdateResponse = userService.updateUser(
+            userId,
+            userUpdateRequest.toService(),
+            MultipartFileMapper.mapToServiceRequests(userImages)
+        );
+
+        return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
+    }
+
     @PatchMapping("/change-hero")
     public ResponseEntity<ApiResponse<UserUpdateResponse>> turnHeroModeOn(
             @AuthUser Long userId
@@ -103,5 +113,15 @@ public class UserController {
         var userUpdateResponse = userService.turnOffHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
+    }
+
+    @DeleteMapping("/user-images/{userImageId}")
+    public ResponseEntity<ApiResponse<Void>> deleteUserImage(
+        @AuthUser Long userId,
+        @PathVariable Long userImageId
+    ) {
+        userService.deleteUserImage(userId, userImageId);
+
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

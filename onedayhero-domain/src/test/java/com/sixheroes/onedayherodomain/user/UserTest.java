@@ -89,6 +89,19 @@ class UserTest {
             .hasMessage(ErrorCode.EU_009.name());
     }
 
+    @DisplayName("유저 아이디와 일치하지 않으면 예외가 발생한다.")
+    @Test
+    void invalidOwner() {
+        // given
+        var user = createUser();
+        var anotherUser = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> user.validOwner(anotherUser))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ErrorCode.T_001.name());
+    }
+
     private User createUser() {
         return User.builder()
             .userBasicInfo(createUserBasicInfo())

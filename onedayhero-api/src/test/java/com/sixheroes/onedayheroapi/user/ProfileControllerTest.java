@@ -15,6 +15,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.anyLong;

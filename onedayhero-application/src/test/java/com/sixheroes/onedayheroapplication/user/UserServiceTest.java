@@ -1,6 +1,9 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
+import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageDeleteServiceResponse;
+import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
@@ -14,16 +17,23 @@ import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Transactional
@@ -73,10 +83,9 @@ class UserServiceTest extends IntegrationApplicationTest {
         });
     }
 
-
-    @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일, 선호하는 지역을 변경할 수 있다.")
+    @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일, 선호하는 지역, 유저 이미지를 변경할 수 있다.")
     @Test
-    void updateUser() {
+    void updateUser() throws IOException {
         // given
         var user = createUser();
         var savedUser = userRepository.save(user);
@@ -89,34 +98,30 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
-                .nickname(nickname)
-                .gender(gender)
-                .birth(birth)
-                .introduce(introduce)
-                .build();
+        var userBasicInfoServiceDto = createUserBasicInfoService(nickname, gender, birth, introduce);
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
-                .favoriteDate(favoriteDate)
-                .favoriteStartTime(favoriteStartTime)
-                .favoriteEndTime(favoriteEndTime)
-                .build();
+        var userFavoriteWorkingDayServiceDto = createUserFavoriteWorkingDayServiceRequest(favoriteDate, favoriteStartTime, favoriteEndTime);
 
         var regionIds = regionRepository.findAll().stream()
             .map(Region::getId)
             .toList();
 
-        var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userBasicInfo(userBasicInfoServiceDto)
-            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-            .userFavoriteRegions(regionIds)
-            .build();
+        var userServiceUpdateRequest = createUserServiceUpdateRequest(userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto, regionIds);
+
+        var images = createMockMultipartFile();
+        var s3ImageUploadServiceRequest = new S3ImageUploadServiceRequest(images.getInputStream(), images.getOriginalFilename(), images.getContentType(), images.getSize());
+        var s3ImageUploadServiceRequests = List.of(s3ImageUploadServiceRequest);
+
+        var s3ImageUploadServiceResponses = List.of(new S3ImageUploadServiceResponse("원본 이름", "고유 이름", "https://"));
+
+        given(s3ImageUploadService.uploadImages(anyList(), anyString())).willReturn(s3ImageUploadServiceResponses);
 
         // when
-        var userUpdateResponse = userService.updateUser(user.getId(), userServiceUpdateRequest);
+        var userUpdateResponse = userService.updateUser(user.getId(), userServiceUpdateRequest, s3ImageUploadServiceRequests);
 
         // then
         assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
+        verify(s3ImageUploadService, times(1)).uploadImages(anyList(), isNull());
     }
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
@@ -129,7 +134,7 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUser(notExistUserId, userServiceUpdateRequest))
+        assertThatThrownBy(() -> userService.updateUser(notExistUserId, userServiceUpdateRequest, Collections.emptyList()))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.EUC_000.name());
     }
@@ -152,18 +157,9 @@ class UserServiceTest extends IntegrationApplicationTest {
         var favoriteStartTime = LocalTime.of(12, 0, 0);
         var favoriteEndTime = LocalTime.of(18, 0, 0);
 
-        var userBasicInfoServiceDto = UserBasicInfoServiceRequest.builder()
-                .nickname(nickname)
-                .gender(gender)
-                .birth(birth)
-                .introduce(introduce)
-                .build();
+        var userBasicInfoServiceDto = createUserBasicInfoService(nickname, gender, birth, introduce);
 
-        var userFavoriteWorkingDayServiceDto = UserFavoriteWorkingDayServiceRequest.builder()
-                .favoriteDate(favoriteDate)
-                .favoriteStartTime(favoriteStartTime)
-                .favoriteEndTime(favoriteEndTime)
-                .build();
+        var userFavoriteWorkingDayServiceDto = createUserFavoriteWorkingDayServiceRequest(favoriteDate, favoriteStartTime, favoriteEndTime);
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
             .userBasicInfo(userBasicInfoServiceDto)
@@ -172,7 +168,7 @@ class UserServiceTest extends IntegrationApplicationTest {
             .build();
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest))
+        assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest, Collections.emptyList()))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage(ErrorCode.ER_000.name());
     }
@@ -287,6 +283,46 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EUC_000.name());
     }
 
+    @DisplayName("유저의 프로필 이미지를 삭제한다.")
+    @Test
+    void deleteUserImage() {
+        // given
+        var user = createUser();
+        userRepository.save(user);
+
+        var userImage = createUserImage(user);
+        userImageRepository.save(userImage);
+
+        var s3ImageDeleteServiceResponses = List.of(new S3ImageDeleteServiceResponse(userImage.getId()));
+
+        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(s3ImageDeleteServiceResponses);
+
+        // when
+        userService.deleteUserImage(user.getId(), userImage.getId());
+
+        // then
+        verify(s3ImageDeleteService, times(1)).deleteImages(anyList());
+    }
+
+    @DisplayName("유저의 프로필 이미지를 삭제할 때 존재하지 않는 유저 이미지라면 예외가 발생한다.")
+    @Test
+    void deleteUserImageWhenNotExist() {
+        // given
+        var user = createUser();
+        userRepository.save(user);
+        var userId = user.getId();
+
+        var notExistUserImageId = 1L;
+        var s3ImageDeleteServiceResponses = List.of(new S3ImageDeleteServiceResponse(notExistUserImageId));
+
+        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(s3ImageDeleteServiceResponses);
+
+        // when & then
+        assertThatThrownBy(() -> userService.deleteUserImage(userId, notExistUserImageId))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessage(ErrorCode.T_001.name());
+    }
+
     private UserImage createUserImage(
             User user
     ) {
@@ -334,4 +370,39 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .favoriteEndTime(LocalTime.of(18, 0, 0))
                 .build();
     }
+
+    private static MockMultipartFile createMockMultipartFile() {
+        return new MockMultipartFile(
+            "images",
+            "imageA.jpeg",
+            "image/jpeg",
+            "<<jpeg data>>".getBytes()
+        );
+    }
+
+    private UserServiceUpdateRequest createUserServiceUpdateRequest(UserBasicInfoServiceRequest userBasicInfoServiceDto, UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDayServiceDto, List<Long> regionIds) {
+        return UserServiceUpdateRequest.builder()
+            .userBasicInfo(userBasicInfoServiceDto)
+            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+            .userFavoriteRegions(regionIds)
+            .build();
+    }
+
+    private UserFavoriteWorkingDayServiceRequest createUserFavoriteWorkingDayServiceRequest(List<String> favoriteDate, LocalTime favoriteStartTime, LocalTime favoriteEndTime) {
+        return UserFavoriteWorkingDayServiceRequest.builder()
+            .favoriteDate(favoriteDate)
+            .favoriteStartTime(favoriteStartTime)
+            .favoriteEndTime(favoriteEndTime)
+            .build();
+    }
+
+    private UserBasicInfoServiceRequest createUserBasicInfoService(String nickname, String gender, LocalDate birth, String introduce) {
+        return UserBasicInfoServiceRequest.builder()
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .introduce(introduce)
+            .build();
+    }
+
 }
