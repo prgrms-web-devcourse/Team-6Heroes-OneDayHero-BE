@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<UserImage> userImages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -90,7 +90,7 @@ public class User extends BaseEntity {
         this.isDeleted = false;
     }
 
-    protected void setUserImages(
+    protected void setUserImage(
         UserImage userImage
     ) {
         this.userImages.add(userImage);

@@ -4,16 +4,15 @@ import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalApproveResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalCreateResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalRejectResponse;
-import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalResponses;
+import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalIdResponse;
+import com.sixheroes.onedayheroapplication.missionproposal.response.dto.MissionProposalResponse;
 import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ public class MissionProposalService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public MissionProposalCreateResponse createMissionProposal(
+    public MissionProposalIdResponse createMissionProposal(
             Long userId,
             MissionProposalCreateServiceRequest request
     ) {
@@ -46,11 +45,11 @@ public class MissionProposalService {
         var missionProposalEvent = MissionProposalCreateEvent.from(missionProposal);
         applicationEventPublisher.publishEvent(missionProposalEvent);
 
-        return MissionProposalCreateResponse.from(savedMissionProposal);
+        return MissionProposalIdResponse.from(savedMissionProposal);
     }
 
     @Transactional
-    public MissionProposalApproveResponse approveMissionProposal(
+    public MissionProposalIdResponse approveMissionProposal(
             Long userId,
             Long missionProposalId
     ) {
@@ -61,11 +60,11 @@ public class MissionProposalService {
 
         missionProposal.changeMissionProposalStatusApprove(userId);
 
-        return MissionProposalApproveResponse.from(missionProposal);
+        return MissionProposalIdResponse.from(missionProposal);
     }
 
     @Transactional
-    public MissionProposalRejectResponse rejectMissionProposal(
+    public MissionProposalIdResponse rejectMissionProposal(
             Long userId,
             Long missionProposalId
     ) {
@@ -76,15 +75,16 @@ public class MissionProposalService {
 
         missionProposal.changeMissionProposalStatusReject(userId);
 
-        return MissionProposalRejectResponse.from(missionProposal);
+        return MissionProposalIdResponse.from(missionProposal);
     }
 
-    public MissionProposalResponses findMissionProposal(
+    public Slice<MissionProposalResponse> findMissionProposal(
             Long heroId,
             Pageable pageable
     ) {
         var slice = missionProposalQueryRepository.findByHeroIdAndPageable(heroId, pageable);
-        return MissionProposalResponses.from(slice);
+
+        return slice.map(MissionProposalResponse::from);
     }
 
     private void validMission(
