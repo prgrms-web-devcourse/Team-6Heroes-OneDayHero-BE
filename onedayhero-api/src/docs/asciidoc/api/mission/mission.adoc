@@ -4,6 +4,7 @@
 ==== HTTP Request
 
 include::{snippets}/mission-create/http-request.adoc[]
+include::{snippets}/mission-create/request-headers.adoc[]
 include::{snippets}/mission-create/request-part-missionCreateRequest-fields.adoc[]
 
 ==== HTTP Response
@@ -17,6 +18,7 @@ include::{snippets}/mission-create/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-findOne/path-parameters.adoc[]
+include::{snippets}/mission-findOne/request-headers.adoc[]
 include::{snippets}/mission-findOne/http-request.adoc[]
 
 ==== Http Response
@@ -30,6 +32,7 @@ include::{snippets}/mission-findOne/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-find-DynamicCondition/query-parameters.adoc[]
+include::{snippets}/mission-find-DynamicCondition/request-headers.adoc[]
 include::{snippets}/mission-find-DynamicCondition/http-request.adoc[]
 
 ==== Http Response
@@ -43,6 +46,7 @@ include::{snippets}/mission-find-DynamicCondition/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-progress-find/path-parameters.adoc[]
+include::{snippets}/mission-progress-find/request-headers.adoc[]
 include::{snippets}/mission-progress-find/http-request.adoc[]
 
 ==== Http Response
@@ -56,6 +60,7 @@ include::{snippets}/mission-progress-find/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-completed-find/path-parameters.adoc[]
+include::{snippets}/mission-completed-find/request-headers.adoc[]
 include::{snippets}/mission-completed-find/http-request.adoc[]
 
 ==== Http Response
@@ -69,6 +74,7 @@ include::{snippets}/mission-completed-find/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-update/path-parameters.adoc[]
+include::{snippets}/mission-update/request-headers.adoc[]
 include::{snippets}/mission-update/http-request.adoc[]
 include::{snippets}/mission-update/request-part-missionUpdateRequest-fields.adoc[]
 
@@ -81,6 +87,7 @@ include::{snippets}/mission-update/response-fields.adoc[]
 === 시민은 미션을 연장 할 수 있다.
 
 include::{snippets}/mission-extend/path-parameters.adoc[]
+include::{snippets}/mission-extend/request-headers.adoc[]
 include::{snippets}/mission-extend/http-request.adoc[]
 include::{snippets}/mission-extend/request-fields.adoc[]
 
@@ -93,6 +100,7 @@ include::{snippets}/mission-extend/response-fields.adoc[]
 === 시민은 미션을 완료 상태로 변경 할 수 있다.
 
 include::{snippets}/mission-complete/path-parameters.adoc[]
+include::{snippets}/mission-complete/request-headers.adoc[]
 include::{snippets}/mission-complete/http-request.adoc[]
 include::{snippets}/mission-complete/request-fields.adoc[]
 
@@ -107,6 +115,7 @@ include::{snippets}/mission-complete/response-fields.adoc[]
 ==== Http Request
 
 include::{snippets}/mission-delete/path-parameters.adoc[]
+include::{snippets}/mission-delete/request-headers.adoc[]
 include::{snippets}/mission-delete/http-request.adoc[]
 include::{snippets}/mission-delete/request-fields.adoc[]
 
