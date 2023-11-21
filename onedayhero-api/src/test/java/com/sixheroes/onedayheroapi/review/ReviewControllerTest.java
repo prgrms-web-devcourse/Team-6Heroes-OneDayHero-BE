@@ -2,8 +2,10 @@ package com.sixheroes.onedayheroapi.review;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.review.request.ReviewCreateRequest;
+import com.sixheroes.onedayheroapi.review.request.ReviewUpdateRequest;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
+import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewImageResponse;
