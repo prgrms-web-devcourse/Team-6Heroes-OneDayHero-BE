@@ -32,6 +32,17 @@ public class UserBasicInfo {
     @Column(name = "introduce", length = 200, nullable = true)
     private String introduce;
 
+    public static UserBasicInfo initStatus(
+            String defaultNickname
+    ) {
+        return UserBasicInfo.builder()
+                .nickname(defaultNickname)
+                .gender(UserGender.OTHER)
+                .introduce("-")
+                .birth(LocalDate.of(2023, 1, 1))
+                .build();
+    }
+
     @Builder
     private UserBasicInfo(
         String nickname,

@@ -695,18 +695,18 @@ public class MissionControllerTest extends RestDocsSupport {
                 .willReturn(sliceMissionResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/missions/completed/{userId}", citizenId)
+        mockMvc.perform(get("/api/v1/missions/completed")
                         .param("page", "0")
                         .param("size", "4")
                         .param("sort", "")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-completed-find",
-                        pathParameters(
-                                parameterWithName("userId")
-                                        .description("시민 아이디")
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
                         ),
                         queryParameters(
                                 parameterWithName("page").optional()

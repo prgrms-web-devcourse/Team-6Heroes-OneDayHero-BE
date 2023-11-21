@@ -57,28 +57,19 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
   
-    //처음 Oauth 를 통해 회원 가입
-    public static User singUpUser(
+    public static User signUp(
             Email email,
             UserSocialType userSocialType,
-            UserRole userRole
+            UserRole userRole,
+            UserBasicInfo userBasicInfo
     ) {
-        return new User(
-                email,
-                userSocialType,
-                userRole);
-    }
-
-    private User(
-            Email email,
-            UserSocialType userSocialType,
-            UserRole userRole) {
-        this.email = email;
-        this.userSocialType = userSocialType;
-        this.userRole = userRole;
-        this.heroScore = 30;
-        this.isHeroMode = false;
-        this.isDeleted = false;
+        return User.builder()
+                .email(email)
+                .userSocialType(userSocialType)
+                .userRole(userRole)
+                .userBasicInfo(userBasicInfo)
+                .userFavoriteWorkingDay(null)
+                .build();
     }
 
     @Builder
