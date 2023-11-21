@@ -61,19 +61,19 @@ public class ReviewController {
                 MultipartFileMapper.mapToServiceRequests(images)
         );
 
-        return ResponseEntity.created(
-                URI.create("/api/v1/reviews/" + response.id()))
-                .body(ApiResponse.created(response));
+        return ResponseEntity.created(URI.create("/api/v1/reviews/" + response.id())).body(ApiResponse.created(response));
     }
 
-    @PatchMapping("/{reviewId}")
+    @PostMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
             @PathVariable Long reviewId,
-            @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
+            @Valid @RequestPart ReviewUpdateRequest reviewUpdateRequest,
+            @RequestPart(required = false) List<MultipartFile> images
     ) {
         var response = reviewService.update(
                 reviewId,
-                reviewUpdateRequest.toService()
+                reviewUpdateRequest.toService(),
+                MultipartFileMapper.mapToServiceRequests(images)
         );
 
         return ResponseEntity.ok(ApiResponse.ok(response));
@@ -85,9 +85,6 @@ public class ReviewController {
     ) {
         reviewService.delete(reviewId);
 
-        return new ResponseEntity<>(
-                ApiResponse.noContent(null),
-                HttpStatus.NO_CONTENT
-        );
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

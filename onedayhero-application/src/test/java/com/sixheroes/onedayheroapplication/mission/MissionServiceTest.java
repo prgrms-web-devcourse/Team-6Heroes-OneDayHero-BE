@@ -302,7 +302,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(1L)
+                .userId(1L)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -359,7 +359,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(unknownCitizenId)
+                .userId(unknownCitizenId)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -415,7 +415,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(citizenId)
+                .userId(citizenId)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -471,7 +471,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(citizenId)
+                .userId(citizenId)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -527,7 +527,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(citizenId)
+                .userId(citizenId)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -583,7 +583,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
-                .citizenId(citizenId)
+                .userId(citizenId)
                 .regionId(1L)
                 .latitude(1235678.48)
                 .longitude(1235678.48)
@@ -629,7 +629,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         );
 
         var missionExtendServiceRequest = MissionExtendServiceRequest.builder()
-                .citizenId(citizenId)
+                .userId(citizenId)
                 .missionDate(missionDate.plusDays(2))
                 .startTime(startTime)
                 .endTime(endTime)
@@ -676,7 +676,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var unknownCitizenId = 2L;
 
         var missionExtendServiceRequest = MissionExtendServiceRequest.builder()
-                .citizenId(unknownCitizenId)
+                .userId(unknownCitizenId)
                 .missionDate(missionDate.plusDays(2))
                 .startTime(startTime)
                 .endTime(endTime)

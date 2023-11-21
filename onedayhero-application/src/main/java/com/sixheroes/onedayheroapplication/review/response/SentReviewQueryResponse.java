@@ -7,6 +7,8 @@ public record SentReviewQueryResponse(
         String categoryName,
         String missionTitle,
         Integer starScore,
+        String senderNickname,
+        String profileImage,
         LocalDateTime createdAt
 ) {
 }

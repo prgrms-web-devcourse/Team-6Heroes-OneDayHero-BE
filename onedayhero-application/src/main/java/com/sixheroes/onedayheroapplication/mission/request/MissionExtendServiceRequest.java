@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 @Builder
 public record MissionExtendServiceRequest(
-        Long citizenId,
+        Long userId,
         LocalDate missionDate,
         LocalTime startTime,
         LocalTime endTime,
