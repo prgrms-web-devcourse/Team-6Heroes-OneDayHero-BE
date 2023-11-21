@@ -18,7 +18,7 @@ public class UserSignUpService {
     private final UserRepository userRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public UserAuthResponse singUp(
+    public UserAuthResponse signUp(
             String userSocialType,
             String email
     ) {

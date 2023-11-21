@@ -21,6 +21,6 @@ public class UserLoginService {
     ) {
         return userRepository.findByEmail_Email(email)
                 .map(UserAuthResponse::loginResponse)
-                .orElseGet(() -> signUpService.singUp(userSocialType, email));
+                .orElseGet(() -> signUpService.signUp(userSocialType, email));
     }
 }
