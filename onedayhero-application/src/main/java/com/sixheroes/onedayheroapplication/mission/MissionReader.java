@@ -29,8 +29,11 @@ public class MissionReader {
                 });
     }
 
-    public MissionQueryResponse fetchFindOne(Long missionId) {
-        return missionQueryRepository.fetchOne(missionId)
+    public MissionQueryResponse fetchFindOne(
+            Long missionId,
+            Long userId
+    ) {
+        return missionQueryRepository.fetchOne(missionId, userId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
                     return new NoSuchElementException(ErrorCode.EM_008.name());

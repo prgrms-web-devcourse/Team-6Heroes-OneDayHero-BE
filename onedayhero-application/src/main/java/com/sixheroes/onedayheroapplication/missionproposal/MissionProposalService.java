@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalIdResponse;
@@ -9,6 +10,7 @@ import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class MissionProposalService {
     private final MissionProposalReader missionProposalReader;
     private final UserReader userReader;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     @Transactional
     public MissionProposalIdResponse createMissionProposal(
             Long userId,
@@ -38,7 +42,10 @@ public class MissionProposalService {
         var missionProposal = request.toEntity();
         var savedMissionProposal = missionProposalRepository.save(missionProposal);
 
-        return MissionProposalIdResponse.from(savedMissionProposal);
+        var missionProposalEvent = MissionProposalCreateEvent.from(missionProposal);
+        applicationEventPublisher.publishEvent(missionProposalEvent);
+
+        return MissionProposalCreateResponse.from(savedMissionProposal);
     }
 
     @Transactional
