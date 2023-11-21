@@ -4,16 +4,16 @@ import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequ
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
-public record UserUpadateRequest(
-        @NotNull(message = "유저 아이디는 필수값 입니다.")
-        Long userId,
+import java.util.List;
 
+public record UserUpdateRequest(
         @Valid
         UserBasicInfoRequest basicInfo,
 
-        UserFavoriteWorkingDayRequest favoriteWorkingDay
+        UserFavoriteWorkingDayRequest favoriteWorkingDay,
+
+        List<Long> favoriteRegions
 ) {
 
     public UserServiceUpdateRequest toService() {
@@ -31,9 +31,9 @@ public record UserUpadateRequest(
             .build();
 
         return UserServiceUpdateRequest.builder()
-                .userId(userId)
                 .userBasicInfo(userBasicInfoServiceDto)
                 .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+                .userFavoriteRegions(favoriteRegions)
                 .build();
     }
 }

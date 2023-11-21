@@ -7,6 +7,7 @@ import lombok.Builder;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 public record UserFavoriteWorkingDayResponse(
@@ -18,10 +19,16 @@ public record UserFavoriteWorkingDayResponse(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     LocalTime favoriteEndTime
 ) {
+    static final UserFavoriteWorkingDayResponse EMPTY = UserFavoriteWorkingDayResponse.builder()
+        .build();
 
     public static UserFavoriteWorkingDayResponse from(
         UserFavoriteWorkingDay userFavoriteWorkingDay
     ) {
+        if (Objects.isNull(userFavoriteWorkingDay)) {
+            return EMPTY;
+        }
+
         var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream()
             .map(Week::name)
             .toList();

@@ -17,12 +17,27 @@ include::{snippets}/user-find/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-headers.adoc[]
 include::{snippets}/user-update/request-fields.adoc[]
 
 ==== HTTP Response
 
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
+
+[[user-image-delete]]
+=== 유저 이미지 삭제
+
+==== HTTP Request
+
+include::{snippets}/user-image-delete/http-request.adoc[]
+include::{snippets}/user-image-delete/request-headers.adoc[]
+include::{snippets}/user-image-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-image-delete/http-response.adoc[]
+include::{snippets}/user-image-delete/response-fields.adoc[]
 
 [[mission-bookmark-cancel]]
 === 내 미션 찜 조회

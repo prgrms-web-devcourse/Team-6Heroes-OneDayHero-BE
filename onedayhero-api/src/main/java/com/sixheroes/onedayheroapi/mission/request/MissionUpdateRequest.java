@@ -14,9 +14,6 @@ public record MissionUpdateRequest(
         @NotNull(message = "미션의 카테고리 아이디는 필수 값 입니다.")
         Long missionCategoryId,
 
-        @NotNull(message = "시민의 아이디는 필수 값 입니다.")
-        Long citizenId,
-
         @NotNull(message = "지역 아이디는 필수 값 입니다.")
         Long regionId,
 
@@ -30,11 +27,14 @@ public record MissionUpdateRequest(
         MissionInfoRequest missionInfo
 ) {
 
-    public MissionUpdateServiceRequest toService(List<MultipartFile> multipartFiles) {
+    public MissionUpdateServiceRequest toService(
+            List<MultipartFile> multipartFiles,
+            Long userId
+    ) {
         return MissionUpdateServiceRequest.builder()
                 .missionCategoryId(missionCategoryId)
-                .citizenId(citizenId)
                 .regionId(regionId)
+                .userId(userId)
                 .latitude(latitude)
                 .longitude(longitude)
                 .missionInfo(missionInfo.toService())

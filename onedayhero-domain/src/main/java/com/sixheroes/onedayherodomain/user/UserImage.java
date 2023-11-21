@@ -58,7 +58,7 @@ public class UserImage extends BaseEntity {
                 .path(path)
                 .build();
 
-        user.setUserImages(userImage);
+        user.setUserImage(userImage);
         return userImage;
     }
 
@@ -70,6 +70,12 @@ public class UserImage extends BaseEntity {
         validOriginalNameLength(originalName);
         validUniqueNameLength(uniqueName);
         validPathLength(path);
+    }
+
+    public void validOwner(
+        Long userId
+    ) {
+        user.validOwner(userId);
     }
 
     private void validOriginalNameLength(String originalName) {

@@ -1,20 +1,19 @@
 package com.sixheroes.onedayheroapplication.user.request;
 
-import com.sixheroes.onedayherodomain.user.UserBasicInfo;
-import com.sixheroes.onedayherodomain.user.UserFavoriteWorkingDay;
-import com.sixheroes.onedayherodomain.user.UserGender;
-import com.sixheroes.onedayherodomain.user.Week;
+import com.sixheroes.onedayherodomain.user.*;
 import lombok.Builder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Builder
 public record UserServiceUpdateRequest(
-    Long userId,
     UserBasicInfoServiceRequest userBasicInfo,
-    UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDay
+    UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDay,
+    List<Long> userFavoriteRegions
 ) {
+    static final List<Week> EMPTY = new ArrayList<>();
 
     public UserBasicInfo toUserBasicInfo() {
         return UserBasicInfo.builder()
@@ -28,7 +27,7 @@ public record UserServiceUpdateRequest(
     public UserFavoriteWorkingDay toUserFavoriteWorkingDay() {
         var weeks = Optional.ofNullable(userFavoriteWorkingDay.favoriteDate())
             .map(this::toWeeks)
-            .orElse(null);
+            .orElse(EMPTY);
 
         return UserFavoriteWorkingDay.builder()
             .favoriteDate(weeks)
@@ -40,6 +39,17 @@ public record UserServiceUpdateRequest(
     private List<Week> toWeeks(List<String> week) {
         return week.stream()
             .map(Week::from)
+            .toList();
+    }
+
+    public List<UserRegion> toUserRegions(
+        User user
+    ) {
+        return userFavoriteRegions.stream()
+            .map(regionId -> UserRegion.builder()
+                .user(user)
+                .regionId(regionId)
+                .build())
             .toList();
     }
 }

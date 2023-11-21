@@ -10,15 +10,14 @@ import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
-import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
-import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.*;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
+import com.sixheroes.onedayherodomain.user.UserImage;
+import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -38,6 +38,7 @@ public class ReviewService {
     private final ReviewReader reviewReader;
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
+    private final UserImageRepository userImageRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final MissionReader missionReader;
     private final S3ImageDirectoryProperties properties;
@@ -90,7 +91,12 @@ public class ReviewService {
             Pageable pageable,
             Long userId
     ) {
-        throw new UnsupportedOperationException();
+        var queryResponse = reviewQueryRepository.viewReceivedReviews(
+                pageable,
+                userId
+        );
+
+        return queryResponse.map(ReceivedReviewResponse::from);
     }
 
     @Transactional
@@ -103,24 +109,32 @@ public class ReviewService {
 
         var review = request.toEntity();
         var reviewImageUploadResponse = s3ImageUploadService.uploadImages(imageUploadRequests, properties.getReviewDir());
-        setReviewImages(reviewImageUploadResponse, review);
+        addReviewImages(reviewImageUploadResponse, review);
+
         var createdReview = reviewRepository.save(review);
 
-        return ReviewResponse.from(createdReview);
+        return ReviewResponse
+                .builder()
+                .id(createdReview.getId())
+                .build();
     }
 
     @Transactional
     public ReviewResponse update(
             Long reviewId,
-            ReviewUpdateServiceRequest request
+            ReviewUpdateServiceRequest request,
+            List<S3ImageUploadServiceRequest> imageUploadRequests
     ) {
         var review = reviewReader.findById(reviewId);
-        review.update(
-                request.content(),
-                request.starScore()
-        );
+        review.update(request.content(), request.starScore());
 
-        return ReviewResponse.from(review);
+        var reviewImageUploadResponse = s3ImageUploadService.uploadImages(imageUploadRequests, properties.getReviewDir());
+        addReviewImages(reviewImageUploadResponse, review);
+
+        return ReviewResponse
+                .builder()
+                .id(review.getId())
+                .build();
     }
 
     @Transactional
@@ -133,7 +147,7 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    private void setReviewImages(
+    private void addReviewImages(
             List<S3ImageUploadServiceResponse> response,
             Review review
     ) {
@@ -145,7 +159,7 @@ public class ReviewService {
                 .map(reviewImageMapper)
                 .toList();
 
-        review.setReviewImages(reviewImages);
+        reviewImages.forEach(review::addImage);
     }
 
     private void deleteReviewImages(

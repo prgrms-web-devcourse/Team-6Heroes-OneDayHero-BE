@@ -7,10 +7,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
+import com.sixheroes.onedayheroapplication.mission.response.*;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -34,6 +32,8 @@ import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -56,6 +56,8 @@ public class MissionControllerTest extends RestDocsSupport {
     @Test
     void createMission() throws Exception {
         // given
+        var citizenId = 1L;
+
         var missionDate = LocalDate.of(2023, 10, 10);
         var startTime = LocalTime.of(10, 0);
         var endTime = LocalTime.of(10, 30);
@@ -67,7 +69,6 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateRequest = MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .longitude(123.45)
                 .latitude(123.45)
@@ -94,6 +95,7 @@ public class MissionControllerTest extends RestDocsSupport {
                         .file(missionCreateRequestPart)
                         .file(imageA)
                         .file(imageB)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(MediaType.APPLICATION_JSON)
                 )
@@ -101,11 +103,12 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(header().string("Location", "/api/v1/missions/" + missionId))
                 .andExpect(status().isCreated())
                 .andDo(document("mission-create",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         requestPartFields("missionCreateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("regionId").type(JsonFieldType.NUMBER)
                                         .description("지역 아이디"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
@@ -157,26 +160,21 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionId = 1L;
         var citizenId = 1L;
 
-        var request = MissionDeleteRequest.builder()
-                .citizenId(citizenId)
-                .build();
-
-
         willDoNothing().given(missionService).deleteMission(any(Long.class), any(Long.class));
 
         // when & then
         mockMvc.perform(delete("/api/v1/missions/{missionId}", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent())
                 .andDo(document("mission-delete",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("citizenId").description("시민 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -227,18 +225,20 @@ public class MissionControllerTest extends RestDocsSupport {
         mockMvc.perform(multipart("/api/v1/missions/{missionId}", missionId)
                         .file(missionUpdateRequestPart)
                         .file(image)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-update",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
                         requestPartFields("missionUpdateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("regionId").type(JsonFieldType.NUMBER)
                                         .description("지역 아이디"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
@@ -298,7 +298,6 @@ public class MissionControllerTest extends RestDocsSupport {
         );
 
         var missionExtendRequest = MissionExtendRequest.builder()
-                .citizenId(citizenId)
                 .missionDate(missionDate)
                 .startTime(startTime)
                 .endTime(endTime)
@@ -316,16 +315,18 @@ public class MissionControllerTest extends RestDocsSupport {
         mockMvc.perform(patch("/api/v1/missions/{missionId}/extend", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(missionExtendRequest))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-extend",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("citizenId").type(JsonFieldType.NUMBER)
-                                        .description("시민 아이디"),
                                 fieldWithPath("missionDate").type(JsonFieldType.STRING)
                                         .description("미션 수행 일")
                                         .attributes(getDateFormat()),
@@ -359,14 +360,9 @@ public class MissionControllerTest extends RestDocsSupport {
     @DisplayName("유저는 미션을 완료 상태로 변경 할 수 있다.")
     @Test
     void completeMission() throws Exception {
-
         // given
         var missionId = 1L;
         var userId = 1L;
-
-        var missionCompleteRequest = MissionCompleteRequest.builder()
-                .userId(userId)
-                .build();
 
         var missionIdResponse = MissionIdResponse.from(missionId);
 
@@ -376,17 +372,16 @@ public class MissionControllerTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(patch("/api/v1/missions/{missionId}/complete", missionId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(missionCompleteRequest))
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-complete",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER)
-                                        .description("유저 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -433,8 +428,8 @@ public class MissionControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/{missionId}", missionId)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", "1")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -442,8 +437,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         pathParameters(
                                 parameterWithName("missionId").description("미션 아이디")
                         ),
-                        queryParameters(
-                                parameterWithName("userId").description("유저 아이디")
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -551,18 +546,18 @@ public class MissionControllerTest extends RestDocsSupport {
                 .willReturn(sliceMissionResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/missions/progress/{userId}", citizenId)
+        mockMvc.perform(get("/api/v1/missions/progress")
                         .param("page", "0")
                         .param("size", "4")
                         .param("sort", "")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("mission-progress-find",
-                        pathParameters(
-                                parameterWithName("userId")
-                                        .description("시민 아이디")
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
                         ),
                         queryParameters(
                                 parameterWithName("page").optional()
@@ -676,6 +671,155 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 
+    @DisplayName("유저는 완료된 미션을 조회 할 수 있다.")
+    @Test
+    void findCompletedMissionByUserId() throws Exception {
+        // given
+        var citizenId = 1L;
+        var pageRequest = PageRequest.of(0, 4);
+        var missionCategoryResponse = createMissionCategoryResponse();
+        var missionCompletedResponse = MissionCompletedResponse.builder()
+                .id(1L)
+                .missionCategory(missionCategoryResponse)
+                .title("제목")
+                .missionDate(LocalDate.of(2023, 11, 6))
+                .bookmarkCount(1)
+                .missionStatus("MATCHING")
+                .imagePath("s3://path")
+                .isBookmarked(true)
+                .build();
+
+        var sliceMissionResponse = new SliceImpl<>(List.of(missionCompletedResponse), pageRequest, false);
+
+        given(missionService.findCompletedMissionByUserId(any(Pageable.class), any(Long.class)))
+                .willReturn(sliceMissionResponse);
+
+        // when & then
+        mockMvc.perform(get("/api/v1/missions/completed")
+                        .param("page", "0")
+                        .param("size", "4")
+                        .param("sort", "")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("mission-completed-find",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").optional()
+                                        .description("페이지 번호"),
+                                parameterWithName("size").optional()
+                                        .description("데이터 크기"),
+                                parameterWithName("sort").optional()
+                                        .description("정렬 기준 필드")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("미션 응답 데이터 배열"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("미션 ID"),
+                                fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
+                                        .description("미션 제목"),
+                                fieldWithPath("data.content[].missionCategory").type(JsonFieldType.OBJECT)
+                                        .description("미션 카테고리 객체"),
+                                fieldWithPath("data.content[].missionCategory.id")
+                                        .description("미션 카테고리 ID"),
+                                fieldWithPath("data.content[].missionCategory.code")
+                                        .description("미션 카테고리 코드"),
+                                fieldWithPath("data.content[].missionCategory.name")
+                                        .description("미션 카테고리 이름"),
+                                fieldWithPath("data.content[].missionDate").type(JsonFieldType.STRING)
+                                        .attributes(getDateFormat())
+                                        .description("미션 날짜"),
+                                fieldWithPath("data.content[].bookmarkCount").type(JsonFieldType.NUMBER)
+                                        .description("북마크 횟수"),
+                                fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
+                                        .description("미션 상태"),
+                                fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
+                                        .optional()
+                                        .description("이미지 사진 경로"),
+                                fieldWithPath("data.content[].isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("북마크 상태"),
+                                fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                        .description("페이지 크기"),
+                                fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
+                                        .description("정렬 상태 객체"),
+                                fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
+                                        .description("페이지 번호"),
+                                fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있는지 여부"),
+                                fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있지 않은지 여부"),
+                                fieldWithPath("data.size").type(JsonFieldType.NUMBER)
+                                        .description("미션 리스트 크기"),
+                                fieldWithPath("data.number").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
+                                        .description("미션 리스트 정렬 정보 객체"),
+                                fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지의 요소 수"),
+                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
+                                        .description("첫 번째 페이지인지 여부"),
+                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
+                                        .description("마지막 페이지인지 여부"),
+                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트가 비어있는지 여부"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.content[0].id").value(missionCompletedResponse.id()))
+                .andExpect(jsonPath("$.data.content[0].title").value(missionCompletedResponse.title()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.id").value(missionCompletedResponse.missionCategory().id()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.code").value(missionCompletedResponse.missionCategory().code()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.name").value(missionCompletedResponse.missionCategory().name()))
+                .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionCompletedResponse.missionDate())))
+                .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionCompletedResponse.bookmarkCount()))
+                .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionCompletedResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.content[0].imagePath").value(missionCompletedResponse.imagePath()))
+                .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionCompletedResponse.isBookmarked()))
+                .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
+                .andExpect(jsonPath("$.data.pageable.pageSize").value(sliceMissionResponse.getPageable().getPageSize()))
+                .andExpect(jsonPath("$.data.pageable.sort.empty").value(sliceMissionResponse.getPageable().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.pageable.offset").value(sliceMissionResponse.getPageable().getOffset()))
+                .andExpect(jsonPath("$.data.pageable.paged").value(sliceMissionResponse.getPageable().isPaged()))
+                .andExpect(jsonPath("$.data.pageable.unpaged").value(sliceMissionResponse.getPageable().isUnpaged()))
+                .andExpect(jsonPath("$.data.size").value(sliceMissionResponse.getSize()))
+                .andExpect(jsonPath("$.data.number").value(sliceMissionResponse.getNumber()))
+                .andExpect(jsonPath("$.data.sort.empty").value(sliceMissionResponse.getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.sort.sorted").value(sliceMissionResponse.getSort().isSorted()))
+                .andExpect(jsonPath("$.data.sort.unsorted").value(sliceMissionResponse.getSort().isUnsorted()))
+                .andExpect(jsonPath("$.data.numberOfElements").value(sliceMissionResponse.getNumberOfElements()))
+                .andExpect(jsonPath("$.data.first").value(sliceMissionResponse.isFirst()))
+                .andExpect(jsonPath("$.data.last").value(sliceMissionResponse.isLast()))
+                .andExpect(jsonPath("$.data.empty").value(sliceMissionResponse.isEmpty()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+    }
+
     @DisplayName("유저는 필터에 따라 미션들을 조회 할 수 있다.")
     @Test
     void findAllByDynamicCondition() throws Exception {
@@ -712,11 +856,16 @@ public class MissionControllerTest extends RestDocsSupport {
                         .param("missionDates", "2023-10-31", "2023-11-02")
                         .param("regionIds", "1", "3")
                         .flashAttr("request", request)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("mission-find-DynamicCondition", queryParameters(
+                .andDo(document("mission-find-DynamicCondition",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
                                 parameterWithName("page").optional()
                                         .description("페이지 번호"),
                                 parameterWithName("size").optional()
@@ -931,7 +1080,6 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionResponse.builder()
                 .id(1L)
                 .missionCategory(missionCategoryResponse)
-                .citizenId(missionCreateRequest.citizenId())
                 .region(regionResponse)
                 .longitude(missionCreateRequest.longitude())
                 .latitude(missionCreateRequest.latitude())
@@ -967,7 +1115,6 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionResponse.builder()
                 .id(1L)
                 .missionCategory(missionCategoryResponse)
-                .citizenId(missionUpdateRequest.citizenId())
                 .region(regionResponse)
                 .longitude(missionUpdateRequest.longitude())
                 .latitude(missionUpdateRequest.latitude())
@@ -1032,7 +1179,6 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .latitude(1234252.23)
                 .longitude(1234277.388)
@@ -1045,7 +1191,6 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionUpdateRequest.builder()
                 .missionCategoryId(1L)
-                .citizenId(1L)
                 .regionId(1L)
                 .latitude(1234252.23)
                 .longitude(1234277.388)

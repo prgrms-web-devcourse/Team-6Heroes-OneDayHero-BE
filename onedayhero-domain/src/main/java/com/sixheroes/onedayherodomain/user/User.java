@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -36,7 +37,7 @@ public class User extends BaseEntity {
     @Embedded
     private UserFavoriteWorkingDay userFavoriteWorkingDay;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<UserImage> userImages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -56,28 +57,19 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
   
-    //처음 Oauth 를 통해 회원 가입
-    public static User singUpUser(
+    public static User signUp(
             Email email,
             UserSocialType userSocialType,
-            UserRole userRole
+            UserRole userRole,
+            UserBasicInfo userBasicInfo
     ) {
-        return new User(
-                email,
-                userSocialType,
-                userRole);
-    }
-
-    private User(
-            Email email,
-            UserSocialType userSocialType,
-            UserRole userRole) {
-        this.email = email;
-        this.userSocialType = userSocialType;
-        this.userRole = userRole;
-        this.heroScore = 30;
-        this.isHeroMode = false;
-        this.isDeleted = false;
+        return User.builder()
+                .email(email)
+                .userSocialType(userSocialType)
+                .userRole(userRole)
+                .userBasicInfo(userBasicInfo)
+                .userFavoriteWorkingDay(null)
+                .build();
     }
 
     @Builder
@@ -98,7 +90,7 @@ public class User extends BaseEntity {
         this.isDeleted = false;
     }
 
-    protected void setUserImages(
+    protected void setUserImage(
         UserImage userImage
     ) {
         this.userImages.add(userImage);
@@ -120,6 +112,15 @@ public class User extends BaseEntity {
     public void changeHeroModeOff() {
         validHeroModeOn();
         this.isHeroMode = false;
+    }
+
+    protected void validOwner(
+        Long userId
+    ) {
+        if (!Objects.equals(this.id, userId)) {
+            log.debug("유저의 아이디가 일치하지 않습니다. id = {}, userId = {}", this.id, userId);
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
+        }
     }
 
     public void validPossibleHeroProfile() {

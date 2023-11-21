@@ -5,12 +5,14 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -67,11 +70,10 @@ public class MissionService {
             Long userId,
             Long missionId
     ) {
-        var missionQueryResponse = missionReader.fetchFindOne(missionId);
+        var missionQueryResponse = missionReader.fetchFindOne(missionId, userId);
         var missionImages = missionImageRepository.findByMission_Id(missionId);
-        var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(missionId, userId);
+        var isBookmarked = missionQueryResponse.bookmarkId() != null;
 
-        var isBookmarked = optionalMissionBookmark.isPresent();
         return MissionResponse.from(missionQueryResponse, missionImages, isBookmarked);
     }
 
@@ -80,7 +82,7 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var missionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses, request.userId());
+        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses);
 
         return SliceResultConverter.consume(result, pageable);
     }
@@ -90,7 +92,7 @@ public class MissionService {
             Long userId
     ) {
         var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
-        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses, userId);
+        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses);
 
         return SliceResultConverter.consume(missionProgressResponses, pageable);
     }
@@ -105,7 +107,7 @@ public class MissionService {
         var mission = missionReader.findOne(missionId);
 
         var requestMission = request.toEntity(missionCategory, serverTime);
-        mission.update(requestMission, request.citizenId());
+        mission.update(requestMission, request.userId());
 
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
         var missionImages = imageResponse.stream()
@@ -126,7 +128,7 @@ public class MissionService {
         var mission = missionReader.findOne(missionId);
         var requestExtendMission = request.toVo(mission.getMissionInfo(), serverTime);
 
-        mission.extend(requestExtendMission, request.citizenId());
+        mission.extend(requestExtendMission, request.userId());
 
         return MissionIdResponse.from(mission.getId());
     }
@@ -139,6 +141,16 @@ public class MissionService {
         mission.complete(userId);
 
         return MissionIdResponse.from(mission.getId());
+    }
+
+    public Slice<MissionCompletedResponse> findCompletedMissionByUserId(
+            Pageable pageable,
+            Long userId
+    ) {
+        var completedMissions = missionQueryRepository.findCompletedMissionByUserId(pageable, userId);
+        var missionCompletedResponses = makeCompletedMissionResponseWithImages(completedMissions);
+
+        return SliceResultConverter.consume(missionCompletedResponses, pageable);
     }
 
     @Transactional
@@ -154,30 +166,38 @@ public class MissionService {
     }
 
     private List<MissionResponse> makeMissionResponseWithImages(
-            List<MissionQueryResponse> missionQueryResponses,
-            Long userId
+            List<MissionQueryResponse> missionQueryResponses
     ) {
         return missionQueryResponses.stream()
                 .map(response -> {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
-                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(response.id(), userId);
-                    return MissionResponse.from(response, missionImages, optionalMissionBookmark.isPresent());
-                })
-                .toList();
+                    var isBookmarked = response.bookmarkId() != null;
+                    return MissionResponse.from(response, missionImages, isBookmarked);
+                }).collect(Collectors.toList());
     }
 
     private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
-            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses,
-            Long userId
+            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses
     ) {
         return sliceMissionProgressQueryResponses.stream()
                 .map(queryResponse -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
-                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
                     var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
-                    var isBookmarked = optionalMissionBookmark.isPresent();
+                    var isBookmarked = queryResponse.bookmarkId() != null;
                     return MissionProgressResponse.from(queryResponse, thumbNailPath, isBookmarked);
-                }).toList();
+                }).collect(Collectors.toList());
+    }
+
+    private List<MissionCompletedResponse> makeCompletedMissionResponseWithImages(
+            List<MissionCompletedQueryResponse> sliceMissionCompletedQueryResponses
+    ) {
+        return sliceMissionCompletedQueryResponses.stream()
+                .map(queryResponse -> {
+                    var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    var isBookmarked = queryResponse.bookmarkId() != null;
+                    return MissionCompletedResponse.from(queryResponse, thumbNailPath, isBookmarked);
+                }).collect(Collectors.toList());
     }
 
     private void deleteUserBookMarkByMissionId(

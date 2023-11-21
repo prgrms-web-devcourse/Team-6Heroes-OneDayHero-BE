@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapi.chatroom;
 
-import com.sixheroes.onedayheroapi.chatroom.request.ChatRoomExitRequest;
 import com.sixheroes.onedayheroapi.chatroom.request.CreateMissionChatRoomRequest;
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
@@ -32,9 +32,9 @@ public class ChatRoomController {
                 .body(ApiResponse.created(result));
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users")
     public ResponseEntity<ApiResponse<List<MissionChatRoomFindResponse>>> findByChatRoomId(
-            @PathVariable Long userId
+            @AuthUser Long userId
     ) {
         var result = chatRoomService.findJoinedChatRoom(userId);
         return ResponseEntity.ok(ApiResponse.ok(result));
@@ -43,9 +43,9 @@ public class ChatRoomController {
     @PatchMapping("/{chatRoomId}/exit")
     public ResponseEntity<ApiResponse<MissionChatRoomExitResponse>> exitChatRoom(
             @PathVariable Long chatRoomId,
-            @Valid @RequestBody ChatRoomExitRequest request
+            @AuthUser Long userId
     ) {
-        var missionChatRoomResponse = chatRoomService.exitChatRoom(chatRoomId, request.userId());
+        var missionChatRoomResponse = chatRoomService.exitChatRoom(chatRoomId, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(missionChatRoomResponse));
     }

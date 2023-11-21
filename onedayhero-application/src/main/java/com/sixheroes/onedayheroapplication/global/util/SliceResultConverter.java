@@ -1,11 +1,13 @@
 package com.sixheroes.onedayheroapplication.global.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
+@Slf4j
 public final class SliceResultConverter {
 
     private SliceResultConverter() {
