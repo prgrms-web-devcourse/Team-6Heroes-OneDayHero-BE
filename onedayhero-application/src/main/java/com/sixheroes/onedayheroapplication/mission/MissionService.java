@@ -69,11 +69,10 @@ public class MissionService {
             Long userId,
             Long missionId
     ) {
-        var missionQueryResponse = missionReader.fetchFindOne(missionId);
+        var missionQueryResponse = missionReader.fetchFindOne(missionId, userId);
         var missionImages = missionImageRepository.findByMission_Id(missionId);
-        var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(missionId, userId);
+        var isBookmarked = missionQueryResponse.bookmarkId() != null;
 
-        var isBookmarked = optionalMissionBookmark.isPresent();
         return MissionResponse.from(missionQueryResponse, missionImages, isBookmarked);
     }
 
@@ -82,7 +81,7 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var missionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses, request.userId());
+        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses);
 
         return SliceResultConverter.consume(result, pageable);
     }
@@ -92,7 +91,7 @@ public class MissionService {
             Long userId
     ) {
         var sliceMissionProgressQueryResponses = missionQueryRepository.findProgressMissionByUserId(pageable, userId);
-        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses, userId);
+        var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses);
 
         return SliceResultConverter.consume(missionProgressResponses, pageable);
     }
@@ -148,7 +147,7 @@ public class MissionService {
             Long userId
     ) {
         var completedMissions = missionQueryRepository.findCompletedMissionByUserId(pageable, userId);
-        var missionCompletedResponses = makeCompletedMissionResponseWithImages(completedMissions, userId);
+        var missionCompletedResponses = makeCompletedMissionResponseWithImages(completedMissions);
 
         return SliceResultConverter.consume(missionCompletedResponses, pageable);
     }
@@ -166,42 +165,37 @@ public class MissionService {
     }
 
     private List<MissionResponse> makeMissionResponseWithImages(
-            List<MissionQueryResponse> missionQueryResponses,
-            Long userId
+            List<MissionQueryResponse> missionQueryResponses
     ) {
         return missionQueryResponses.stream()
                 .map(response -> {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
-                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(response.id(), userId);
-                    return MissionResponse.from(response, missionImages, optionalMissionBookmark.isPresent());
+                    var isBookmarked = response.bookmarkId() != null;
+                    return MissionResponse.from(response, missionImages, isBookmarked);
                 })
                 .toList();
     }
 
     private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
-            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses,
-            Long userId
+            List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses
     ) {
         return sliceMissionProgressQueryResponses.stream()
                 .map(queryResponse -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
-                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
                     var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
-                    var isBookmarked = optionalMissionBookmark.isPresent();
+                    var isBookmarked = queryResponse.bookmarkId() != null;
                     return MissionProgressResponse.from(queryResponse, thumbNailPath, isBookmarked);
                 }).toList();
     }
 
     private List<MissionCompletedResponse> makeCompletedMissionResponseWithImages(
-            List<MissionCompletedQueryResponse> sliceMissionCompletedQueryResponses,
-            Long userId
+            List<MissionCompletedQueryResponse> sliceMissionCompletedQueryResponses
     ) {
         return sliceMissionCompletedQueryResponses.stream()
                 .map(queryResponse -> {
                     var missionImages = missionImageRepository.findByMission_Id(queryResponse.id());
-                    var optionalMissionBookmark = missionBookmarkRepository.findByMissionIdAndUserId(queryResponse.id(), userId);
                     var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
-                    var isBookmarked = optionalMissionBookmark.isPresent();
+                    var isBookmarked = queryResponse.bookmarkId() != null;
                     return MissionCompletedResponse.from(queryResponse, thumbNailPath, isBookmarked);
                 }).toList();
     }

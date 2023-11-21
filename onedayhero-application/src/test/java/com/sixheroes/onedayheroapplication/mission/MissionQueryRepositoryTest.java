@@ -27,6 +27,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
     void findOneWithFetchJoin() {
         // given
         var missionCategory = missionCategoryRepository.findById(1L).get();
+        var citizenId = 1L;
 
         var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
 
@@ -42,7 +43,7 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
         var savedMission = missionRepository.save(mission);
 
         // when
-        var missionQueryResponse = missionQueryRepository.fetchOne(savedMission.getId());
+        var missionQueryResponse = missionQueryRepository.fetchOne(savedMission.getId(), citizenId);
 
         // then
         assertThat(missionQueryResponse).isNotEmpty();
