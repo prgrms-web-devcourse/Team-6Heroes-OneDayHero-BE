@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionBookmarkQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
+import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
@@ -11,6 +12,8 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
+import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +49,15 @@ public abstract class IntegrationQueryDslTest {
 
     @Autowired
     protected MissionBookmarkRepository missionBookmarkRepository;
+
+    @Autowired
+    protected ReviewRepository reviewRepository;
+
+    @Autowired
+    protected ReviewQueryRepository reviewQueryRepository;
+
+    @Autowired
+    protected UserRepository userRepository;
 
     @BeforeAll
     public static void setUp(

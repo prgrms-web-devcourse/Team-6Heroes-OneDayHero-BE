@@ -39,7 +39,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtAuthInterceptor(jwtProperties, jwtTokenManager))
                 .order(1)
-                .addPathPatterns("/api/v1/login/test")
+                .addPathPatterns("/api/v1/**")
                 .excludePathPatterns("/api/v1/auth/**");
     }
 }

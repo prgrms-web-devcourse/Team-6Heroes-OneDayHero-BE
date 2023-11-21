@@ -695,7 +695,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .willReturn(sliceMissionResponse);
 
         // when & then
-        mockMvc.perform(get("/api/v1/missions/completed/{userId}", citizenId)
+        mockMvc.perform(get("/api/v1/missions/completed")
                         .param("page", "0")
                         .param("size", "4")
                         .param("sort", "")
