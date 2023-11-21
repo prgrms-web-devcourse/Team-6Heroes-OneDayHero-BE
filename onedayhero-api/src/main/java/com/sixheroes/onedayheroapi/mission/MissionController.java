@@ -13,6 +13,7 @@ import com.sixheroes.onedayheroapplication.mission.response.MissionProgressRespo
 import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/missions")
 @RestController
