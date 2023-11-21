@@ -63,10 +63,10 @@ public class MissionController {
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
-    @GetMapping("/completed/{userId}")
+    @GetMapping("/completed")
     public ResponseEntity<ApiResponse<Slice<MissionCompletedResponse>>> findCompletedMission(
             @PageableDefault(size = 5) Pageable pageable,
-            @PathVariable Long userId
+            @AuthUser Long userId
     ) {
         var result = missionService.findCompletedMissionByUserId(pageable, userId);
 
