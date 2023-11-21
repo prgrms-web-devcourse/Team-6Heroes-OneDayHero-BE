@@ -3,6 +3,7 @@ package com.sixheroes.onedayherochat.application;
 import com.sixheroes.onedayherochat.application.infra.redis.handler.RedisChatPublisher;
 import com.sixheroes.onedayherochat.application.mapper.ChatMessageMapper;
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisReader;
+import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherochat.application.response.ChatMessageApiResponse;
 import com.sixheroes.onedayherochat.presentation.request.ChatMessageRequest;
 import com.sixheroes.onedayheromongo.chat.application.ChatMongoService;
@@ -23,6 +24,7 @@ public class ChatService {
     private final MissionChatRoomRedisReader missionChatRoomRedisReader;
     private final RedisChatPublisher publisher;
     private final ChatMongoService chatMongoService;
+    private final MissionChatRoomRedisRepository redisRepository;
 
     @Transactional
     public void send(
@@ -43,6 +45,8 @@ public class ChatService {
     public List<ChatMessageApiResponse> findMessageByChatRoomId(
             Long chatRoomId
     ) {
+        redisRepository.enterChatRoom(chatRoomId);
+
         return chatMongoService.findAllByChatRoomId(chatRoomId)
                 .stream()
                 .map(ChatMessageApiResponse::from)
