@@ -49,6 +49,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -104,6 +106,10 @@ class UserControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(userResponse.favoriteWorkingDay().favoriteStartTime())))
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(userResponse.favoriteWorkingDay().favoriteEndTime())))
             .andExpect(jsonPath("$.data.favoriteRegions").exists())
+            .andExpect(jsonPath("$.data.favoriteRegions[0].id").value(userResponse.favoriteRegions().get(0).id()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].si").value(userResponse.favoriteRegions().get(0).si()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].gu").value(userResponse.favoriteRegions().get(0).gu()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].dong").value(userResponse.favoriteRegions().get(0).dong()))
             .andExpect(jsonPath("$.data.heroScore").value(userResponse.heroScore()))
             .andExpect(jsonPath("$.data.isHeroMode").value(userResponse.isHeroMode()))
             .andDo(document("user-find",
@@ -148,21 +154,21 @@ class UserControllerTest extends RestDocsSupport {
                         .description("희망 근무 종료 시간"),
                     fieldWithPath("data.favoriteRegions")
                         .optional()
-                        .type(JsonFieldType.OBJECT)
-                        .description("선호 지역"),
-                    fieldWithPath("data.favoriteRegions.서울시")
-                        .optional()
-                        .type(JsonFieldType.OBJECT)
-                        .description("시 이름"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구")
-                        .optional()
                         .type(JsonFieldType.ARRAY)
-                        .description("구 이름"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].id")
+                        .description("선호 지역"),
+                    fieldWithPath("data.favoriteRegions[].id")
                         .optional()
                         .type(JsonFieldType.NUMBER)
                         .description("지역 아이디"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].dong")
+                    fieldWithPath("data.favoriteRegions[].si")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("시 이름"),
+                    fieldWithPath("data.favoriteRegions[].gu")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("구 이름"),
+                    fieldWithPath("data.favoriteRegions[].dong")
                         .optional()
                         .type(JsonFieldType.STRING)
                         .description("동 이름"),
@@ -907,13 +913,22 @@ class UserControllerTest extends RestDocsSupport {
         );
     }
 
-    private Map<String, Map<String, List<RegionForUserResponse>>> createRegionResponses() {
-        return Map.of("서울시",
-            Map.of("강남구",
-                List.of(new RegionForUserResponse(1L, "역삼동"),
-                        new RegionForUserResponse(2L, "청담동")
-                )
-            ));
+    private List<RegionResponse> createRegionResponses() {
+        var regionResponse1 = RegionResponse.builder()
+            .id(1L)
+            .si("서울시")
+            .gu("강남구")
+            .dong("역삼동")
+            .build();
+
+        var regionResponse2 = RegionResponse.builder()
+            .id(2L)
+            .si("서울시")
+            .gu("강남구")
+            .dong("청담동")
+            .build();
+
+        return List.of(regionResponse1, regionResponse2);
     }
 
     private UserBasicInfoResponse createUserBasicInfoResponse() {

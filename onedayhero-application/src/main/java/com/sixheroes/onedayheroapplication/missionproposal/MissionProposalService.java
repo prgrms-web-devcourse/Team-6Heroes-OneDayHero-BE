@@ -42,6 +42,9 @@ public class MissionProposalService {
         var missionProposal = request.toEntity();
         var savedMissionProposal = missionProposalRepository.save(missionProposal);
 
+        var missionProposalEvent = MissionProposalCreateEvent.from(missionProposal);
+        applicationEventPublisher.publishEvent(missionProposalEvent);
+
         return MissionProposalIdResponse.from(savedMissionProposal);
     }
 

@@ -9,11 +9,16 @@ import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDaySe
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.region.Region;
+import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
 import com.sixheroes.onedayherodomain.user.*;
+import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -33,6 +38,21 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserImageRepository userImageRepository;
+
+    @Autowired
+    private UserRegionRepository userRegionRepository;
+
+    @Autowired
+    private RegionRepository regionRepository;
+
+    @Autowired
+    private UserService userService;
 
     @DisplayName("처음 OAUTH 로그인을 시도하면 기본 설정값으로 유저가 저장된다.")
     @Test
@@ -62,7 +82,6 @@ class UserServiceTest extends IntegrationApplicationTest {
             soft.assertThat(createdUser.getUserBasicInfo().getBirth()).isEqualTo(LocalDate.of(2023, 1, 1));
         });
     }
-
 
     @DisplayName("유저의 기본 정보와 유저가 선호하는 근무일, 선호하는 지역, 유저 이미지를 변경할 수 있다.")
     @Test
@@ -142,7 +161,11 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         var userFavoriteWorkingDayServiceDto = createUserFavoriteWorkingDayServiceRequest(favoriteDate, favoriteStartTime, favoriteEndTime);
 
-        var userServiceUpdateRequest = createUserServiceUpdateRequest(userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto, notExistRegions);
+        var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
+            .userBasicInfo(userBasicInfoServiceDto)
+            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+            .userFavoriteRegions(notExistRegions)
+            .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest, Collections.emptyList()))

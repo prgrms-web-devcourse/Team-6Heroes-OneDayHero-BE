@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapi.user;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.response.*;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
@@ -47,7 +48,7 @@ class ProfileControllerTest extends RestDocsSupport {
         var userId = 1L;
 
         var userBasicInfoResponse = new ProfileCitizenResponse.UserBasicInfoForProfileCitizenResponse("이름", "MALE", LocalDate.of(1990, 1, 1));
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "http://");
+        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "https://");
         var heroScore = 60;
 
         var profileCitizenResponse = new ProfileCitizenResponse(userBasicInfoResponse, userImageResponse, heroScore);
@@ -132,6 +133,10 @@ class ProfileControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteStartTime").value(DateTimeConverter.convertTimetoString(profileHeroResponse.favoriteWorkingDay().favoriteStartTime())))
             .andExpect(jsonPath("$.data.favoriteWorkingDay.favoriteEndTime").value(DateTimeConverter.convertTimetoString(profileHeroResponse.favoriteWorkingDay().favoriteEndTime())))
             .andExpect(jsonPath("$.data.favoriteRegions").exists())
+            .andExpect(jsonPath("$.data.favoriteRegions[0].id").value(profileHeroResponse.favoriteRegions().get(0).id()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].si").value(profileHeroResponse.favoriteRegions().get(0).si()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].gu").value(profileHeroResponse.favoriteRegions().get(0).gu()))
+            .andExpect(jsonPath("$.data.favoriteRegions[0].dong").value(profileHeroResponse.favoriteRegions().get(0).dong()))
             .andExpect(jsonPath("$.data.heroScore").value(profileHeroResponse.heroScore()))
             .andDo(document("profile-hero-find",
                 pathParameters(
@@ -175,21 +180,21 @@ class ProfileControllerTest extends RestDocsSupport {
                         .description("희망 근무 종료 시간"),
                     fieldWithPath("data.favoriteRegions")
                         .optional()
-                        .type(JsonFieldType.OBJECT)
-                        .description("선호 지역"),
-                    fieldWithPath("data.favoriteRegions.서울시")
-                        .optional()
-                        .type(JsonFieldType.OBJECT)
-                        .description("시 이름"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구")
-                        .optional()
                         .type(JsonFieldType.ARRAY)
-                        .description("구 이름"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].id")
+                        .description("선호 지역"),
+                    fieldWithPath("data.favoriteRegions[].id")
                         .optional()
                         .type(JsonFieldType.NUMBER)
                         .description("지역 아이디"),
-                    fieldWithPath("data.favoriteRegions.서울시.강남구[0].dong")
+                    fieldWithPath("data.favoriteRegions[].si")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("시 이름"),
+                    fieldWithPath("data.favoriteRegions[].gu")
+                        .optional()
+                        .type(JsonFieldType.STRING)
+                        .description("구 이름"),
+                    fieldWithPath("data.favoriteRegions[].dong")
                         .optional()
                         .type(JsonFieldType.STRING)
                         .description("동 이름"),
@@ -209,13 +214,22 @@ class ProfileControllerTest extends RestDocsSupport {
             .build();
     }
 
-    private Map<String, Map<String, List<RegionForUserResponse>>> createRegionResponses() {
-        return Map.of("서울시",
-            Map.of("강남구",
-                List.of(new RegionForUserResponse(1L, "역삼동"),
-                    new RegionForUserResponse(2L, "청담동")
-                )
-            ));
+    private List<RegionResponse> createRegionResponses() {
+        var regionResponse1 = RegionResponse.builder()
+            .id(1L)
+            .si("서울시")
+            .gu("강남구")
+            .dong("역삼동")
+            .build();
+
+        var regionResponse2 = RegionResponse.builder()
+            .id(2L)
+            .si("서울시")
+            .gu("강남구")
+            .dong("청담동")
+            .build();
+
+        return List.of(regionResponse1, regionResponse2);
     }
 
     private UserBasicInfoResponse createUserBasicInfoResponse() {
@@ -223,7 +237,7 @@ class ProfileControllerTest extends RestDocsSupport {
     }
 
     private UserImageResponse createUserImageResponse() {
-        return new UserImageResponse("profile.jpg", "unique.jpg", "http://");
+        return new UserImageResponse("profile.jpg", "unique.jpg", "https://");
     }
 
     private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {
