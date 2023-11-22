@@ -19,11 +19,11 @@ public class SseEmitters {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         this.emitters.put(userId, emitter);
         emitter.onTimeout(() -> {
-            log.info("onTimeout callback");
+            log.warn("onTimeout callback");
             emitter.complete();
         });
         emitter.onCompletion(() -> {
-            log.info("onCompletion callback");
+            log.warn("onCompletion callback");
             this.emitters.remove(userId);
         });
         return emitter;
