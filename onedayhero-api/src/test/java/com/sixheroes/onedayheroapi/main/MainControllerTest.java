@@ -2,11 +2,11 @@ package com.sixheroes.onedayheroapi.main;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.main.request.UserPositionRequest;
-import com.sixheroes.onedayheroapplication.main.MainResponse;
 import com.sixheroes.onedayheroapplication.main.MainService;
+import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceRequest;
+import com.sixheroes.onedayheroapplication.main.response.MainResponse;
+import com.sixheroes.onedayheroapplication.main.response.MissionSoonExpiredResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionSoonExpiredResponse;
-import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateFormat;
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -49,9 +51,6 @@ public class MainControllerTest extends RestDocsSupport {
     @Test
     void callMainPage() throws Exception {
         // given
-
-        var userId = 1L;
-
         var userPosition = UserPositionRequest.builder()
                 .longitude(123.45)
                 .latitude(123.45)
@@ -107,18 +106,12 @@ public class MainControllerTest extends RestDocsSupport {
 
 
         var mainResponse = MainResponse.builder()
-                .region(RegionResponse.builder()
-                        .id(1L)
-                        .si("서울특별시")
-                        .gu("강남구")
-                        .dong("역삼동")
-                        .build())
                 .missionCategories(missionCategories)
                 .soonExpiredMissions(
                         List.of(missionSoonExpiredResponseA, missionSoonExpiredResponseB)
                 ).build();
 
-        given(mainService.findMainResponse(userId))
+        given(mainService.findMainResponse(any(Long.class), any(UserPositionServiceRequest.class), any(LocalDateTime.class)))
                 .willReturn(mainResponse);
 
         // when & then
@@ -143,16 +136,6 @@ public class MainControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.region").type(JsonFieldType.OBJECT)
-                                        .description("미션 수행 지역 객체"),
-                                fieldWithPath("data.region.id").type(JsonFieldType.NUMBER)
-                                        .description("미션 수행 지역 아이디"),
-                                fieldWithPath("data.region.si").type(JsonFieldType.STRING)
-                                        .description("미션 수행 지역 시"),
-                                fieldWithPath("data.region.gu").type(JsonFieldType.STRING)
-                                        .description("미션 수행 지역 구"),
-                                fieldWithPath("data.region.dong").type(JsonFieldType.STRING)
-                                        .description("미션 수행 지역 동"),
                                 fieldWithPath("data.missionCategories").type(JsonFieldType.ARRAY)
                                         .description("미션 카테고리 정보 배열"),
                                 fieldWithPath("data.missionCategories[].id").type(JsonFieldType.NUMBER)
@@ -194,9 +177,6 @@ public class MainControllerTest extends RestDocsSupport {
                 ))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.region.id").value(mainResponse.region().id()))
-                .andExpect(jsonPath("$.data.region.si").value(mainResponse.region().si()))
-                .andExpect(jsonPath("$.data.region.gu").value(mainResponse.region().gu()))
                 .andExpect(jsonPath("$.data.missionCategories[0].id").value(mainResponse.missionCategories().get(0).id()))
                 .andExpect(jsonPath("$.data.missionCategories[0].code").value(mainResponse.missionCategories().get(0).code()))
                 .andExpect(jsonPath("$.data.missionCategories[0].name").value(mainResponse.missionCategories().get(0).name()))

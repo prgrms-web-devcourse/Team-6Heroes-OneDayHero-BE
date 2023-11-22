@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication;
 
-import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
+import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
@@ -88,17 +88,20 @@ public abstract class IntegrationApplicationTest {
     @Autowired
     protected UserService userService;
 
+    @Autowired
+    protected ChatRoomService chatRoomService;
+
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;
 
     @MockBean
     protected S3ImageDeleteService s3ImageDeleteService;
 
-    @Autowired
-    protected ChatRoomService chatRoomService;
-
     @MockBean
     protected MissionChatRoomRedisRepository missionChatRoomRedisRepository;
+
+    @MockBean
+    protected MissionRepository nativeQueryRepository;
 
     @BeforeAll
     public static void setUp(

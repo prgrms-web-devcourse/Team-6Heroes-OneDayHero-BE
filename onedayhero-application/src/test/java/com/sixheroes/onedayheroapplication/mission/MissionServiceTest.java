@@ -931,6 +931,17 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 );
     }
 
+    // TODO Jdbc Template로 수정 예정
+    @DisplayName("메인 페이지를 조회 할 수 있다.")
+    @Test
+    void findMainResponse() {
+        // given
+
+        // when
+
+        // then
+    }
+
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {
