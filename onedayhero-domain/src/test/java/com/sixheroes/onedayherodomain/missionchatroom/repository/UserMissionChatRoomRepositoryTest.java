@@ -114,12 +114,12 @@ class UserMissionChatRoomRepositoryTest extends IntegrationRepositoryTest {
     }
 
     private UserImage createUserImage(User savedUser) {
-        return UserImage.builder()
-                .user(savedUser)
-                .originalName("원본 이름")
-                .uniqueName("고유 이름")
-                .path("s3://path")
-                .build();
+        return UserImage.createUserImage(
+                savedUser,
+                "원본 이름",
+                "고유 이름",
+                "s3://path"
+        );
     }
 
     private User createUser(String nickName) {

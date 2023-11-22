@@ -6,7 +6,8 @@ import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisR
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherochat.application.response.ChatMessageApiResponse;
 import com.sixheroes.onedayherochat.presentation.request.ChatMessageRequest;
-import com.sixheroes.onedayheromongo.chat.application.ChatMongoService;
+import com.sixheroes.onedayheromongo.chat.repository.ChatMessageRepository;
+import com.sixheroes.onedayheromongo.chat.util.UUIDCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ChatService {
 
     private final MissionChatRoomRedisReader missionChatRoomRedisReader;
     private final RedisChatPublisher publisher;
-    private final ChatMongoService chatMongoService;
+    private final ChatMessageRepository chatMessageRepository;
     private final MissionChatRoomRedisRepository redisRepository;
 
     @Transactional
@@ -39,16 +40,19 @@ public class ChatService {
         }
 
         publisher.publish(topic, message);
-        chatMongoService.save(message.toMongo(), serverTime);
+
+        var id = UUIDCreator.createUUID();
+        var chatMessage = message.toEntity(id, serverTime);
+        chatMessageRepository.save(chatMessage);
     }
 
     public List<ChatMessageApiResponse> findMessageByChatRoomId(
             Long chatRoomId
     ) {
         redisRepository.enterChatRoom(chatRoomId);
+        var chatRoomsMessages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
 
-        return chatMongoService.findAllByChatRoomId(chatRoomId)
-                .stream()
+        return chatRoomsMessages.stream()
                 .map(ChatMessageApiResponse::from)
                 .toList();
     }

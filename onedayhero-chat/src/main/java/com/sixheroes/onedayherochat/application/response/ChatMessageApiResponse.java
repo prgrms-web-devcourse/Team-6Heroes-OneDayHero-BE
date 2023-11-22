@@ -1,7 +1,7 @@
 package com.sixheroes.onedayherochat.application.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sixheroes.onedayheromongo.chat.response.ChatMessageResponse;
+import com.sixheroes.onedayheromongo.chat.ChatMessage;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -17,12 +17,12 @@ public record ChatMessageApiResponse(
 ) {
 
     public static ChatMessageApiResponse from(
-            ChatMessageResponse response
+            ChatMessage chatMessage
     ) {
         return ChatMessageApiResponse.builder()
-                .senderNickName(response.senderNickName())
-                .message(response.message())
-                .sentMessageTime(response.sentMessageTime())
+                .senderNickName(chatMessage.getSenderNickName())
+                .message(chatMessage.getMessage())
+                .sentMessageTime(chatMessage.getSentMessageTime())
                 .build();
     }
 }

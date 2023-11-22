@@ -6,16 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document("chat-messages")
+@Document(collection = "chat-messages")
 public class ChatMessage {
 
     @MongoId
+    @Field(name = "_id", targetType = FieldType.OBJECT_ID)
     private String id;
 
     @Field(name = "chat_room_id")

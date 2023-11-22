@@ -1,10 +1,9 @@
-package com.sixheroes.onedayherodomain.global.configuration;
+package com.sixheroes.onedayheromongo.global;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@EnableMongoRepositories(basePackages = "com.sixheroes.onedayherodomain.mongo")
 @Configuration
+@EnableMongoRepositories(basePackages = "com.sixheroes.onedayheromongo")
 public class MongoConfiguration {
-    
 }
