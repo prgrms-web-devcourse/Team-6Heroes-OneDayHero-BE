@@ -18,7 +18,7 @@ include::{snippets}/user-find/response-fields.adoc[]
 
 include::{snippets}/user-update/http-request.adoc[]
 include::{snippets}/user-update/request-headers.adoc[]
-include::{snippets}/user-update/request-fields.adoc[]
+include::{snippets}/user-update/request-part-userUpdateRequest-fields.adoc[]
 
 ==== HTTP Response
 
