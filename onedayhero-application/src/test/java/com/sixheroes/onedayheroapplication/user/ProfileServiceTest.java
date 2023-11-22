@@ -3,14 +3,10 @@ package com.sixheroes.onedayheroapplication.user;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,21 +19,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class ProfileServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private ProfileService profileService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserImageRepository userImageRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private UserRegionRepository userRegionRepository;
 
     @DisplayName("상대의 시민 프로필을 조회한다.")
     @Test
@@ -129,6 +110,60 @@ class ProfileServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EUC_000.name());
     }
 
+    @DisplayName("히어로를 닉네임으로 검색한다.")
+    @Test
+    void searchHeroes() {
+        // given
+        var user1= createUser("별님");
+        user1.changeHeroModeOn();
+        userRepository.save(user1);
+        var userImage1 = createUserImage(user1);
+        userImageRepository.save(userImage1);
+
+        var missionCategories = missionCategoryRepository.findAll();
+        var userMissionCategory = createUserMissionCategory(missionCategories.get(0).getId(), user1);
+        userMissionCategoryRepository.save(userMissionCategory);
+
+        var user2 = createUser("달님");
+        user2.changeHeroModeOn();
+        userRepository.save(user2);
+        var userImage2 = createUserImage(user2);
+        userImageRepository.save(userImage2);
+
+        var user3 = createUser("햇님");
+        user3.changeHeroModeOn();
+        userRepository.save(user3);
+        var userImage3 = createUserImage(user3);
+        userImageRepository.save(userImage3);
+
+        var nickname = "님";
+        var pageRequest = PageRequest.of(0, 3);
+
+        // when
+        var heroSearchResponses = profileService.searchHeroes(nickname, pageRequest);
+
+        // then
+        var content = heroSearchResponses.getContent();
+        assertThat(content).hasSize(3);
+        assertThat(content)
+            .extracting("nickname")
+            .isSorted();
+        assertThat(content)
+            .filteredOn("nickname", "별님")
+            .extracting("favoriteMissionCategories")
+            .hasSize(1);
+    }
+
+    private UserMissionCategory createUserMissionCategory(
+        Long missionCategoryId,
+        User user
+    ) {
+        return UserMissionCategory.builder()
+            .missionCategoryId(missionCategoryId)
+            .user(user)
+            .build();
+    }
+
     private UserImage createUserImage(
             User user
     ) {
@@ -146,7 +181,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
 
     private User createUser() {
         return User.builder()
-                .email(createEamil())
+                .email(createEmail())
                 .userBasicInfo(createUserBasicInfo())
                 .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
                 .userSocialType(UserSocialType.KAKAO)
@@ -154,7 +189,19 @@ class ProfileServiceTest extends IntegrationApplicationTest {
                 .build();
     }
 
-    private Email createEamil() {
+    private User createUser(
+        String nickname
+    ) {
+        return User.builder()
+            .email(createEmail())
+            .userBasicInfo(createUserBasicInfo(nickname))
+            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+            .userSocialType(UserSocialType.KAKAO)
+            .userRole(UserRole.MEMBER)
+            .build();
+    }
+
+    private Email createEmail() {
         return Email.builder()
                 .email("abc@123.com")
                 .build();
@@ -167,6 +214,17 @@ class ProfileServiceTest extends IntegrationApplicationTest {
                 .gender(UserGender.MALE)
                 .introduce("자기 소개")
                 .build();
+    }
+
+    private UserBasicInfo createUserBasicInfo(
+        String nickname
+    ) {
+        return UserBasicInfo.builder()
+            .nickname(nickname)
+            .birth(LocalDate.of(1990, 1, 1))
+            .gender(UserGender.MALE)
+            .introduce("자기 소개")
+            .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {

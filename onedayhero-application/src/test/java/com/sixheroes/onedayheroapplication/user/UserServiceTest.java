@@ -8,17 +8,12 @@ import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequ
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.region.Region;
-import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
+import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.*;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
-import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -30,29 +25,14 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Transactional
 class UserServiceTest extends IntegrationApplicationTest {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserImageRepository userImageRepository;
-
-    @Autowired
-    private UserRegionRepository userRegionRepository;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private UserService userService;
 
     @DisplayName("처음 OAUTH 로그인을 시도하면 기본 설정값으로 유저가 저장된다.")
     @Test
