@@ -29,15 +29,15 @@ public class UserMissionCategory extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "mission_id", nullable = false)
-    private Long missionId;
+    @Column(name = "mission_category_id", nullable = false)
+    private Long missionCategoryId;
 
     @Builder
     private UserMissionCategory(
         User user,
-        Long missionId
+        Long missionCategoryId
     ) {
         this.user = user;
-        this.missionId = missionId;
+        this.missionCategoryId = missionCategoryId;
     }
 }
