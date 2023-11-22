@@ -2,11 +2,13 @@ package com.sixheroes.onedayheroapi.main;
 
 import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
+import com.sixheroes.onedayheroapi.main.request.UserPositionRequest;
 import com.sixheroes.onedayheroapplication.main.MainResponse;
 import com.sixheroes.onedayheroapplication.main.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +21,8 @@ public class MainController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<MainResponse>> callMainResponse(
-            @AuthUser Long userId
+            @AuthUser Long userId,
+            @ModelAttribute UserPositionRequest request
     ) {
         var result = mainService.findMainResponse(userId);
 

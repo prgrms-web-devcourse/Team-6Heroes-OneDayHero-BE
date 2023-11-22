@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapi.main;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
+import com.sixheroes.onedayheroapi.main.request.UserPositionRequest;
 import com.sixheroes.onedayheroapplication.main.MainResponse;
 import com.sixheroes.onedayheroapplication.main.MainService;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
@@ -27,6 +28,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,6 +51,11 @@ public class MainControllerTest extends RestDocsSupport {
         // given
 
         var userId = 1L;
+
+        var userPosition = UserPositionRequest.builder()
+                .longitude(123.45)
+                .latitude(123.45)
+                .build();
 
         var missionSoonExpiredResponseA = MissionSoonExpiredResponse.builder()
                 .id(1L)
@@ -116,6 +124,8 @@ public class MainControllerTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(get("/api/v1/main")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .param("longitude", String.valueOf(userPosition.longitude()))
+                        .param("latitude", String.valueOf(userPosition.latitude()))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -123,6 +133,10 @@ public class MainControllerTest extends RestDocsSupport {
                 .andDo(document("main-page",
                         requestHeaders(
                                 headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
+                                parameterWithName("longitude").description("경도"),
+                                parameterWithName("latitude").description("위도")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
