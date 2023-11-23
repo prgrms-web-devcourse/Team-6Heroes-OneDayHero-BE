@@ -13,11 +13,16 @@ import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.UserMissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.repository.MissionChatRoomRepository;
 import com.sixheroes.onedayherodomain.missionchatroom.repository.UserMissionChatRoomRepository;
+import com.sixheroes.onedayherodomain.missionchatroom.repository.response.UserChatRoomQueryResponse;
+import com.sixheroes.onedayheromongo.chat.ChatMessage;
+import com.sixheroes.onedayheromongo.chat.repository.ChatMessageMongoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class ChatRoomService {
     private final UserMissionChatRoomQueryRepository userMissionChatRoomQueryRepository;
     private final UserMissionChatRoomReader userMissionChatRoomReader;
     private final MissionChatRoomRedisRepository missionChatRoomRedisRepository;
+    private final ChatMessageMongoRepository chatMessageMongoRepository;
 
     public MissionChatRoomCreateResponse createChatRoom(
             CreateMissionChatRoomServiceRequest request
@@ -46,34 +52,15 @@ public class ChatRoomService {
             Long userId
     ) {
         var missionChatRooms = userMissionChatRoomQueryRepository.findJoinedChatRooms(userId);
-
         var chatRoomIds = getJoinedChatRoomIds(missionChatRooms);
-
         var receiverIds = getReceiverIds(userId, chatRoomIds);
 
         var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(receiverIds);
-        // TODO 각 유저들에 대한 마지막으로 보낸 시간과 채팅을 찾는다. (toMap)
-        // 5. 수신자들의 아이디로 마지막으로 보낸 시간과 채팅을 toMap으로 만든다.
+        var latestMessagesByChatRoomIds = chatMessageMongoRepository.findLatestMessagesByChatRoomIds(chatRoomIds);
 
-        // 6. receiverChatRoomInfos 에 있는 receiverId와 동일한 부분을 합쳐서 response를 만든다.
+        var missionChatRoomFindResponses = makeMissionChatRoomResponse(receiverChatRoomInfos, latestMessagesByChatRoomIds);
 
-        throw new UnsupportedOperationException();
-    }
-
-    private List<Long> getReceiverIds(Long userId, List<Long> chatRoomIds) {
-        return userMissionChatRoomRepository.findByMissionChatRoom_IdIn(chatRoomIds)
-                .stream()
-                .filter(userMissionChatRoom -> !userMissionChatRoom.getUserId().equals(userId))
-                .mapToLong(UserMissionChatRoom::getUserId)
-                .boxed()
-                .toList();
-    }
-
-    private List<Long> getJoinedChatRoomIds(List<UserMissionChatRoomQueryResponse> missionChatRooms) {
-        return missionChatRooms.stream()
-                .mapToLong(UserMissionChatRoomQueryResponse::chatRoomId)
-                .boxed()
-                .toList();
+        return missionChatRoomFindResponses;
     }
 
     public MissionChatRoomExitResponse exitChatRoom(
@@ -96,6 +83,45 @@ public class ChatRoomService {
         return MissionChatRoomExitResponse.from(userChatRoom.getMissionChatRoom(), userId);
     }
 
+    private List<Long> getJoinedChatRoomIds(List<UserMissionChatRoomQueryResponse> missionChatRooms) {
+        return missionChatRooms.stream()
+                .mapToLong(UserMissionChatRoomQueryResponse::chatRoomId)
+                .boxed()
+                .toList();
+    }
+
+    private List<Long> getReceiverIds(Long userId, List<Long> chatRoomIds) {
+        return userMissionChatRoomRepository.findByMissionChatRoom_IdIn(chatRoomIds)
+                .stream()
+                .filter(userMissionChatRoom -> !userMissionChatRoom.isUserChatRoom(userId))
+                .mapToLong(UserMissionChatRoom::getUserId)
+                .boxed()
+                .toList();
+    }
+
+    private List<MissionChatRoomFindResponse> makeMissionChatRoomResponse(
+            List<UserChatRoomQueryResponse> receiverChatRoomInfos,
+            List<ChatMessage> latestMessagesByChatRoomIds
+    ) {
+        var result = new ArrayList<MissionChatRoomFindResponse>();
+
+        var chatRoomInfoGroupingByChatRoomId = receiverChatRoomInfos.stream()
+                .collect(Collectors.groupingBy(UserChatRoomQueryResponse::chatRoomId));
+
+        var chatMessageGroupingByChatRoomId = latestMessagesByChatRoomIds.stream()
+                .collect(Collectors.groupingBy(ChatMessage::getChatRoomId));
+
+        for (Long chatRoomId : chatRoomInfoGroupingByChatRoomId.keySet()) {
+            var chatRoomQueryResponse = chatRoomInfoGroupingByChatRoomId.get(chatRoomId).get(0);
+            var lastMessage = chatMessageGroupingByChatRoomId.get(chatRoomId).get(0);
+
+            var missionChatRoomInfo = MissionChatRoomFindResponse.from(chatRoomQueryResponse, lastMessage);
+            result.add(missionChatRoomInfo);
+        }
+
+        return result;
+    }
+
     public MissionChatRoomCreateResponse findOne(
             Long missionChatRoomId
     ) {
@@ -109,7 +135,7 @@ public class ChatRoomService {
             List<UserMissionChatRoom> findMissionChatRooms
     ) {
         return findMissionChatRooms.stream()
-                .filter(userMissionChatRoom -> userMissionChatRoom.isFindByUserId(userId))
+                .filter(userMissionChatRoom -> userMissionChatRoom.isUserChatRoom(userId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.T_001.name()));
     }

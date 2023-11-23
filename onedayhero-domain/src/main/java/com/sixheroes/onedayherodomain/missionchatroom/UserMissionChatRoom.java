@@ -47,7 +47,7 @@ public class UserMissionChatRoom {
                 .build();
     }
 
-    public boolean isFindByUserId(Long userId) {
+    public boolean isUserChatRoom(Long userId) {
         return this.userId.equals(userId);
     }
 
