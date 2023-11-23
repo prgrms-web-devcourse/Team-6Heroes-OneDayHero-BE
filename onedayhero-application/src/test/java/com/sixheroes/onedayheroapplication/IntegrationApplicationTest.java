@@ -104,9 +104,6 @@ public abstract class IntegrationApplicationTest {
     @MockBean
     protected MissionChatRoomRedisRepository missionChatRoomRedisRepository;
 
-    @MockBean
-    protected MissionRepository missionNativeQueryRepository;
-
     @BeforeAll
     public static void setUp(
             @Autowired MissionCategoryRepository missionCategoryRepository,
