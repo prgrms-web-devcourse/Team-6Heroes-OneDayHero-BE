@@ -23,3 +23,16 @@ include::{snippets}/profile-hero-find/path-parameters.adoc[]
 
 include::{snippets}/profile-hero-find/http-response.adoc[]
 include::{snippets}/profile-hero-find/response-fields.adoc[]
+
+[[hero-nickname-search]]
+=== 히어로 닉네임 검색
+
+==== HTTP Request
+
+include::{snippets}/hero-nickname-search/http-request.adoc[]
+include::{snippets}/hero-nickname-search/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/hero-nickname-search/http-response.adoc[]
+include::{snippets}/hero-nickname-search/response-fields.adoc[]

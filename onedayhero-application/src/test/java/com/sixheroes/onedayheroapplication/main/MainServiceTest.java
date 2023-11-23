@@ -5,13 +5,16 @@ import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceReque
 import com.sixheroes.onedayheroapplication.main.response.MissionSoonExpiredResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayherodomain.mission.Mission;
+import com.sixheroes.onedayherodomain.mission.MissionImage;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
+import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.mission.repository.response.MainMissionQueryResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,11 +25,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-
+@Transactional
 public class MainServiceTest extends IntegrationApplicationTest {
 
     @MockBean
     protected MissionRepository missionNativeQueryRepository;
+
+    @MockBean
+    private MissionImageRepository missionImageRepository;
 
     @DisplayName("메인 페이지를 조회 할 수 있다.")
     @Test
@@ -53,7 +59,12 @@ public class MainServiceTest extends IntegrationApplicationTest {
         given(missionNativeQueryRepository.findSoonExpiredMissionByLocation(any(String.class), any(Integer.class), any(Long.class), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .willReturn(queryResponse);
 
-        var result = MissionSoonExpiredResponse.from(queryResponse.get(0), "s3::/path");
+        var imageResult = MissionImage.createMissionImage("image.jpeg", "sadsifusdfjkd.jpeg", "s3://path");
+
+        given(missionImageRepository.findByMission_Id(any(Long.class)))
+                .willReturn(List.of(imageResult));
+
+        var result = MissionSoonExpiredResponse.from(queryResponse.get(0), imageResult.getPath());
 
         // when
         var mainResponse = mainService.findMainResponse(userId, userPosition, serverTime);

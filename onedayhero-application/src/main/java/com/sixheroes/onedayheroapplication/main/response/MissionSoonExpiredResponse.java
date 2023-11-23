@@ -51,6 +51,7 @@ public record MissionSoonExpiredResponse(
                         .gu(response.getGu())
                         .dong(response.getDong())
                         .build())
+                .imagePath(imagePath)
                 .isBookmarked(isBookmarked(response.getBookmarkId()))
                 .build();
     }

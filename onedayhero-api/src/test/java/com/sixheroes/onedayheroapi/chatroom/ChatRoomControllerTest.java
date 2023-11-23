@@ -7,7 +7,6 @@ import com.sixheroes.onedayheroapplication.chatroom.request.CreateMissionChatRoo
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponse;
-import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponses;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -108,11 +107,12 @@ public class ChatRoomControllerTest extends RestDocsSupport {
         // given
         var userId = 1L;
 
-        var response = MissionChatRoomFindResponses.from(
+        var response =
                 List.of(
                         MissionChatRoomFindResponse.builder()
                                 .id(1L)
                                 .title("심부름 해주실 분을 찾습니다.")
+                                .receiverId(1L)
                                 .receiverNickname("슈퍼 히어로 토끼 A")
                                 .receiverImagePath("s3://abc.jpeg")
                                 .lastSentMessage("거의 다 와갑니다!")
@@ -125,6 +125,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                         MissionChatRoomFindResponse.builder()
                                 .id(2L)
                                 .title("벌레 잡아주실 분을 찾습니다.")
+                                .receiverId(2L)
                                 .receiverNickname("슈퍼 히어로 토끼 B")
                                 .receiverImagePath("s3://abd.jpeg")
                                 .lastSentMessage("어떤 벌레인가요?")
@@ -134,8 +135,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                                 ))
                                 .headCount(2)
                                 .build()
-                )
-        );
+                );
 
         given(chatRoomService.findJoinedChatRoom(any(Long.class)))
                 .willReturn(response);
@@ -154,24 +154,24 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("HTTP 응답 코드"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.missionChatRoomFindResponses").type(JsonFieldType.ARRAY)
+                                fieldWithPath("data[]").type(JsonFieldType.ARRAY)
                                         .description("채팅방 조회 배열"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].id").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER)
                                         .description("채팅방 아이디"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].title").type(JsonFieldType.STRING)
+                                fieldWithPath("data[].title").type(JsonFieldType.STRING)
                                         .description("미션 제목"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].receiverNickname").type(JsonFieldType.STRING)
+                                fieldWithPath("data[].receiverId").type(JsonFieldType.NUMBER)
+                                        .description("수신자 아이디"),
+                                fieldWithPath("data[].receiverNickname").type(JsonFieldType.STRING)
                                         .description("수신자 닉네임"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].receiverImagePath").type(JsonFieldType.STRING)
+                                fieldWithPath("data[].receiverImagePath").type(JsonFieldType.STRING)
                                         .description("수신자 프로필 이미지 경로"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].lastSentMessage").type(JsonFieldType.STRING)
+                                fieldWithPath("data[].lastSentMessage").type(JsonFieldType.STRING)
                                         .description("마지막으로 받은 메시지"),
-                                fieldWithPath("data.missionChatRoomFindResponses[].lastSentMessageTime").type(JsonFieldType.STRING)
+                                fieldWithPath("data[].lastSentMessageTime").type(JsonFieldType.STRING)
                                         .description("마지막으로 받은 메시지 시간")
                                         .attributes(getDateTimeFormat()),
-                                fieldWithPath("data.missionChatRoomFindResponses[].headCount").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data[].headCount").type(JsonFieldType.NUMBER)
                                         .description("채팅방 인원"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간")
@@ -180,21 +180,20 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                 ))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data").exists())
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses").isArray())
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].id").value(response.missionChatRoomFindResponses().get(0).id()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].title").value(response.missionChatRoomFindResponses().get(0).title()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].receiverNickname").value(response.missionChatRoomFindResponses().get(0).receiverNickname()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].receiverImagePath").value(response.missionChatRoomFindResponses().get(0).receiverImagePath()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].lastSentMessage").value(response.missionChatRoomFindResponses().get(0).lastSentMessage()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].lastSentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(response.missionChatRoomFindResponses().get(0).lastSentMessageTime())))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[0].headCount").value(response.missionChatRoomFindResponses().get(0).headCount()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].id").value(response.missionChatRoomFindResponses().get(1).id()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].title").value(response.missionChatRoomFindResponses().get(1).title()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].receiverNickname").value(response.missionChatRoomFindResponses().get(1).receiverNickname()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].receiverImagePath").value(response.missionChatRoomFindResponses().get(1).receiverImagePath()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].lastSentMessage").value(response.missionChatRoomFindResponses().get(1).lastSentMessage()))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].lastSentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(response.missionChatRoomFindResponses().get(1).lastSentMessageTime())))
-                .andExpect(jsonPath("$.data.missionChatRoomFindResponses[1].headCount").value(response.missionChatRoomFindResponses().get(1).headCount()))
+                .andExpect(jsonPath("$.data[0].id").value(response.get(0).id()))
+                .andExpect(jsonPath("$.data[0].title").value(response.get(0).title()))
+                .andExpect(jsonPath("$.data[0].receiverNickname").value(response.get(0).receiverNickname()))
+                .andExpect(jsonPath("$.data[0].receiverImagePath").value(response.get(0).receiverImagePath()))
+                .andExpect(jsonPath("$.data[0].lastSentMessage").value(response.get(0).lastSentMessage()))
+                .andExpect(jsonPath("$.data[0].lastSentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(response.get(0).lastSentMessageTime())))
+                .andExpect(jsonPath("$.data[0].headCount").value(response.get(0).headCount()))
+                .andExpect(jsonPath("$.data[1].id").value(response.get(1).id()))
+                .andExpect(jsonPath("$.data[1].title").value(response.get(1).title()))
+                .andExpect(jsonPath("$.data[1].receiverNickname").value(response.get(1).receiverNickname()))
+                .andExpect(jsonPath("$.data[1].receiverImagePath").value(response.get(1).receiverImagePath()))
+                .andExpect(jsonPath("$.data[1].lastSentMessage").value(response.get(1).lastSentMessage()))
+                .andExpect(jsonPath("$.data[1].lastSentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(response.get(1).lastSentMessageTime())))
+                .andExpect(jsonPath("$.data[1].headCount").value(response.get(1).headCount()))
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
 

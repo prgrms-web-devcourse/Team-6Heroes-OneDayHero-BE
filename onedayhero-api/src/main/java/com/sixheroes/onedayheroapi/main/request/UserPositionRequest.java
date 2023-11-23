@@ -7,10 +7,10 @@ import lombok.Builder;
 @Builder
 public record UserPositionRequest(
         @NotNull(message = "경도는 필수 값 입니다.")
-        double longitude,
+        Double longitude,
 
         @NotNull(message = "위도는 필수 값 입니다.")
-        double latitude
+        Double latitude
 ) {
 
     public UserPositionServiceRequest toService() {

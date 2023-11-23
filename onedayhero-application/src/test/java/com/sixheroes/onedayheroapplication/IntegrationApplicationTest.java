@@ -23,6 +23,7 @@ import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,6 +86,9 @@ public abstract class IntegrationApplicationTest {
 
     @Autowired
     protected UserRegionRepository userRegionRepository;
+
+    @Autowired
+    protected UserMissionCategoryRepository userMissionCategoryRepository;
 
     @Autowired
     protected UserService userService;
