@@ -1,4 +1,4 @@
-package com.sixheroes.onedayherochat.application.infra.redis.sub;
+package com.sixheroes.onedayherochat.application.infra.redis.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixheroes.onedayherochat.presentation.request.ChatMessageRequest;
@@ -42,6 +42,7 @@ public class RedisChatSubscriber implements MessageListener {
             messagingTemplate.convertAndSend(CHAT_MESSAGE_SUB_URI + chatMessage.chatRoomId(), chatMessage);
         } catch (Exception e) {
             log.error(ErrorCode.S_001.name(), e);
+            throw new RuntimeException(e);
         }
     }
 }

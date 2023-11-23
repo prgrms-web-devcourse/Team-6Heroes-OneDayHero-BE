@@ -12,15 +12,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail_Email(String email_email);
-
+    
     @Query("""
-        select u
-        from User u
-        where u.userBasicInfo.nickname like :nickname and u.isHeroMode = true
-        order by u.userBasicInfo.nickname
-    """)
+                select u
+                from User u
+                where u.userBasicInfo.nickname like :nickname and u.isHeroMode = true
+                order by u.userBasicInfo.nickname
+            """)
     Slice<User> findByNicknameAndIsHeroMode(
-        @Param("nickname") String nickname,
-        Pageable pageable
+            @Param("nickname") String nickname,
+            Pageable pageable
     );
 }
