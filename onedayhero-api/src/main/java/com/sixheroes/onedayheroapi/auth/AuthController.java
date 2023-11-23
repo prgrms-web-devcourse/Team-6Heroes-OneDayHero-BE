@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -28,6 +30,10 @@ public class AuthController {
                 oauthProperties.getKakao().getAuthorizationServer(),
                 loginRequest.code()
         );
+
+        if (loginResponse.signUp()) {
+            return ResponseEntity.created(URI.create("")).body(ApiResponse.created(loginResponse));
+        }
 
         return ResponseEntity.ok(ApiResponse.ok(loginResponse));
     }

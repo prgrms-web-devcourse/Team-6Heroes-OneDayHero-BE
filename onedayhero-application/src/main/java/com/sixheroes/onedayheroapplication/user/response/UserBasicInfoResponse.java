@@ -2,10 +2,12 @@ package com.sixheroes.onedayheroapplication.user.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sixheroes.onedayherodomain.user.UserBasicInfo;
+import com.sixheroes.onedayherodomain.user.UserGender;
 import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Builder
 public record UserBasicInfoResponse(
@@ -30,7 +32,7 @@ public record UserBasicInfoResponse(
 
         return UserBasicInfoResponse.builder()
             .nickname(basicInfo.getNickname())
-            .gender(basicInfo.getGender().name())
+            .gender(Optional.of(basicInfo.getGender()).map(UserGender::name).orElse(null))
             .birth(basicInfo.getBirth())
             .introduce(basicInfo.getIntroduce())
             .build();

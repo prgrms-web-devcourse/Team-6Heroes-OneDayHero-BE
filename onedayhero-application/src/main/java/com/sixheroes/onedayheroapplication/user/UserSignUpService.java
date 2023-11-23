@@ -18,7 +18,7 @@ public class UserSignUpService {
     private final UserRepository userRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public UserAuthResponse singUp(
+    public UserAuthResponse signUp(
             String userSocialType,
             String email
     ) {
@@ -35,6 +35,6 @@ public class UserSignUpService {
 
         var user = userRepository.save(createdUser);
 
-        return UserAuthResponse.from(user);
+        return UserAuthResponse.signUpResponse(user);
     }
 }

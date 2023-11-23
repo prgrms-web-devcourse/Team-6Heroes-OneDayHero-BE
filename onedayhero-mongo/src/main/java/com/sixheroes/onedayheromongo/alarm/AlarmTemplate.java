@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheromongo.alarm;
 
+import com.sixheroes.onedayheromongo.global.BaseDocument;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Getter
 @Document(collection = "alarm_templates")
-public class AlarmTemplate {
+public class AlarmTemplate extends BaseDocument {
 
     @MongoId
     @Field(name = "_id", targetType = FieldType.OBJECT_ID)

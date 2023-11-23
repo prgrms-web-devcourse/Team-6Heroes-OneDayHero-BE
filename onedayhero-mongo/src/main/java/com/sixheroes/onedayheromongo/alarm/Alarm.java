@@ -1,12 +1,16 @@
 package com.sixheroes.onedayheromongo.alarm;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayheromongo.global.BaseDocument;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import java.util.Objects;
+
 @Getter
 @Document(collection = "alarms")
-public class Alarm {
+public class Alarm extends BaseDocument {
 
     @MongoId
     @Field(name = "_id", targetType = FieldType.OBJECT_ID)
@@ -36,5 +40,13 @@ public class Alarm {
         this.userId = userId;
         this.title = title;
         this.content = content;
+    }
+
+    public void validOwner(
+        Long userId
+    ) {
+        if (!Objects.equals(this.userId, userId)) {
+            throw new IllegalArgumentException(ErrorCode.T_001.name());
+        }
     }
 }

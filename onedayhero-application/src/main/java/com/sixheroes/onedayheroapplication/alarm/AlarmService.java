@@ -2,9 +2,12 @@ package com.sixheroes.onedayheroapplication.alarm;
 
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
+import com.sixheroes.onedayheroapplication.alarm.response.AlarmResponse;
 import com.sixheroes.onedayheromongo.alarm.mongo.AlarmRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -14,6 +17,8 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
 
     private final AlarmTemplateReader alarmTemplateReader;
+
+    private final AlarmReader alarmReader;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -27,5 +32,25 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         applicationEventPublisher.publishEvent(SsePaylod.of(alarmType, alarm));
+    }
+
+    public Slice<AlarmResponse> findAlarm(
+        Long userId,
+        Pageable pageable
+    ) {
+        var alarms = alarmReader.findAll(userId, pageable);
+
+        return alarms.map(AlarmResponse::from);
+    }
+
+    public void deleteAlarm(
+        Long userId,
+        String alarmId
+    ) {
+        var alarm = alarmReader.findOne(alarmId);
+
+        alarm.validOwner(userId);
+
+        alarmRepository.delete(alarm);
     }
 }

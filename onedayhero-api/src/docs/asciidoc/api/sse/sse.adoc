@@ -1,0 +1,11 @@
+[[sse-subscribe]]
+=== SSE 구독
+
+==== HTTP Request
+
+include::{snippets}/sse-subscribe/http-request.adoc[]
+include::{snippets}/sse-subscribe/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/sse-subscribe/http-response.adoc[]

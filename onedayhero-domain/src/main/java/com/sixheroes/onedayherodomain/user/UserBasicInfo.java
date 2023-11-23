@@ -23,7 +23,7 @@ public class UserBasicInfo {
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", length = 10, nullable = true)
+    @Column(name = "gender", length = 10, nullable = false)
     private UserGender gender;
 
     @Column(name = "birth", nullable = true)

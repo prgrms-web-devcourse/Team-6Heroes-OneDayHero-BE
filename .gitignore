@@ -179,7 +179,4 @@ gradle-app.setting
 **/resources/application.yml
 #application.yml
 
-# index.html
-onedayhero-api/src/main/resources/static/docs/index.html
-
 # End of https://www.toptal.com/developers/gitignore/api/intellij,gradle,macos

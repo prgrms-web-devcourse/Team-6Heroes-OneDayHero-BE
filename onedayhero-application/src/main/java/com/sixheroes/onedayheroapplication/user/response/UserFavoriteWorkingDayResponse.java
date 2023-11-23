@@ -6,8 +6,7 @@ import com.sixheroes.onedayherodomain.user.Week;
 import lombok.Builder;
 
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Builder
 public record UserFavoriteWorkingDayResponse(
@@ -20,6 +19,7 @@ public record UserFavoriteWorkingDayResponse(
     LocalTime favoriteEndTime
 ) {
     static final UserFavoriteWorkingDayResponse EMPTY = UserFavoriteWorkingDayResponse.builder()
+        .favoriteDate(Collections.emptyList())
         .build();
 
     public static UserFavoriteWorkingDayResponse from(
@@ -29,7 +29,9 @@ public record UserFavoriteWorkingDayResponse(
             return EMPTY;
         }
 
-        var favoriteDate = userFavoriteWorkingDay.getFavoriteDate().stream()
+        var favoriteDate = Optional.of(userFavoriteWorkingDay.getFavoriteDate())
+            .orElseGet(ArrayList::new)
+            .stream()
             .map(Week::name)
             .toList();
 

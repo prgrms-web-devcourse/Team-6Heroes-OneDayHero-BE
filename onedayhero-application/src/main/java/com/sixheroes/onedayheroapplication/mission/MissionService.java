@@ -54,7 +54,9 @@ public class MissionService {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = request.toEntity(missionCategory, serverTime);
 
+        log.info("미션을 받았습니다.");
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
+        log.info("이미지를 S3에 생성하였습니다.");
 
         var missionImages = imageResponse.stream()
                 .map(MissionImageMapper::createMissionImage)
@@ -63,6 +65,7 @@ public class MissionService {
         mission.addMissionImages(missionImages);
         var savedMission = missionRepository.save(mission);
 
+        log.info("미션을 저장하였습니다.");
         return MissionIdResponse.from(savedMission.getId());
     }
 
