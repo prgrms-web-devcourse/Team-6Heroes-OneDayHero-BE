@@ -23,6 +23,7 @@ dependencies {
 
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-application')
+    implementation project(':onedayhero-chat')
 
     // RESTDOCS
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'

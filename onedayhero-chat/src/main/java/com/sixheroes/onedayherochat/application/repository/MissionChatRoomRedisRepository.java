@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherochat.application.repository;
 
-import com.sixheroes.onedayherochat.application.infra.redis.sub.RedisChatSubscriber;
+import com.sixheroes.onedayherochat.application.infra.redis.handler.RedisChatSubscriber;
 import com.sixheroes.onedayherochat.application.repository.request.MissionChatRoomRedisRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;

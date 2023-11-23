@@ -1,8 +1,9 @@
 package com.sixheroes.onedayheroapplication;
 
-import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
+import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
+import com.sixheroes.onedayheroapplication.main.MainService;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchReader;
@@ -22,6 +23,7 @@ import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
+import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -86,16 +88,22 @@ public abstract class IntegrationApplicationTest {
     protected UserRegionRepository userRegionRepository;
 
     @Autowired
+    protected UserMissionCategoryRepository userMissionCategoryRepository;
+
+    @Autowired
     protected UserService userService;
+
+    @Autowired
+    protected ChatRoomService chatRoomService;
+
+    @Autowired
+    protected MainService mainService;
 
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;
 
     @MockBean
     protected S3ImageDeleteService s3ImageDeleteService;
-
-    @Autowired
-    protected ChatRoomService chatRoomService;
 
     @MockBean
     protected MissionChatRoomRedisRepository missionChatRoomRedisRepository;

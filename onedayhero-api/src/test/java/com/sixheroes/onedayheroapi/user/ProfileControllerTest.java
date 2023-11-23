@@ -9,23 +9,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,9 +94,15 @@ class ProfileControllerTest extends RestDocsSupport {
                         .attributes(getDateFormat())
                         .description("태어난 날짜"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
-                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING).description("원본 이름"),
-                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING).description("고유 이름"),
-                    fieldWithPath("data.image.path").type(JsonFieldType.STRING).description("이미지 경로"),
+                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING)
+                        .optional()
+                        .description("원본 이름"),
+                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING)
+                        .optional()
+                        .description("고유 이름"),
+                    fieldWithPath("data.image.path").type(JsonFieldType.STRING)
+                        .optional()
+                        .description("이미지 경로"),
                     fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수")
                 )
             ));
@@ -160,9 +168,18 @@ class ProfileControllerTest extends RestDocsSupport {
                         .optional()
                         .description("자기 소개"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
-                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING).description("원본 이름"),
-                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING).description("고유 이름"),
-                    fieldWithPath("data.image.path").type(JsonFieldType.STRING).description("이미지 경로"),
+                    fieldWithPath("data.image.originalName")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("원본 이름"),
+                    fieldWithPath("data.image.uniqueName")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("고유 이름"),
+                    fieldWithPath("data.image.path")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("이미지 경로"),
                     fieldWithPath("data.favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
                     fieldWithPath("data.favoriteWorkingDay.favoriteDate")
                         .optional()
@@ -201,6 +218,146 @@ class ProfileControllerTest extends RestDocsSupport {
                     fieldWithPath("data.heroScore").type(JsonFieldType.NUMBER).description("히어로 점수")
                 )
             ));
+    }
+
+    @DisplayName("히어로를 닉네임으로 검색한다.")
+    @Test
+    void searchHeroes() throws Exception {
+        // given
+        var nickname = "님";
+        var pageRequest = PageRequest.of(0, 3);
+        var heroSearchResponses = createHeroSearchResponses();
+        var slice = new SliceImpl<HeroSearchResponse>(heroSearchResponses, pageRequest, true);
+
+        given(profileService.searchHeroes(anyString(), any(Pageable.class))).willReturn(slice);
+
+        // when & then
+        mockMvc.perform(get("/api/v1/users/hero-search")
+                .param("page", "0")
+                .param("size", "3")
+                .param("nickname", nickname)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value(200))
+            .andExpect(jsonPath("$.data.content[0].id").value(slice.getContent().get(0).id()))
+            .andExpect(jsonPath("$.data.content[0].nickname").value(slice.getContent().get(0).nickname()))
+            .andExpect(jsonPath("$.data.content[0].image.originalName").value(slice.getContent().get(0).image().originalName()))
+            .andExpect(jsonPath("$.data.content[0].image.uniqueName").value(slice.getContent().get(0).image().uniqueName()))
+            .andExpect(jsonPath("$.data.content[0].image.path").value(slice.getContent().get(0).image().path()))
+            .andExpect(jsonPath("$.data.content[0].favoriteMissionCategories").isArray())
+            .andExpect(jsonPath("$.data.content[0].favoriteMissionCategories[0].code").value(slice.getContent().get(0).favoriteMissionCategories().get(0).code()))
+            .andExpect(jsonPath("$.data.content[0].favoriteMissionCategories[0].name").value(slice.getContent().get(0).favoriteMissionCategories().get(0).name()))
+            .andExpect(jsonPath("$.data.content[0].heroScore").value(slice.getContent().get(0).heroScore()))
+            .andDo(document("hero-nickname-search",
+                queryParameters(
+                    parameterWithName("page").optional()
+                        .description("페이지 번호"),
+                    parameterWithName("size").optional()
+                        .description("데이터 크기"),
+                    parameterWithName("nickname")
+                        .description("히어로 이름")
+                ),
+                responseFields(
+                    fieldWithPath("status").type(JsonFieldType.NUMBER)
+                        .description("HTTP 응답 코드"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                        .description("히어로 목록 배열"),
+                    fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                        .description("히어로 아이디"),
+                    fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
+                        .description("히어로 이름"),
+                    fieldWithPath("data.content[].image.originalName").type(JsonFieldType.STRING)
+                        .description("이미지 원본 이름")
+                        .optional(),
+                    fieldWithPath("data.content[].image.uniqueName").type(JsonFieldType.STRING)
+                        .description("이미지 고유 이름")
+                        .optional(),
+                    fieldWithPath("data.content[].image.path").type(JsonFieldType.STRING)
+                        .description("이미지 경로")
+                        .optional(),
+                    fieldWithPath("data.content[].favoriteMissionCategories").type(JsonFieldType.ARRAY)
+                        .description("선호 미션 카테고리")
+                        .optional(),
+                    fieldWithPath("data.content[].favoriteMissionCategories[].code").type(JsonFieldType.STRING)
+                        .description("선호 미션 카테고리 코드"),
+                    fieldWithPath("data.content[].favoriteMissionCategories[].name").type(JsonFieldType.STRING)
+                        .description("선호 미션 카테고리 이름"),
+                    fieldWithPath("data.content[].heroScore").type(JsonFieldType.NUMBER)
+                        .description("히어로 점수"),
+                    fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                        .description("현재 페이지 번호"),
+                    fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
+                        .description("페이지 크기"),
+                    fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
+                        .description("정렬 상태 객체"),
+                    fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 비어있는지 여부"),
+                    fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 있는지 여부"),
+                    fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                    fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
+                        .description("페이지 번호"),
+                    fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
+                        .description("페이징이 되어 있는지 여부"),
+                    fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                        .description("페이징이 되어 있지 않은지 여부"),
+                    fieldWithPath("data.size").type(JsonFieldType.NUMBER)
+                        .description("현재 페이지 조회에서 가져온 리뷰 개수"),
+                    fieldWithPath("data.number").type(JsonFieldType.NUMBER)
+                        .description("현재 페이지 번호"),
+                    fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
+                        .description("정렬 정보 객체"),
+                    fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 비어있는지 여부"),
+                    fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 있는지 여부"),
+                    fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                    fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
+                        .description("현재 페이지의 요소 수"),
+                    fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
+                        .description("첫 번째 페이지인지 여부"),
+                    fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
+                        .description("마지막 페이지인지 여부"),
+                    fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
+                        .description("비어있는지 여부"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                        .attributes(getDateTimeFormat())
+                        .description("서버 응답 시간")
+                )));
+    }
+
+    private List<HeroSearchResponse> createHeroSearchResponses() {
+        var hero1 = HeroSearchResponse.builder()
+            .id(2L)
+            .nickname("달님")
+            .favoriteMissionCategories(List.of(new HeroSearchResponse.MissionCategoryResponse("MC_001", "서빙")))
+            .heroScore(30)
+            .image(createUserImageResponse())
+            .build();
+
+        var hero2 = HeroSearchResponse.builder()
+            .id(3L)
+            .nickname("별님")
+            .favoriteMissionCategories(List.of(new HeroSearchResponse.MissionCategoryResponse("MC_002", "주방")))
+            .heroScore(30)
+            .image(createUserImageResponse())
+            .build();
+
+        var hero3 = HeroSearchResponse.builder()
+            .id(1L)
+            .nickname("햇님")
+            .favoriteMissionCategories(Collections.emptyList())
+            .heroScore(30)
+            .image(createUserImageResponse())
+            .build();
+
+        return List.of(hero1, hero2, hero3);
     }
 
     private ProfileHeroResponse createProfileHeroResponse() {

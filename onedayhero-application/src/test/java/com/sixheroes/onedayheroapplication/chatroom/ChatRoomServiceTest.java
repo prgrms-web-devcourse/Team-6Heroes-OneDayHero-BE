@@ -19,7 +19,7 @@ class ChatRoomServiceTest extends IntegrationApplicationTest {
 
     @DisplayName("유저는 채팅방을 생성 할 수 있다.")
     @Test
-    void test() {
+    void createChatRoom() {
         // given
         var missionId = 1L;
         var userIds = List.of(1L, 2L);

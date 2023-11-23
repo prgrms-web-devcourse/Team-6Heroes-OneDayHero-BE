@@ -1,0 +1,12 @@
+[[main-page]]
+=== 메인 페이지를 조회한다.
+
+==== HTTP Request
+
+include::{snippets}/main-page/http-request.adoc[]
+include::{snippets}/main-page/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/main-page/http-response.adoc[]
+include::{snippets}/main-page/response-fields.adoc[]

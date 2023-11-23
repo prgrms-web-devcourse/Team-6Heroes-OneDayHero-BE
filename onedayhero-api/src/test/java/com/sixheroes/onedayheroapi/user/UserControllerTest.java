@@ -34,7 +34,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convertDateToString;
@@ -49,8 +48,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -134,9 +131,18 @@ class UserControllerTest extends RestDocsSupport {
                         .optional()
                         .description("자기 소개"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
-                    fieldWithPath("data.image.originalName").type(JsonFieldType.STRING).description("원본 이름"),
-                    fieldWithPath("data.image.uniqueName").type(JsonFieldType.STRING).description("고유 이름"),
-                    fieldWithPath("data.image.path").type(JsonFieldType.STRING).description("이미지 경로"),
+                    fieldWithPath("data.image.originalName")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("원본 이름"),
+                    fieldWithPath("data.image.uniqueName")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("고유 이름"),
+                    fieldWithPath("data.image.path")
+                        .type(JsonFieldType.STRING)
+                        .optional()
+                        .description("이미지 경로"),
                     fieldWithPath("data.favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
                     fieldWithPath("data.favoriteWorkingDay.favoriteDate")
                         .optional()
