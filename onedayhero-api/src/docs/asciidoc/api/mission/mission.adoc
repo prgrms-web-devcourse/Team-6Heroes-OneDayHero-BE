@@ -68,6 +68,19 @@ include::{snippets}/mission-completed-find/http-request.adoc[]
 include::{snippets}/mission-completed-find/http-response.adoc[]
 include::{snippets}/mission-completed-find/response-fields.adoc[]
 
+[[mission-ma-find]]
+=== 유저는 제안할 미션을 조회할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-matching-find/request-headers.adoc[]
+include::{snippets}/mission-matching-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-matching-find/http-response.adoc[]
+include::{snippets}/mission-matching-find/response-fields.adoc[]
+
 [[mission-update]]
 === 시민은 미션을 수정 할 수 있다.
 

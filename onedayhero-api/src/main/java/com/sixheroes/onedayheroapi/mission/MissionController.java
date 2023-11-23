@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapi.mission.request.MissionExtendRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingResponses;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
@@ -51,6 +52,15 @@ public class MissionController {
             @Valid @ModelAttribute MissionFindFilterRequest request
     ) {
         var result = missionService.findAllByDynamicCondition(pageable, request.toService(userId));
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @GetMapping("/matching")
+    public ResponseEntity<ApiResponse<MissionMatchingResponses>> findProgressMission(
+        @AuthUser Long userId
+    ) {
+        var result = missionService.findMatchingMissionByUserId(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

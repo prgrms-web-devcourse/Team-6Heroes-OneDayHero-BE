@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.mission.response;
 
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
@@ -41,6 +42,17 @@ public record MissionCategoryResponse(
                 .name(response.categoryName())
                 .build();
     }
+
+    public static MissionCategoryResponse from(
+        MissionMatchingQueryResponse response
+    ) {
+        return MissionCategoryResponse.builder()
+            .id(response.categoryId())
+            .code(response.categoryCode().name())
+            .name(response.categoryName())
+            .build();
+    }
+
 
     public static MissionCategoryResponse from(
             MissionCategory missionCategory
