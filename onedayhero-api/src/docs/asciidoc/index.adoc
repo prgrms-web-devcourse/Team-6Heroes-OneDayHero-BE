@@ -44,6 +44,11 @@ include::api/missionproposal/missionproposal.adoc[]
 
 include::api/review/review.adoc[]
 
+[[Main-API]]
+== Main API
+
+include::api/main/main.adoc[]
+
 [[SSE-API]]
 == SSE API
 
