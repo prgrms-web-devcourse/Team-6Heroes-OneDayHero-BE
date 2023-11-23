@@ -21,6 +21,9 @@ dependencies {
     // Spring Caching
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+    // REDIS
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // PROJECT
     implementation project(':onedayhero-common')
     implementation project(':onedayhero-domain')
