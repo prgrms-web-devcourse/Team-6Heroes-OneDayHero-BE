@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE mission_chat_rooms SET is_disabled = true WHERE id = ?")
-@Where(clause = "is_deleted = false")
+@Where(clause = "is_disabled = false")
 @Table(name = "mission_chat_rooms")
 @Entity
 public class MissionChatRoom {

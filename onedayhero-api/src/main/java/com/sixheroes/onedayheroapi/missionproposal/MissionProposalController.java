@@ -61,7 +61,7 @@ public class MissionProposalController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<Slice<MissionProposalResponse>>> findMissionRequest(
-        @RequestParam Long heroId,
+        @AuthUser Long heroId,
         Pageable pageable
     ) {
         var missionProposalResponses = missionProposalService.findMissionProposal(heroId, pageable);

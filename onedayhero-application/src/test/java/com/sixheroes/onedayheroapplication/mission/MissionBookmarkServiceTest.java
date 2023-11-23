@@ -10,7 +10,6 @@ import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,7 +22,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 
 @Transactional
-@ActiveProfiles("test")
 class MissionBookmarkServiceTest extends IntegrationApplicationTest {
 
     @DisplayName("유저는 미션 찜목록을 조회할 수 있다.")

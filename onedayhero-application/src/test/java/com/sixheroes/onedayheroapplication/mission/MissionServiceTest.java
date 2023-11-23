@@ -12,6 +12,7 @@ import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import org.apache.http.entity.ContentType;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -929,6 +930,74 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         null,
                         false
                 );
+    }
+
+    @DisplayName("시민은 제안할 미션, 즉 매칭 중인 미션을 조회할 수 있다.")
+    @Test
+    void findMatchingMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var matchingMission2 = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+
+        missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission));
+
+        // when
+        var findMatchingMission = missionService.findMatchingMissionByUserId(citizenId);
+
+        // then
+        var missionMatchingResponses = findMatchingMission.missionMatchingResponses();
+        assertThat(missionMatchingResponses).hasSize(2);
+        assertThat(missionMatchingResponses)
+            .filteredOn("id", matchingMission.getId())
+            .extracting(
+                "title",
+                "missionCategory.id",
+                "missionCategory.code",
+                "missionCategory.name",
+                "region.id",
+                "region.si",
+                "region.gu",
+                "region.dong",
+                "missionDate",
+                "startTime",
+                "endTime",
+                "price",
+                "bookmarkCount",
+                "missionStatus",
+                "imagePath",
+                "isBookmarked"
+            ).containsExactly(Tuple.tuple(
+                matchingMission.getMissionInfo().getTitle(),
+                matchingMission.getMissionCategory().getId(),
+                matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                region.getId(),
+                region.getSi(),
+                region.getGu(),
+                region.getDong(),
+                matchingMission.getMissionInfo().getMissionDate(),
+                matchingMission.getMissionInfo().getStartTime(),
+                matchingMission.getMissionInfo().getEndTime(),
+                matchingMission.getMissionInfo().getPrice(),
+                matchingMission.getBookmarkCount(),
+                matchingMission.getMissionStatus().name(),
+                null,
+                false
+            ));
     }
 
     private MissionCreateServiceRequest createMissionCreateServiceRequest(

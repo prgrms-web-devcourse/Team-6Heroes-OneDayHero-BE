@@ -56,7 +56,7 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
                 .containsSequence(MissionStatus.MATCHING, MissionStatus.MATCHING_COMPLETED, MissionStatus.MISSION_COMPLETED, MissionStatus.EXPIRED);
         assertThat(content.stream()
                 .collect(groupingBy(MissionProposalQueryDto::missionStatus)).get(MissionStatus.MATCHING))
-                .isSortedAccordingTo(comparing(MissionProposalQueryDto::missionCreatedAt).reversed());
+                .isSortedAccordingTo(comparing(MissionProposalQueryDto::missionProposalCreatedAt).reversed());
         assertThat(slice.hasNext()).isFalse();
     }
 

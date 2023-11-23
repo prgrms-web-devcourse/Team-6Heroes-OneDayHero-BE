@@ -27,7 +27,7 @@ public record MissionInfoForMissionProposalResponse(
             MissionProposalQueryDto missionProposalQueryDto
     ) {
         return MissionInfoForMissionProposalResponse.builder()
-                .title(missionProposalQueryDto.missionTitle())
+                .title(missionProposalQueryDto.title())
                 .missionDate(missionProposalQueryDto.missionDate())
                 .startTime(missionProposalQueryDto.startTime())
                 .endTime(missionProposalQueryDto.endTime())

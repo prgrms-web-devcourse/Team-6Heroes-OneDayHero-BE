@@ -5,9 +5,7 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.*;
 import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
@@ -20,6 +18,7 @@ import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -156,6 +157,15 @@ public class MissionService {
         return SliceResultConverter.consume(missionCompletedResponses, pageable);
     }
 
+    public MissionMatchingResponses findMatchingMissionByUserId(
+        Long userId
+    ) {
+        var matchingMissions = missionQueryRepository.findMissionMatchingResponses(userId);
+        var missionMatchingResponses = makeMatchingMissionResponseWithImages(matchingMissions);
+
+        return new MissionMatchingResponses(missionMatchingResponses);
+    }
+
     @Transactional
     public void deleteMission(
             Long missionId,
@@ -201,6 +211,29 @@ public class MissionService {
                     var isBookmarked = queryResponse.bookmarkId() != null;
                     return MissionCompletedResponse.from(queryResponse, thumbNailPath, isBookmarked);
                 }).collect(Collectors.toList());
+    }
+
+    private List<MissionMatchingResponse> makeMatchingMissionResponseWithImages(
+        List<MissionMatchingQueryResponse> missionMatchingQueryResponses
+    ) {
+        var missionIds = missionMatchingQueryResponses.stream()
+            .map(MissionMatchingQueryResponse::id)
+            .toList();
+
+        var missionImageGroupingByMission = missionImageRepository.findByMissionIdIn(missionIds)
+            .stream()
+            .collect(Collectors.groupingBy(MissionImageResponse::missionId));
+
+        return missionMatchingQueryResponses.stream()
+            .map(queryResponse -> {
+                var missionId = queryResponse.id();
+                var missionImage = Optional.ofNullable(missionImageGroupingByMission.get(missionId))
+                    .filter(Predicate.not(List::isEmpty))
+                    .map(list -> list.get(0).path())
+                    .orElse(null);
+                var isBookmarked = queryResponse.bookmarkId() != null;
+                return MissionMatchingResponse.from(queryResponse, missionImage, isBookmarked);
+            }).toList();
     }
 
     private void deleteUserBookMarkByMissionId(

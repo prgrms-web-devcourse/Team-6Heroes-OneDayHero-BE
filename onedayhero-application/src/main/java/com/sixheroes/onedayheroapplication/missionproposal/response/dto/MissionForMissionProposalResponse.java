@@ -14,6 +14,8 @@ public record MissionForMissionProposalResponse(
 
         Integer bookmarkCount,
 
+        Boolean isBookmarked,
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         LocalDateTime createdAt,
 
@@ -21,23 +23,29 @@ public record MissionForMissionProposalResponse(
 
         MissionCategoryForMissionProposalResponse missionCategory,
 
-        MissionInfoForMissionProposalResponse missionInfo
+        MissionInfoForMissionProposalResponse missionInfo,
+
+        String imagePath
 ) {
 
     public static MissionForMissionProposalResponse from(
-            MissionProposalQueryDto missionProposalQueryDto
+        MissionProposalQueryDto missionProposalQueryDto,
+        String imagePath,
+        Boolean isBookmarked
     ) {
         var region = RegionForMissionProposalResponse.from(missionProposalQueryDto);
         var missionCategory = MissionCategoryForMissionProposalResponse.from(missionProposalQueryDto);
         var missionInfo = MissionInfoForMissionProposalResponse.from(missionProposalQueryDto);
 
         return MissionForMissionProposalResponse.builder()
-                .id(missionProposalQueryDto.missionId())
-                .status(missionProposalQueryDto.missionStatus().name())
-                .createdAt(missionProposalQueryDto.missionCreatedAt())
-                .region(region)
-                .missionCategory(missionCategory)
-                .missionInfo(missionInfo)
-                .build();
+            .id(missionProposalQueryDto.missionId())
+            .status(missionProposalQueryDto.missionStatus().name())
+            .createdAt(missionProposalQueryDto.missionCreatedAt())
+            .region(region)
+            .missionCategory(missionCategory)
+            .missionInfo(missionInfo)
+            .imagePath(imagePath)
+            .isBookmarked(isBookmarked)
+            .build();
     }
 }

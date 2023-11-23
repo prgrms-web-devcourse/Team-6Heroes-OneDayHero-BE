@@ -196,6 +196,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
         var missionProposal5 = createMissionProposalDto(5L, mission5);
 
         var missionProposals = List.of(missionProposal1, missionProposal2, missionProposal3, missionProposal4, missionProposal5);
+
         var pageNumber = 0;
         var pageSize = 5;
         var page = PageRequest.of(0, 5);
@@ -205,7 +206,6 @@ class MissionProposalControllerTest extends RestDocsSupport {
 
         mockMvc.perform(get("/api/v1/mission-proposals")
                 .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                .param("heroId", "1")
                 .param("page", "0")
                 .param("size", "5")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -218,6 +218,8 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.content[0].mission.status").value(missionProposal1.mission().status()))
             .andExpect(jsonPath("$.data.content[0].mission.id").value(missionProposal1.mission().id()))
             .andExpect(jsonPath("$.data.content[0].mission.createdAt").value(DateTimeConverter.convertLocalDateTimeToString(missionProposal1.mission().createdAt())))
+            .andExpect(jsonPath("$.data.content[0].mission.isBookmarked").value(missionProposal1.mission().isBookmarked()))
+            .andExpect(jsonPath("$.data.content[0].mission.imagePath").value(missionProposal1.mission().imagePath()))
             .andExpect(jsonPath("$.data.content[0].mission.region.si").value(missionProposal1.mission().region().si()))
             .andExpect(jsonPath("$.data.content[0].mission.region.gu").value(missionProposal1.mission().region().gu()))
             .andExpect(jsonPath("$.data.content[0].mission.region.dong").value(missionProposal1.mission().region().dong()))
@@ -277,6 +279,12 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .attributes(getDateTimeFormat())
                         .type(JsonFieldType.STRING)
                         .description("미션 생성일"),
+                    fieldWithPath("data.content[].mission.imagePath")
+                        .type(JsonFieldType.STRING)
+                        .description("미션 이미지 경로"),
+                    fieldWithPath("data.content[].mission.isBookmarked")
+                        .type(JsonFieldType.BOOLEAN)
+                        .description("미션 북마크 여부"),
                     fieldWithPath("data.content[].mission.region").type(JsonFieldType.OBJECT)
                         .description("지역"),
                     fieldWithPath("data.content[].mission.region.si").type(JsonFieldType.STRING)
@@ -371,6 +379,9 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .missionCategory(createMissionCategoryDto())
             .missionInfo(createMissionInfoDto())
             .region(createRegionDto())
+            .isBookmarked(true)
+            .bookmarkCount(5)
+            .imagePath("s3://image")
             .build();
     }
 

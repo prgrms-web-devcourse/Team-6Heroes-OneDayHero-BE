@@ -8,20 +8,23 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record MissionProposalQueryDto(
-        Long missionProposalId,
-        Long missionId,
-        MissionStatus missionStatus,
-        Integer bookmarkCount,
-        LocalDateTime missionCreatedAt,
-        String missionTitle,
-        LocalDate missionDate,
-        LocalTime startTime,
-        LocalTime endTime,
-        Integer price,
-        MissionCategoryCode missionCategoryCode,
-        String categoryName,
-        String si,
-        String gu,
-        String dong
+    Long missionProposalId,
+    Long missionId,
+    String title,
+    Integer price,
+    LocalDate missionDate,
+    LocalTime startTime,
+    LocalTime endTime,
+    LocalDateTime missionCreatedAt,
+    Long categoryId,
+    MissionCategoryCode categoryCode,
+    String categoryName,
+    String si,
+    String gu,
+    String dong,
+    Integer bookmarkCount,
+    MissionStatus missionStatus,
+    Long bookmarkId,
+    LocalDateTime missionProposalCreatedAt
 ) {
 }
