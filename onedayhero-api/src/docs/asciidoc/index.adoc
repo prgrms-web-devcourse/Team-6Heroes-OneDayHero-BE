@@ -48,3 +48,13 @@ include::api/review/review.adoc[]
 == Main API
 
 include::api/main/main.adoc[]
+
+[[SSE-API]]
+== SSE API
+
+include::api/sse/sse.adoc[]
+
+[[Alarm-API]]
+== Alarm API
+
+include::api/alarm/alarm.adoc[]

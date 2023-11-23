@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceReque
 import com.sixheroes.onedayheroapplication.main.response.MainResponse;
 import com.sixheroes.onedayheroapplication.main.response.MissionSoonExpiredResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
+import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,12 @@ public class MainControllerTest extends RestDocsSupport {
         var missionSoonExpiredResponseA = MissionSoonExpiredResponse.builder()
                 .id(1L)
                 .title("미션 제목1")
+                .region(RegionResponse.builder()
+                        .id(1L)
+                        .si("서울시")
+                        .gu("강남구")
+                        .dong("역삼동")
+                        .build())
                 .missionCategory(
                         MissionCategoryResponse.builder()
                                 .id(2L)
@@ -75,6 +82,12 @@ public class MainControllerTest extends RestDocsSupport {
         var missionSoonExpiredResponseB = MissionSoonExpiredResponse.builder()
                 .id(2L)
                 .title("미션 제목2")
+                .region(RegionResponse.builder()
+                        .id(2L)
+                        .si("서울시")
+                        .gu("강남구")
+                        .dong("역삼동")
+                        .build())
                 .missionCategory(
                         MissionCategoryResponse.builder()
                                 .id(3L)
@@ -150,6 +163,14 @@ public class MainControllerTest extends RestDocsSupport {
                                         .description("미션 ID"),
                                 fieldWithPath("data.soonExpiredMissions[].title").type(JsonFieldType.STRING)
                                         .description("미션 제목"),
+                                fieldWithPath("data.soonExpiredMissions[].region.id").type(JsonFieldType.NUMBER)
+                                        .description("지역 ID"),
+                                fieldWithPath("data.soonExpiredMissions[].region.si").type(JsonFieldType.STRING)
+                                        .description("지역 시"),
+                                fieldWithPath("data.soonExpiredMissions[].region.gu").type(JsonFieldType.STRING)
+                                        .description("지역 구"),
+                                fieldWithPath("data.soonExpiredMissions[].region.dong").type(JsonFieldType.STRING)
+                                        .description("지역 동"),
                                 fieldWithPath("data.soonExpiredMissions[].missionCategory").type(JsonFieldType.OBJECT)
                                         .description("미션 카테고리 객체"),
                                 fieldWithPath("data.soonExpiredMissions[].missionCategory.id")
@@ -182,6 +203,10 @@ public class MainControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionCategories[0].name").value(mainResponse.missionCategories().get(0).name()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].id").value(mainResponse.soonExpiredMissions().get(0).id()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].title").value(mainResponse.soonExpiredMissions().get(0).title()))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].region.id").value(mainResponse.soonExpiredMissions().get(0).region().id()))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].region.si").value(mainResponse.soonExpiredMissions().get(0).region().si()))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].region.gu").value(mainResponse.soonExpiredMissions().get(0).region().gu()))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].region.dong").value(mainResponse.soonExpiredMissions().get(0).region().dong()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.id").value(mainResponse.soonExpiredMissions().get(0).missionCategory().id()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.code").value(mainResponse.soonExpiredMissions().get(0).missionCategory().code()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.name").value(mainResponse.soonExpiredMissions().get(0).missionCategory().name()))
