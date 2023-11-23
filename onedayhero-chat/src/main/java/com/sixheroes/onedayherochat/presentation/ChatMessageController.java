@@ -21,6 +21,7 @@ public class ChatMessageController {
             ChatMessageRequest message
     ) {
         var serverTime = LocalDateTime.now();
+        log.info("채팅 메시지가 도착했습니다. {}", message.message());
         chatService.send(chatRoomId, message, serverTime);
     }
 }

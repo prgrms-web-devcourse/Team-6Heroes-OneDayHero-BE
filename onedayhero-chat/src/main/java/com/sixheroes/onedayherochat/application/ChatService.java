@@ -31,14 +31,19 @@ public class ChatService {
     ) {
         var topic = missionChatRoomRedisReader.findOne(chatRoomId);
 
+        log.info("redis에서 topic을 불러왔습니다. {}", topic.getTopic());
+        log.info("message의 타입은 {} 입니다.", message.messageType().name());
+
         if (message.messageType().isLeave()) {
             message = ChatMessageMapper.toLeaveMessage(message);
+            log.info("나가기 메시지로 변경되었습니다.");
         }
 
         publisher.publish(topic, message);
 
         var chatMessage = message.toEntity(serverTime);
         chatMessageRepository.save(chatMessage);
+        log.info("채팅 메시지가 저장되었습니다.");
     }
 
     public List<ChatMessageApiResponse> findMessageByChatRoomId(

@@ -37,9 +37,10 @@ public class RedisChatSubscriber implements MessageListener {
                     .deserialize(message.getBody());
 
             var chatMessage = objectMapper.readValue(publishMessage, ChatMessageRequest.class);
-
+            log.info("채팅 메시지를 전송합니다. {}", chatMessage);
             // 구독자들에게 채팅 메세지 전송
             messagingTemplate.convertAndSend(CHAT_MESSAGE_SUB_URI + chatMessage.chatRoomId(), chatMessage);
+            log.info("채팅 메시지 전송이 완료되었습니다. {}", chatMessage);
         } catch (Exception e) {
             log.error(ErrorCode.S_001.name(), e);
             throw new RuntimeException(e);
