@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheromongo.chat;
 
+import com.sixheroes.onedayheromongo.global.BaseDocument;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Document(collection = "chat-messages")
-public class ChatMessage {
+public class ChatMessage extends BaseDocument {
 
     @MongoId
     @Field(name = "_id", targetType = FieldType.OBJECT_ID)
