@@ -7,18 +7,15 @@ import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisR
 import com.sixheroes.onedayherochat.application.response.ChatMessageApiResponse;
 import com.sixheroes.onedayherochat.presentation.request.ChatMessageRequest;
 import com.sixheroes.onedayheromongo.chat.repository.ChatMessageRepository;
-import com.sixheroes.onedayheromongo.chat.util.UUIDCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class ChatService {
 
@@ -27,7 +24,6 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final MissionChatRoomRedisRepository redisRepository;
 
-    @Transactional
     public void send(
             Long chatRoomId,
             ChatMessageRequest message,
@@ -41,8 +37,7 @@ public class ChatService {
 
         publisher.publish(topic, message);
 
-        var id = UUIDCreator.createUUID();
-        var chatMessage = message.toEntity(id, serverTime);
+        var chatMessage = message.toEntity(serverTime);
         chatMessageRepository.save(chatMessage);
     }
 

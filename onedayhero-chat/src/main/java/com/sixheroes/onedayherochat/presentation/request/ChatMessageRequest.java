@@ -39,11 +39,9 @@ public record ChatMessageRequest(
     }
 
     public ChatMessage toEntity(
-            String id,
             LocalDateTime serverTime
     ) {
         return ChatMessage.builder()
-                .id(id)
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .senderNickName(senderNickName)
