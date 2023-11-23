@@ -37,7 +37,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
                       JOIN m_categories mc ON m.category_id = mc.id
                       JOIN regions r ON r.id = m.region_id
                       LEFT JOIN mission_bookmarks mb ON mb.mission_id = m.id and mb.user_id = :user_id
-                      WHERE ST_Contains(ST_Buffer(ST_GeomFromText('POINT(:pre_location)', 4326), :distance), m.location)
+                      WHERE ST_Contains(ST_Buffer(ST_GeomFromText(:pre_location, 4326), :distance), m.location)
                       AND m.status = 'MATCHING'
                       AND m.deadline_time BETWEEN :server_time AND :limit_time
                       ORDER BY m.deadline_time ASC

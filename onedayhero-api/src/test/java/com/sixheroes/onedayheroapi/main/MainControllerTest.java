@@ -53,8 +53,8 @@ public class MainControllerTest extends RestDocsSupport {
     void callMainPage() throws Exception {
         // given
         var userPosition = UserPositionRequest.builder()
-                .longitude(123.45)
-                .latitude(123.45)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .build();
 
         var missionSoonExpiredResponseA = MissionSoonExpiredResponse.builder()

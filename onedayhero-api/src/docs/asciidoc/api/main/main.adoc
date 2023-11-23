@@ -4,6 +4,7 @@
 ==== HTTP Request
 
 include::{snippets}/main-page/http-request.adoc[]
+include::{snippets}/main-page/query-parameters.adoc[]
 include::{snippets}/main-page/request-headers.adoc[]
 
 ==== HTTP Response

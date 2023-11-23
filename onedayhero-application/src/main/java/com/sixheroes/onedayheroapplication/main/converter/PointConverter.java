@@ -7,6 +7,6 @@ public final class PointConverter {
     }
 
     public static String pointToString(double x, double y) {
-        return y + " " + x;
+        return "POINT(" + y + " " + x + ")";
     }
 }
