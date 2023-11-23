@@ -59,7 +59,6 @@ include::{snippets}/mission-progress-find/response-fields.adoc[]
 
 ==== Http Request
 
-include::{snippets}/mission-completed-find/path-parameters.adoc[]
 include::{snippets}/mission-completed-find/request-headers.adoc[]
 include::{snippets}/mission-completed-find/http-request.adoc[]
 

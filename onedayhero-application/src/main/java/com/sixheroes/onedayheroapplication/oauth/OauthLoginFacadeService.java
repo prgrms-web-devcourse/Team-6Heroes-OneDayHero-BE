@@ -1,9 +1,9 @@
 package com.sixheroes.onedayheroapplication.oauth;
 
 
+import com.sixheroes.onedayheroapplication.auth.infra.AuthService;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
-import com.sixheroes.onedayheroapplication.user.response.UserAuthResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,7 @@ public class OauthLoginFacadeService {
 
     private final List<OauthLoginService> oauthLoginServices;
     private final JwtTokenManager jwtTokenManager;
+    private final AuthService authService;
 
     public LoginResponse login(
             String authorizationServer,
@@ -27,21 +28,24 @@ public class OauthLoginFacadeService {
             if (oauthLoginService.supports(authorizationServer)) {
                 var userAuthResponse = oauthLoginService.login(code);
 
-                return new LoginResponse(
-                        userAuthResponse.signUp(),
+                var accessToken = jwtTokenManager.generateAccessToken(
                         userAuthResponse.userId(),
-                        getAccessToken(userAuthResponse)
+                        userAuthResponse.userRole()
+                );
+
+                var refreshToken = authService.generateRefreshToken(
+                        userAuthResponse.userId()
+                );
+
+                return LoginResponse.of(
+                        userAuthResponse.userId(),
+                        userAuthResponse.signUp(),
+                        accessToken,
+                        refreshToken
                 );
             }
         }
 
         throw new IllegalStateException(ErrorCode.L_001.name());
-    }
-
-    private String getAccessToken(UserAuthResponse userAuthResponse) {
-        return jwtTokenManager.generateAccessToken(
-                userAuthResponse.userId(),
-                userAuthResponse.userRole()
-        );
     }
 }

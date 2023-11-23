@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapi.auth;
 import com.sixheroes.onedayheroapi.auth.response.oauth.LoginRequest;
 import com.sixheroes.onedayheroapi.docs.OauthTestConfiguration;
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
+import com.sixheroes.onedayheroapplication.auth.infra.RefreshTokenGenerator;
 import com.sixheroes.onedayheroapplication.oauth.OauthLoginFacadeService;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -19,6 +21,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,8 +48,9 @@ class AuthControllerTest extends RestDocsSupport {
     @Test
     void kakaoLogin() throws Exception {
         // given
+        var refreshToken = RefreshTokenGenerator.generate();
         var request = new LoginRequest("authorization code");
-        var response = new LoginResponse(false, 1L, "accessToken");
+        var response = new LoginResponse(1L, "accessToken", refreshToken, false);
         given(oauthLoginFacadeService.login(anyString(), anyString())).willReturn(response);
 
         // when & then
@@ -59,6 +64,10 @@ class AuthControllerTest extends RestDocsSupport {
                         requestFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING)
                                         .description("인가 코드")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.SET_COOKIE)
+                                        .description("발급된 리프레시 토큰")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -78,8 +87,9 @@ class AuthControllerTest extends RestDocsSupport {
     @Test
     void kakaoSignup() throws Exception {
         // given
+        var refreshToken = RefreshTokenGenerator.generate();
         var request = new LoginRequest("authorization code");
-        var response = new LoginResponse(true, 1L, "accessToken");
+        var response = new LoginResponse(1L, "accessToken", refreshToken, true);
         given(oauthLoginFacadeService.login(anyString(), anyString())).willReturn(response);
 
         // when & then
@@ -93,6 +103,10 @@ class AuthControllerTest extends RestDocsSupport {
                         requestFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING)
                                         .description("인가 코드")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.SET_COOKIE)
+                                        .description("발급된 리프레시 토큰")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)

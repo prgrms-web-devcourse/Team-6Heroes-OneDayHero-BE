@@ -1,10 +1,11 @@
-package com.sixheroes.onedayherodomain.global;
+package com.sixheroes.onedayheroapplication.user;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DefaultNicknameGenerator {
 
     private static final String PREFIX = "user";
