@@ -1,8 +1,10 @@
 package com.sixheroes.onedayheroapplication.missionproposal;
 
+import com.sixheroes.onedayheroapplication.mission.MissionImageReader;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
+import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.MissionProposalQueryDto;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalIdResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.dto.MissionProposalResponse;
@@ -16,6 +18,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +34,7 @@ public class MissionProposalService {
 
     private final MissionReader missionReader;
     private final MissionProposalReader missionProposalReader;
+    private final MissionImageReader missionImageReader;
     private final UserReader userReader;
 
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -84,7 +92,28 @@ public class MissionProposalService {
     ) {
         var slice = missionProposalQueryRepository.findByHeroIdAndPageable(heroId, pageable);
 
-        return slice.map(MissionProposalResponse::from);
+        return createMissionProposalResponseWithImage(slice);
+    }
+
+    private Slice<MissionProposalResponse> createMissionProposalResponseWithImage(
+        Slice<MissionProposalQueryDto> slice
+    ) {
+        var missionIds = slice.getContent()
+            .stream()
+            .map(MissionProposalQueryDto::missionId)
+            .toList();
+        var missionImageByMissionId = missionImageReader.findMissionImageByMissionId(missionIds);
+
+        return slice.map(queryResult -> {
+            var missionId = queryResult.missionId();
+            var missionImagePath = Optional.ofNullable(missionImageByMissionId.get(missionId))
+                .filter(Predicate.not(List::isEmpty))
+                .map(list -> list.get(0).path())
+                .orElse(null);
+            var isBookmarked = Objects.nonNull(queryResult.bookmarkId());
+
+            return MissionProposalResponse.from(queryResult, missionImagePath, isBookmarked);
+        });
     }
 
     private void validMission(

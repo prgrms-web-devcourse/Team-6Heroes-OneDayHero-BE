@@ -17,6 +17,7 @@ import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
+import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
@@ -38,6 +39,9 @@ import java.util.List;
 @ActiveProfiles("test")
 @SpringBootTest
 public abstract class IntegrationApplicationTest {
+
+    @Autowired
+    protected MissionImageRepository missionImageRepository;
 
     @Autowired
     protected MissionBookmarkRepository missionBookmarkRepository;

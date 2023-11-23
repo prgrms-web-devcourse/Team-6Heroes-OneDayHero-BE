@@ -3,14 +3,13 @@ package com.sixheroes.onedayheroapplication.missionproposal;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
-import com.sixheroes.onedayherodomain.mission.Mission;
-import com.sixheroes.onedayherodomain.mission.MissionCategory;
-import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
-import com.sixheroes.onedayherodomain.mission.MissionInfo;
+import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.user.*;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -121,7 +120,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
     @Transactional
     @Test
-    void doNotApproveMissionProposalWhenNotExsistRequest() {
+    void doNotApproveMissionProposalWhenNotExistRequest() {
         // given
         var heroId = 1L;
         var missionProposalId = 1L;
@@ -135,7 +134,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
     @Transactional
     @Test
-    void doNotApproveMissionProposalWhenNotExsistMission() {
+    void doNotApproveMissionProposalWhenNotExistMission() {
         // given
         var missionId = 1L;
         var heroId = 1L;
@@ -173,7 +172,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     @DisplayName("미션 제안이 존재하지 않으면 미션 제안을 거절할 때 예외가 발생한다.")
     @Transactional
     @Test
-    void doNotRejectMissionProposalWhenNotExsistRequest() {
+    void doNotRejectMissionProposalWhenNotExistRequest() {
         // given
         var heroId = 1L;
         var missionProposalId = 1L;
@@ -187,7 +186,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
     @Transactional
     @Test
-    void doNotRejectMissionProposalWhenNotExsistMission() {
+    void doNotRejectMissionProposalWhenNotExistMission() {
         // given
         var notExistMissionId = 1L;
         var heroId = 1L;
@@ -200,6 +199,64 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
                 .hasMessage(ErrorCode.EM_008.name());
     }
 
+    @DisplayName("제안 받은 미션을 이미지와 함께 조회한다.")
+    @Transactional
+    @Test
+    void findMissionProposal() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var mission1 = createMission(missionCategory, region.getId(), MissionStatus.MATCHING);
+        var mission2 = createMission(missionCategory, region.getId(), MissionStatus.MATCHING_COMPLETED);
+        var mission3 = createMission(missionCategory, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var mission4 = createMission(missionCategory, region.getId(), MissionStatus.EXPIRED);
+
+        var missions = List.of(mission1, mission2, mission3, mission4);
+        missionRepository.saveAll(missions);
+
+        var missionImage = createMissionImage(mission1);
+        missionImageRepository.save(missionImage);
+
+        var heroId = 2L;
+        var missionProposal1 = createMissionProposal(mission1.getId(), heroId);
+        var missionProposal2 = createMissionProposal(mission2.getId(), heroId);
+        var missionProposal3 = createMissionProposal(mission3.getId(), heroId);
+        var missionProposal4 = createMissionProposal(mission4.getId(), heroId);
+        var missionProposals = List.of(missionProposal1, missionProposal2, missionProposal3, missionProposal4);
+        missionProposalRepository.saveAll(missionProposals);
+
+        var missionBookMark = createMissionBookMark(heroId, mission1);
+        missionBookmarkRepository.save(missionBookMark);
+
+        var pageRequest = PageRequest.of(0, 4);
+
+        // when
+        var missionProposalResponses = missionProposalService.findMissionProposal(heroId, pageRequest);
+
+        // then
+        var content = missionProposalResponses.getContent();
+        assertThat(content).hasSize(4);
+        assertThat(content).extracting("mission")
+            .filteredOn("id", mission1.getId())
+            .extracting("imagePath", "isBookmarked")
+            .containsExactly(Tuple.tuple(missionImage.getPath(), true));
+        assertThat(content).extracting("mission")
+            .filteredOn("id", mission2.getId())
+            .extracting("imagePath", "isBookmarked")
+            .containsExactly(Tuple.tuple(null, false));
+    }
+
+    private MissionBookmark createMissionBookMark(
+        Long userId,
+        Mission mission
+    ) {
+        return MissionBookmark.builder()
+            .mission(mission)
+            .userId(userId)
+            .build();
+    }
+
     private MissionProposal createMissionProposal(
             Long missionId,
             Long heroId
@@ -208,6 +265,30 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
                 .missionId(missionId)
                 .heroId(heroId)
                 .build();
+    }
+
+    private Mission createMission(
+        MissionCategory missionCategory,
+        Long regionId,
+        MissionStatus missionStatus
+    ) {
+        return Mission.builder()
+            .missionCategory(missionCategory)
+            .missionInfo(createMissionInfo())
+            .regionId(regionId)
+            .citizenId(1L)
+            .location(Mission.createPoint(123456.78, 123456.78))
+            .missionStatus(missionStatus)
+            .bookmarkCount(0)
+            .build();
+    }
+
+    private MissionImage createMissionImage(
+        Mission mission
+    ) {
+        var missionImage = MissionImage.createMissionImage("원본 이름", "고유 이름", "s3://image");
+        mission.addMissionImages(List.of(missionImage));
+        return missionImage;
     }
 
     private Mission createMission(
