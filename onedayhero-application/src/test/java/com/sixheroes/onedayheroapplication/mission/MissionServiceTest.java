@@ -931,6 +931,56 @@ class MissionServiceTest extends IntegrationApplicationTest {
                 );
     }
 
+    @DisplayName("시민은 제안할 미션, 즉 매칭 중인 미션을 조회할 수 있다.")
+    @Test
+    void findMatchingMissionByUserId() {
+        // given
+        var missionCategory = missionCategoryRepository.findById(1L).get();
+        var region = regionRepository.findById(1L).get();
+
+        var serverTime = LocalDateTime.of(LocalDate.of(2023, 10, 9), LocalTime.MIDNIGHT);
+
+        var missionDate = LocalDate.of(2023, 10, 10);
+        var startTime = LocalTime.of(10, 0);
+        var endTime = LocalTime.of(10, 30);
+        var deadlineTime = LocalDateTime.of(missionDate, startTime);
+
+        var missionInfo = createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime);
+        var citizenId = 1L;
+
+        var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var matchingMission2 = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
+        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
+
+        missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission, matchedMission));
+
+        // when
+        var findMatchingMission = missionService.findMatchingMissionByUserId(citizenId);
+
+        // then
+        var missionMatchingResponses = findMatchingMission.missionMatchingResponses();
+        assertThat(missionMatchingResponses).hasSize(2);
+        assertThat(missionMatchingResponses.get(0))
+            .extracting(
+                "missionCategory.id",
+                "missionCategory.code",
+                "missionCategory.name",
+                "bookmarkCount",
+                "missionStatus",
+                "imagePath",
+                "isBookmarked"
+            ).containsExactly(
+                matchingMission.getMissionCategory().getId(),
+                matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                matchingMission.getBookmarkCount(),
+                matchingMission.getMissionStatus().name(),
+                null,
+                false
+            );
+    }
+
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
             MissionInfoServiceRequest missionInfoServiceRequest
     ) {

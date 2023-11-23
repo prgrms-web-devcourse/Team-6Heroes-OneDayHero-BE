@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
@@ -172,6 +173,38 @@ public class MissionQueryRepository {
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(mission.missionInfo.missionDate.desc())
                 .fetch();
+    }
+
+    public List<MissionMatchingQueryResponse> findMissionMatchingResponses(
+        Long userId
+    ) {
+        return queryFactory.select(Projections.constructor(MissionMatchingQueryResponse.class,
+                mission.id,
+                mission.missionInfo.title,
+                mission.missionCategory.id,
+                mission.missionCategory.missionCategoryCode,
+                mission.missionCategory.name,
+                region.si,
+                region.gu,
+                region.dong,
+                mission.missionInfo.missionDate,
+                mission.bookmarkCount,
+                mission.missionStatus,
+                missionBookmark.id
+            ))
+            .from(mission)
+            .join(mission.missionCategory, missionCategory)
+            .join(region)
+            .on(mission.regionId.eq(region.id))
+            .leftJoin(missionBookmark)
+            .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
+            .where(userIdEq(userId), missionStatusIsMatching())
+            .orderBy(mission.missionInfo.missionDate.desc())
+            .fetch();
+    }
+
+    private BooleanExpression missionStatusIsMatching() {
+        return mission.missionStatus.eq(MissionStatus.MATCHING);
     }
 
     private BooleanExpression missionStatusIsProgress() {
