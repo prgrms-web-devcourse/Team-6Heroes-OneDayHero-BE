@@ -8,9 +8,11 @@ public record MissionProposalResponse(
 ) {
 
     public static MissionProposalResponse from(
-            MissionProposalQueryDto missionProposalQueryDto
+            MissionProposalQueryDto missionProposalQueryDto,
+            String imagePath,
+            Boolean isBookMarked
     ) {
-        var mission = MissionForMissionProposalResponse.from(missionProposalQueryDto);
+        var mission = MissionForMissionProposalResponse.from(missionProposalQueryDto, imagePath, isBookMarked);
 
         return new MissionProposalResponse(missionProposalQueryDto.missionProposalId(), mission);
     }

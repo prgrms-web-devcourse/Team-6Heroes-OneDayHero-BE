@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.sixheroes.onedayherodomain.mission.QMission.mission;
+import static com.sixheroes.onedayherodomain.mission.QMissionBookmark.missionBookmark;
 import static com.sixheroes.onedayherodomain.mission.QMissionCategory.missionCategory;
 import static com.sixheroes.onedayherodomain.missionproposal.QMissionProposal.missionProposal;
 import static com.sixheroes.onedayherodomain.region.QRegion.region;
@@ -44,33 +45,37 @@ public class MissionProposalQueryRepository {
     ) {
         var pageSize = pageable.getPageSize();
         List<MissionProposalQueryDto> content = jpaQueryFactory.select(Projections.constructor(MissionProposalQueryDto.class,
-                        missionProposal.id,
-                        mission.id,
-                        mission.missionStatus,
-                        mission.bookmarkCount,
-                        mission.createdAt,
-                        mission.missionInfo.title,
-                        mission.missionInfo.missionDate,
-                        mission.missionInfo.startTime,
-                        mission.missionInfo.endTime,
-                        mission.missionInfo.price,
-                        missionCategory.missionCategoryCode,
-                        missionCategory.name,
-                        region.si,
-                        region.gu,
-                        region.dong
+                    missionProposal.id,
+                    mission.id,
+                    mission.missionInfo.title,
+                    mission.missionInfo.price,
+                    mission.missionInfo.missionDate,
+                    mission.missionInfo.startTime,
+                    mission.missionInfo.endTime,
+                    mission.createdAt,
+                    mission.missionCategory.id,
+                    mission.missionCategory.missionCategoryCode,
+                    mission.missionCategory.name,
+                    region.si,
+                    region.gu,
+                    region.dong,
+                    mission.bookmarkCount,
+                    mission.missionStatus,
+                    missionBookmark.id,
+                    missionProposal.createdAt
                 ))
                 .from(missionProposal)
                 .join(mission)
                 .on(missionProposal.missionId.eq(mission.id))
-                .join(missionCategory)
-                .on(mission.missionCategory.eq(missionCategory))
+                .join(mission.missionCategory, missionCategory)
                 .join(region)
                 .on(mission.regionId.eq(region.id))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(heroId))
                 .where(createBooleanBuilder(heroId))
                 .orderBy(buildMissionStatusCaseBuilder().desc(), missionProposal.createdAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageSize + 1)
+                .limit(pageSize + 1L)
                 .fetch();
 
         var hasNext = false;

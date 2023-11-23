@@ -1,5 +1,6 @@
 package com.sixheroes.onedayheroapplication.region.response;
 
+import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherodomain.region.Region;
 import lombok.Builder;
@@ -21,6 +22,17 @@ public record RegionResponse(
                 .gu(response.gu())
                 .dong(response.dong())
                 .build();
+    }
+
+    public static RegionResponse from(
+        MissionMatchingQueryResponse response
+    ) {
+        return RegionResponse.builder()
+            .id(response.regionId())
+            .si(response.si())
+            .gu(response.gu())
+            .dong(response.dong())
+            .build();
     }
 
     public static RegionResponse from(

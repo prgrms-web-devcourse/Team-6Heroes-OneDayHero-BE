@@ -12,6 +12,7 @@ import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.mission.*;
 import org.apache.http.entity.ContentType;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -951,9 +952,8 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
         var matchingMission2 = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
         var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
-        var matchedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING_COMPLETED);
 
-        missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission, matchedMission));
+        missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission));
 
         // when
         var findMatchingMission = missionService.findMatchingMissionByUserId(citizenId);
@@ -961,24 +961,43 @@ class MissionServiceTest extends IntegrationApplicationTest {
         // then
         var missionMatchingResponses = findMatchingMission.missionMatchingResponses();
         assertThat(missionMatchingResponses).hasSize(2);
-        assertThat(missionMatchingResponses.get(0))
+        assertThat(missionMatchingResponses)
+            .filteredOn("id", matchingMission.getId())
             .extracting(
+                "title",
                 "missionCategory.id",
                 "missionCategory.code",
                 "missionCategory.name",
+                "region.id",
+                "region.si",
+                "region.gu",
+                "region.dong",
+                "missionDate",
+                "startTime",
+                "endTime",
+                "price",
                 "bookmarkCount",
                 "missionStatus",
                 "imagePath",
                 "isBookmarked"
-            ).containsExactly(
+            ).containsExactly(Tuple.tuple(
+                matchingMission.getMissionInfo().getTitle(),
                 matchingMission.getMissionCategory().getId(),
                 matchingMission.getMissionCategory().getMissionCategoryCode().name(),
                 matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                region.getId(),
+                region.getSi(),
+                region.getGu(),
+                region.getDong(),
+                matchingMission.getMissionInfo().getMissionDate(),
+                matchingMission.getMissionInfo().getStartTime(),
+                matchingMission.getMissionInfo().getEndTime(),
+                matchingMission.getMissionInfo().getPrice(),
                 matchingMission.getBookmarkCount(),
                 matchingMission.getMissionStatus().name(),
                 null,
                 false
-            );
+            ));
     }
 
     private MissionCreateServiceRequest createMissionCreateServiceRequest(

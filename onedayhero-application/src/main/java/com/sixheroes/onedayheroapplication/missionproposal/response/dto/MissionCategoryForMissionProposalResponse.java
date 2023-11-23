@@ -13,7 +13,7 @@ public record MissionCategoryForMissionProposalResponse(
             MissionProposalQueryDto missionProposalQueryDto
     ) {
         return MissionCategoryForMissionProposalResponse.builder()
-                .code(missionProposalQueryDto.missionCategoryCode().name())
+                .code(missionProposalQueryDto.categoryCode().name())
                 .name(missionProposalQueryDto.categoryName())
                 .build();
     }
