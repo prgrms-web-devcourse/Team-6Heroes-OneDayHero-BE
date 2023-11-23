@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.review;
 
 import com.sixheroes.onedayheroapplication.IntegrationQueryDslTest;
-import com.sixheroes.onedayherodomain.global.DefaultNicknameGenerator;
+import com.sixheroes.onedayheroapplication.user.DefaultNicknameGenerator;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
