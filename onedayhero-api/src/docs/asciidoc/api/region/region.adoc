@@ -1,0 +1,11 @@
+[[region-findAll]]
+=== 모든 지역 조회
+
+==== HTTP Request
+
+include::{snippets}/region-findAll/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/region-findAll/http-response.adoc[]
+include::{snippets}/region-findAll/response-fields.adoc[]
