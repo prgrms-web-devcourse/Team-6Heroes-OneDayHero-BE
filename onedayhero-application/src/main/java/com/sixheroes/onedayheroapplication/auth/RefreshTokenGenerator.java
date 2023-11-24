@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.auth.infra;
+package com.sixheroes.onedayheroapplication.auth;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
