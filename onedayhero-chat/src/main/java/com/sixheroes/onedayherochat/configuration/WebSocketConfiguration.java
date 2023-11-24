@@ -16,7 +16,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void configureMessageBroker(
             MessageBrokerRegistry registry
     ) {
-        registry.enableSimpleBroker("/queue");
+        registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/pub");
     }
 
@@ -31,7 +31,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             StompEndpointRegistry registry
     ) {
         registry.addEndpoint("/ws-chat")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+                .setAllowedOriginPatterns("*");
     }
 }
