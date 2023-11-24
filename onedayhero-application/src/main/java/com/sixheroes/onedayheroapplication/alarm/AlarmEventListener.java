@@ -12,7 +12,7 @@ public class AlarmEventListener {
 
     private final AlarmService alarmService;
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void notifyClient(
         AlarmPayload alarmPayload
     ) {
