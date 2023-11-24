@@ -16,7 +16,8 @@ include::{snippets}/chatRoom-create/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/chatRoom-joined/path-parameters.adoc[]
+include::{snippets}/chatRoom-joined/http-request.adoc[]
+include::{snippets}/chatRoom-joined/request-headers.adoc[]
 
 ==== HTTP Response
 

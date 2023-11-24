@@ -63,3 +63,8 @@ include::api/sse/sse.adoc[]
 == Alarm API
 
 include::api/alarm/alarm.adoc[]
+
+[[Chatroom-API]]
+== Chatroom API
+
+include::api/chatroom/chatroom.adoc[]
