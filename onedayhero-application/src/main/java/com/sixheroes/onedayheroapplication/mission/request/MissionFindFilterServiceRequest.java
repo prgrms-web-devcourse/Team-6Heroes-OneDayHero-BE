@@ -28,7 +28,7 @@ public record MissionFindFilterServiceRequest(
     private List<Long> convertMissionCategoryCodesToLong(
             List<String> missionCategoryCodes
     ) {
-        if (missionCategoryCodes == null && missionCategoryCodes.isEmpty()) {
+        if (missionCategoryCodes == null || missionCategoryCodes.isEmpty()) {
             return Collections.emptyList();
         }
 
