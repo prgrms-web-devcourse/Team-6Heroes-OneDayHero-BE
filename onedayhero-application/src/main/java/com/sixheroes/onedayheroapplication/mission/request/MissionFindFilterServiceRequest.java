@@ -10,7 +10,6 @@ import java.util.List;
 
 @Builder
 public record MissionFindFilterServiceRequest(
-        Long userId,
         List<String> missionCategoryCodes,
         List<LocalDate> missionDates,
         List<Long> regionIds
@@ -18,7 +17,6 @@ public record MissionFindFilterServiceRequest(
 
     public MissionFindFilterQueryRequest toQuery() {
         return MissionFindFilterQueryRequest.builder()
-                .userId(userId)
                 .missionCategoryIds(convertMissionCategoryCodesToLong(missionCategoryCodes))
                 .missionDates(missionDates)
                 .regionIds(regionIds)

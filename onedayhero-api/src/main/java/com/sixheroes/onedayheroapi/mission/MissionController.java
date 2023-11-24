@@ -51,14 +51,14 @@ public class MissionController {
             @PageableDefault(size = 5) Pageable pageable,
             @Valid @ModelAttribute MissionFindFilterRequest request
     ) {
-        var result = missionService.findAllByDynamicCondition(pageable, request.toService(userId));
+        var result = missionService.findAllByDynamicCondition(pageable, request.toService());
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     @GetMapping("/matching")
     public ResponseEntity<ApiResponse<MissionMatchingResponses>> findProgressMission(
-        @AuthUser Long userId
+            @AuthUser Long userId
     ) {
         var result = missionService.findMatchingMissionByUserId(userId);
 

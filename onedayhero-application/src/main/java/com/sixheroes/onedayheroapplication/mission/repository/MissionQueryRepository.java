@@ -65,8 +65,7 @@ public class MissionQueryRepository {
                 .on(region.id.eq(mission.regionId))
                 .leftJoin(missionBookmark)
                 .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(request.userId()))
-                .where(userIdEq(request.userId()),
-                        missionCategoryIdsIn(request.missionCategoryIds()),
+                .where(missionCategoryIdsIn(request.missionCategoryIds()),
                         regionIdsIn(request.regionIds()),
                         missionDatesIn(request.missionDates()))
                 .offset(pageable.getOffset())
@@ -176,36 +175,36 @@ public class MissionQueryRepository {
     }
 
     public List<MissionMatchingQueryResponse> findMissionMatchingResponses(
-        Long userId
+            Long userId
     ) {
         return queryFactory.select(Projections.constructor(MissionMatchingQueryResponse.class,
-                mission.id,
-                mission.missionInfo.title,
-                mission.missionInfo.price,
-                mission.missionInfo.missionDate,
-                mission.missionInfo.startTime,
-                mission.missionInfo.endTime,
-                mission.createdAt,
-                mission.missionCategory.id,
-                mission.missionCategory.missionCategoryCode,
-                mission.missionCategory.name,
-                region.id,
-                region.si,
-                region.gu,
-                region.dong,
-                mission.bookmarkCount,
-                mission.missionStatus,
-                missionBookmark.id
-            ))
-            .from(mission)
-            .join(mission.missionCategory, missionCategory)
-            .join(region)
-            .on(mission.regionId.eq(region.id))
-            .leftJoin(missionBookmark)
-            .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
-            .where(userIdEq(userId), missionStatusIsMatching())
-            .orderBy(mission.missionInfo.missionDate.desc())
-            .fetch();
+                        mission.id,
+                        mission.missionInfo.title,
+                        mission.missionInfo.price,
+                        mission.missionInfo.missionDate,
+                        mission.missionInfo.startTime,
+                        mission.missionInfo.endTime,
+                        mission.createdAt,
+                        mission.missionCategory.id,
+                        mission.missionCategory.missionCategoryCode,
+                        mission.missionCategory.name,
+                        region.id,
+                        region.si,
+                        region.gu,
+                        region.dong,
+                        mission.bookmarkCount,
+                        mission.missionStatus,
+                        missionBookmark.id
+                ))
+                .from(mission)
+                .join(mission.missionCategory, missionCategory)
+                .join(region)
+                .on(mission.regionId.eq(region.id))
+                .leftJoin(missionBookmark)
+                .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
+                .where(userIdEq(userId), missionStatusIsMatching())
+                .orderBy(mission.missionInfo.missionDate.desc())
+                .fetch();
     }
 
     private BooleanExpression missionStatusIsMatching() {
