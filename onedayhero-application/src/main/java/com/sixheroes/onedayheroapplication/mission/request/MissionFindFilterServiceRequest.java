@@ -5,6 +5,7 @@ import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Builder
@@ -24,7 +25,13 @@ public record MissionFindFilterServiceRequest(
                 .build();
     }
 
-    private List<Long> convertMissionCategoryCodesToLong(List<String> missionCategoryCodes) {
+    private List<Long> convertMissionCategoryCodesToLong(
+            List<String> missionCategoryCodes
+    ) {
+        if (missionCategoryCodes == null && missionCategoryCodes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return missionCategoryCodes.stream()
                 .map(MissionCategoryCode::valueOf)
                 .map(MissionCategoryCode::getCategoryId)
