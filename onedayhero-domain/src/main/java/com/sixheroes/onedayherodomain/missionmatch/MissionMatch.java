@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.missionmatch;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mission_matches")
 @Entity
-public class MissionMatch {
+public class MissionMatch extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
