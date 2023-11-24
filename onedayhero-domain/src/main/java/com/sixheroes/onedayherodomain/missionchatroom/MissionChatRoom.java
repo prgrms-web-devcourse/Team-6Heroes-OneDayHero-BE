@@ -2,6 +2,7 @@ package com.sixheroes.onedayherodomain.missionchatroom;
 
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import java.util.List;
 @Where(clause = "is_disabled = false")
 @Table(name = "mission_chat_rooms")
 @Entity
-public class MissionChatRoom {
+public class MissionChatRoom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,7 @@ public class MissionChatRoom {
     private Integer headCount;
 
     @OneToMany(mappedBy = "missionChatRoom", cascade = CascadeType.ALL)
-    List<UserMissionChatRoom> userMissionChatRooms = new ArrayList<>();
+    private List<UserMissionChatRoom> userMissionChatRooms = new ArrayList<>();
 
     @Column(name = "is_disabled", nullable = false)
     private Boolean isDisabled;

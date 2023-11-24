@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_mission_chat_rooms")
 @Entity
-public class UserMissionChatRoom {
+public class UserMissionChatRoom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

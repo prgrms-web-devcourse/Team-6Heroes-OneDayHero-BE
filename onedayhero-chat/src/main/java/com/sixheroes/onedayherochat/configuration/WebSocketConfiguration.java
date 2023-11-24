@@ -16,11 +16,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void configureMessageBroker(
             MessageBrokerRegistry registry
     ) {
-        // broker에 1 : 1 관계라면 /queue 를, 1 : N 관계라면 /topic 을 사용한다.
-        // 구독자를 지정
         registry.enableSimpleBroker("/queue");
-
-        // 발행자를 지정한다. 클라이언트에서 /chat/xxxx 를 사용하면 controller가 메시지를 받아 처리한다.
         registry.setApplicationDestinationPrefixes("/pub");
     }
 

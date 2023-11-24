@@ -23,7 +23,7 @@ class MissionChatRoomTest {
 
         // then
         assertThat(missionChatRoom.getMissionId()).isEqualTo(missionId);
-        assertThat(missionChatRoom.userMissionChatRooms).hasSize(2);
+        assertThat(missionChatRoom.getUserMissionChatRooms()).hasSize(2);
         assertThat(missionChatRoom.getUserMissionChatRooms().get(0).getUserId()).isEqualTo(1L);
         assertThat(missionChatRoom.getUserMissionChatRooms().get(1).getUserId()).isEqualTo(2L);
     }
