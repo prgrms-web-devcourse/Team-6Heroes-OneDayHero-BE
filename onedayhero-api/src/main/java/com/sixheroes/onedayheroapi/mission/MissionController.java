@@ -51,7 +51,7 @@ public class MissionController {
             @PageableDefault(size = 5) Pageable pageable,
             @Valid @ModelAttribute MissionFindFilterRequest request
     ) {
-        var result = missionService.findAllByDynamicCondition(pageable, request.toService());
+        var result = missionService.findAllByDynamicCondition(pageable, request.toService(userId));
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

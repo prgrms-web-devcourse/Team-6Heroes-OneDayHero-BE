@@ -7,6 +7,7 @@ import java.util.List;
 
 @Builder
 public record MissionFindFilterQueryRequest(
+        Long userId,
         List<Long> missionCategoryIds,
         List<Long> regionIds,
         List<LocalDate> missionDates

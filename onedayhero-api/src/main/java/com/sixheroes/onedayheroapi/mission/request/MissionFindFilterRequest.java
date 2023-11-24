@@ -17,8 +17,11 @@ public record MissionFindFilterRequest(
         List<Long> regionIds
 ) {
 
-    public MissionFindFilterServiceRequest toService() {
+    public MissionFindFilterServiceRequest toService(
+            Long userId
+    ) {
         return MissionFindFilterServiceRequest.builder()
+                .userId(userId)
                 .missionCategoryCodes(missionCategoryCodes)
                 .missionDates(missionDates)
                 .regionIds(regionIds)
