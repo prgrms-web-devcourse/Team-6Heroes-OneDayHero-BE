@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
+@Controller
 public class ChatMessageController {
 
     private final ChatService chatService;
