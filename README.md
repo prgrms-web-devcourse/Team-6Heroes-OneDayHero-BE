@@ -16,7 +16,7 @@
 ## 프로젝트 기술 스택 💡
 
 ### Backend
-<img width="605" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/76b8bde8-e713-4c81-ac57-b39b681641c6">
+<img width="611" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/34eb6cb1-49a1-4e92-b7aa-03a1906a4a33">
 
 ### Infra
 <img width="617" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/1d7bf059-5cd5-4a2f-9817-4be90b855f9e">
@@ -25,5 +25,11 @@
 <img width="761" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/b068787b-0aac-4c7f-83ec-1d1a6d0087b0">
 
 ## 프로젝트 아키텍쳐 🏰
+
+### CI/CD
+
+
+#### CD
+<img width="1008" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/74d61aa9-3292-4df8-b004-b15ad4c981ec">
 
 ## 📎 Wiki
