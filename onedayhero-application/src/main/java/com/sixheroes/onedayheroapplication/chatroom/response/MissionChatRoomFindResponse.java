@@ -35,6 +35,21 @@ public record MissionChatRoomFindResponse(
             UserChatRoomQueryResponse queryResponse,
             ChatMessage chatMessage
     ) {
+        if (chatMessage == null) {
+            return MissionChatRoomFindResponse.builder()
+                    .id(queryResponse.chatRoomId())
+                    .missionId(queryResponse.missionId())
+                    .missionStatus(queryResponse.missionStatus().name())
+                    .receiverId(queryResponse.receiverId())
+                    .title(queryResponse.title())
+                    .receiverNickname(queryResponse.nickName())
+                    .receiverImagePath(queryResponse.path())
+                    .lastSentMessage(null)
+                    .headCount(queryResponse.headCount())
+                    .lastSentMessageTime(null)
+                    .build();
+        }
+
         return MissionChatRoomFindResponse.builder()
                 .id(queryResponse.chatRoomId())
                 .missionId(queryResponse.missionId())

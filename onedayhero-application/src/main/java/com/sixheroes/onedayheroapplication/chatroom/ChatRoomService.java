@@ -56,6 +56,7 @@ public class ChatRoomService {
         var receiverIds = getReceiverIds(userId, chatRoomIds);
 
         var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(receiverIds);
+
         var latestMessagesByChatRoomIds = chatMessageMongoRepository.findLatestMessagesByChatRoomIds(chatRoomIds);
 
         var missionChatRoomFindResponses = makeMissionChatRoomResponse(receiverChatRoomInfos, latestMessagesByChatRoomIds);
@@ -113,7 +114,7 @@ public class ChatRoomService {
 
         for (Long chatRoomId : chatRoomInfoGroupingByChatRoomId.keySet()) {
             var chatRoomQueryResponse = chatRoomInfoGroupingByChatRoomId.get(chatRoomId).get(0);
-            var lastMessage = chatMessageGroupingByChatRoomId.get(chatRoomId).get(0);
+            var lastMessage = chatMessageGroupingByChatRoomId.containsKey(chatRoomId) ? chatMessageGroupingByChatRoomId.get(chatRoomId).get(0) : null;
 
             var missionChatRoomInfo = MissionChatRoomFindResponse.from(chatRoomQueryResponse, lastMessage);
             result.add(missionChatRoomInfo);

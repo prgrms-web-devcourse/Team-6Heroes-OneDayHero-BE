@@ -25,7 +25,7 @@ public interface UserMissionChatRoomRepository extends JpaRepository<UserMission
             on mr.missionId = m.id
             join User u
             on u.id = um.userId
-            join UserImage ui
+            left join UserImage ui
             on u.id = ui.id
             where um.userId in :receiverIds
             """)
