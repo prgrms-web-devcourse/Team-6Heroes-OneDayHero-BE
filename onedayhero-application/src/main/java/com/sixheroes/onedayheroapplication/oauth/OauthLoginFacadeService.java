@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.oauth;
 
 
-import com.sixheroes.onedayheroapplication.auth.infra.AuthService;
+import com.sixheroes.onedayheroapplication.auth.TokenService;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
@@ -18,7 +18,7 @@ public class OauthLoginFacadeService {
 
     private final List<OauthLoginService> oauthLoginServices;
     private final JwtTokenManager jwtTokenManager;
-    private final AuthService authService;
+    private final TokenService tokenService;
 
     public LoginResponse login(
             String authorizationServer,
@@ -33,7 +33,7 @@ public class OauthLoginFacadeService {
                         userAuthResponse.userRole()
                 );
 
-                var refreshToken = authService.generateRefreshToken(
+                var refreshToken = tokenService.generateRefreshToken(
                         userAuthResponse.userId()
                 );
 
