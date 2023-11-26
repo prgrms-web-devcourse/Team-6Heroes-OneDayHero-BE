@@ -2,16 +2,14 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
+import com.sixheroes.onedayheroapi.main.request.UserPositionRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionCreateRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionExtendRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionFindFilterRequest;
 import com.sixheroes.onedayheroapi.mission.request.MissionUpdateRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingResponses;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
+import com.sixheroes.onedayheroapplication.mission.response.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,11 +54,22 @@ public class MissionController {
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
+    @GetMapping("/around")
+    public ResponseEntity<ApiResponse<Slice<AroundMissionResponse>>> findAroundMissions(
+            @AuthUser Long userId,
+            @PageableDefault(size = 5) Pageable pageable,
+            @Valid @ModelAttribute UserPositionRequest request
+    ) {
+        var result = missionService.findAroundMissions(pageable, request.toService());
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
     @GetMapping("/matching")
     public ResponseEntity<ApiResponse<MissionMatchingResponses>> findProgressMission(
             @AuthUser Long userId
     ) {
-        var result = missionService.findMatchingMissionByUserId(userId);
+        var result = missionService.findMatchingMissionsByUserId(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
@@ -70,7 +79,7 @@ public class MissionController {
             @PageableDefault(size = 5) Pageable pageable,
             @AuthUser Long userId
     ) {
-        var result = missionService.findProgressMission(pageable, userId);
+        var result = missionService.findProgressMissions(pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
@@ -80,7 +89,7 @@ public class MissionController {
             @PageableDefault(size = 5) Pageable pageable,
             @AuthUser Long userId
     ) {
-        var result = missionService.findCompletedMissionByUserId(pageable, userId);
+        var result = missionService.findCompletedMissionsByUserId(pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }

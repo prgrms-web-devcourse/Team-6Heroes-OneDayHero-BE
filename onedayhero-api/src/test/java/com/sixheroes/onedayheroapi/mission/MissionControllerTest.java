@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.mission;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
 import com.sixheroes.onedayheroapi.mission.request.*;
+import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.MissionMatchingResponse;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingResponses;
@@ -544,7 +545,7 @@ public class MissionControllerTest extends RestDocsSupport {
 
         var sliceMissionResponse = new SliceImpl<>(List.of(missionProgressResponse), pageRequest, false);
 
-        given(missionService.findProgressMission(any(Pageable.class), any(Long.class)))
+        given(missionService.findProgressMissions(any(Pageable.class), any(Long.class)))
                 .willReturn(sliceMissionResponse);
 
         // when & then
@@ -693,7 +694,7 @@ public class MissionControllerTest extends RestDocsSupport {
 
         var sliceMissionResponse = new SliceImpl<>(List.of(missionCompletedResponse), pageRequest, false);
 
-        given(missionService.findCompletedMissionByUserId(any(Pageable.class), any(Long.class)))
+        given(missionService.findCompletedMissionsByUserId(any(Pageable.class), any(Long.class)))
                 .willReturn(sliceMissionResponse);
 
         // when & then
@@ -1057,128 +1058,356 @@ public class MissionControllerTest extends RestDocsSupport {
         // given
         var missionCategoryResponse = createMissionCategoryResponse();
         var missionMatchingResponse1 = MissionMatchingResponse.builder()
-            .id(1L)
-            .missionCategory(missionCategoryResponse)
-            .title("제목")
-            .missionDate(LocalDate.of(2023, 11, 6))
-            .startTime(LocalTime.of(12, 0, 0))
-            .endTime(LocalTime.of(18, 0, 0))
-            .region(createRegionResponse())
-            .bookmarkCount(1)
-            .price(20000)
-            .missionStatus("MATCHING")
-            .imagePath("s3://path")
-            .isBookmarked(true)
-            .missionCreatedAt(LocalDateTime.of(2023, 11, 3, 12, 0, 0))
-            .build();
+                .id(1L)
+                .missionCategory(missionCategoryResponse)
+                .title("제목")
+                .missionDate(LocalDate.of(2023, 11, 6))
+                .startTime(LocalTime.of(12, 0, 0))
+                .endTime(LocalTime.of(18, 0, 0))
+                .region(createRegionResponse())
+                .bookmarkCount(1)
+                .price(20000)
+                .missionStatus("MATCHING")
+                .imagePath("s3://path")
+                .isBookmarked(true)
+                .missionCreatedAt(LocalDateTime.of(2023, 11, 3, 12, 0, 0))
+                .build();
         var missionMatchingResponse2 = MissionMatchingResponse.builder()
-            .id(2L)
-            .missionCategory(missionCategoryResponse)
-            .title("제목")
-            .missionDate(LocalDate.of(2023, 11, 6))
-            .startTime(LocalTime.of(12, 0, 0))
-            .endTime(LocalTime.of(18, 0, 0))
-            .region(createRegionResponse())
-            .bookmarkCount(1)
-            .price(20000)
-            .missionStatus("MATCHING")
-            .imagePath("s3://path")
-            .isBookmarked(true)
-            .missionCreatedAt(LocalDateTime.of(2023, 10, 29, 12, 0, 0))
-            .build();
+                .id(2L)
+                .missionCategory(missionCategoryResponse)
+                .title("제목")
+                .missionDate(LocalDate.of(2023, 11, 6))
+                .startTime(LocalTime.of(12, 0, 0))
+                .endTime(LocalTime.of(18, 0, 0))
+                .region(createRegionResponse())
+                .bookmarkCount(1)
+                .price(20000)
+                .missionStatus("MATCHING")
+                .imagePath("s3://path")
+                .isBookmarked(true)
+                .missionCreatedAt(LocalDateTime.of(2023, 10, 29, 12, 0, 0))
+                .build();
 
         var missionMatchingResponses = new MissionMatchingResponses(List.of(missionMatchingResponse1, missionMatchingResponse2));
 
-        given(missionService.findMatchingMissionByUserId(any(Long.class)))
-            .willReturn(missionMatchingResponses);
+        given(missionService.findMatchingMissionsByUserId(any(Long.class)))
+                .willReturn(missionMatchingResponses);
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/matching")
-                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andDo(document("mission-matching-find",
-                requestHeaders(
-                    headerWithName("Authorization").description("Auth Credential")
-                ),
-                responseFields(
-                    fieldWithPath("status").type(JsonFieldType.NUMBER)
-                        .description("HTTP 응답 코드"),
-                    fieldWithPath("data").type(JsonFieldType.OBJECT)
-                        .description("응답 데이터"),
-                    fieldWithPath("data.missionMatchingResponses").type(JsonFieldType.ARRAY)
-                        .description("미션 응답 데이터 배열"),
-                    fieldWithPath("data.missionMatchingResponses[].id").type(JsonFieldType.NUMBER)
-                        .description("미션 ID"),
-                    fieldWithPath("data.missionMatchingResponses[].title").type(JsonFieldType.STRING)
-                        .description("미션 제목"),
-                    fieldWithPath("data.missionMatchingResponses[].bookmarkCount").type(JsonFieldType.NUMBER)
-                        .description("북마크 횟수"),
-                    fieldWithPath("data.missionMatchingResponses[].isBookmarked").type(JsonFieldType.BOOLEAN)
-                        .description("미션 북마크 여부"),
-                    fieldWithPath("data.missionMatchingResponses[].missionCategory").type(JsonFieldType.OBJECT)
-                        .description("미션 카테고리 객체"),
-                    fieldWithPath("data.missionMatchingResponses[].missionCategory.id")
-                        .description("미션 카테고리 ID"),
-                    fieldWithPath("data.missionMatchingResponses[].missionCategory.code")
-                        .description("미션 카테고리 코드"),
-                    fieldWithPath("data.missionMatchingResponses[].missionCategory.name")
-                        .description("미션 카테고리 이름"),
-                    fieldWithPath("data.missionMatchingResponses[].region.id")
-                        .description("미션 지역 아이디"),
-                    fieldWithPath("data.missionMatchingResponses[].region.si")
-                        .description("시 이름"),
-                    fieldWithPath("data.missionMatchingResponses[].region.gu")
-                        .description("구 이름"),
-                    fieldWithPath("data.missionMatchingResponses[].region.dong")
-                        .description("동 이름"),
-                    fieldWithPath("data.missionMatchingResponses[].missionCreatedAt").type(JsonFieldType.STRING)
-                        .attributes(getDateTimeFormat())
-                        .description("미션 생성 시re"),
-                    fieldWithPath("data.missionMatchingResponses[].missionDate").type(JsonFieldType.STRING)
-                        .attributes(getDateFormat())
-                        .description("미션 날짜"),
-                    fieldWithPath("data.missionMatchingResponses[].startTime").type(JsonFieldType.STRING)
-                        .attributes(getTimeFormat())
-                        .description("미션 시작 시간"),
-                    fieldWithPath("data.missionMatchingResponses[].endTime").type(JsonFieldType.STRING)
-                        .attributes(getTimeFormat())
-                        .description("미션 종료 시간"),
-                    fieldWithPath("data.missionMatchingResponses[].missionStatus").type(JsonFieldType.STRING)
-                        .description("미션 상태"),
-                    fieldWithPath("data.missionMatchingResponses[].imagePath").type(JsonFieldType.STRING)
-                        .optional()
-                        .description("이미지 사진 경로"),
-                    fieldWithPath("data.missionMatchingResponses[].isBookmarked").type(JsonFieldType.BOOLEAN)
-                        .description("북마크 상태"),
-                    fieldWithPath("data.missionMatchingResponses[].price").type(JsonFieldType.NUMBER)
-                        .description("미션 급여"),
-                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
-                        .attributes(getDateTimeFormat())
-                        .description("서버 응답 시간")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
-            ))
-            .andExpect(jsonPath("$.data").exists())
-            .andExpect(jsonPath("$.status").value(200))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].bookmarkCount").value(missionMatchingResponse1.bookmarkCount()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionStatus").value(missionMatchingResponse1.missionStatus()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].id").value(missionMatchingResponse1.id()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCreatedAt").value(DateTimeConverter.convertLocalDateTimeToString(missionMatchingResponse1.missionCreatedAt())))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].isBookmarked").value(missionMatchingResponse1.isBookmarked()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].imagePath").value(missionMatchingResponse1.imagePath()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.si").value(missionMatchingResponse1.region().si()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.gu").value(missionMatchingResponse1.region().gu()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.dong").value(missionMatchingResponse1.region().dong()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCategory.code").value(missionMatchingResponse1.missionCategory().code()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCategory.name").value(missionMatchingResponse1.missionCategory().name()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].title").value(missionMatchingResponse1.title()))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionDate").value(DateTimeConverter.convertDateToString(missionMatchingResponse1.missionDate())))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].startTime").value(DateTimeConverter.convertTimetoString(missionMatchingResponse1.startTime())))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].endTime").value(DateTimeConverter.convertTimetoString(missionMatchingResponse1.endTime())))
-            .andExpect(jsonPath("$.data.missionMatchingResponses[0].price").value(missionMatchingResponse1.price()))
-            .andExpect(jsonPath("$.serverDateTime").exists());
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("mission-matching-find",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.missionMatchingResponses").type(JsonFieldType.ARRAY)
+                                        .description("미션 응답 데이터 배열"),
+                                fieldWithPath("data.missionMatchingResponses[].id").type(JsonFieldType.NUMBER)
+                                        .description("미션 ID"),
+                                fieldWithPath("data.missionMatchingResponses[].title").type(JsonFieldType.STRING)
+                                        .description("미션 제목"),
+                                fieldWithPath("data.missionMatchingResponses[].bookmarkCount").type(JsonFieldType.NUMBER)
+                                        .description("북마크 횟수"),
+                                fieldWithPath("data.missionMatchingResponses[].isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 북마크 여부"),
+                                fieldWithPath("data.missionMatchingResponses[].missionCategory").type(JsonFieldType.OBJECT)
+                                        .description("미션 카테고리 객체"),
+                                fieldWithPath("data.missionMatchingResponses[].missionCategory.id")
+                                        .description("미션 카테고리 ID"),
+                                fieldWithPath("data.missionMatchingResponses[].missionCategory.code")
+                                        .description("미션 카테고리 코드"),
+                                fieldWithPath("data.missionMatchingResponses[].missionCategory.name")
+                                        .description("미션 카테고리 이름"),
+                                fieldWithPath("data.missionMatchingResponses[].region.id")
+                                        .description("미션 지역 아이디"),
+                                fieldWithPath("data.missionMatchingResponses[].region.si")
+                                        .description("시 이름"),
+                                fieldWithPath("data.missionMatchingResponses[].region.gu")
+                                        .description("구 이름"),
+                                fieldWithPath("data.missionMatchingResponses[].region.dong")
+                                        .description("동 이름"),
+                                fieldWithPath("data.missionMatchingResponses[].missionCreatedAt").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("미션 생성 시re"),
+                                fieldWithPath("data.missionMatchingResponses[].missionDate").type(JsonFieldType.STRING)
+                                        .attributes(getDateFormat())
+                                        .description("미션 날짜"),
+                                fieldWithPath("data.missionMatchingResponses[].startTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 시작 시간"),
+                                fieldWithPath("data.missionMatchingResponses[].endTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 종료 시간"),
+                                fieldWithPath("data.missionMatchingResponses[].missionStatus").type(JsonFieldType.STRING)
+                                        .description("미션 상태"),
+                                fieldWithPath("data.missionMatchingResponses[].imagePath").type(JsonFieldType.STRING)
+                                        .optional()
+                                        .description("이미지 사진 경로"),
+                                fieldWithPath("data.missionMatchingResponses[].isBookmarked").type(JsonFieldType.BOOLEAN)
+                                        .description("북마크 상태"),
+                                fieldWithPath("data.missionMatchingResponses[].price").type(JsonFieldType.NUMBER)
+                                        .description("미션 급여"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].bookmarkCount").value(missionMatchingResponse1.bookmarkCount()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionStatus").value(missionMatchingResponse1.missionStatus()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].id").value(missionMatchingResponse1.id()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCreatedAt").value(DateTimeConverter.convertLocalDateTimeToString(missionMatchingResponse1.missionCreatedAt())))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].isBookmarked").value(missionMatchingResponse1.isBookmarked()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].imagePath").value(missionMatchingResponse1.imagePath()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.si").value(missionMatchingResponse1.region().si()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.gu").value(missionMatchingResponse1.region().gu()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].region.dong").value(missionMatchingResponse1.region().dong()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCategory.code").value(missionMatchingResponse1.missionCategory().code()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionCategory.name").value(missionMatchingResponse1.missionCategory().name()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].title").value(missionMatchingResponse1.title()))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].missionDate").value(DateTimeConverter.convertDateToString(missionMatchingResponse1.missionDate())))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].startTime").value(DateTimeConverter.convertTimetoString(missionMatchingResponse1.startTime())))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].endTime").value(DateTimeConverter.convertTimetoString(missionMatchingResponse1.endTime())))
+                .andExpect(jsonPath("$.data.missionMatchingResponses[0].price").value(missionMatchingResponse1.price()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+    }
+
+    @DisplayName("유저는 반경 5km 내에 있는 매칭 중인 미션을 조회 할 수 있다.")
+    @Test
+    void findAroundMissions() throws Exception {
+        // given
+        var pageRequest = PageRequest.of(0, 4);
+
+        var aroundMissionA = AroundMissionResponse.builder()
+                .id(1L)
+                .missionCategory(MissionCategoryResponse.builder()
+                        .id(1L)
+                        .code("MC_001")
+                        .name("서빙")
+                        .build())
+                .region(RegionResponse.builder()
+                        .id(1L)
+                        .si("서울특별시")
+                        .gu("강남구")
+                        .dong("역삼동")
+                        .build())
+                .title("오전 서빙 파트타임 급하게 구합니다!")
+                .longitude(36.17542)
+                .latitude(127.1110230)
+                .missionDate(LocalDate.of(2023, 11, 26))
+                .startTime(LocalTime.of(9, 0, 0))
+                .endTime(LocalTime.of(13, 0, 0))
+                .price(15000)
+                .imagePath("s3://path1")
+                .build();
+
+        var aroundMissionB = AroundMissionResponse.builder()
+                .id(2L)
+                .missionCategory(MissionCategoryResponse.builder()
+                        .id(2L)
+                        .code("MC_002")
+                        .name("주방")
+                        .build())
+                .region(RegionResponse.builder()
+                        .id(1L)
+                        .si("서울특별시")
+                        .gu("강남구")
+                        .dong("역삼동")
+                        .build())
+                .title("주방 설거지를 처리해주실 분 빠르게 모십니다.")
+                .longitude(36.17542)
+                .latitude(127.1110230)
+                .missionDate(LocalDate.of(2023, 11, 28))
+                .startTime(LocalTime.of(17, 0, 0))
+                .endTime(LocalTime.of(19, 0, 0))
+                .price(12000)
+                .imagePath("s3://path2")
+                .build();
+
+        var aroundMissions = List.of(aroundMissionA, aroundMissionB);
+
+        var sliceMissionResponses = new SliceImpl<>(aroundMissions, pageRequest, false);
+
+        given(missionService.findAroundMissions(any(Pageable.class), any(UserPositionServiceRequest.class)))
+                .willReturn(sliceMissionResponses);
+
+        // when & then
+        mockMvc.perform(get("/api/v1/missions/around")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .param("page", "0")
+                        .param("size", "4")
+                        .param("sort", "")
+                        .param("longitude", "36.1279923")
+                        .param("latitude", "127.2239172")
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("mission-find-around",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").optional()
+                                        .description("페이지 번호"),
+                                parameterWithName("size").optional()
+                                        .description("데이터 크기"),
+                                parameterWithName("sort").optional()
+                                        .description("정렬 기준 필드"),
+                                parameterWithName("longitude")
+                                        .description("경도"),
+                                parameterWithName("latitude")
+                                        .description("위도")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("HTTP 응답 코드"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("미션 응답 데이터 배열"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("미션 ID"),
+                                fieldWithPath("data.content[].missionCategory").type(JsonFieldType.OBJECT)
+                                        .description("미션 카테고리 객체"),
+                                fieldWithPath("data.content[].missionCategory.id")
+                                        .description("미션 카테고리 ID"),
+                                fieldWithPath("data.content[].missionCategory.code")
+                                        .description("미션 카테고리 코드"),
+                                fieldWithPath("data.content[].missionCategory.name")
+                                        .description("미션 카테고리 이름"),
+                                fieldWithPath("data.content[].region").type(JsonFieldType.OBJECT)
+                                        .description("지역 정보 객체"),
+                                fieldWithPath("data.content[].region.id")
+                                        .description("지역 ID"),
+                                fieldWithPath("data.content[].region.si")
+                                        .description("지역 시"),
+                                fieldWithPath("data.content[].region.gu")
+                                        .description("지역 구"),
+                                fieldWithPath("data.content[].region.dong")
+                                        .description("지역 동"),
+                                fieldWithPath("data.content[].title")
+                                        .description("미션 제목"),
+                                fieldWithPath("data.content[].longitude")
+                                        .description("경도"),
+                                fieldWithPath("data.content[].latitude")
+                                        .description("위도"),
+                                fieldWithPath("data.content[].missionDate").type(JsonFieldType.STRING)
+                                        .attributes(getDateFormat())
+                                        .description("미션 날짜"),
+                                fieldWithPath("data.content[].startTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 시작 시간"),
+                                fieldWithPath("data.content[].endTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 종료 시간"),
+                                fieldWithPath("data.content[].price").type(JsonFieldType.NUMBER)
+                                        .description("미션 가격"),
+                                fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
+                                        .description("미션 대표 이미지"),
+                                fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER)
+                                        .description("페이지 크기"),
+                                fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT)
+                                        .description("정렬 상태 객체"),
+                                fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER)
+                                        .description("페이지 번호"),
+                                fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있는지 여부"),
+                                fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN)
+                                        .description("페이징이 되어 있지 않은지 여부"),
+                                fieldWithPath("data.size").type(JsonFieldType.NUMBER)
+                                        .description("미션 리스트 크기"),
+                                fieldWithPath("data.number").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("data.sort").type(JsonFieldType.OBJECT)
+                                        .description("미션 리스트 정렬 정보 객체"),
+                                fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 비어있는지 여부"),
+                                fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 있는지 여부"),
+                                fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트의 정렬 정보가 정렬되지 않은지 여부"),
+                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지의 요소 수"),
+                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN)
+                                        .description("첫 번째 페이지인지 여부"),
+                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN)
+                                        .description("마지막 페이지인지 여부"),
+                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN)
+                                        .description("미션 리스트가 비어있는지 여부"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("서버 응답 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.content[0].id").value(aroundMissionA.id()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.id").value(aroundMissionA.missionCategory().id()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.code").value(aroundMissionA.missionCategory().code()))
+                .andExpect(jsonPath("$.data.content[0].missionCategory.name").value(aroundMissionA.missionCategory().name()))
+                .andExpect(jsonPath("$.data.content[0].region.id").value(aroundMissionA.region().id()))
+                .andExpect(jsonPath("$.data.content[0].region.si").value(aroundMissionA.region().si()))
+                .andExpect(jsonPath("$.data.content[0].region.gu").value(aroundMissionA.region().gu()))
+                .andExpect(jsonPath("$.data.content[0].region.dong").value(aroundMissionA.region().dong()))
+                .andExpect(jsonPath("$.data.content[0].longitude").value(aroundMissionA.longitude()))
+                .andExpect(jsonPath("$.data.content[0].latitude").value(aroundMissionA.latitude()))
+                .andExpect(jsonPath("$.data.content[0].title").value(aroundMissionA.title()))
+                .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(aroundMissionA.missionDate())))
+                .andExpect(jsonPath("$.data.content[0].startTime").value(DateTimeConverter.convertTimetoString(aroundMissionA.startTime())))
+                .andExpect(jsonPath("$.data.content[0].endTime").value(DateTimeConverter.convertTimetoString(aroundMissionA.endTime())))
+                .andExpect(jsonPath("$.data.content[0].price").value(aroundMissionA.price()))
+                .andExpect(jsonPath("$.data.content[0].imagePath").value(aroundMissionA.imagePath()))
+                .andExpect(jsonPath("$.data.content[1].id").value(aroundMissionB.id()))
+                .andExpect(jsonPath("$.data.content[1].missionCategory.id").value(aroundMissionB.missionCategory().id()))
+                .andExpect(jsonPath("$.data.content[1].missionCategory.code").value(aroundMissionB.missionCategory().code()))
+                .andExpect(jsonPath("$.data.content[1].missionCategory.name").value(aroundMissionB.missionCategory().name()))
+                .andExpect(jsonPath("$.data.content[1].region.id").value(aroundMissionB.region().id()))
+                .andExpect(jsonPath("$.data.content[1].region.si").value(aroundMissionB.region().si()))
+                .andExpect(jsonPath("$.data.content[1].region.gu").value(aroundMissionB.region().gu()))
+                .andExpect(jsonPath("$.data.content[1].region.dong").value(aroundMissionB.region().dong()))
+                .andExpect(jsonPath("$.data.content[1].longitude").value(aroundMissionB.longitude()))
+                .andExpect(jsonPath("$.data.content[1].latitude").value(aroundMissionB.latitude()))
+                .andExpect(jsonPath("$.data.content[1].title").value(aroundMissionB.title()))
+                .andExpect(jsonPath("$.data.content[1].missionDate").value(DateTimeConverter.convertDateToString(aroundMissionB.missionDate())))
+                .andExpect(jsonPath("$.data.content[1].startTime").value(DateTimeConverter.convertTimetoString(aroundMissionB.startTime())))
+                .andExpect(jsonPath("$.data.content[1].endTime").value(DateTimeConverter.convertTimetoString(aroundMissionB.endTime())))
+                .andExpect(jsonPath("$.data.content[1].price").value(aroundMissionB.price()))
+                .andExpect(jsonPath("$.data.content[1].imagePath").value(aroundMissionB.imagePath()))
+                .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponses.getPageable().getPageNumber()))
+                .andExpect(jsonPath("$.data.pageable.pageSize").value(sliceMissionResponses.getPageable().getPageSize()))
+                .andExpect(jsonPath("$.data.pageable.sort.empty").value(sliceMissionResponses.getPageable().getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.pageable.offset").value(sliceMissionResponses.getPageable().getOffset()))
+                .andExpect(jsonPath("$.data.pageable.paged").value(sliceMissionResponses.getPageable().isPaged()))
+                .andExpect(jsonPath("$.data.pageable.unpaged").value(sliceMissionResponses.getPageable().isUnpaged()))
+                .andExpect(jsonPath("$.data.size").value(sliceMissionResponses.getSize()))
+                .andExpect(jsonPath("$.data.number").value(sliceMissionResponses.getNumber()))
+                .andExpect(jsonPath("$.data.sort.empty").value(sliceMissionResponses.getSort().isEmpty()))
+                .andExpect(jsonPath("$.data.sort.sorted").value(sliceMissionResponses.getSort().isSorted()))
+                .andExpect(jsonPath("$.data.sort.unsorted").value(sliceMissionResponses.getSort().isUnsorted()))
+                .andExpect(jsonPath("$.data.numberOfElements").value(sliceMissionResponses.getNumberOfElements()))
+                .andExpect(jsonPath("$.data.first").value(sliceMissionResponses.isFirst()))
+                .andExpect(jsonPath("$.data.last").value(sliceMissionResponses.isLast()))
+                .andExpect(jsonPath("$.data.empty").value(sliceMissionResponses.isEmpty()))
+                .andExpect(jsonPath("$.serverDateTime").exists());
+
     }
 
     private MissionResponse createMissionResponse(
