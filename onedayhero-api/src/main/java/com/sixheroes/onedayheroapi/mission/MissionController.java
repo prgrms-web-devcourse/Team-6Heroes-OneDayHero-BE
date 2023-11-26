@@ -55,7 +55,7 @@ public class MissionController {
     }
 
     @GetMapping("/around")
-    public ResponseEntity<ApiResponse<Slice<AroundMissionResponse>>> findAroundMissions(
+    public ResponseEntity<ApiResponse<Slice<MissionAroundResponse>>> findAroundMissions(
             @AuthUser Long userId,
             @PageableDefault(size = 5) Pageable pageable,
             @Valid @ModelAttribute UserPositionRequest request

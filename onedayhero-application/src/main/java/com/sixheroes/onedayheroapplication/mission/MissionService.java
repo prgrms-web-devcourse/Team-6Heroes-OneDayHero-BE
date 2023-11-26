@@ -4,6 +4,7 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageDirectoryProperties;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.converter.PointConverter;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.repository.response.*;
@@ -17,6 +18,7 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkReposito
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse;
+import com.sixheroes.onedayherodomain.mission.repository.response.MissionAroundQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 @Service
 public class MissionService {
 
+    private static final Integer DISTANCE = 5000;
+
     private final MissionCategoryReader missionCategoryReader;
     private final MissionReader missionReader;
     private final MissionRepository missionRepository;
@@ -53,9 +57,7 @@ public class MissionService {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = request.toEntity(missionCategory, serverTime);
 
-        log.info("미션을 받았습니다.");
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
-        log.info("이미지를 S3에 생성하였습니다.");
 
         var missionImages = imageResponse.stream()
                 .map(MissionImageMapper::createMissionImage)
@@ -64,7 +66,6 @@ public class MissionService {
         mission.addMissionImages(missionImages);
         var savedMission = missionRepository.save(mission);
 
-        log.info("미션을 저장하였습니다.");
         return MissionIdResponse.from(savedMission.getId());
     }
 
@@ -99,11 +100,15 @@ public class MissionService {
         return SliceResultConverter.consume(missionProgressResponses, pageable);
     }
 
-    public Slice<AroundMissionResponse> findAroundMissions(
+    public Slice<MissionAroundResponse> findAroundMissions(
             Pageable pageable,
             UserPositionServiceRequest request
     ) {
-        throw new UnsupportedOperationException();
+        var point = PointConverter.pointToString(request.longitude(), request.latitude());
+        var aroundMissionQueryResponses = missionRepository.findAroundMissionByLocation(point, DISTANCE, pageable.getPageSize() + 1, pageable.getOffset());
+        var aroundMissionResponses = makeAroundMissionResponseWithImage(aroundMissionQueryResponses);
+
+        return SliceResultConverter.consume(aroundMissionResponses, pageable);
     }
 
     @Transactional
@@ -191,6 +196,17 @@ public class MissionService {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
                     var isBookmarked = response.bookmarkId() != null;
                     return MissionResponse.from(response, missionImages, isBookmarked);
+                }).collect(Collectors.toList());
+    }
+
+    private List<MissionAroundResponse> makeAroundMissionResponseWithImage(
+            List<MissionAroundQueryResponse> queryResponse
+    ) {
+        return queryResponse.stream()
+                .map(response -> {
+                    var missionImages = missionImageRepository.findByMission_Id(response.getId());
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    return MissionAroundResponse.from(response, thumbNailPath);
                 }).collect(Collectors.toList());
     }
 

@@ -1188,7 +1188,7 @@ public class MissionControllerTest extends RestDocsSupport {
         // given
         var pageRequest = PageRequest.of(0, 4);
 
-        var aroundMissionA = AroundMissionResponse.builder()
+        var aroundMissionA = MissionAroundResponse.builder()
                 .id(1L)
                 .missionCategory(MissionCategoryResponse.builder()
                         .id(1L)
@@ -1211,7 +1211,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .imagePath("s3://path1")
                 .build();
 
-        var aroundMissionB = AroundMissionResponse.builder()
+        var aroundMissionB = MissionAroundResponse.builder()
                 .id(2L)
                 .missionCategory(MissionCategoryResponse.builder()
                         .id(2L)
