@@ -32,12 +32,28 @@ echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
 if [ "$(docker ps -q -f name=$NGINX_NAME)" ]; then
   echo "Docker 컨테이너 '$NGINX_NAME'가 이미 실행 중입니다."
 else
+  # Nginx 가 올라와있지 않다면 첫 시도.
+  # find mongo port => mongo DB 포트가 비 정상적으로 종료되는 버그를 발견
+  PID=$(sudo lsof -i :27017 -t)
+
+  if [ -n "$PID" ]; then
+    echo "MongoDB가 비 정상적으로 종료되어 port가 실행중입니다.";
+    sudo kill -i $PID
+    echo "MongoDB 포트를 제거하였습니다."
+  fi
+
   # Docker 컨테이너 실행
   echo "> docker run -it --name nginx -d -v /etc/nginx/:/etc/nginx/ -p 80:80 nginx"
-  # sudo docker run -it --name nginx -d -v /etc/nginx/:/etc/nginx/ -p 80:80 nginx
   echo "> docker start nginx"
   sudo docker start nginx
   echo "Docker 컨테이너 '$NGINX_NAME'가 실행되었습니다."
+  echo "> sudo docker start redis"
+  sudo docker start redis
+  echo "Docker 컨테이너 redis 가 실행되었습니다."
+  echo "> sudo docker start mongo"
+  sudo docker start mongo
+  echo "Docker 컨테이너 mongo 가 실행되었습니다."
+
   sleep 3
 fi
 

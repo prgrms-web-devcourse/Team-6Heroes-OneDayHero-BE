@@ -15,5 +15,7 @@ function switch_proxy() {
     echo "set \$service_url http://43.200.91.152:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
 
     echo "> docker exec -d nginx nginx -s reload"
+    echo "> application server upload 대기"
+    sleep 30
     sudo docker exec -d nginx nginx -s reload
 }
