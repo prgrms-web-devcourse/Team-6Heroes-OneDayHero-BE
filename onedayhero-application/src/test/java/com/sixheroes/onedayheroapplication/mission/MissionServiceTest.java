@@ -839,7 +839,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         missionRepository.saveAll(List.of(matchingMission, completedMission, matchedMission, expiredMission));
 
         // when
-        var progressMission = missionService.findProgressMission(pageRequest, citizenId);
+        var progressMission = missionService.findProgressMissions(pageRequest, citizenId);
 
         // then
         assertThat(progressMission).hasSize(2);
@@ -908,7 +908,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         missionRepository.saveAll(List.of(matchingMission, completedMission, matchedMission, expiredMission));
 
         // when
-        var findCompletedMission = missionService.findCompletedMissionByUserId(pageRequest, citizenId);
+        var findCompletedMission = missionService.findCompletedMissionsByUserId(pageRequest, citizenId);
 
         // then
         assertThat(findCompletedMission).hasSize(1);
@@ -956,48 +956,48 @@ class MissionServiceTest extends IntegrationApplicationTest {
         missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission));
 
         // when
-        var findMatchingMission = missionService.findMatchingMissionByUserId(citizenId);
+        var findMatchingMission = missionService.findMatchingMissionsByUserId(citizenId);
 
         // then
         var missionMatchingResponses = findMatchingMission.missionMatchingResponses();
         assertThat(missionMatchingResponses).hasSize(2);
         assertThat(missionMatchingResponses)
-            .filteredOn("id", matchingMission.getId())
-            .extracting(
-                "title",
-                "missionCategory.id",
-                "missionCategory.code",
-                "missionCategory.name",
-                "region.id",
-                "region.si",
-                "region.gu",
-                "region.dong",
-                "missionDate",
-                "startTime",
-                "endTime",
-                "price",
-                "bookmarkCount",
-                "missionStatus",
-                "imagePath",
-                "isBookmarked"
-            ).containsExactly(Tuple.tuple(
-                matchingMission.getMissionInfo().getTitle(),
-                matchingMission.getMissionCategory().getId(),
-                matchingMission.getMissionCategory().getMissionCategoryCode().name(),
-                matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
-                region.getId(),
-                region.getSi(),
-                region.getGu(),
-                region.getDong(),
-                matchingMission.getMissionInfo().getMissionDate(),
-                matchingMission.getMissionInfo().getStartTime(),
-                matchingMission.getMissionInfo().getEndTime(),
-                matchingMission.getMissionInfo().getPrice(),
-                matchingMission.getBookmarkCount(),
-                matchingMission.getMissionStatus().name(),
-                null,
-                false
-            ));
+                .filteredOn("id", matchingMission.getId())
+                .extracting(
+                        "title",
+                        "missionCategory.id",
+                        "missionCategory.code",
+                        "missionCategory.name",
+                        "region.id",
+                        "region.si",
+                        "region.gu",
+                        "region.dong",
+                        "missionDate",
+                        "startTime",
+                        "endTime",
+                        "price",
+                        "bookmarkCount",
+                        "missionStatus",
+                        "imagePath",
+                        "isBookmarked"
+                ).containsExactly(Tuple.tuple(
+                        matchingMission.getMissionInfo().getTitle(),
+                        matchingMission.getMissionCategory().getId(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        region.getId(),
+                        region.getSi(),
+                        region.getGu(),
+                        region.getDong(),
+                        matchingMission.getMissionInfo().getMissionDate(),
+                        matchingMission.getMissionInfo().getStartTime(),
+                        matchingMission.getMissionInfo().getEndTime(),
+                        matchingMission.getMissionInfo().getPrice(),
+                        matchingMission.getBookmarkCount(),
+                        matchingMission.getMissionStatus().name(),
+                        null,
+                        false
+                ));
     }
 
     private MissionCreateServiceRequest createMissionCreateServiceRequest(
