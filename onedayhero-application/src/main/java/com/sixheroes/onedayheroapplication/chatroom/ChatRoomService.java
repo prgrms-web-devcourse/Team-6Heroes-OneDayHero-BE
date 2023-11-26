@@ -1,7 +1,5 @@
 package com.sixheroes.onedayheroapplication.chatroom;
 
-import com.sixheroes.onedayheroapplication.chatroom.repository.UserMissionChatRoomQueryRepository;
-import com.sixheroes.onedayheroapplication.chatroom.repository.response.UserMissionChatRoomQueryResponse;
 import com.sixheroes.onedayheroapplication.chatroom.request.CreateMissionChatRoomServiceRequest;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
@@ -33,7 +31,6 @@ public class ChatRoomService {
     private final MissionChatRoomReader missionChatRoomReader;
     private final MissionChatRoomRepository missionChatRoomRepository;
     private final UserMissionChatRoomRepository userMissionChatRoomRepository;
-    private final UserMissionChatRoomQueryRepository userMissionChatRoomQueryRepository;
     private final UserMissionChatRoomReader userMissionChatRoomReader;
     private final MissionChatRoomRedisRepository missionChatRoomRedisRepository;
     private final ChatMessageMongoRepository chatMessageMongoRepository;
@@ -51,13 +48,13 @@ public class ChatRoomService {
     public List<MissionChatRoomFindResponse> findJoinedChatRoom(
             Long userId
     ) {
-        var missionChatRooms = userMissionChatRoomQueryRepository.findJoinedChatRooms(userId);
+        var missionChatRooms = userMissionChatRoomRepository.findByUserIdAndIsJoinedTrue(userId);
+
         var chatRoomIds = getJoinedChatRoomIds(missionChatRooms);
-        var receiverIds = getReceiverIds(userId, chatRoomIds);
-
-        var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(receiverIds);
-
         var latestMessagesByChatRoomIds = chatMessageMongoRepository.findLatestMessagesByChatRoomIds(chatRoomIds);
+
+        var receiverIds = getReceiverIds(userId, chatRoomIds);
+        var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(receiverIds);
 
         var missionChatRoomFindResponses = makeMissionChatRoomResponse(receiverChatRoomInfos, latestMessagesByChatRoomIds);
 
@@ -84,14 +81,19 @@ public class ChatRoomService {
         return MissionChatRoomExitResponse.from(userChatRoom.getMissionChatRoom(), userId);
     }
 
-    private List<Long> getJoinedChatRoomIds(List<UserMissionChatRoomQueryResponse> missionChatRooms) {
+    private List<Long> getJoinedChatRoomIds(
+            List<UserMissionChatRoom> missionChatRooms
+    ) {
         return missionChatRooms.stream()
-                .mapToLong(UserMissionChatRoomQueryResponse::chatRoomId)
+                .mapToLong(UserMissionChatRoom::getId)
                 .boxed()
                 .toList();
     }
 
-    private List<Long> getReceiverIds(Long userId, List<Long> chatRoomIds) {
+    private List<Long> getReceiverIds(
+            Long userId,
+            List<Long> chatRoomIds
+    ) {
         return userMissionChatRoomRepository.findByMissionChatRoom_IdIn(chatRoomIds)
                 .stream()
                 .filter(userMissionChatRoom -> !userMissionChatRoom.isUserChatRoom(userId))

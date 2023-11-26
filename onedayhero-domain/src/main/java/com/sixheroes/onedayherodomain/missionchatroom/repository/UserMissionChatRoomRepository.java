@@ -30,4 +30,6 @@ public interface UserMissionChatRoomRepository extends JpaRepository<UserMission
             where um.userId in :receiverIds
             """)
     List<UserChatRoomQueryResponse> findReceiverChatRoomInfoInReceiverIds(List<Long> receiverIds);
+
+    List<UserMissionChatRoom> findByUserIdAndIsJoinedTrue(Long userId);
 }
