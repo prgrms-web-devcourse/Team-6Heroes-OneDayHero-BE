@@ -49,8 +49,9 @@ public class ChatService {
     public List<ChatMessageApiResponse> findMessageByChatRoomId(
             Long chatRoomId
     ) {
-        redisRepository.enterChatRoom(chatRoomId);
         var chatRoomsMessages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
+
+        redisRepository.enterChatRoom(chatRoomId);
 
         return chatRoomsMessages.stream()
                 .map(ChatMessageApiResponse::from)
