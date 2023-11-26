@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 public record MissionChatRoomFindResponse(
         Long id,
 
+        Long missionId,
+
+        String missionStatus,
+
         Long receiverId,
 
         String title,
@@ -33,6 +37,8 @@ public record MissionChatRoomFindResponse(
     ) {
         return MissionChatRoomFindResponse.builder()
                 .id(queryResponse.chatRoomId())
+                .missionId(queryResponse.missionId())
+                .missionStatus(queryResponse.missionStatus().name())
                 .receiverId(queryResponse.receiverId())
                 .title(queryResponse.title())
                 .receiverNickname(queryResponse.nickName())

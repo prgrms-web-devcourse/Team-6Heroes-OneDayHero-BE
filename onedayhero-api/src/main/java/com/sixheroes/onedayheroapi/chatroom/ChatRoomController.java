@@ -7,6 +7,8 @@ import com.sixheroes.onedayheroapplication.chatroom.ChatRoomService;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFindResponse;
+import com.sixheroes.onedayherochat.application.ChatService;
+import com.sixheroes.onedayherochat.application.response.ChatMessageApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ public class ChatRoomController {
 
     private static final String CHAT_ROOM_URI_FORMAT = "/api/v1/chat-rooms/";
     private final ChatRoomService chatRoomService;
+    private final ChatService chatService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<MissionChatRoomCreateResponse>> createChatRoom(
@@ -32,11 +35,19 @@ public class ChatRoomController {
                 .body(ApiResponse.created(result));
     }
 
-    @GetMapping("/users")
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<MissionChatRoomFindResponse>>> findByChatRoomId(
             @AuthUser Long userId
     ) {
         var result = chatRoomService.findJoinedChatRoom(userId);
+        return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<ApiResponse<List<ChatMessageApiResponse>>> findChatMessagesByChatRoomId(
+            @PathVariable Long chatRoomId
+    ) {
+        var result = chatService.findMessageByChatRoomId(chatRoomId);
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 

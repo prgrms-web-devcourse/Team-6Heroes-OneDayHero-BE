@@ -16,7 +16,7 @@ public interface UserMissionChatRoomRepository extends JpaRepository<UserMission
 
     @Query("""
             SELECT NEW com.sixheroes.onedayherodomain.missionchatroom.repository.response.UserChatRoomQueryResponse(
-            mr.id, u.id, m.id, m.missionInfo.title, u.userBasicInfo.nickname, ui.path, mr.headCount
+            mr.id, u.id, m.id, m.missionStatus, m.missionInfo.title, u.userBasicInfo.nickname, ui.path, mr.headCount
             )
             from UserMissionChatRoom um
             join MissionChatRoom mr

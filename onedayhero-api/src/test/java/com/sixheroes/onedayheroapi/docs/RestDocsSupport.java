@@ -49,8 +49,7 @@ public abstract class RestDocsSupport {
                 .addMappedInterceptors(new String[]{
                         "/api/v1/alarms/**",
                         "/api/v1/sse/**",
-                        "/api/v1/chat-rooms/users",
-                        "/api/v1/chat-rooms/*/exit",
+                        "/api/v1/chat-rooms/**",
                         "/api/v1/mission-proposals/**",
                         "/api/v1/mission-matches/**",
                         "/api/v1/bookmarks",
