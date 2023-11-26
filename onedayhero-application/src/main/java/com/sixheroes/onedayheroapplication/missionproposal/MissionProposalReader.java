@@ -4,6 +4,7 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalCreateEventDto;
+import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalUpdateEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,5 +38,15 @@ public class MissionProposalReader {
                 log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
                 return new NoSuchElementException(ErrorCode.EMP_000.name());
             });
+    }
+
+    public MissionProposalUpdateEventDto findUpdateEvent(
+            Long missionProposalId
+    ) {
+        return missionProposalRepository.findMissionProposalUpdateEventDtoById(missionProposalId)
+                .orElseThrow(() -> {
+                    log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
+                    return new NoSuchElementException(ErrorCode.EMP_000.name());
+                });
     }
 }
