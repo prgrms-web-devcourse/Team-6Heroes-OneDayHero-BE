@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -44,11 +45,12 @@ public class SseController {
         return sseEmitter;
     }
 
-    @GetMapping("/send")
+    @GetMapping("/send/{receiverId}")
     public void send(
-        @AuthUser Long userId
+        @AuthUser Long userId,
+        @PathVariable Long receiverId
     ) throws IOException {
-        var sseEmitter = sseEmitters.get(userId);
-        sseEmitter.send(SseEmitter.event().name("event").data("data"));
+        var sseEmitter = sseEmitters.get(receiverId);
+        sseEmitter.send("알림이에영~~~");
     }
 }
