@@ -147,6 +147,7 @@ public class MissionService {
         return MissionIdResponse.from(mission.getId());
     }
 
+    @Transactional
     public MissionIdResponse completeMission(
             Long missionId,
             Long userId
