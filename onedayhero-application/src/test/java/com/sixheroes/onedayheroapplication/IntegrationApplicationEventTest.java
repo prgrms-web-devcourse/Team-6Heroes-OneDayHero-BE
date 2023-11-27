@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication;
 
 import com.sixheroes.onedayheroapplication.alarm.AlarmService;
+import com.sixheroes.onedayheroapplication.mission.MissionService;
+import com.sixheroes.onedayheroapplication.mission.event.MissionEventService;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
 import com.sixheroes.onedayheroapplication.missionproposal.event.MissionProposalEventService;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
@@ -9,6 +11,7 @@ import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.missionmatch.repository.MissionMatchRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
@@ -70,6 +73,15 @@ public abstract class IntegrationApplicationEventTest {
 
     @Autowired
     protected ReviewEventService reviewEventService;
+
+    @Autowired
+    protected MissionService missionService;
+
+    @Autowired
+    protected MissionEventService missionEventService;
+
+    @Autowired
+    protected MissionMatchRepository missionMatchRepository;
 
     @BeforeAll
     public static void setUp(

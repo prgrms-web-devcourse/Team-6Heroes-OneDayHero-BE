@@ -12,7 +12,6 @@ import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -24,7 +23,6 @@ import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.*;
 
 @Transactional
-@RecordApplicationEvents
 class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
 
     @DisplayName("미션 제안 생성 알림을 위한 데이터를 조회한 뒤 알림 이벤트를 발행한다.")
