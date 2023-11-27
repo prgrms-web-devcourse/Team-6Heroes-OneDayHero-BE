@@ -139,7 +139,7 @@ public class UserService {
         UserServiceUpdateRequest userServiceUpdateRequest
     ) {
         var regionIds = userServiceUpdateRequest.userFavoriteRegions();
-        if (regionIds.isEmpty()) {
+        if (Objects.nonNull(regionIds) && regionIds.isEmpty()) {
             return;
         }
 

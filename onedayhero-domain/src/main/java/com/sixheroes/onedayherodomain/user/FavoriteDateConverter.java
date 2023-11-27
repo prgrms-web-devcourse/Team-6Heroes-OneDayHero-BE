@@ -2,15 +2,17 @@ package com.sixheroes.onedayherodomain.user;
 
 import jakarta.persistence.AttributeConverter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FavoriteDateConverter implements AttributeConverter<List<Week>, String> {
 
     @Override
     public String convertToDatabaseColumn(List<Week> attribute) {
-        if (attribute == null) {
+        if (Objects.isNull(attribute) || attribute.isEmpty()) {
             return null;
         }
 
@@ -22,7 +24,7 @@ public class FavoriteDateConverter implements AttributeConverter<List<Week>, Str
     @Override
     public List<Week> convertToEntityAttribute(String dbData) {
         if (dbData == null) {
-            return null;
+            return new ArrayList<>();
         }
 
         return Arrays.stream(dbData.split(","))
