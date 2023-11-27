@@ -16,7 +16,7 @@ public class RefreshTokenRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     public RefreshTokenRepository(
-            @Qualifier("refreshTokenRedisTemplate") RedisTemplate<String, String> redisTemplate
+            @Qualifier("authRedisTemplate") RedisTemplate<String, String> redisTemplate
     ) {
         this.redisTemplate = redisTemplate;
     }
