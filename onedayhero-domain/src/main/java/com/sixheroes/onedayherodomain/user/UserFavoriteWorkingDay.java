@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -47,7 +48,7 @@ public class UserFavoriteWorkingDay {
         LocalTime favoriteStartTime,
         LocalTime favoriteEndTime
     ) {
-        if (favoriteStartTime.isAfter(favoriteEndTime)) {
+        if (Objects.nonNull(favoriteStartTime) && favoriteStartTime.isAfter(favoriteEndTime)) {
             log.debug("시작 시간은 종료 시간보다 미래이면 안됩니다. startDate = {}, endDate = {}", favoriteStartTime, favoriteEndTime);
             throw new IllegalArgumentException(ErrorCode.EU_005.name());
         }
