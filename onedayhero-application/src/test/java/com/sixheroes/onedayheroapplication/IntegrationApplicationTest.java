@@ -19,6 +19,8 @@ import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkReposito
 import com.sixheroes.onedayherodomain.mission.repository.MissionCategoryRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
+import com.sixheroes.onedayherodomain.missionchatroom.repository.MissionChatRoomRepository;
+import com.sixheroes.onedayherodomain.missionchatroom.repository.UserMissionChatRoomRepository;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
@@ -27,6 +29,7 @@ import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
+import com.sixheroes.onedayheromongo.chat.repository.ChatMessageMongoRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +57,12 @@ public abstract class IntegrationApplicationTest {
 
     @Autowired
     protected RegionRepository regionRepository;
+
+    @Autowired
+    protected MissionChatRoomRepository missionChatRoomRepository;
+
+    @Autowired
+    protected UserMissionChatRoomRepository userMissionChatRoomRepository;
 
     @Autowired
     protected MissionService missionService;
@@ -111,6 +120,9 @@ public abstract class IntegrationApplicationTest {
 
     @MockBean
     protected MissionChatRoomRedisRepository missionChatRoomRedisRepository;
+
+    @MockBean
+    protected ChatMessageMongoRepository chatMessageMongoRepository;
 
     @BeforeAll
     public static void setUp(
