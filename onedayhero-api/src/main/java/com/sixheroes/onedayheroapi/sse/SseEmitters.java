@@ -50,7 +50,7 @@ public class SseEmitters {
         }
     }
 
-    private SseEmitter get(
+    public SseEmitter get(
         Long userId
     ) {
         var sseEmitter = emitters.get(userId);
