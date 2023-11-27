@@ -4,6 +4,7 @@ package com.sixheroes.onedayheroapplication.review;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
+import com.sixheroes.onedayherodomain.review.repository.dto.ReviewCreateEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,5 +27,13 @@ public class ReviewReader {
                     log.debug("존재하지 않는 리뷰입니다. reviewId : {}", reviewId);
                     return new NoSuchElementException(ErrorCode.T_001.name());
                 });
+    }
+
+    public ReviewCreateEventDto findReviewCreateEvent(Long reviewId) {
+        return reviewRepository.findReviewCreateEventById(reviewId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 리뷰입니다. reviewId : {}", reviewId);
+                return new NoSuchElementException(ErrorCode.T_001.name());
+            });
     }
 }

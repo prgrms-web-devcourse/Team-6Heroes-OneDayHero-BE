@@ -7,26 +7,28 @@ import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteSe
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.review.event.dto.ReviewCreateEvent;
 import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.*;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
-import com.sixheroes.onedayherodomain.user.UserImage;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -38,12 +40,12 @@ public class ReviewService {
     private final ReviewReader reviewReader;
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
-    private final UserImageRepository userImageRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final MissionReader missionReader;
     private final S3ImageDirectoryProperties properties;
     private final S3ImageUploadService s3ImageUploadService;
     private final S3ImageDeleteService s3ImageDeleteService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private final static Function<S3ImageUploadServiceResponse, ReviewImage> reviewImageMapper = uploadServiceResponse ->
             ReviewImage.createReviewImage(
@@ -112,6 +114,9 @@ public class ReviewService {
         addReviewImages(reviewImageUploadResponse, review);
 
         var createdReview = reviewRepository.save(review);
+
+        var reviewCreateEvent = ReviewCreateEvent.from(review);
+        applicationEventPublisher.publishEvent(reviewCreateEvent);
 
         return ReviewResponse
                 .builder()
