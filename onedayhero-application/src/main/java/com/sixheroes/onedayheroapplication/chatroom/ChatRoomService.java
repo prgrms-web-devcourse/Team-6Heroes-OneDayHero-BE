@@ -1,7 +1,5 @@
 package com.sixheroes.onedayheroapplication.chatroom;
 
-import com.sixheroes.onedayheroapplication.chatroom.repository.UserMissionChatRoomQueryRepository;
-import com.sixheroes.onedayheroapplication.chatroom.repository.response.UserMissionChatRoomQueryResponse;
 import com.sixheroes.onedayheroapplication.chatroom.request.CreateMissionChatRoomServiceRequest;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomCreateResponse;
 import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomExitResponse;
@@ -35,7 +33,6 @@ public class ChatRoomService {
     private final MissionChatRoomReader missionChatRoomReader;
     private final MissionChatRoomRepository missionChatRoomRepository;
     private final UserMissionChatRoomRepository userMissionChatRoomRepository;
-    private final UserMissionChatRoomQueryRepository userMissionChatRoomQueryRepository;
     private final UserMissionChatRoomReader userMissionChatRoomReader;
     private final MissionChatRoomRedisRepository missionChatRoomRedisRepository;
     private final ChatMessageMongoRepository chatMessageMongoRepository;
@@ -54,7 +51,8 @@ public class ChatRoomService {
     public List<MissionChatRoomFindResponse> findJoinedChatRoom(
             Long userId
     ) {
-        var missionChatRooms = userMissionChatRoomQueryRepository.findJoinedChatRooms(userId);
+        var missionChatRooms = userMissionChatRoomRepository.findByUserIdAndIsJoinedTrue(userId);
+
         var chatRoomIds = getJoinedChatRoomIds(missionChatRooms);
         var receiverIds = getReceiverIds(userId, chatRoomIds);
 
@@ -88,14 +86,21 @@ public class ChatRoomService {
         return MissionChatRoomExitResponse.from(userChatRoom.getMissionChatRoom(), userId);
     }
 
-    private List<Long> getJoinedChatRoomIds(List<UserMissionChatRoomQueryResponse> missionChatRooms) {
-        return missionChatRooms.stream()
-                .mapToLong(UserMissionChatRoomQueryResponse::chatRoomId)
+    // 유저가 나가지 않은 채팅방에 속한 다른 유저들을 조회한다.
+    private List<Long> getJoinedChatRoomIds(
+            List<UserMissionChatRoom> userMissionChatRooms
+    ) {
+        return userMissionChatRooms.stream()
+                .mapToLong((userMissionChatRoom) -> userMissionChatRoom.getMissionChatRoom().getId())
                 .boxed()
                 .toList();
     }
 
-    private List<Long> getReceiverIds(Long userId, List<Long> chatRoomIds) {
+    // 채팅 수신자에 대한 수신자 아이디를 가지고 온다.
+    private List<Long> getReceiverIds(
+            Long userId,
+            List<Long> chatRoomIds
+    ) {
         return userMissionChatRoomRepository.findByMissionChatRoom_IdIn(chatRoomIds)
                 .stream()
                 .filter(userMissionChatRoom -> !userMissionChatRoom.isUserChatRoom(userId))
@@ -104,6 +109,7 @@ public class ChatRoomService {
                 .toList();
     }
 
+    // 똑같은 채팅방 ID에 속한 값으로 채팅방 목록 응답 값을 생성한다.
     private List<MissionChatRoomFindResponse> makeMissionChatRoomResponse(
             List<UserChatRoomQueryResponse> receiverChatRoomInfos,
             List<ChatMessage> latestMessagesByChatRoomIds
@@ -127,14 +133,6 @@ public class ChatRoomService {
         return result;
     }
 
-    public MissionChatRoomCreateResponse findOne(
-            Long missionChatRoomId
-    ) {
-        var missionChatRoom = missionChatRoomReader.findById(missionChatRoomId);
-
-        return MissionChatRoomCreateResponse.from(missionChatRoom);
-    }
-
     private UserMissionChatRoom getUserChatRoom(
             Long userId,
             List<UserMissionChatRoom> findMissionChatRooms
@@ -146,5 +144,13 @@ public class ChatRoomService {
                     log.warn("유저 채팅방 조회에 대한 접근이 잘못되었습니다.");
                     return new IllegalArgumentException(ErrorCode.T_001.name());
                 });
+    }
+
+    public MissionChatRoomCreateResponse findOne(
+            Long missionChatRoomId
+    ) {
+        var missionChatRoom = missionChatRoomReader.findById(missionChatRoomId);
+
+        return MissionChatRoomCreateResponse.from(missionChatRoom);
     }
 }
