@@ -19,6 +19,7 @@ import com.sixheroes.onedayheromongo.chat.repository.ChatMessageMongoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class ChatRoomService {
 
@@ -38,6 +40,7 @@ public class ChatRoomService {
     private final MissionChatRoomRedisRepository missionChatRoomRedisRepository;
     private final ChatMessageMongoRepository chatMessageMongoRepository;
 
+    @Transactional
     public MissionChatRoomCreateResponse createChatRoom(
             CreateMissionChatRoomServiceRequest request
     ) {
@@ -64,6 +67,7 @@ public class ChatRoomService {
         return missionChatRoomFindResponses;
     }
 
+    @Transactional
     public MissionChatRoomExitResponse exitChatRoom(
             Long chatRoomId,
             Long userId
