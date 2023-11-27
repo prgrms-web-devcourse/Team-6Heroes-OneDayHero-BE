@@ -6,6 +6,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 @Repository
@@ -27,9 +29,32 @@ public class RefreshTokenRepository {
         redisTemplate.opsForValue().set(key, value, duration);
     }
 
-    public String find(
+    public Optional<String> find(
             String key
     ) {
-        return redisTemplate.opsForValue().get(key);
+        return Optional.ofNullable(redisTemplate.opsForValue().get(key));
+    }
+
+    public void delete(
+            String key
+    ) {
+        redisTemplate.opsForValue().getAndDelete(key);
+    }
+
+    public void update(
+            String key,
+            String newValue,
+            Duration duration
+    ) {
+        redisTemplate.opsForValue().set(key, newValue, duration);
+    }
+
+    public Long getExpireMsTime(
+            String key
+    ) {
+        return redisTemplate.getExpire(
+                key,
+                TimeUnit.MILLISECONDS
+        );
     }
 }

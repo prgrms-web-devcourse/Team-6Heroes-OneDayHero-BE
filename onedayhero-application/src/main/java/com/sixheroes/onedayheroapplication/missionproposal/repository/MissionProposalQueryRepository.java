@@ -47,6 +47,7 @@ public class MissionProposalQueryRepository {
         List<MissionProposalQueryDto> content = jpaQueryFactory.select(Projections.constructor(MissionProposalQueryDto.class,
                     missionProposal.id,
                     mission.id,
+                    mission.citizenId,
                     mission.missionInfo.title,
                     mission.missionInfo.price,
                     mission.missionInfo.missionDate,

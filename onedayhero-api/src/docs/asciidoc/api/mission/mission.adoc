@@ -67,7 +67,7 @@ include::{snippets}/mission-completed-find/http-request.adoc[]
 include::{snippets}/mission-completed-find/http-response.adoc[]
 include::{snippets}/mission-completed-find/response-fields.adoc[]
 
-[[mission-ma-find]]
+[[mission-matching-find]]
 === 유저는 제안할 미션을 조회할 수 있다.
 
 ==== Http Request
@@ -135,3 +135,17 @@ include::{snippets}/mission-delete/request-fields.adoc[]
 
 include::{snippets}/mission-delete/http-response.adoc[]
 include::{snippets}/mission-delete/response-fields.adoc[]
+
+[[mission-around]]
+=== 유저는 반경 5km 이내에 있는 매칭중인 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-find-around/query-parameters.adoc[]
+include::{snippets}/mission-find-around/request-headers.adoc[]
+include::{snippets}/mission-find-around/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-find-around/http-response.adoc[]
+include::{snippets}/mission-find-around/response-fields.adoc[]

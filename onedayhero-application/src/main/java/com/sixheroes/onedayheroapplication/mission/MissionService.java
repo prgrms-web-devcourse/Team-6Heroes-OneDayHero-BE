@@ -3,6 +3,8 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageDirectoryProperties;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
+import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceRequest;
+import com.sixheroes.onedayheroapplication.mission.converter.PointConverter;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.repository.response.*;
@@ -10,15 +12,13 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionCreateServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.mission.response.MissionCompletedResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionIdResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionProgressResponse;
-import com.sixheroes.onedayheroapplication.mission.response.MissionResponse;
+import com.sixheroes.onedayheroapplication.mission.response.*;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse;
+import com.sixheroes.onedayherodomain.mission.repository.response.MissionAroundQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
 @Service
 public class MissionService {
 
+    private static final Integer DISTANCE = 5000;
+
     private final MissionCategoryReader missionCategoryReader;
     private final MissionReader missionReader;
     private final MissionRepository missionRepository;
@@ -55,9 +57,7 @@ public class MissionService {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = request.toEntity(missionCategory, serverTime);
 
-        log.info("미션을 받았습니다.");
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
-        log.info("이미지를 S3에 생성하였습니다.");
 
         var missionImages = imageResponse.stream()
                 .map(MissionImageMapper::createMissionImage)
@@ -66,7 +66,6 @@ public class MissionService {
         mission.addMissionImages(missionImages);
         var savedMission = missionRepository.save(mission);
 
-        log.info("미션을 저장하였습니다.");
         return MissionIdResponse.from(savedMission.getId());
     }
 
@@ -91,7 +90,7 @@ public class MissionService {
         return SliceResultConverter.consume(result, pageable);
     }
 
-    public Slice<MissionProgressResponse> findProgressMission(
+    public Slice<MissionProgressResponse> findProgressMissions(
             Pageable pageable,
             Long userId
     ) {
@@ -99,6 +98,17 @@ public class MissionService {
         var missionProgressResponses = makeProgressMissionResponseWithImages(sliceMissionProgressQueryResponses);
 
         return SliceResultConverter.consume(missionProgressResponses, pageable);
+    }
+
+    public Slice<MissionAroundResponse> findAroundMissions(
+            Pageable pageable,
+            UserPositionServiceRequest request
+    ) {
+        var point = PointConverter.pointToString(request.longitude(), request.latitude());
+        var aroundMissionQueryResponses = missionRepository.findAroundMissionByLocation(point, DISTANCE, pageable.getPageSize() + 1, pageable.getOffset());
+        var aroundMissionResponses = makeAroundMissionResponseWithImage(aroundMissionQueryResponses);
+
+        return SliceResultConverter.consume(aroundMissionResponses, pageable);
     }
 
     @Transactional
@@ -137,6 +147,7 @@ public class MissionService {
         return MissionIdResponse.from(mission.getId());
     }
 
+    @Transactional
     public MissionIdResponse completeMission(
             Long missionId,
             Long userId
@@ -147,7 +158,7 @@ public class MissionService {
         return MissionIdResponse.from(mission.getId());
     }
 
-    public Slice<MissionCompletedResponse> findCompletedMissionByUserId(
+    public Slice<MissionCompletedResponse> findCompletedMissionsByUserId(
             Pageable pageable,
             Long userId
     ) {
@@ -157,8 +168,8 @@ public class MissionService {
         return SliceResultConverter.consume(missionCompletedResponses, pageable);
     }
 
-    public MissionMatchingResponses findMatchingMissionByUserId(
-        Long userId
+    public MissionMatchingResponses findMatchingMissionsByUserId(
+            Long userId
     ) {
         var matchingMissions = missionQueryRepository.findMissionMatchingResponses(userId);
         var missionMatchingResponses = makeMatchingMissionResponseWithImages(matchingMissions);
@@ -189,6 +200,17 @@ public class MissionService {
                 }).collect(Collectors.toList());
     }
 
+    private List<MissionAroundResponse> makeAroundMissionResponseWithImage(
+            List<MissionAroundQueryResponse> queryResponse
+    ) {
+        return queryResponse.stream()
+                .map(response -> {
+                    var missionImages = missionImageRepository.findByMission_Id(response.getId());
+                    var thumbNailPath = missionImages.isEmpty() ? null : missionImages.get(0).getPath();
+                    return MissionAroundResponse.from(response, thumbNailPath);
+                }).collect(Collectors.toList());
+    }
+
     private List<MissionProgressResponse> makeProgressMissionResponseWithImages(
             List<MissionProgressQueryResponse> sliceMissionProgressQueryResponses
     ) {
@@ -214,26 +236,26 @@ public class MissionService {
     }
 
     private List<MissionMatchingResponse> makeMatchingMissionResponseWithImages(
-        List<MissionMatchingQueryResponse> missionMatchingQueryResponses
+            List<MissionMatchingQueryResponse> missionMatchingQueryResponses
     ) {
         var missionIds = missionMatchingQueryResponses.stream()
-            .map(MissionMatchingQueryResponse::id)
-            .toList();
+                .map(MissionMatchingQueryResponse::id)
+                .toList();
 
         var missionImageGroupingByMission = missionImageRepository.findByMissionIdIn(missionIds)
-            .stream()
-            .collect(Collectors.groupingBy(MissionImageResponse::missionId));
+                .stream()
+                .collect(Collectors.groupingBy(MissionImageResponse::missionId));
 
         return missionMatchingQueryResponses.stream()
-            .map(queryResponse -> {
-                var missionId = queryResponse.id();
-                var missionImage = Optional.ofNullable(missionImageGroupingByMission.get(missionId))
-                    .filter(Predicate.not(List::isEmpty))
-                    .map(list -> list.get(0).path())
-                    .orElse(null);
-                var isBookmarked = queryResponse.bookmarkId() != null;
-                return MissionMatchingResponse.from(queryResponse, missionImage, isBookmarked);
-            }).toList();
+                .map(queryResponse -> {
+                    var missionId = queryResponse.id();
+                    var missionImage = Optional.ofNullable(missionImageGroupingByMission.get(missionId))
+                            .filter(Predicate.not(List::isEmpty))
+                            .map(list -> list.get(0).path())
+                            .orElse(null);
+                    var isBookmarked = queryResponse.bookmarkId() != null;
+                    return MissionMatchingResponse.from(queryResponse, missionImage, isBookmarked);
+                }).toList();
     }
 
     private void deleteUserBookMarkByMissionId(

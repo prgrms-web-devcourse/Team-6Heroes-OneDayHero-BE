@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
 @Transactional(readOnly = true)
+@Service
 public class ChatRoomService {
 
     private static final int MAX_CAPACITY = 2;
@@ -65,6 +65,7 @@ public class ChatRoomService {
         return missionChatRoomFindResponses;
     }
 
+    @Transactional
     public MissionChatRoomExitResponse exitChatRoom(
             Long chatRoomId,
             Long userId
@@ -139,7 +140,10 @@ public class ChatRoomService {
         return findMissionChatRooms.stream()
                 .filter(userMissionChatRoom -> userMissionChatRoom.isUserChatRoom(userId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.T_001.name()));
+                .orElseThrow(() -> {
+                    log.warn("유저 채팅방 조회에 대한 접근이 잘못되었습니다.");
+                    return new IllegalArgumentException(ErrorCode.T_001.name());
+                });
     }
 
     public MissionChatRoomCreateResponse findOne(

@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.auth.infra;
+package com.sixheroes.onedayheroapplication.auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

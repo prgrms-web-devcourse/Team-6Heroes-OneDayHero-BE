@@ -1,7 +1,8 @@
 package com.sixheroes.onedayheroapi.auth;
 
 import com.sixheroes.onedayheroapi.auth.response.oauth.LoginRequest;
-import com.sixheroes.onedayheroapplication.auth.infra.AuthService;
+import com.sixheroes.onedayheroapplication.auth.TokenService;
+import com.sixheroes.onedayheroapplication.auth.reponse.ReissueTokenResponse;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +27,7 @@ public class AuthController {
 
     private final OauthProperties oauthProperties;
     private final OauthLoginFacadeService oauthLoginFacadeService;
+    private final TokenService tokenService;
 
     @PostMapping("/kakao/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginKakao(
@@ -42,14 +43,26 @@ public class AuthController {
         return loginOrSignUpResponse(loginResponse);
     }
 
-    @PostMapping("/reissue-token")
-    public void reIssueToken(
+    @GetMapping("/reissue-token")
+    public ResponseEntity<ApiResponse<ReissueTokenResponse>> reissueToken(
             @CookieValue(value = REFRESH_TOKEN) String refreshToken,
             HttpServletResponse response
     ) {
-        //TODO: refreshToken 존재 및 중복 사용 검증
-        //TODO: refreshToken 통해 새로운 refreshToken' 생성
-        //TODO: refreshToken 토큰과 refreshToken' 에 대해 체인 설정
+        var refreshTokenValue = tokenService.findRefreshTokenValue(refreshToken);
+
+        if (refreshTokenValue.isEmpty()) {
+            removeCookie(response);
+
+            return ResponseEntity.ok(ApiResponse.ok(ReissueTokenResponse.fail()));
+        }
+
+        var reissueTokenResponse = tokenService.rotation(
+                refreshToken,
+                refreshTokenValue.get()
+        );
+        setCookie(response, reissueTokenResponse.refreshToken());
+
+        return ResponseEntity.ok(ApiResponse.ok(reissueTokenResponse));
     }
 
     private ResponseEntity<ApiResponse<LoginResponse>> loginOrSignUpResponse(LoginResponse loginResponse) {
@@ -64,9 +77,17 @@ public class AuthController {
             HttpServletResponse response,
             String refreshToken
     ) {
-        Cookie cookie = new Cookie(REFRESH_TOKEN,  refreshToken);
+        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
         cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+    }
 
+    private void removeCookie(
+            HttpServletResponse response
+    ) {
+        Cookie cookie = new Cookie(REFRESH_TOKEN, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 }

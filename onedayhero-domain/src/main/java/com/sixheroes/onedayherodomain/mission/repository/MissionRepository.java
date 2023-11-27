@@ -2,6 +2,7 @@ package com.sixheroes.onedayherodomain.mission.repository;
 
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.repository.response.MainMissionQueryResponse;
+import com.sixheroes.onedayherodomain.mission.repository.response.MissionAroundQueryResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,39 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MissionRepository extends JpaRepository<Mission, Long> {
+
+    @Query(
+            value = """
+                    SELECT
+                          m.id,
+                          mc.id as missionCategoryId,
+                          mc.code as missionCategoryCode,
+                          mc.name as missionCategoryName,
+                          r.id as regionId,
+                          r.si,
+                          r.gu,
+                          r.dong,
+                          m.title,
+                          ST_AsText(m.location) as location,
+                          m.mission_date as missionDate,
+                          m.start_time as startTime,
+                          m.end_time as endTime,
+                          m.price as price
+                      FROM missions m
+                      JOIN m_categories mc ON m.category_id = mc.id
+                      JOIN regions r ON r.id = m.region_id
+                      WHERE ST_Contains(ST_Buffer(ST_GeomFromText(:pre_location, 4326), :distance), m.location)
+                      AND m.status = 'MATCHING'
+                      ORDER BY m.created_at ASC
+                      LIMIT :size OFFSET :page
+                    """, nativeQuery = true
+    )
+    List<MissionAroundQueryResponse> findAroundMissionByLocation(
+            @Param("pre_location") String preLocation,
+            @Param("distance") Integer distance,
+            @Param("size") Integer size,
+            @Param("page") Long page
+    );
 
     @Query(
             value = """

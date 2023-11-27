@@ -10,6 +10,7 @@ import java.time.LocalTime;
 public record MissionProposalQueryDto(
     Long missionProposalId,
     Long missionId,
+    Long citizenId,
     String title,
     Integer price,
     LocalDate missionDate,

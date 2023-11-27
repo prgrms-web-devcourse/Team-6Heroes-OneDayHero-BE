@@ -3,7 +3,8 @@ package com.sixheroes.onedayheroapi.auth;
 import com.sixheroes.onedayheroapi.auth.response.oauth.LoginRequest;
 import com.sixheroes.onedayheroapi.docs.OauthTestConfiguration;
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapplication.auth.infra.RefreshTokenGenerator;
+import com.sixheroes.onedayheroapplication.auth.TokenService;
+import com.sixheroes.onedayheroapplication.auth.RefreshTokenGenerator;
 import com.sixheroes.onedayheroapplication.oauth.OauthLoginFacadeService;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
@@ -39,9 +40,12 @@ class AuthControllerTest extends RestDocsSupport {
     @MockBean
     private OauthLoginFacadeService oauthLoginFacadeService;
 
+    @MockBean
+    private TokenService authService;
+
     @Override
     protected Object setController() {
-        return new AuthController(oauthProperties, oauthLoginFacadeService);
+        return new AuthController(oauthProperties, oauthLoginFacadeService, authService);
     }
 
     @DisplayName("카카오 로그인 테스트")
