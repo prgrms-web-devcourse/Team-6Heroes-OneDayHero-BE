@@ -18,6 +18,12 @@ public class BlacklistRepository {
         this.redisTemplate = redisTemplate;
     }
 
+    public Boolean exist(
+            String key
+    ) {
+        return redisTemplate.opsForValue().get(key) != null;
+    }
+
     public void save(
             String key,
             String value,

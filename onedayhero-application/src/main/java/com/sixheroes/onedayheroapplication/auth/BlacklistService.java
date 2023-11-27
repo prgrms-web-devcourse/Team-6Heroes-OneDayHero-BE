@@ -15,6 +15,12 @@ public class BlacklistService {
     private final BlacklistRepository blacklistRepository;
     private final JwtTokenManager jwtTokenManager;
 
+    public Boolean check(
+            String accessToken
+    ) {
+        return blacklistRepository.exist(accessToken);
+    }
+
     public void addBlacklist(
             Long userId,
             String accessToken
