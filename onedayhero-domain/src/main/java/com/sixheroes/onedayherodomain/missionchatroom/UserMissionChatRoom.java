@@ -7,7 +7,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_mission_chat_rooms")
@@ -52,14 +54,12 @@ public class UserMissionChatRoom extends BaseEntity {
         return this.userId.equals(userId);
     }
 
-    public boolean isJoined() {
-        return isJoined;
-    }
-
     public void exit() {
         if (!isJoined) {
             throw new IllegalStateException(ErrorCode.T_001.name());
         }
+
+        missionChatRoom.minusHeadCount();
         isJoined = false;
     }
 }

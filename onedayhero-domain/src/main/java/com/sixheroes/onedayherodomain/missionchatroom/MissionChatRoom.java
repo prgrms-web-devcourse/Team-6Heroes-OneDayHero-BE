@@ -74,4 +74,8 @@ public class MissionChatRoom extends BaseEntity {
             throw new IllegalArgumentException(ErrorCode.T_001.name());
         }
     }
+
+    public void minusHeadCount() {
+        this.headCount--;
+    }
 }
