@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 public record MissionForMissionProposalResponse(
         Long id,
 
+        Long citizenId,
+
         String status,
 
         Integer bookmarkCount,
@@ -39,6 +41,7 @@ public record MissionForMissionProposalResponse(
 
         return MissionForMissionProposalResponse.builder()
             .id(missionProposalQueryDto.missionId())
+            .citizenId(missionProposalQueryDto.citizenId())
             .status(missionProposalQueryDto.missionStatus().name())
             .createdAt(missionProposalQueryDto.missionCreatedAt())
             .region(region)

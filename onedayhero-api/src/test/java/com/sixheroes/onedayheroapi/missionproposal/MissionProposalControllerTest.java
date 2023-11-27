@@ -217,6 +217,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
             .andExpect(jsonPath("$.data.content[0].mission.bookmarkCount").value(missionProposal1.mission().bookmarkCount()))
             .andExpect(jsonPath("$.data.content[0].mission.status").value(missionProposal1.mission().status()))
             .andExpect(jsonPath("$.data.content[0].mission.id").value(missionProposal1.mission().id()))
+            .andExpect(jsonPath("$.data.content[0].mission.citizenId").value(missionProposal1.mission().citizenId()))
             .andExpect(jsonPath("$.data.content[0].mission.createdAt").value(DateTimeConverter.convertLocalDateTimeToString(missionProposal1.mission().createdAt())))
             .andExpect(jsonPath("$.data.content[0].mission.isBookmarked").value(missionProposal1.mission().isBookmarked()))
             .andExpect(jsonPath("$.data.content[0].mission.imagePath").value(missionProposal1.mission().imagePath()))
@@ -271,6 +272,8 @@ class MissionProposalControllerTest extends RestDocsSupport {
                         .description("미션 정보"),
                     fieldWithPath("data.content[].mission.id").type(JsonFieldType.NUMBER)
                         .description("미션 ID"),
+                    fieldWithPath("data.content[].mission.citizenId").type(JsonFieldType.NUMBER)
+                        .description("미션을 생성한 시민 ID"),
                     fieldWithPath("data.content[].mission.status").type(JsonFieldType.STRING)
                         .description("미션 상태"),
                     fieldWithPath("data.content[].mission.bookmarkCount").type(JsonFieldType.NUMBER)
@@ -373,6 +376,7 @@ class MissionProposalControllerTest extends RestDocsSupport {
     ) {
         return MissionForMissionProposalResponse.builder()
             .id(missionId)
+            .citizenId(1L)
             .status(missionStatus)
             .createdAt(missionCreatedAt)
             .bookmarkCount(5)
