@@ -26,7 +26,7 @@ public class SseController {
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(
         HttpServletRequest httpServletRequest,
-        HttpServletResponse httpServletResponse,
+        HttpServletResponse response,
         @AuthUser Long userId
     ) {
         var sseEmitter = sseEmitters.add(userId);
@@ -37,8 +37,7 @@ public class SseController {
             log.error("보내는데 오류났어요!");
             throw new RuntimeException(e);
         }
-        log.info("request : {}", httpServletRequest);
-        log.info("response : {}", httpServletResponse);
+        response.setHeader("X-Accel-Buffering", "no");
         sseEmitters.send(userId, DUMMY_DATA_NAME, DUMMY_DATA);
         return sseEmitter;
     }
