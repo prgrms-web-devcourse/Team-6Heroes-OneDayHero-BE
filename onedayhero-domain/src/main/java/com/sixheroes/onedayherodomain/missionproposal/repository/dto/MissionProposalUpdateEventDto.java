@@ -11,7 +11,7 @@ public record MissionProposalUpdateEventDto(
 
     public Map<String, Object> toMap() {
         return Map.ofEntries(
-                Map.entry("citizenNickname", this.heroNickname),
+                Map.entry("heroNickname", this.heroNickname),
                 Map.entry("missionId", this.missionId),
                 Map.entry("missionTitle", this.missionTitle)
         );

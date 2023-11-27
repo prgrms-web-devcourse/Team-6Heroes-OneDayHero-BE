@@ -3,6 +3,8 @@ package com.sixheroes.onedayheroapplication;
 import com.sixheroes.onedayheroapplication.alarm.AlarmService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.event.MissionEventService;
+import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
+import com.sixheroes.onedayheroapplication.missionmatch.event.MissionMatchEventService;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
 import com.sixheroes.onedayheroapplication.missionproposal.event.MissionProposalEventService;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
@@ -82,6 +84,12 @@ public abstract class IntegrationApplicationEventTest {
 
     @Autowired
     protected MissionMatchRepository missionMatchRepository;
+
+    @Autowired
+    protected MissionMatchService missionMatchService;
+
+    @Autowired
+    protected MissionMatchEventService missionMatchEventService;
 
     @BeforeAll
     public static void setUp(
