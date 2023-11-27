@@ -2,6 +2,7 @@ package com.sixheroes.onedayherodomain.missionchatroom;
 
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -71,7 +72,7 @@ public class MissionChatRoom extends BaseEntity {
     private void validUserCount(List<Long> userIds) {
         if (userIds.size() != 2) {
             log.debug("채팅방을 생성하는데 필요한 인원이 들어오지 않았습니다. userCount : {}", userIds.size());
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.INVALID_CREATE_CHAT);
         }
     }
 

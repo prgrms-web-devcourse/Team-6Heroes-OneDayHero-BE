@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.global.s3;
 
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +27,8 @@ public final class MultipartFileMapper {
                     try {
                         return mapToServiceRequest(multipartFile);
                     } catch (IOException e) {
-                        log.warn("이미지 업로드 과정에서 에러가 발생했습니다.");
-                        throw new RuntimeException(ErrorCode.S_001.name());
+                        log.error("이미지 업로드 과정에서 에러가 발생했습니다.");
+                        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
                     }
                 }).toList();
     }

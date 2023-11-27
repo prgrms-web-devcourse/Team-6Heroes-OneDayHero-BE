@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.user.User;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,13 +27,13 @@ public class UserReader {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 유저 아이디입니다. id : {}", userId);
-                    return new NoSuchElementException(ErrorCode.EUC_000.name());
+                    return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
     }
 
     public Slice<User> findHeroes(
-        String nickname,
-        Pageable pageable
+            String nickname,
+            Pageable pageable
     ) {
         return userRepository.findByNicknameAndIsHeroMode(SEARCH.formatted(nickname), pageable);
     }

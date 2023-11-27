@@ -7,6 +7,7 @@ import com.sixheroes.onedayheroapplication.chatroom.response.MissionChatRoomFind
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherochat.application.repository.request.MissionChatRoomRedisRequest;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.missionchatroom.MissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.UserMissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.repository.MissionChatRoomRepository;
@@ -141,8 +142,8 @@ public class ChatRoomService {
                 .filter(userMissionChatRoom -> userMissionChatRoom.isUserChatRoom(userId))
                 .findFirst()
                 .orElseThrow(() -> {
-                    log.warn("유저 채팅방 조회에 대한 접근이 잘못되었습니다.");
-                    return new IllegalArgumentException(ErrorCode.T_001.name());
+                    log.warn("타인의 유저 채팅방이 존재하지 않습니다. userId : {}", userId);
+                    return new EntityNotFoundException(ErrorCode.NOT_FOUND_MISSION_CHATROOM);
                 });
     }
 

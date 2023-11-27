@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +17,12 @@ class UserImageTest {
         // given
         var random = new Random();
         var originalName = random.ints('a', 'z' + 1)
-            .limit(260)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(260)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when
         var userImage = createUserImageWithOrignalName(originalName);
@@ -37,17 +37,16 @@ class UserImageTest {
         // given
         var random = new Random();
         var originalName = random.ints('a', 'z' + 1)
-            .limit(261)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(261)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when & then
         assertThatThrownBy(() -> createUserImageWithOrignalName(originalName))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EI_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("고유 이름의 길이가 100자 이하면 유저 이미지가 생성된다.")
@@ -56,12 +55,12 @@ class UserImageTest {
         // given
         var random = new Random();
         var uniqueName = random.ints('a', 'z' + 1)
-            .limit(100)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(100)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when
         var userImage = createUserImageWithUniqueName(uniqueName);
@@ -76,17 +75,16 @@ class UserImageTest {
         // given
         var random = new Random();
         var uniqueName = random.ints('a', 'z' + 1)
-            .limit(101)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(101)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when & then
         assertThatThrownBy(() -> createUserImageWithUniqueName(uniqueName))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EI_002.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("경로 이름의 길이가 250자 이하면 유저 이미지가 생성된다.")
@@ -95,12 +93,12 @@ class UserImageTest {
         // given
         var random = new Random();
         var path = random.ints('a', 'z' + 1)
-            .limit(250)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(250)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when
         var userImage = createUserImageWithPath(path);
@@ -115,57 +113,56 @@ class UserImageTest {
         // given
         var random = new Random();
         var path = random.ints('a', 'z' + 1)
-            .limit(251)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(251)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when & then
         assertThatThrownBy(() -> createUserImageWithPath(path))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EI_003.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     private UserImage createUserImageWithOrignalName(
-        String originalName
+            String originalName
     ) {
         return UserImage.createUserImage(
-            createUser(),
-            originalName,
-            "고유 이름",
-            "경로"
+                createUser(),
+                originalName,
+                "고유 이름",
+                "경로"
         );
     }
 
     private UserImage createUserImageWithUniqueName(
-        String uniqueName
+            String uniqueName
     ) {
         return UserImage.createUserImage(
-            createUser(),
-            "원본 이름",
-            uniqueName,
-            "경로"
+                createUser(),
+                "원본 이름",
+                uniqueName,
+                "경로"
         );
     }
 
     private UserImage createUserImageWithPath(
-        String path
+            String path
     ) {
         return UserImage.createUserImage(
-            createUser(),
-            "원본 이름",
-            "고유 이름",
-            path
+                createUser(),
+                "원본 이름",
+                "고유 이름",
+                path
         );
     }
 
     private User createUser() {
         return User.builder()
-            .email(Email.builder().email("123@abc.com").build())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .build();
+                .email(Email.builder().email("123@abc.com").build())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .build();
     }
 }

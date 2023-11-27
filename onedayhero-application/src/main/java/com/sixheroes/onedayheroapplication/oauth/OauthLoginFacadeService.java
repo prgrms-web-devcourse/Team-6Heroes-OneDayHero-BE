@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.auth.TokenService;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayheroapplication.oauth.response.LoginResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,6 @@ public class OauthLoginFacadeService {
             }
         }
 
-        throw new IllegalStateException(ErrorCode.L_001.name());
+        throw new BusinessException(ErrorCode.LOGIN_FAIL);
     }
 }

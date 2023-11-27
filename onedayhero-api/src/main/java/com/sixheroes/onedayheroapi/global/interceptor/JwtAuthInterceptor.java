@@ -3,15 +3,15 @@ package com.sixheroes.onedayheroapi.global.interceptor;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtTokenManager;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.auth.ExpiredTokenException;
+import com.sixheroes.onedayherocommon.exception.auth.InvalidAuthorizationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -38,7 +38,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         var authorizationHeader = getAuthorization(request);
 
         if (validateAuthorizationHeaderIsValid(authorizationHeader)) {
-            throw new IllegalStateException(ErrorCode.A_001.name());
+            throw new InvalidAuthorizationException(ErrorCode.UNAUTHORIZED_TOKEN_REQUEST);
         }
 
         try {
@@ -48,10 +48,10 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
             return true;
         } catch (ExpiredJwtException exception) {
 
-            throw new IllegalStateException(ErrorCode.A_002.name());
+            throw new ExpiredTokenException(ErrorCode.EXPIRED_TOKEN);
         } catch (JwtException exception) {
 
-            throw new IllegalStateException(ErrorCode.A_003.name());
+            throw new InvalidAuthorizationException(ErrorCode.UNAUTHORIZED_TOKEN_REQUEST);
         }
     }
 

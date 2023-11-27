@@ -2,8 +2,8 @@ package com.sixheroes.onedayherodomain.missionproposal;
 
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,10 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mission_proposals",
-    uniqueConstraints = {
-        // TODO 제약조건 위반 막기
-        @UniqueConstraint(columnNames = { "mission_id", "hero_id" })
-    }
+        uniqueConstraints = {
+                // TODO 제약조건 위반 막기
+                @UniqueConstraint(columnNames = {"mission_id", "hero_id"})
+        }
 )
 @Entity
 public class MissionProposal extends BaseEntity {
@@ -39,8 +39,8 @@ public class MissionProposal extends BaseEntity {
 
     @Builder
     private MissionProposal(
-        Long missionId,
-        Long heroId
+            Long missionId,
+            Long heroId
     ) {
         this.missionId = missionId;
         this.heroId = heroId;
@@ -48,7 +48,7 @@ public class MissionProposal extends BaseEntity {
     }
 
     public void changeMissionProposalStatusApprove(
-        Long userId
+            Long userId
     ) {
         validMissionProposalStatus();
         validHeroId(userId);
@@ -57,7 +57,7 @@ public class MissionProposal extends BaseEntity {
     }
 
     public void changeMissionProposalStatusReject(
-        Long userId
+            Long userId
     ) {
         validMissionProposalStatus();
         validHeroId(userId);
@@ -68,16 +68,16 @@ public class MissionProposal extends BaseEntity {
     private void validMissionProposalStatus() {
         if (!missionProposalStatus.isProposal()) {
             log.debug("미션 제안 중인 상태가 아닙니다. missionProposaltStatus : {}", missionProposalStatus);
-            throw new IllegalStateException(ErrorCode.EMP_002.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_PROPOSAL_STATUS);
         }
     }
 
     private void validHeroId(
-        Long userId
+            Long userId
     ) {
         if (!this.heroId.equals(userId)) {
             log.debug("요청한 유저는 미션을 제안 받은 히어로가 아닙니다. userId : {}, heroId : {}", userId, heroId);
-            throw new IllegalArgumentException(ErrorCode.EMP_001.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_PROPOSAL_HERO);
         }
     }
 }

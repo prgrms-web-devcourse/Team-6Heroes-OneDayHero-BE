@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,7 +71,7 @@ public class S3ImageUploadService {
         var boundaryIndex = originalName.indexOf(".");
 
         if (validateExtensionIsNotExist(boundaryIndex)) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.INVALID_IMAGE_FORMAT);
         }
 
         return originalName.substring(boundaryIndex);

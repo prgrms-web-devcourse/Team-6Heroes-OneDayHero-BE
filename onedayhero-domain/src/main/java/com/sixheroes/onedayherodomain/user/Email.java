@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -24,7 +25,7 @@ public class Email {
 
     @Builder
     private Email(
-        String email
+            String email
     ) {
         validCreateEmail(email);
 
@@ -32,27 +33,28 @@ public class Email {
     }
 
     private void validCreateEmail(
-        String email
+            String email
     ) {
         validEmailLength(email);
         validEmailRegex(email);
     }
+
     private void validEmailLength(
-        String email
+            String email
     ) {
         if (email.length() > 255) {
-            log.debug("email 길이가 255자를 초과했습니다. email.length() : {}", email.length());
-            throw new IllegalArgumentException(ErrorCode.EU_002.name());
+            log.warn("email 길이가 255자를 초과했습니다. email.length() : {}", email.length());
+            throw new BusinessException(ErrorCode.INVALID_USER_EMAIL_LENGTH);
         }
     }
 
     private void validEmailRegex(
-        String email
+            String email
     ) {
         var matcher = EMAIL_REGEX.matcher(email);
         if (!matcher.matches()) {
-            log.debug("email 형식이 올바르지 않습니다.");
-            throw new IllegalArgumentException(ErrorCode.EU_001.name());
+            log.warn("email 형식이 올바르지 않습니다.");
+            throw new BusinessException(ErrorCode.INVALID_USER_EMAIL);
         }
     }
 }
