@@ -103,6 +103,7 @@ public class AuthController {
             HttpServletResponse response
     ) {
         Cookie cookie = new Cookie(REFRESH_TOKEN, null);
+        cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
