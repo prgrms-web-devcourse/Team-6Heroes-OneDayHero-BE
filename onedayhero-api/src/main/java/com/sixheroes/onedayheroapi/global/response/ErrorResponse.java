@@ -35,7 +35,7 @@ public record ErrorResponse(
             final ErrorCode errorCode
     ) {
         return ErrorResponse.builder()
-                .code(errorCode.name())
+                .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .serverDateTime(LocalDateTime.now())
                 .build();
@@ -46,7 +46,7 @@ public record ErrorResponse(
             final BindException e
     ) {
         return ErrorResponse.builder()
-                .code(errorCode.name())
+                .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .errors(ValidationError.of(e.getBindingResult().getFieldErrors()))
                 .serverDateTime(LocalDateTime.now())
