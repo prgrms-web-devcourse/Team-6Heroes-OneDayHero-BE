@@ -229,6 +229,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
         var chatRoomId = 1L;
 
         var chatMessageApiResponses = List.of(ChatMessageApiResponse.builder()
+                        .senderId(2L)
                         .senderNickName("거북이")
                         .message("안녕하세요!")
                         .sentMessageTime(LocalDateTime.of(
@@ -236,6 +237,7 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                                 LocalTime.of(19, 25, 30)))
                         .build(),
                 ChatMessageApiResponse.builder()
+                        .senderId(3L)
                         .senderNickName("두루미")
                         .message("안녕하세요! 미션 내용 확인하고자합니다!")
                         .sentMessageTime(LocalDateTime.of(
@@ -265,12 +267,14 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                                         .description("HTTP 응답 코드"),
                                 fieldWithPath("data[]").type(JsonFieldType.ARRAY)
                                         .description("채팅방 메시지 배열"),
+                                fieldWithPath("data[].senderId").type(JsonFieldType.NUMBER)
+                                        .description("보낸 사람 아이디"),
                                 fieldWithPath("data[].senderNickName").type(JsonFieldType.STRING)
-                                        .description("채팅방 아이디"),
+                                        .description("보낸 사람 닉네임"),
                                 fieldWithPath("data[].message").type(JsonFieldType.STRING)
-                                        .description("미션 제목"),
+                                        .description("메시지"),
                                 fieldWithPath("data[].sentMessageTime").type(JsonFieldType.STRING)
-                                        .description("수신자 아이디")
+                                        .description("보낸 메시지 시간")
                                         .attributes(getDateTimeFormat()),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
                                         .description("서버 응답 시간")
@@ -278,9 +282,11 @@ public class ChatRoomControllerTest extends RestDocsSupport {
                         )))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data[0].senderId").value(chatMessageApiResponses.get(0).senderId()))
                 .andExpect(jsonPath("$.data[0].senderNickName").value(chatMessageApiResponses.get(0).senderNickName()))
                 .andExpect(jsonPath("$.data[0].message").value(chatMessageApiResponses.get(0).message()))
                 .andExpect(jsonPath("$.data[0].sentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(chatMessageApiResponses.get(0).sentMessageTime())))
+                .andExpect(jsonPath("$.data[1].senderId").value(chatMessageApiResponses.get(1).senderId()))
                 .andExpect(jsonPath("$.data[1].senderNickName").value(chatMessageApiResponses.get(1).senderNickName()))
                 .andExpect(jsonPath("$.data[1].message").value(chatMessageApiResponses.get(1).message()))
                 .andExpect(jsonPath("$.data[1].sentMessageTime").value(DateTimeConverter.convertLocalDateTimeToString(chatMessageApiResponses.get(1).sentMessageTime())))

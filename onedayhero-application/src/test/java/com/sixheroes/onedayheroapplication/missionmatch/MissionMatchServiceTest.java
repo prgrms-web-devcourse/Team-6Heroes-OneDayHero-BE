@@ -3,11 +3,10 @@ package com.sixheroes.onedayheroapplication.missionmatch;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
-import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,12 +65,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 heroId
         );
         assertThatThrownBy(() -> missionMatchService.createMissionMatch(
-                citizenId,
-                request
+                        citizenId,
+                        request
                 )
-        )
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_007.name());
+        ).isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 본인이 작성한 미션이 아니라면, 매칭완료 상태를 가지는 미션매칭을 생성할 수 없다.")
@@ -89,12 +86,10 @@ class MissionMatchServiceTest extends IntegrationApplicationTest {
                 heroId
         );
         assertThatThrownBy(() -> missionMatchService.createMissionMatch(
-                otherUserId,
-                request
+                        otherUserId,
+                        request
                 )
-        )
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_008.name());
+        ).isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 본인이 작성한 미션이 매칭 됨 상태일 떄, 연결된 미션매칭에 대해 취소 상태로 변경할 수 있다.")

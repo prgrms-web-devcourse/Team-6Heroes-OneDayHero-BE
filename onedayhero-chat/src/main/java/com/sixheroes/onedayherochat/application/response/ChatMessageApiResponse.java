@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ChatMessageApiResponse(
+        Long senderId,
+
         String senderNickName,
 
         String message,
@@ -20,6 +22,7 @@ public record ChatMessageApiResponse(
             ChatMessage chatMessage
     ) {
         return ChatMessageApiResponse.builder()
+                .senderId(chatMessage.getSenderId())
                 .senderNickName(chatMessage.getSenderNickName())
                 .message(chatMessage.getMessage())
                 .sentMessageTime(chatMessage.getSentMessageTime())

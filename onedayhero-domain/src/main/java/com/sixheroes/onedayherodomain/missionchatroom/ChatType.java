@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,7 @@ public enum ChatType {
         return Arrays.stream(values())
                 .filter((messageType) -> messageType.name().equals(name))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.T_001.name()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CHAT_TYPE));
     }
 
     public boolean isEnter() {

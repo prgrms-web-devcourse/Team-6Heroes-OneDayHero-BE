@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -32,9 +34,9 @@ public class UserFavoriteWorkingDay {
 
     @Builder
     private UserFavoriteWorkingDay(
-        List<Week> favoriteDate,
-        LocalTime favoriteStartTime,
-        LocalTime favoriteEndTime
+            List<Week> favoriteDate,
+            LocalTime favoriteStartTime,
+            LocalTime favoriteEndTime
     ) {
         validFavoriteStartBeforeThanEndTime(favoriteStartTime, favoriteEndTime);
 
@@ -44,12 +46,12 @@ public class UserFavoriteWorkingDay {
     }
 
     private void validFavoriteStartBeforeThanEndTime(
-        LocalTime favoriteStartTime,
-        LocalTime favoriteEndTime
+            LocalTime favoriteStartTime,
+            LocalTime favoriteEndTime
     ) {
-        if (favoriteStartTime.isAfter(favoriteEndTime)) {
+        if (Objects.nonNull(favoriteStartTime) && favoriteStartTime.isAfter(favoriteEndTime)) {
             log.debug("시작 시간은 종료 시간보다 미래이면 안됩니다. startDate = {}, endDate = {}", favoriteStartTime, favoriteEndTime);
-            throw new IllegalArgumentException(ErrorCode.EU_005.name());
+            throw new BusinessException(ErrorCode.INVALID_WORKING_TIME);
         }
     }
 }

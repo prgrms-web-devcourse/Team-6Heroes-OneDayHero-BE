@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapi.auth;
 
 import com.sixheroes.onedayheroapi.auth.response.oauth.LoginRequest;
+import com.sixheroes.onedayheroapi.global.argumentsresolver.authuser.AuthUser;
+import com.sixheroes.onedayheroapplication.auth.BlacklistService;
 import com.sixheroes.onedayheroapplication.auth.TokenService;
 import com.sixheroes.onedayheroapplication.auth.reponse.ReissueTokenResponse;
 import com.sixheroes.onedayheroapplication.oauth.OauthProperties;
@@ -12,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +32,7 @@ public class AuthController {
     private final OauthProperties oauthProperties;
     private final OauthLoginFacadeService oauthLoginFacadeService;
     private final TokenService tokenService;
+    private final BlacklistService blacklistService;
 
     @PostMapping("/kakao/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginKakao(
@@ -41,6 +46,18 @@ public class AuthController {
         setCookie(response, loginResponse.refreshToken());
 
         return loginOrSignUpResponse(loginResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @AuthUser Long userId,
+            @CookieValue(value = REFRESH_TOKEN) String refreshToken,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String header
+    ) {
+        tokenService.deleteRefreshToken(refreshToken);
+        blacklistService.addBlacklist(userId, getAccessToken(header));
+
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/reissue-token")
@@ -86,8 +103,13 @@ public class AuthController {
             HttpServletResponse response
     ) {
         Cookie cookie = new Cookie(REFRESH_TOKEN, null);
+        cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    private String getAccessToken(String header) {
+        return header.split(" ")[1].trim();
     }
 }

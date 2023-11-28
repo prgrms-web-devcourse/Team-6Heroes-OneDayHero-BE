@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.missionproposal;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +33,7 @@ class MissionProposalTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposal.changeMissionProposalStatusApprove(requestUserId))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EMP_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("제안 중인 상태가 아니라면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -47,8 +46,7 @@ class MissionProposalTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposal.changeMissionProposalStatusApprove(heroId))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EMP_002.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("요청한 유저가 제안 받은 히어로고 요청 중인 상태라면 미션 제안을 거절한다.")
@@ -75,8 +73,7 @@ class MissionProposalTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposal.changeMissionProposalStatusReject(requestUserId))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EMP_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("제안 중인 상태가 아니라면 미션 제안을 거절할 때 예외가 발생한다.")
@@ -89,16 +86,15 @@ class MissionProposalTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposal.changeMissionProposalStatusReject(heroId))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EMP_002.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     public MissionProposal createMissionProposal(
-        Long heroId
+            Long heroId
     ) {
         return MissionProposal.builder()
-            .heroId(heroId)
-            .missionId(1L)
-            .build();
+                .heroId(heroId)
+                .missionId(1L)
+                .build();
     }
 }

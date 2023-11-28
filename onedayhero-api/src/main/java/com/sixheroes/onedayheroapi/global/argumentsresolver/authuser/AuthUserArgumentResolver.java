@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.global.argumentsresolver.authuser;
 
 import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.auth.InvalidAuthorizationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -35,7 +36,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         var id = request.getAttribute(jwtProperties.getClaimId());
 
         if (ObjectUtils.isEmpty(id)) {
-            throw new IllegalStateException(ErrorCode.A_001.name());
+            throw new InvalidAuthorizationException(ErrorCode.UNAUTHORIZED_TOKEN_REQUEST);
         }
 
         return id;

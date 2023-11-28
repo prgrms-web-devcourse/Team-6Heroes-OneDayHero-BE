@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,6 +39,7 @@ public class SseEmitters {
         var sseEmitter = get(userId);
         try {
             sseEmitter.send(SseEmitter.event()
+                .id(LocalDateTime.now().toString())
                 .name(name)
                 .data(data)
             );
@@ -48,7 +50,7 @@ public class SseEmitters {
         }
     }
 
-    private SseEmitter get(
+    public SseEmitter get(
         Long userId
     ) {
         var sseEmitter = emitters.get(userId);

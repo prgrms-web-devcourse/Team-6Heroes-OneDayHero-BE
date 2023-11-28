@@ -11,6 +11,7 @@ import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.User;
 import com.sixheroes.onedayherodomain.user.UserImage;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -46,21 +46,21 @@ public class UserService {
     private final S3ImageDeleteService s3ImageDeleteService;
 
     private static final BiFunction<User, S3ImageUploadServiceResponse, UserImage> userImageMapper = (user, uploadServiceResponse) ->
-        UserImage.createUserImage(
-            user,
-            uploadServiceResponse.originalName(),
-            uploadServiceResponse.uniqueName(),
-            uploadServiceResponse.path()
-        );
+            UserImage.createUserImage(
+                    user,
+                    uploadServiceResponse.originalName(),
+                    uploadServiceResponse.uniqueName(),
+                    uploadServiceResponse.path()
+            );
 
     private static final Function<UserImage, S3ImageDeleteServiceRequest> s3ImageDeleteServiceRequestMapper = userImage ->
-        S3ImageDeleteServiceRequest.builder()
-            .imageId(userImage.getId())
-            .uniqueName(userImage.getUniqueName())
-            .build();
+            S3ImageDeleteServiceRequest.builder()
+                    .imageId(userImage.getId())
+                    .uniqueName(userImage.getUniqueName())
+                    .build();
 
     public UserResponse findUser(
-        Long userId
+            Long userId
     ) {
         var user = userReader.findOne(userId);
         var regions = regionReader.findByUser(user);
@@ -70,9 +70,9 @@ public class UserService {
 
     @Transactional
     public UserUpdateResponse updateUser(
-        Long userId,
-        UserServiceUpdateRequest userServiceUpdateRequest,
-        List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests
+            Long userId,
+            UserServiceUpdateRequest userServiceUpdateRequest,
+            List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests
     ) {
         var user = userReader.findOne(userId);
 
@@ -94,8 +94,8 @@ public class UserService {
 
     @Transactional
     public void deleteUserImage(
-        Long userId,
-        Long userImageId
+            Long userId,
+            Long userImageId
     ) {
         var userImage = userImageReader.findOne(userImageId);
 
@@ -109,7 +109,7 @@ public class UserService {
 
     @Transactional
     public UserUpdateResponse turnOnHeroMode(
-        Long userId
+            Long userId
     ) {
         var user = userReader.findOne(userId);
         user.changeHeroModeOn();
@@ -119,7 +119,7 @@ public class UserService {
 
     @Transactional
     public UserUpdateResponse turnOffHeroMode(
-        Long userId
+            Long userId
     ) {
         var user = userReader.findOne(userId);
         user.changeHeroModeOff();
@@ -128,18 +128,18 @@ public class UserService {
     }
 
     private void deleteUserRegions(
-        User user
+            User user
     ) {
         var findUserRegions = userRegionReader.findAll(user);
         userRegionRepository.deleteAllInBatch(findUserRegions);
     }
 
     private void insertUserRegions(
-        User user,
-        UserServiceUpdateRequest userServiceUpdateRequest
+            User user,
+            UserServiceUpdateRequest userServiceUpdateRequest
     ) {
         var regionIds = userServiceUpdateRequest.userFavoriteRegions();
-        if (regionIds.isEmpty()) {
+        if (Objects.nonNull(regionIds) && regionIds.isEmpty()) {
             return;
         }
 
@@ -151,30 +151,30 @@ public class UserService {
     }
 
     private void uploadUserImage(
-        List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests,
-        User user
+            List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests,
+            User user
     ) {
         var s3ImageUploadServiceResponses = s3ImageUploadService.uploadImages(s3ImageUploadServiceRequests, properties.getProfileDir());
         var userImages = s3ImageUploadServiceResponses.stream()
-            .map(res -> userImageMapper.apply(user, res))
-            .toList();
+                .map(res -> userImageMapper.apply(user, res))
+                .toList();
         userImageRepository.saveAll(userImages);
     }
 
     private void validRegions(
-        List<Long> regionIds,
-        List<Region> regions
+            List<Long> regionIds,
+            List<Region> regions
     ) {
         var notExistRegionIds = regionIds.stream()
-            .filter(id ->
-                regions.stream()
-                    .map(Region::getId)
-                    .noneMatch(regionId -> Objects.equals(regionId, id))
-            ).toList();
+                .filter(id ->
+                        regions.stream()
+                                .map(Region::getId)
+                                .noneMatch(regionId -> Objects.equals(regionId, id))
+                ).toList();
 
         if (!notExistRegionIds.isEmpty()) {
-            log.debug("존재하지 않는 지역 아이디입니다. regionIds = {}", notExistRegionIds);
-            throw new NoSuchElementException(ErrorCode.ER_000.name());
+            log.warn("존재하지 않는 지역 아이디입니다. regionIds = {}", notExistRegionIds);
+            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_REGION);
         }
     }
 }

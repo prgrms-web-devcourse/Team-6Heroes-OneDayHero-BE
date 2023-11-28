@@ -4,14 +4,13 @@ import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryReposi
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedEventQueryResponse;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class MissionReader {
         return missionRepository.findById(missionId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
-                    return new NoSuchElementException(ErrorCode.EM_008.name());
+                    return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
     }
 
@@ -37,7 +36,7 @@ public class MissionReader {
         return missionQueryRepository.fetchOne(missionId, userId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
-                    return new NoSuchElementException(ErrorCode.EM_008.name());
+                    return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
     }
 
@@ -47,7 +46,7 @@ public class MissionReader {
         return missionQueryRepository.findMissionCompletedEvent(missionId)
             .orElseThrow(() -> {
                 log.debug("존재하지 않는 미션 아이디가 입력되었습니다. id : {}", missionId);
-                return new NoSuchElementException(ErrorCode.EM_008.name());
+                return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
             });
     }
 }

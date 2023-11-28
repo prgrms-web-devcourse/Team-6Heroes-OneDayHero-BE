@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.region;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
 import com.sixheroes.onedayherodomain.user.User;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,19 +23,19 @@ public class RegionReader {
     public Region findOne(Long regionId) {
         return regionRepository.findById(regionId)
                 .orElseThrow(() -> {
-                    log.debug("regionId에 해당하는 지역을 찾지 못하였습니다. regionId : {}", regionId);
-                    return new NoSuchElementException(ErrorCode.T_001.name());
+                    log.warn("regionId에 해당하는 지역을 찾지 못하였습니다. regionId : {}", regionId);
+                    return new EntityNotFoundException(ErrorCode.NOT_FOUND_REGION);
                 });
     }
 
     public List<Region> findAll(
-        List<Long> regionIds
+            List<Long> regionIds
     ) {
         return regionRepository.findAllById(regionIds);
     }
 
     public List<Region> findByUser(
-        User user
+            User user
     ) {
         return regionRepository.findByUser(user);
     }
