@@ -604,7 +604,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Set-Cookie: refreshToken=cb7afd33-b838-4a85-b252-ea91df22325d; HttpOnly
+Set-Cookie: refreshToken=18d589bc-13db-4eab-9288-f3210586a873; HttpOnly
 Location:
 Content-Type: application/json;charset=UTF-8
 Content-Length: 134
@@ -615,7 +615,7 @@ Content-Length: 134
     "userId" : 1,
     "accessToken" : "accessToken"
   },
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -731,7 +731,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=8bfce315-c78a-4f7d-9b37-cc5a44727c82; HttpOnly
+Set-Cookie: refreshToken=a4c5fd0b-2c74-4ce7-a52e-63f7f719d095; HttpOnly
 Content-Type: application/json;charset=UTF-8
 Content-Length: 134
 
@@ -741,7 +741,7 @@ Content-Length: 134
     "userId" : 1,
     "accessToken" : "accessToken"
   },
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -882,7 +882,7 @@ Content-Length: 781
     "heroScore" : 30,
     "isHeroMode" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -1088,7 +1088,7 @@ Host: localhost:8080
 Content-Disposition: form-data; name=userUpdateRequest; filename=json
 Content-Type: application/json
 
-{"basicInfo":{"nickname":"이름","gender":"MALE","birth":"1990-01-01","introduce":"자기 소개"},"favoriteWorkingDay":{"favoriteDate":["MON","THU"],"favoriteStartTime":"12:00","favoriteEndTime":"18:00"},"favoriteRegions":[1,2]}
+{"basicInfo":{"nickname":"이름","gender":"MALE","birth":"1990-01-01","introduce":"자기 소개"},"userImageId":1,"favoriteWorkingDay":{"favoriteDate":["MON","THU"],"favoriteStartTime":"12:00","favoriteEndTime":"18:00"},"favoriteRegions":[1,2]}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=images; filename=imageA.jpeg
 Content-Type: image/jpeg
@@ -1155,6 +1155,11 @@ Content-Type: image/jpeg
 <td class="tableblock halign-left valign-top"><p class="tableblock">자기 소개</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userImageId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유저의 이미지 아이디</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>favoriteWorkingDay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">희망 근무 정보</p></td>
@@ -1195,7 +1200,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -1515,7 +1520,7 @@ Content-Length: 2193
       "empty" : false
     }
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -1893,7 +1898,7 @@ Content-Length: 1130
       "starScore" : 3,
       "senderNickname" : "리뷰 작성자 닉네임",
       "profileImage" : [ "s3 프로필 이미지 주소" ],
-      "createdAt" : "2023-11-28T16:02:28"
+      "createdAt" : "2023-11-28T16:11:24"
     }, {
       "reviewId" : 2,
       "categoryName" : "청소",
@@ -1901,7 +1906,7 @@ Content-Length: 1130
       "starScore" : 4,
       "senderNickname" : "리뷰 작성자 닉네임",
       "profileImage" : [ "s3 프로필 이미지 주소" ],
-      "createdAt" : "2023-11-28T16:02:28"
+      "createdAt" : "2023-11-28T16:11:24"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -1927,7 +1932,7 @@ Content-Length: 1130
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -2243,7 +2248,7 @@ Content-Length: 1142
       "categoryName" : "청소",
       "missionTitle" : "청소 미션",
       "starScore" : 4,
-      "createdAt" : "2023-11-28T16:02:28"
+      "createdAt" : "2023-11-28T16:11:24"
     }, {
       "reviewId" : 2,
       "senderId" : 8,
@@ -2252,7 +2257,7 @@ Content-Length: 1142
       "categoryName" : "심부름",
       "missionTitle" : "심부름 미션",
       "starScore" : 3,
-      "createdAt" : "2023-11-28T16:02:28"
+      "createdAt" : "2023-11-28T16:11:24"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -2278,7 +2283,7 @@ Content-Length: 1142
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -2568,7 +2573,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -2669,7 +2674,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:24"
 }</code></pre>
 </div>
 </div>
@@ -2785,7 +2790,7 @@ Content-Length: 335
     },
     "heroScore" : 60
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -2969,7 +2974,7 @@ Content-Length: 756
     } ],
     "heroScore" : 60
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -3263,7 +3268,7 @@ Content-Length: 1432
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:28"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -3660,7 +3665,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -3807,7 +3812,7 @@ Content-Length: 755
     "paths" : [ "path://1", "path://2" ],
     "isBookmarked" : true
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -4195,7 +4200,7 @@ Content-Length: 2029
     "last" : true,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -4659,7 +4664,7 @@ Content-Length: 874
     "last" : true,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -5006,7 +5011,7 @@ Content-Length: 874
     "last" : true,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -5363,7 +5368,7 @@ Content-Length: 1276
       "isBookmarked" : true
     } ]
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -5711,7 +5716,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -5887,7 +5892,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -6025,7 +6030,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -6164,7 +6169,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -6357,7 +6362,7 @@ Content-Length: 1666
     "last" : true,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -6757,7 +6762,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -6891,7 +6896,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -7035,7 +7040,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -7171,7 +7176,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -7321,7 +7326,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -7440,7 +7445,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -7540,7 +7545,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -7673,7 +7678,7 @@ Content-Length: 4034
         "status" : "MATCHING",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-28T16:02:27",
+        "createdAt" : "2023-11-28T16:11:23",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7700,7 +7705,7 @@ Content-Length: 4034
         "status" : "MATCHING",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-27T16:02:27",
+        "createdAt" : "2023-11-27T16:11:23",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7727,7 +7732,7 @@ Content-Length: 4034
         "status" : "MATCHING_COMPLETED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-25T16:02:27",
+        "createdAt" : "2023-11-25T16:11:23",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7754,7 +7759,7 @@ Content-Length: 4034
         "status" : "MISSION_COMPLETED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-26T16:02:27",
+        "createdAt" : "2023-11-26T16:11:23",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7781,7 +7786,7 @@ Content-Length: 4034
         "status" : "EXPIRED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-25T16:02:27",
+        "createdAt" : "2023-11-25T16:11:23",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7825,7 +7830,7 @@ Content-Length: 4034
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -8270,7 +8275,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -8392,7 +8397,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -8513,9 +8518,9 @@ Content-Length: 719
       "uniqueName" : "B",
       "path" : "S3 이미지 주소B"
     } ],
-    "createdAt" : "2023-11-28T16:02:27"
+    "createdAt" : "2023-11-28T16:11:23"
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -8719,7 +8724,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -8803,7 +8808,7 @@ Content-Length: 1142
       "categoryName" : "청소",
       "missionTitle" : "청소 미션",
       "starScore" : 4,
-      "createdAt" : "2023-11-28T16:02:27"
+      "createdAt" : "2023-11-28T16:11:23"
     }, {
       "reviewId" : 2,
       "senderId" : 8,
@@ -8812,7 +8817,7 @@ Content-Length: 1142
       "categoryName" : "심부름",
       "missionTitle" : "심부름 미션",
       "starScore" : 3,
-      "createdAt" : "2023-11-28T16:02:27"
+      "createdAt" : "2023-11-28T16:11:23"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -8838,7 +8843,7 @@ Content-Length: 1142
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>
@@ -9206,7 +9211,7 @@ Content-Length: 1299
       "isBookmarked" : false
     } ]
   },
-  "serverDateTime" : "2023-11-28T16:02:26"
+  "serverDateTime" : "2023-11-28T16:11:22"
 }</code></pre>
 </div>
 </div>
@@ -9496,22 +9501,22 @@ Content-Length: 1245
   "status" : 200,
   "data" : {
     "content" : [ {
-      "id" : "0123adb4-75f0-4bc7-9a4d-508c97a06661",
+      "id" : "dc3fea1f-1974-4dc1-a7f4-d06b9af4d1a6",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-21T12:00:00"
     }, {
-      "id" : "f56be5ad-008f-4f88-856e-8a0ac31cbe73",
+      "id" : "8b94c210-ffb8-4136-8310-f745d9606c75",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-21T10:00:00"
     }, {
-      "id" : "729da4be-aab7-4e8a-bfd7-2ae4f1426271",
+      "id" : "a06d9051-dfb6-4d03-b4ef-a8f4cd2a9eb0",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-20T12:00:00"
     }, {
-      "id" : "d982721a-69a8-4f0b-965e-5db549cce1fc",
+      "id" : "1fa00524-052c-4c66-8f88-b53c54738301",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-14T12:00:00"
@@ -9540,7 +9545,7 @@ Content-Length: 1245
     "last" : false,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -9764,7 +9769,7 @@ Content-Length: 1245
 <h4 id="_http_request_39"><a class="link" href="#_http_request_39">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/alarms/cc5da4b7-8c6e-490e-a1d3-f30750080325 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/alarms/86170619-fcfb-46c9-9f24-33ba4a500299 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
 Host: localhost:8080</code></pre>
@@ -9819,7 +9824,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -9946,7 +9951,7 @@ Content-Length: 137
     "missionId" : 1,
     "headCount" : 2
   },
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -10081,7 +10086,7 @@ Content-Length: 840
     "headCount" : 2,
     "lastSentMessageTime" : "2023-11-12T12:00:00"
   } ],
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -10272,7 +10277,7 @@ Content-Length: 409
     "message" : "안녕하세요! 미션 내용 확인하고자합니다!",
     "sentMessageTime" : "2023-11-26T19:27:00"
   } ],
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -10418,7 +10423,7 @@ Content-Length: 134
     "userId" : 1,
     "missionId" : 1
   },
-  "serverDateTime" : "2023-11-28T16:02:25"
+  "serverDateTime" : "2023-11-28T16:11:21"
 }</code></pre>
 </div>
 </div>
@@ -10538,7 +10543,7 @@ Content-Length: 472
       } ]
     } ]
   } ],
-  "serverDateTime" : "2023-11-28T16:02:27"
+  "serverDateTime" : "2023-11-28T16:11:23"
 }</code></pre>
 </div>
 </div>

@@ -67,6 +67,8 @@ class UserServiceTest extends IntegrationApplicationTest {
         // given
         var user = createUser();
         var savedUser = userRepository.save(user);
+        var userImage = createUserImage(user);
+        userImageRepository.save(userImage);
 
         var nickname = "바뀐 이름";
         var gender = "FEMALE";
@@ -90,16 +92,26 @@ class UserServiceTest extends IntegrationApplicationTest {
         var s3ImageUploadServiceRequest = new S3ImageUploadServiceRequest(images.getInputStream(), images.getOriginalFilename(), images.getContentType(), images.getSize());
         var s3ImageUploadServiceRequests = List.of(s3ImageUploadServiceRequest);
 
-        var s3ImageUploadServiceResponses = List.of(new S3ImageUploadServiceResponse("원본 이름", "고유 이름", "https://"));
+        var changedOriginalName = "수정할 원본 이름";
+        var changedUniqueName = "수정할 고유 이름";
+        var changedPath = "https://changed";
+        var s3ImageUploadServiceResponses = List.of(new S3ImageUploadServiceResponse(changedOriginalName, changedUniqueName, changedPath));
 
-        given(s3ImageUploadService.uploadImages(anyList(), anyString())).willReturn(s3ImageUploadServiceResponses);
+        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(List.of(new S3ImageDeleteServiceResponse(1L)));
+        given(s3ImageUploadService.uploadImages(anyList(), isNull())).willReturn(s3ImageUploadServiceResponses);
 
         // when
         var userUpdateResponse = userService.updateUser(user.getId(), userServiceUpdateRequest, s3ImageUploadServiceRequests);
 
         // then
         assertThat(userUpdateResponse.id()).isEqualTo(savedUser.getId());
+        assertThat(userRegionRepository.findAllByUser(savedUser)).hasSize(regionIds.size());
+        var userImageByUserId = userImageRepository.findUserImageByUser_Id(savedUser.getId());
+        assertThat(userImageByUserId).isNotEmpty();
+        assertThat(userImageByUserId.get()).extracting("originalName", "uniqueName", "path")
+                .containsExactly(changedOriginalName, changedUniqueName, changedPath);
         verify(s3ImageUploadService, times(1)).uploadImages(anyList(), isNull());
+        verify(s3ImageDeleteService, times(1)).deleteImages(anyList());
     }
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
@@ -256,45 +268,6 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
-    @DisplayName("유저의 프로필 이미지를 삭제한다.")
-    @Test
-    void deleteUserImage() {
-        // given
-        var user = createUser();
-        userRepository.save(user);
-
-        var userImage = createUserImage(user);
-        userImageRepository.save(userImage);
-
-        var s3ImageDeleteServiceResponses = List.of(new S3ImageDeleteServiceResponse(userImage.getId()));
-
-        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(s3ImageDeleteServiceResponses);
-
-        // when
-        userService.deleteUserImage(user.getId(), userImage.getId());
-
-        // then
-        verify(s3ImageDeleteService, times(1)).deleteImages(anyList());
-    }
-
-    @DisplayName("유저의 프로필 이미지를 삭제할 때 존재하지 않는 유저 이미지라면 예외가 발생한다.")
-    @Test
-    void deleteUserImageWhenNotExist() {
-        // given
-        var user = createUser();
-        userRepository.save(user);
-        var userId = user.getId();
-
-        var notExistUserImageId = 1L;
-        var s3ImageDeleteServiceResponses = List.of(new S3ImageDeleteServiceResponse(notExistUserImageId));
-
-        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(s3ImageDeleteServiceResponses);
-
-        // when & then
-        assertThatThrownBy(() -> userService.deleteUserImage(userId, notExistUserImageId))
-                .isInstanceOf(EntityNotFoundException.class);
-    }
-
     private UserImage createUserImage(
             User user
     ) {
@@ -354,10 +327,11 @@ class UserServiceTest extends IntegrationApplicationTest {
 
     private UserServiceUpdateRequest createUserServiceUpdateRequest(UserBasicInfoServiceRequest userBasicInfoServiceDto, UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDayServiceDto, List<Long> regionIds) {
         return UserServiceUpdateRequest.builder()
-                .userBasicInfo(userBasicInfoServiceDto)
-                .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-                .userFavoriteRegions(regionIds)
-                .build();
+            .userBasicInfo(userBasicInfoServiceDto)
+            .userImageId(null)
+            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+            .userFavoriteRegions(regionIds)
+            .build();
     }
 
     private UserFavoriteWorkingDayServiceRequest createUserFavoriteWorkingDayServiceRequest(List<String> favoriteDate, LocalTime favoriteStartTime, LocalTime favoriteEndTime) {
