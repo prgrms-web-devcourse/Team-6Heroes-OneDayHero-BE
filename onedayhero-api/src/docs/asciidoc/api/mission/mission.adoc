@@ -149,3 +149,17 @@ include::{snippets}/mission-find-around/http-request.adoc[]
 
 include::{snippets}/mission-find-around/http-response.adoc[]
 include::{snippets}/mission-find-around/response-fields.adoc[]
+
+[[mission-image]]
+=== 유저는 등록했던 미션 이미지를 삭제 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-image-delete/path-parameters.adoc[]
+include::{snippets}/mission-image-delete/request-headers.adoc[]
+include::{snippets}/mission-image-delete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-image-delete/http-response.adoc[]
+include::{snippets}/mission-image-delete/response-fields.adoc[]

@@ -61,7 +61,8 @@ public abstract class RestDocsSupport {
                         "/api/v1/me/bookmarks",
                         "/api/v1/reviews/**",
                         "/api/v1/missions/**",
-                        "/api/v1/main"
+                        "/api/v1/main",
+                        "/api/v1/mission-images/**"
                 }, new JwtAuthInterceptor(jwtProperties, jwtTokenManager))
                 .build();
     }

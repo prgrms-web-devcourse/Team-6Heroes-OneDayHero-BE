@@ -32,10 +32,12 @@ public class MissionImage extends BaseEntity {
 
     @Builder
     private MissionImage(
+            Mission mission,
             String originalName,
             String uniqueName,
             String path
     ) {
+        this.mission = mission;
         this.originalName = originalName;
         this.uniqueName = uniqueName;
         this.path = path;
@@ -45,6 +47,10 @@ public class MissionImage extends BaseEntity {
             Mission mission
     ) {
         this.mission = mission;
+    }
+
+    public void validOwn(Long userId) {
+        mission.validOwn(userId);
     }
 
     public static MissionImage createMissionImage(

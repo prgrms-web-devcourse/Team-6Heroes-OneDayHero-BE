@@ -216,7 +216,7 @@ public class Mission extends BaseEntity {
         this.missionStatus = missionStatus;
     }
 
-    private void validOwn(
+    public void validOwn(
             Long userId
     ) {
         if (!this.citizenId.equals(userId)) {
