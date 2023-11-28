@@ -50,7 +50,7 @@ class ProfileControllerTest extends RestDocsSupport {
         var userId = 1L;
 
         var userBasicInfoResponse = new ProfileCitizenResponse.UserBasicInfoForProfileCitizenResponse("이름", "MALE", LocalDate.of(1990, 1, 1));
-        var userImageResponse = new UserImageResponse("profile.jpg", "unique.jpg", "https://");
+        var userImageResponse = new UserImageResponse(1L, "profile.jpg", "unique.jpg", "https://");
         var heroScore = 60;
 
         var profileCitizenResponse = new ProfileCitizenResponse(userBasicInfoResponse, userImageResponse, heroScore);
@@ -94,6 +94,9 @@ class ProfileControllerTest extends RestDocsSupport {
                         .attributes(getDateFormat())
                         .description("태어난 날짜"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
+                    fieldWithPath("data.image.id").type(JsonFieldType.NUMBER)
+                        .optional()
+                        .description("이미지 아이디"),
                     fieldWithPath("data.image.originalName").type(JsonFieldType.STRING)
                         .optional()
                         .description("원본 이름"),
@@ -168,6 +171,9 @@ class ProfileControllerTest extends RestDocsSupport {
                         .optional()
                         .description("자기 소개"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
+                    fieldWithPath("data.image.id").type(JsonFieldType.NUMBER)
+                        .optional()
+                        .description("이미지 아이디"),
                     fieldWithPath("data.image.originalName")
                         .type(JsonFieldType.STRING)
                         .optional()
@@ -273,6 +279,9 @@ class ProfileControllerTest extends RestDocsSupport {
                     fieldWithPath("data.content[].image.originalName").type(JsonFieldType.STRING)
                         .description("이미지 원본 이름")
                         .optional(),
+                    fieldWithPath("data.content[].image.id").type(JsonFieldType.NUMBER)
+                        .optional()
+                        .description("이미지 아이디"),
                     fieldWithPath("data.content[].image.uniqueName").type(JsonFieldType.STRING)
                         .description("이미지 고유 이름")
                         .optional(),
@@ -394,7 +403,7 @@ class ProfileControllerTest extends RestDocsSupport {
     }
 
     private UserImageResponse createUserImageResponse() {
-        return new UserImageResponse("profile.jpg", "unique.jpg", "https://");
+        return new UserImageResponse(1L, "profile.jpg", "unique.jpg", "https://");
     }
 
     private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {
