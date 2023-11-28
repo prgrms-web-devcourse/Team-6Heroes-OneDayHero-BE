@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.mission;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,8 +36,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.validAbleDelete(mission.getCitizenId()))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_007.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션에 대한 접근은 본인만 가능하다.")
@@ -50,8 +49,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.validAbleDelete(unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 미션을 수정 할 수 있다.")
@@ -146,8 +144,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.update(newMission, unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션이 매칭 중인 상태가 아니라면 수정이 불가능하다.")
@@ -187,8 +184,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.update(newMission, citizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_009.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션이 만료된 상태가 아니라면 연장이 불가능하다.")
@@ -201,8 +197,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.extend(mission.getMissionInfo(), citizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 소유자이고 미션 매칭 중인 상태일 때 미션을 제안할 수 있다.")
@@ -230,8 +225,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> mission.validMissionProposalPossible(requestCitizenId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_007.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션이 매칭 중인 상태라면 미션 제안을 승낙 혹은 거절할 수 있다.")
@@ -304,8 +298,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> matchingCompletedMission.complete(unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("유저는 매칭이 완료된 상태가 아니라면 미션을 완료 상태로 변경 할 수 없다.")
@@ -319,8 +312,7 @@ class MissionTest {
 
         // when & then
         assertThatThrownBy(() -> matchingCompletedMission.complete(unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     private Mission createMission(

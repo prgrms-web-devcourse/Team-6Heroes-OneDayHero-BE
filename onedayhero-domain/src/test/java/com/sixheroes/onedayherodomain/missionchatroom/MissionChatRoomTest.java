@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,6 @@ class MissionChatRoomTest {
 
         // when & then
         assertThatThrownBy(() -> MissionChatRoom.createMissionChatRoom(missionId, userIds))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 }

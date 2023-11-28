@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.mission;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -41,8 +42,6 @@ public class MissionInfo {
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    //TODO : Refactoring
-    //많은 검증 로직을 Embeddable로 바꿔서 검증 로직 분리
     @Builder
     private MissionInfo(
             String title,
@@ -68,11 +67,12 @@ public class MissionInfo {
         this.price = price;
     }
 
-    public MissionInfo extend(LocalDate missionDate,
-                              LocalTime startTime,
-                              LocalTime endTime,
-                              LocalDateTime deadlineTime,
-                              LocalDateTime serverTime
+    public MissionInfo extend(
+            LocalDate missionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalDateTime deadlineTime,
+            LocalDateTime serverTime
     ) {
         validMissionDateTimeInRange(missionDate, startTime, endTime, deadlineTime, serverTime);
         this.missionDate = missionDate;
@@ -91,14 +91,14 @@ public class MissionInfo {
     private void validTitleIsEmpty(String title) {
         if (!StringUtils.hasText(title)) {
             log.warn("미션의 제목은 null 이거나 공백 일 수 없습니다. title : {}", title);
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_TITLE);
         }
     }
 
     private void validTitleInRange(String title) {
         if (title.length() > 100) {
             log.warn("미션의 제목의 길이는 100자 이하여야합니다. title 길이 : {}", title.length());
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_TITLE_LENGTH);
         }
     }
 
@@ -114,17 +114,17 @@ public class MissionInfo {
 
         if (missionDate.isBefore(serverTime.toLocalDate())) {
             log.warn("미션의 수행 날짜가 현재 날짜보다 이전 일 수 없습니다. 수행 일 : {}, 현재 날짜 : {}", missionDate, serverTime.toLocalDate());
-            throw new IllegalArgumentException(ErrorCode.EM_003.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_DATE);
         }
 
         if (endDateTime.isBefore(startDateTime)) {
             log.warn("미션의 종료 시간이 시작 시간보다 이전 일 수 없습니다. 시작 시간 : {}, 종료 시간 : {}", startDateTime, endDateTime);
-            throw new IllegalArgumentException(ErrorCode.EM_004.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_END_TIME);
         }
 
         if (deadlineTime.isAfter(startDateTime)) {
             log.warn("미션의 마감 시간이 시작 시간 이후 일 수 없습니다. 시작 시간 : {}, 마감 시간 : {}", startDateTime, deadlineTime);
-            throw new IllegalArgumentException(ErrorCode.EM_005.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_DEADLINE_TIME);
         }
     }
 
@@ -138,21 +138,21 @@ public class MissionInfo {
     private void validContentIsBlank(String content) {
         if (!StringUtils.hasText(content)) {
             log.warn("미션의 콘텐츠는 null 이거나 공백 일 수 없습니다. content : {}", content);
-            throw new IllegalArgumentException(ErrorCode.EM_001.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_CONTENT);
         }
     }
 
     private void validContentInRange(String content) {
         if (content.length() > 1000) {
             log.warn("미션의 콘텐츠의 길이는 1000자 이하여야합니다. contentSize : {}", content.length());
-            throw new IllegalArgumentException(ErrorCode.EM_002.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_CONTENT_LENGTH);
         }
     }
 
     private void validPriceIsPositive(Integer price) {
         if (price < 0) {
             log.warn("미션의 포상금은 0원 이상이어야 합니다. price : {}", price);
-            throw new IllegalArgumentException(ErrorCode.EM_006.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_PRICE);
         }
     }
 }

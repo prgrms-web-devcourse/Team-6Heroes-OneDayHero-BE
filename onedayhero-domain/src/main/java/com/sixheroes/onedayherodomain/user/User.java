@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -56,7 +57,7 @@ public class User extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
-  
+
     public static User signUp(
             Email email,
             UserSocialType userSocialType,
@@ -74,11 +75,11 @@ public class User extends BaseEntity {
 
     @Builder
     private User(
-        Email email,
-        UserBasicInfo userBasicInfo,
-        UserFavoriteWorkingDay userFavoriteWorkingDay,
-        UserSocialType userSocialType,
-        UserRole userRole
+            Email email,
+            UserBasicInfo userBasicInfo,
+            UserFavoriteWorkingDay userFavoriteWorkingDay,
+            UserSocialType userSocialType,
+            UserRole userRole
     ) {
         this.email = email;
         this.userBasicInfo = userBasicInfo;
@@ -91,19 +92,19 @@ public class User extends BaseEntity {
     }
 
     protected void setUserImage(
-        UserImage userImage
+            UserImage userImage
     ) {
         this.userImages.add(userImage);
     }
 
     public void updateUser(
-        UserBasicInfo userBasicInfo,
-        UserFavoriteWorkingDay userFavoriteWorkingDay
+            UserBasicInfo userBasicInfo,
+            UserFavoriteWorkingDay userFavoriteWorkingDay
     ) {
         this.userBasicInfo = userBasicInfo;
         this.userFavoriteWorkingDay = userFavoriteWorkingDay;
     }
-  
+
     public void changeHeroModeOn() {
         validHeroModeOff();
         this.isHeroMode = true;
@@ -115,11 +116,11 @@ public class User extends BaseEntity {
     }
 
     protected void validOwner(
-        Long userId
+            Long userId
     ) {
         if (!Objects.equals(this.id, userId)) {
             log.debug("유저의 아이디가 일치하지 않습니다. id = {}, userId = {}", this.id, userId);
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
     }
 
@@ -134,14 +135,14 @@ public class User extends BaseEntity {
     private void validHeroModeOn() {
         if (Boolean.FALSE.equals(this.isHeroMode)) {
             log.debug("해당 유저는 히어로 모드가 비활성화 상태입니다.");
-            throw new IllegalStateException(ErrorCode.EU_009.name());
+            throw new BusinessException(ErrorCode.HERO_MODE_OFF);
         }
     }
 
     private void validHeroModeOff() {
         if (Boolean.TRUE.equals(this.isHeroMode)) {
             log.debug("해당 유저는 히어로 모드가 활성화 상태입니다.");
-            throw new IllegalStateException(ErrorCode.EU_010.name());
+            throw new BusinessException(ErrorCode.HERO_MODE_ON);
         }
     }
 }

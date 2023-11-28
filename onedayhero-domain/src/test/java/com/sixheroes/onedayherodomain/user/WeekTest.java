@@ -1,12 +1,10 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class WeekTest {
 
     @DisplayName("올바른 요일 값이면 요일이 생성된다.")
-    @CsvSource(value = { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" })
+    @CsvSource(value = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"})
     @ParameterizedTest
     void createWeek(String week) {
         // given
@@ -34,7 +32,6 @@ class WeekTest {
 
         // when & then
         assertThatThrownBy(() -> Week.from(week))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EU_008.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }

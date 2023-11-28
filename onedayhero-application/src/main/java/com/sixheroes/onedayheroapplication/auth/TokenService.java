@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.auth;
 
 
+import com.sixheroes.onedayheroapplication.auth.infra.repository.BlacklistRepository;
 import com.sixheroes.onedayheroapplication.auth.infra.repository.RefreshTokenRepository;
 import com.sixheroes.onedayheroapplication.auth.reponse.ReissueTokenResponse;
 import com.sixheroes.onedayheroapplication.global.jwt.JwtProperties;
@@ -23,6 +24,7 @@ public class TokenService {
     private final JwtProperties jwtProperties;
     private final JwtTokenManager jwtTokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final BlacklistRepository blacklistRepository;
 
     public String generateRefreshToken(
             Long userId
@@ -38,6 +40,12 @@ public class TokenService {
         );
 
         return refreshToken;
+    }
+
+    public void deleteRefreshToken(
+            String refreshToken
+    ) {
+        refreshTokenRepository.delete(refreshToken);
     }
 
     public Optional<RefreshToken> findRefreshTokenValue(

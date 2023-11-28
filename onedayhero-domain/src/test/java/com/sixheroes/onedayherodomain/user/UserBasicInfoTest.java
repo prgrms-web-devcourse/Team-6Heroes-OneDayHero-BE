@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +18,12 @@ class UserBasicInfoTest {
         // given
         var random = new Random();
         String nickname = random.ints('a', 'z' + 1)
-            .limit(30)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(30)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when
         var userBasicInfo = createUserBasicInfoWithNickname(nickname);
@@ -38,17 +38,16 @@ class UserBasicInfoTest {
         // given
         var random = new Random();
         var nickname = random.ints('a', 'z' + 1)
-            .limit(31)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(31)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when & then
         assertThatThrownBy(() -> createUserBasicInfoWithNickname(nickname))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EU_003.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("자기소개 길이가 200자 이하면 유저 기본 정보가 생성된다.")
@@ -57,12 +56,12 @@ class UserBasicInfoTest {
         // given
         var random = new Random();
         var introduce = random.ints('a', 'z' + 1)
-            .limit(200)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(200)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when
         var userBasicInfo = createUserBasicInfoWithIntroduce(introduce);
@@ -77,17 +76,16 @@ class UserBasicInfoTest {
         // given
         var random = new Random();
         var introduce = random.ints('a', 'z' + 1)
-            .limit(201)
-            .collect(
-                StringBuilder::new,
-                StringBuilder::appendCodePoint,
-                StringBuilder::append
-            ).toString();
+                .limit(201)
+                .collect(
+                        StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append
+                ).toString();
 
         // when & then
         assertThatThrownBy(() -> createUserBasicInfoWithIntroduce(introduce))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EU_004.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("태어난 날짜가 오늘보다 과거면 유저 기본 정보가 생성된다.")
@@ -111,40 +109,39 @@ class UserBasicInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createUserBasicInfoWithBirth(birth))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EU_006.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     private UserBasicInfo createUserBasicInfoWithNickname(
-        String nickname
+            String nickname
     ) {
         return UserBasicInfo.builder()
-            .nickname(nickname)
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기소개")
-            .build();
+                .nickname(nickname)
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기소개")
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfoWithIntroduce(
-        String introduce
+            String introduce
     ) {
         return UserBasicInfo.builder()
-            .nickname("이름")
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce(introduce)
-            .build();
+                .nickname("이름")
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce(introduce)
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfoWithBirth(
-        LocalDate birth
+            LocalDate birth
     ) {
         return UserBasicInfo.builder()
-            .nickname("이름")
-            .birth(birth)
-            .gender(UserGender.MALE)
-            .introduce("자기소개")
-            .build();
+                .nickname("이름")
+                .birth(birth)
+                .gender(UserGender.MALE)
+                .introduce("자기소개")
+                .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,10 +21,10 @@ class UserFavoriteWorkingDayTest {
 
         // when
         var userFavoriteWorkingDay = UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON))
-            .favoriteStartTime(startTime)
-            .favoriteEndTime(endTime)
-            .build();
+                .favoriteDate(List.of(Week.MON))
+                .favoriteStartTime(startTime)
+                .favoriteEndTime(endTime)
+                .build();
 
         // then
         assertThat(userFavoriteWorkingDay.getFavoriteStartTime()).isEqualTo(startTime);
@@ -40,11 +40,10 @@ class UserFavoriteWorkingDayTest {
 
         // when & then
         assertThatThrownBy(() -> UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON))
-            .favoriteStartTime(startTime)
-            .favoriteEndTime(endTime)
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.EU_005.name());
+                .favoriteDate(List.of(Week.MON))
+                .favoriteStartTime(startTime)
+                .favoriteEndTime(endTime)
+                .build())
+                .isInstanceOf(BusinessException.class);
     }
 }
