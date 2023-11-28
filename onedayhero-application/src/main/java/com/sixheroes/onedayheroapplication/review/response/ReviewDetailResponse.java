@@ -24,6 +24,8 @@ public record ReviewDetailResponse(
 
         Long receiverId,
 
+        String receiverNickname,
+
         Long categoryId,
 
         String categoryCode,
@@ -52,13 +54,15 @@ public record ReviewDetailResponse(
 
         public static ReviewDetailResponse of(
                 ReviewDetailQueryResponse queryResponse,
-                Optional<List<ReviewImage>> reviewImages
+                Optional<List<ReviewImage>> reviewImages,
+                String receiverNickname
         ) {
                 return ReviewDetailResponse.builder()
                         .id(queryResponse.id())
                         .senderId(queryResponse.senderId())
                         .senderNickname(queryResponse.senderNickname())
                         .receiverId(queryResponse.receiverId())
+                        .receiverNickname(receiverNickname)
                         .categoryId(queryResponse.categoryId())
                         .categoryCode(queryResponse.categoryCode().name())
                         .categoryName(queryResponse.categoryName())

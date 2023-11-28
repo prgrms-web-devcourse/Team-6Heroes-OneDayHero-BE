@@ -15,13 +15,16 @@ import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewRespons
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
+import com.sixheroes.onedayheroapplication.user.UserReader;
+import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
-
+import com.sixheroes.onedayherodomain.user.User;
+import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,6 +47,7 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final MissionReader missionReader;
+    private final UserReader userReader;
     private final S3ImageDirectoryProperties properties;
     private final S3ImageUploadService s3ImageUploadService;
     private final S3ImageDeleteService s3ImageDeleteService;
@@ -73,9 +77,12 @@ public class ReviewService {
             throw new BusinessException(ErrorCode.NOT_FOUND_REVIEW);
         }
 
+        var receiveUser = userReader.findOne(queryResponse.get().receiverId());
+
         return ReviewDetailResponse.of(
                 queryResponse.get(),
-                optionalReviewImages
+                optionalReviewImages,
+                receiveUser.getUserBasicInfo().getNickname()
         );
     }
 
