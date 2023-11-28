@@ -5,6 +5,7 @@
 
 include::{snippets}/alarm-find/http-request.adoc[]
 include::{snippets}/alarm-find/request-headers.adoc[]
+include::{snippets}/alarm-find/query-parameters.adoc[]
 
 ==== HTTP Response
 

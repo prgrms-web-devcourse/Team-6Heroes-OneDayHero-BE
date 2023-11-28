@@ -457,7 +457,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#user-find">유저 정보 조회</a></li>
 <li><a href="#user-update">유저 정보 수정</a></li>
-<li><a href="#user-image-delete">유저 이미지 삭제</a></li>
 <li><a href="#mission-bookmark-cancel">내 미션 찜 조회</a></li>
 <li><a href="#user-sent-reviews">내가 작성한 리뷰 조회</a></li>
 <li><a href="#user-received-reviews">내가 받은 리뷰 조회</a></li>
@@ -604,7 +603,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Set-Cookie: refreshToken=d8919c12-25b9-4e55-ae9d-c8e12faf3838; HttpOnly
+Set-Cookie: refreshToken=e7cb60a0-f518-4f98-bb50-7a68e783a968; HttpOnly
 Location:
 Content-Type: application/json;charset=UTF-8
 Content-Length: 134
@@ -615,7 +614,7 @@ Content-Length: 134
     "userId" : 1,
     "accessToken" : "accessToken"
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
@@ -731,7 +730,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=8bebb59c-69c8-44f5-92e1-c14a905e4dbd; HttpOnly
+Set-Cookie: refreshToken=d97e19db-48e2-4386-b476-e0209dac7584; HttpOnly
 Content-Type: application/json;charset=UTF-8
 Content-Length: 134
 
@@ -741,7 +740,7 @@ Content-Length: 134
     "userId" : 1,
     "accessToken" : "accessToken"
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
@@ -883,7 +882,7 @@ Content-Length: 797
     "heroScore" : 30,
     "isHeroMode" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
@@ -1208,7 +1207,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
@@ -1266,120 +1265,9 @@ Content-Length: 95
 </div>
 </div>
 <div class="sect2">
-<h3 id="user-image-delete"><a class="link" href="#user-image-delete">유저 이미지 삭제</a></h3>
-<div class="sect3">
-<h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP Request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/me/user-images/1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization: Bearer 액세스토큰</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/v1/me/user-images/{userImageId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userImageId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유저 이미지 아이디</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_http_response_5"><a class="link" href="#_http_response_5">HTTP Response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Content-Type: application/json;charset=UTF-8
-Content-Length: 81
-
-{
-  "status" : 204,
-  "data" : null,
-  "serverDateTime" : "2023-11-28T16:02:28"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response Fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">path</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 응답 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverDateTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd'T'HH:mm:ss</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">서버 응답 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="mission-bookmark-cancel"><a class="link" href="#mission-bookmark-cancel">내 미션 찜 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_6"><a class="link" href="#_http_request_6">HTTP Request</a></h4>
+<h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/me/bookmarks?page=0&amp;size=3&amp;sort= HTTP/1.1
@@ -1433,7 +1321,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_6"><a class="link" href="#_http_response_6">HTTP Response</a></h4>
+<h4 id="_http_response_5"><a class="link" href="#_http_response_5">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1522,19 +1410,19 @@ Content-Length: 2193
         "sorted" : false,
         "unsorted" : true
       },
-      "numberOfElements" : 3,
       "first" : true,
       "last" : false,
+      "numberOfElements" : 3,
       "empty" : false
     }
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response Fields</a></h4>
+<h4 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1833,7 +1721,7 @@ Content-Length: 2193
 <div class="sect2">
 <h3 id="user-sent-reviews"><a class="link" href="#user-sent-reviews">내가 작성한 리뷰 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_7"><a class="link" href="#_http_request_7">HTTP Request</a></h4>
+<h4 id="_http_request_6"><a class="link" href="#_http_request_6">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/me/reviews/send?page=0&amp;size=5&amp;sort= HTTP/1.1
@@ -1889,7 +1777,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_7"><a class="link" href="#_http_response_7">HTTP Response</a></h4>
+<h4 id="_http_response_6"><a class="link" href="#_http_response_6">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1906,7 +1794,7 @@ Content-Length: 1130
       "starScore" : 3,
       "senderNickname" : "리뷰 작성자 닉네임",
       "profileImage" : [ "s3 프로필 이미지 주소" ],
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:23"
     }, {
       "reviewId" : 2,
       "categoryName" : "청소",
@@ -1914,7 +1802,7 @@ Content-Length: 1130
       "starScore" : 4,
       "senderNickname" : "리뷰 작성자 닉네임",
       "profileImage" : [ "s3 프로필 이미지 주소" ],
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:23"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -1935,18 +1823,18 @@ Content-Length: 1130
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 2,
     "first" : true,
     "last" : false,
+    "numberOfElements" : 2,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response Fields</a></h4>
+<h4 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2182,7 +2070,7 @@ Content-Length: 1130
 <div class="sect2">
 <h3 id="user-received-reviews"><a class="link" href="#user-received-reviews">내가 받은 리뷰 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_8"><a class="link" href="#_http_request_8">HTTP Request</a></h4>
+<h4 id="_http_request_7"><a class="link" href="#_http_request_7">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/me/reviews/receive?page=0&amp;size=5&amp;sort= HTTP/1.1
@@ -2238,7 +2126,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_8"><a class="link" href="#_http_response_8">HTTP Response</a></h4>
+<h4 id="_http_response_7"><a class="link" href="#_http_response_7">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2256,7 +2144,7 @@ Content-Length: 1142
       "categoryName" : "청소",
       "missionTitle" : "청소 미션",
       "starScore" : 4,
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:23"
     }, {
       "reviewId" : 2,
       "senderId" : 8,
@@ -2265,7 +2153,7 @@ Content-Length: 1142
       "categoryName" : "심부름",
       "missionTitle" : "심부름 미션",
       "starScore" : 3,
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:23"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -2286,18 +2174,18 @@ Content-Length: 1142
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 2,
     "first" : true,
     "last" : false,
+    "numberOfElements" : 2,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_8"><a class="link" href="#_response_fields_8">Response Fields</a></h4>
+<h4 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2540,7 +2428,7 @@ Content-Length: 1142
 <div class="sect2">
 <h3 id="user-change-hero"><a class="link" href="#user-change-hero">유저 히어로 모드 활성화</a></h3>
 <div class="sect3">
-<h4 id="_http_request_9"><a class="link" href="#_http_request_9">HTTP Request</a></h4>
+<h4 id="_http_request_8"><a class="link" href="#_http_request_8">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/me/change-hero HTTP/1.1
@@ -2569,7 +2457,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_9"><a class="link" href="#_http_response_9">HTTP Response</a></h4>
+<h4 id="_http_response_8"><a class="link" href="#_http_response_8">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2581,13 +2469,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_9"><a class="link" href="#_response_fields_9">Response Fields</a></h4>
+<h4 id="_response_fields_8"><a class="link" href="#_response_fields_8">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2641,7 +2529,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="user-change-citizen"><a class="link" href="#user-change-citizen">유저 히어로 모드 비활성화</a></h3>
 <div class="sect3">
-<h4 id="_http_request_10"><a class="link" href="#_http_request_10">HTTP Request</a></h4>
+<h4 id="_http_request_9"><a class="link" href="#_http_request_9">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/me/change-citizen HTTP/1.1
@@ -2670,7 +2558,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_10"><a class="link" href="#_http_response_10">HTTP Response</a></h4>
+<h4 id="_http_response_9"><a class="link" href="#_http_response_9">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2682,13 +2570,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_10"><a class="link" href="#_response_fields_10">Response Fields</a></h4>
+<h4 id="_response_fields_9"><a class="link" href="#_response_fields_9">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2747,7 +2635,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="profile-citizen-find"><a class="link" href="#profile-citizen-find">시민 프로필 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_11"><a class="link" href="#_http_request_11">HTTP Request</a></h4>
+<h4 id="_http_request_10"><a class="link" href="#_http_request_10">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/1/citizen-profile HTTP/1.1
@@ -2756,7 +2644,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. /api/v1/users/{userId}/citizen-profile</caption>
+<caption class="title">Table 1. /api/v1/users/{userId}/citizen-profile</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2776,7 +2664,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_11"><a class="link" href="#_http_response_11">HTTP Response</a></h4>
+<h4 id="_http_response_10"><a class="link" href="#_http_response_10">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2799,13 +2687,13 @@ Content-Length: 351
     },
     "heroScore" : 60
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_11"><a class="link" href="#_response_fields_11">Response Fields</a></h4>
+<h4 id="_response_fields_10"><a class="link" href="#_response_fields_10">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2922,7 +2810,7 @@ Content-Length: 351
 <div class="sect2">
 <h3 id="profile-hero-find"><a class="link" href="#profile-hero-find">히어로 프로필 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_12"><a class="link" href="#_http_request_12">HTTP Request</a></h4>
+<h4 id="_http_request_11"><a class="link" href="#_http_request_11">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/1/hero-profile HTTP/1.1
@@ -2931,7 +2819,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. /api/v1/users/{userId}/hero-profile</caption>
+<caption class="title">Table 2. /api/v1/users/{userId}/hero-profile</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2951,7 +2839,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_12"><a class="link" href="#_http_response_12">HTTP Response</a></h4>
+<h4 id="_http_response_11"><a class="link" href="#_http_response_11">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2991,13 +2879,13 @@ Content-Length: 772
     } ],
     "heroScore" : 60
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_12"><a class="link" href="#_response_fields_12">Response Fields</a></h4>
+<h4 id="_response_fields_11"><a class="link" href="#_response_fields_11">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3184,7 +3072,7 @@ Content-Length: 772
 <div class="sect2">
 <h3 id="hero-nickname-search"><a class="link" href="#hero-nickname-search">히어로 닉네임 검색</a></h3>
 <div class="sect3">
-<h4 id="_http_request_13"><a class="link" href="#_http_request_13">HTTP Request</a></h4>
+<h4 id="_http_request_12"><a class="link" href="#_http_request_12">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/users/hero-search?page=0&amp;size=3&amp;nickname=%EB%8B%98 HTTP/1.1
@@ -3221,7 +3109,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_13"><a class="link" href="#_http_response_13">HTTP Response</a></h4>
+<h4 id="_http_response_12"><a class="link" href="#_http_response_12">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3290,18 +3178,18 @@ Content-Length: 1486
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 3,
     "first" : true,
     "last" : false,
+    "numberOfElements" : 3,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:23"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_13"><a class="link" href="#_response_fields_13">Response Fields</a></h4>
+<h4 id="_response_fields_12"><a class="link" href="#_response_fields_12">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3563,7 +3451,7 @@ Content-Length: 1486
 <div class="sect2">
 <h3 id="mission-create"><a class="link" href="#mission-create">시민은 미션을 생성 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_14"><a class="link" href="#_http_request_14">HTTP Request</a></h4>
+<h4 id="_http_request_13"><a class="link" href="#_http_request_13">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/missions HTTP/1.1
@@ -3686,7 +3574,7 @@ Content-Type: image/jpeg
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_14"><a class="link" href="#_http_response_14">HTTP Response</a></h4>
+<h4 id="_http_response_13"><a class="link" href="#_http_response_13">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
@@ -3699,13 +3587,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_14"><a class="link" href="#_response_fields_14">Response Fields</a></h4>
+<h4 id="_response_fields_13"><a class="link" href="#_response_fields_13">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3759,9 +3647,9 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-findOne"><a class="link" href="#mission-findOne">유저는 미션을 단 건 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_15"><a class="link" href="#_http_request_15">Http Request</a></h4>
+<h4 id="_http_request_14"><a class="link" href="#_http_request_14">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. /api/v1/missions/{missionId}</caption>
+<caption class="title">Table 3. /api/v1/missions/{missionId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3807,7 +3695,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_15"><a class="link" href="#_http_response_15">Http Response</a></h4>
+<h4 id="_http_response_14"><a class="link" href="#_http_response_14">Http Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3846,13 +3734,13 @@ Content-Length: 755
     "paths" : [ "path://1", "path://2" ],
     "isBookmarked" : true
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_15"><a class="link" href="#_response_fields_15">Response Fields</a></h4>
+<h4 id="_response_fields_14"><a class="link" href="#_response_fields_14">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4074,7 +3962,7 @@ Content-Length: 755
 <div class="sect2">
 <h3 id="mission-find-DynamicCondition"><a class="link" href="#mission-find-DynamicCondition">유저는 미션을 필터 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_16"><a class="link" href="#_http_request_16">Http Request</a></h4>
+<h4 id="_http_request_15"><a class="link" href="#_http_request_15">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4141,7 +4029,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_16"><a class="link" href="#_http_response_16">Http Response</a></h4>
+<h4 id="_http_response_15"><a class="link" href="#_http_response_15">Http Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -4229,18 +4117,18 @@ Content-Length: 2029
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 2,
     "first" : true,
     "last" : true,
+    "numberOfElements" : 2,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_16"><a class="link" href="#_response_fields_16">Response Fields</a></h4>
+<h4 id="_response_fields_15"><a class="link" href="#_response_fields_15">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4602,9 +4490,9 @@ Content-Length: 2029
 <div class="sect2">
 <h3 id="mission-progress-find"><a class="link" href="#mission-progress-find">유저는 진행중인 미션을 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_17"><a class="link" href="#_http_request_17">Http Request</a></h4>
+<h4 id="_http_request_16"><a class="link" href="#_http_request_16">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. /api/v1/missions/progress/{userId}</caption>
+<caption class="title">Table 4. /api/v1/missions/progress/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4643,6 +4531,353 @@ Content-Length: 2029
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/missions/progress?page=0&amp;size=4&amp;sort= HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_16"><a class="link" href="#_http_response_16">Http Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 874
+
+{
+  "status" : 200,
+  "data" : {
+    "content" : [ {
+      "id" : 1,
+      "title" : "제목",
+      "missionCategory" : {
+        "id" : 1,
+        "code" : "MC_001",
+        "name" : "서빙"
+      },
+      "missionDate" : "2023-11-06",
+      "bookmarkCount" : 1,
+      "missionStatus" : "MATCHING",
+      "imagePath" : "s3://path",
+      "isBookmarked" : true
+    } ],
+    "pageable" : {
+      "pageNumber" : 0,
+      "pageSize" : 4,
+      "sort" : {
+        "empty" : true,
+        "sorted" : false,
+        "unsorted" : true
+      },
+      "offset" : 0,
+      "paged" : true,
+      "unpaged" : false
+    },
+    "size" : 4,
+    "number" : 0,
+    "sort" : {
+      "empty" : true,
+      "sorted" : false,
+      "unsorted" : true
+    },
+    "first" : true,
+    "last" : true,
+    "numberOfElements" : 1,
+    "empty" : false
+  },
+  "serverDateTime" : "2023-11-28T17:04:21"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_16"><a class="link" href="#_response_fields_16">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">path</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 응답 데이터 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].bookmarkCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].imagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 사진 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].isBookmarked</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.pageNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.pageSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 상태 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 비어있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 정렬되지 않은지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.paged</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이징이 되어 있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.unpaged</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이징이 되어 있지 않은지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트 크기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트 정렬 정보 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 비어있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 정렬되지 않은지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.numberOfElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지의 요소 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.first</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">첫 번째 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.last</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트가 비어있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd'T'HH:mm:ss</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서버 응답 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mission-completed-find"><a class="link" href="#mission-completed-find">유저는 완료된 미션을 조회 할 수 있다.</a></h3>
+<div class="sect3">
+<h4 id="_http_request_17"><a class="link" href="#_http_request_17">Http Request</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auth Credential</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/missions/completed?page=0&amp;size=4&amp;sort= HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
 Host: localhost:8080</code></pre>
@@ -4693,12 +4928,12 @@ Content-Length: 874
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 1,
     "first" : true,
     "last" : true,
+    "numberOfElements" : 1,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
@@ -4966,356 +5201,9 @@ Content-Length: 874
 </div>
 </div>
 <div class="sect2">
-<h3 id="mission-completed-find"><a class="link" href="#mission-completed-find">유저는 완료된 미션을 조회 할 수 있다.</a></h3>
-<div class="sect3">
-<h4 id="_http_request_18"><a class="link" href="#_http_request_18">Http Request</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auth Credential</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/missions/completed?page=0&amp;size=4&amp;sort= HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_http_response_18"><a class="link" href="#_http_response_18">Http Response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 874
-
-{
-  "status" : 200,
-  "data" : {
-    "content" : [ {
-      "id" : 1,
-      "title" : "제목",
-      "missionCategory" : {
-        "id" : 1,
-        "code" : "MC_001",
-        "name" : "서빙"
-      },
-      "missionDate" : "2023-11-06",
-      "bookmarkCount" : 1,
-      "missionStatus" : "MATCHING",
-      "imagePath" : "s3://path",
-      "isBookmarked" : true
-    } ],
-    "pageable" : {
-      "pageNumber" : 0,
-      "pageSize" : 4,
-      "sort" : {
-        "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
-      },
-      "offset" : 0,
-      "paged" : true,
-      "unpaged" : false
-    },
-    "size" : 4,
-    "number" : 0,
-    "sort" : {
-      "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
-    },
-    "numberOfElements" : 1,
-    "first" : true,
-    "last" : true,
-    "empty" : false
-  },
-  "serverDateTime" : "2023-11-28T16:44:22"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_fields_18"><a class="link" href="#_response_fields_18">Response Fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">path</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 응답 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 응답 데이터 배열</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].title</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제목</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 객체</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionCategory.name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 카테고리 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].bookmarkCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 횟수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].missionStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 상태</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].imagePath</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">O</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 사진 경로</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].isBookmarked</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">북마크 상태</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.pageNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.pageSize</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 상태 객체</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 비어있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.sorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.sort.unsorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보가 정렬되지 않은지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.offset</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.paged</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징이 되어 있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable.unpaged</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징이 되어 있지 않은지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트 정렬 정보 객체</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 비어있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.sorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.unsorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트의 정렬 정보가 정렬되지 않은지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.numberOfElements</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지의 요소 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.first</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">첫 번째 페이지인지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.last</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지인지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 리스트가 비어있는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverDateTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd'T'HH:mm:ss</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">서버 응답 시간</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="mission-matching-find"><a class="link" href="#mission-matching-find">유저는 제안할 미션을 조회할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_19"><a class="link" href="#_http_request_19">Http Request</a></h4>
+<h4 id="_http_request_18"><a class="link" href="#_http_request_18">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -5344,7 +5232,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_19"><a class="link" href="#_http_response_19">Http Response</a></h4>
+<h4 id="_http_response_18"><a class="link" href="#_http_response_18">Http Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -5402,13 +5290,13 @@ Content-Length: 1276
       "isBookmarked" : true
     } ]
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_19"><a class="link" href="#_response_fields_19">Response Fields</a></h4>
+<h4 id="_response_fields_18"><a class="link" href="#_response_fields_18">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5602,9 +5490,9 @@ Content-Length: 1276
 <div class="sect2">
 <h3 id="mission-update"><a class="link" href="#mission-update">시민은 미션을 수정 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_20"><a class="link" href="#_http_request_20">Http Request</a></h4>
+<h4 id="_http_request_19"><a class="link" href="#_http_request_19">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. /api/v1/missions/{missionId}</caption>
+<caption class="title">Table 5. /api/v1/missions/{missionId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5738,7 +5626,7 @@ Content-Type: image/jpeg
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_20"><a class="link" href="#_http_response_20">HTTP Response</a></h4>
+<h4 id="_http_response_19"><a class="link" href="#_http_response_19">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -5750,13 +5638,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_20"><a class="link" href="#_response_fields_20">Response Fields</a></h4>
+<h4 id="_response_fields_19"><a class="link" href="#_response_fields_19">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5810,7 +5698,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-extend"><a class="link" href="#mission-extend">시민은 미션을 연장 할 수 있다.</a></h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /api/v1/missions/{missionId}/extend</caption>
+<caption class="title">Table 6. /api/v1/missions/{missionId}/extend</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5914,7 +5802,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_21"><a class="link" href="#_http_response_21">HTTP Response</a></h4>
+<h4 id="_http_response_20"><a class="link" href="#_http_response_20">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -5926,13 +5814,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_21"><a class="link" href="#_response_fields_21">Response Fields</a></h4>
+<h4 id="_response_fields_20"><a class="link" href="#_response_fields_20">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5986,7 +5874,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-complete"><a class="link" href="#mission-complete">시민은 미션을 완료 상태로 변경 할 수 있다.</a></h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. /api/v1/missions/{missionId}/complete</caption>
+<caption class="title">Table 7. /api/v1/missions/{missionId}/complete</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6052,7 +5940,7 @@ Host: localhost:8080</code></pre>
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_http_response_22"><a class="link" href="#_http_response_22">HTTP Response</a></h4>
+<h4 id="_http_response_21"><a class="link" href="#_http_response_21">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -6064,13 +5952,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_22"><a class="link" href="#_response_fields_22">Response Fields</a></h4>
+<h4 id="_response_fields_21"><a class="link" href="#_response_fields_21">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -6124,9 +6012,9 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-delete"><a class="link" href="#mission-delete">시민은 미션을 삭제 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_21"><a class="link" href="#_http_request_21">Http Request</a></h4>
+<h4 id="_http_request_20"><a class="link" href="#_http_request_20">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. /api/v1/missions/{missionId}</caption>
+<caption class="title">Table 8. /api/v1/missions/{missionId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6193,7 +6081,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_23"><a class="link" href="#_http_response_23">HTTP Response</a></h4>
+<h4 id="_http_response_22"><a class="link" href="#_http_response_22">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -6203,13 +6091,13 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_23"><a class="link" href="#_response_fields_23">Response Fields</a></h4>
+<h4 id="_response_fields_22"><a class="link" href="#_response_fields_22">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -6256,7 +6144,7 @@ Content-Length: 81
 <div class="sect2">
 <h3 id="mission-around"><a class="link" href="#mission-around">유저는 반경 5km 이내에 있는 매칭중인 미션을 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_22"><a class="link" href="#_http_request_22">Http Request</a></h4>
+<h4 id="_http_request_21"><a class="link" href="#_http_request_21">Http Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -6319,7 +6207,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_24"><a class="link" href="#_http_response_24">Http Response</a></h4>
+<h4 id="_http_response_23"><a class="link" href="#_http_response_23">Http Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -6391,18 +6279,18 @@ Content-Length: 1666
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 2,
     "first" : true,
     "last" : true,
+    "numberOfElements" : 2,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_24"><a class="link" href="#_response_fields_24">Response Fields</a></h4>
+<h4 id="_response_fields_23"><a class="link" href="#_response_fields_23">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -6720,7 +6608,7 @@ Content-Length: 1666
 <div class="sect2">
 <h3 id="mission-bookmark-create"><a class="link" href="#mission-bookmark-create">미션 찜 등록</a></h3>
 <div class="sect3">
-<h4 id="_http_request_23"><a class="link" href="#_http_request_23">HTTP Request</a></h4>
+<h4 id="_http_request_22"><a class="link" href="#_http_request_22">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/bookmarks HTTP/1.1
@@ -6784,7 +6672,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_25"><a class="link" href="#_http_response_25">HTTP Response</a></h4>
+<h4 id="_http_response_24"><a class="link" href="#_http_response_24">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -6796,13 +6684,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_25"><a class="link" href="#_response_fields_25">Response Fields</a></h4>
+<h4 id="_response_fields_24"><a class="link" href="#_response_fields_24">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -6856,7 +6744,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-bookmark-cancel"><a class="link" href="#mission-bookmark-cancel">미션 찜 취소</a></h3>
 <div class="sect3">
-<h4 id="_http_request_24"><a class="link" href="#_http_request_24">HTTP Request</a></h4>
+<h4 id="_http_request_23"><a class="link" href="#_http_request_23">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/bookmarks HTTP/1.1
@@ -6920,7 +6808,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_26"><a class="link" href="#_http_response_26">HTTP Response</a></h4>
+<h4 id="_http_response_25"><a class="link" href="#_http_response_25">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -6930,7 +6818,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
@@ -6990,7 +6878,7 @@ Content-Length: 81
 <div class="sect2">
 <h3 id="mission-match-create"><a class="link" href="#mission-match-create">미션 매치 생성</a></h3>
 <div class="sect3">
-<h4 id="_http_request_25"><a class="link" href="#_http_request_25">HTTP Request</a></h4>
+<h4 id="_http_request_24"><a class="link" href="#_http_request_24">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/mission-matches HTTP/1.1
@@ -7062,7 +6950,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_27"><a class="link" href="#_http_response_27">HTTP Response</a></h4>
+<h4 id="_http_response_26"><a class="link" href="#_http_response_26">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -7074,13 +6962,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_26"><a class="link" href="#_response_fields_26">Response Fields</a></h4>
+<h4 id="_response_fields_25"><a class="link" href="#_response_fields_25">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -7134,7 +7022,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-match-cancel"><a class="link" href="#mission-match-cancel">미션 매치 취소</a></h3>
 <div class="sect3">
-<h4 id="_http_request_26"><a class="link" href="#_http_request_26">HTTP Request</a></h4>
+<h4 id="_http_request_25"><a class="link" href="#_http_request_25">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/v1/mission-matches/cancel HTTP/1.1
@@ -7198,7 +7086,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h4>
+<h4 id="_http_response_27"><a class="link" href="#_http_response_27">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -7210,13 +7098,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_27"><a class="link" href="#_response_fields_27">Response Fields</a></h4>
+<h4 id="_response_fields_26"><a class="link" href="#_response_fields_26">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -7275,7 +7163,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="mission-proposal-create"><a class="link" href="#mission-proposal-create">미션 제안 생성</a></h3>
 <div class="sect3">
-<h4 id="_http_request_27"><a class="link" href="#_http_request_27">HTTP Request</a></h4>
+<h4 id="_http_request_26"><a class="link" href="#_http_request_26">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/mission-proposals HTTP/1.1
@@ -7347,7 +7235,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_29"><a class="link" href="#_http_response_29">HTTP Response</a></h4>
+<h4 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
@@ -7360,7 +7248,126 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:22"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_27"><a class="link" href="#_response_fields_27">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">path</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제안 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd'T'HH:mm:ss</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서버 응답 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mission-proposal-approve"><a class="link" href="#mission-proposal-approve">미션 제안 승낙</a></h3>
+<div class="sect3">
+<h4 id="_http_request_27"><a class="link" href="#_http_request_27">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/mission-proposals/1/approve HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization: Bearer 액세스토큰</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. /api/v1/mission-proposals/{missionProposalId}/approve</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>missionProposalId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제안 아이디</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_29"><a class="link" href="#_http_response_29">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 95
+
+{
+  "status" : 200,
+  "data" : {
+    "id" : 1
+  },
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
@@ -7418,12 +7425,12 @@ Content-Length: 95
 </div>
 </div>
 <div class="sect2">
-<h3 id="mission-proposal-approve"><a class="link" href="#mission-proposal-approve">미션 제안 승낙</a></h3>
+<h3 id="mission-proposal-reject"><a class="link" href="#mission-proposal-reject">미션 제안 거절</a></h3>
 <div class="sect3">
 <h4 id="_http_request_28"><a class="link" href="#_http_request_28">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/mission-proposals/1/approve HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/mission-proposals/1/reject HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
 Host: localhost:8080</code></pre>
 </div>
@@ -7446,25 +7453,6 @@ Host: localhost:8080</code></pre>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. /api/v1/mission-proposals/{missionProposalId}/approve</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>missionProposalId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제안 아이디</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="_http_response_30"><a class="link" href="#_http_response_30">HTTP Response</a></h4>
@@ -7479,7 +7467,7 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
@@ -7537,109 +7525,9 @@ Content-Length: 95
 </div>
 </div>
 <div class="sect2">
-<h3 id="mission-proposal-reject"><a class="link" href="#mission-proposal-reject">미션 제안 거절</a></h3>
-<div class="sect3">
-<h4 id="_http_request_29"><a class="link" href="#_http_request_29">HTTP Request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/mission-proposals/1/reject HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization: Bearer 액세스토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_http_response_31"><a class="link" href="#_http_response_31">HTTP Response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 95
-
-{
-  "status" : 200,
-  "data" : {
-    "id" : 1
-  },
-  "serverDateTime" : "2023-11-28T16:44:22"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_fields_30"><a class="link" href="#_response_fields_30">Response Fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">path</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 응답 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 데이터</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 제안 아이디</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serverDateTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd'T'HH:mm:ss</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">서버 응답 시간</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="mission-proposal-find"><a class="link" href="#mission-proposal-find">제안받은 미션 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_30"><a class="link" href="#_http_request_30">HTTP Request</a></h4>
+<h4 id="_http_request_29"><a class="link" href="#_http_request_29">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/mission-proposals?page=0&amp;size=5 HTTP/1.1
@@ -7694,7 +7582,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_32"><a class="link" href="#_http_response_32">HTTP Response</a></h4>
+<h4 id="_http_response_31"><a class="link" href="#_http_response_31">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -7712,7 +7600,7 @@ Content-Length: 4034
         "status" : "MATCHING",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-28T16:44:22",
+        "createdAt" : "2023-11-28T17:04:22",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7739,7 +7627,7 @@ Content-Length: 4034
         "status" : "MATCHING",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-27T16:44:22",
+        "createdAt" : "2023-11-27T17:04:22",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7766,7 +7654,7 @@ Content-Length: 4034
         "status" : "MATCHING_COMPLETED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-25T16:44:22",
+        "createdAt" : "2023-11-25T17:04:22",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7793,7 +7681,7 @@ Content-Length: 4034
         "status" : "MISSION_COMPLETED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-26T16:44:22",
+        "createdAt" : "2023-11-26T17:04:22",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7820,7 +7708,7 @@ Content-Length: 4034
         "status" : "EXPIRED",
         "bookmarkCount" : 5,
         "isBookmarked" : true,
-        "createdAt" : "2023-11-25T16:44:22",
+        "createdAt" : "2023-11-25T17:04:22",
         "region" : {
           "si" : "서울시",
           "gu" : "프로구",
@@ -7859,18 +7747,18 @@ Content-Length: 4034
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 5,
     "first" : true,
     "last" : false,
+    "numberOfElements" : 5,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:22"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_31"><a class="link" href="#_response_fields_31">Response Fields</a></h4>
+<h4 id="_response_fields_30"><a class="link" href="#_response_fields_30">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -8216,7 +8104,7 @@ Content-Length: 4034
 <div class="sect2">
 <h3 id="review-create"><a class="link" href="#review-create">리뷰 생성</a></h3>
 <div class="sect3">
-<h4 id="_http_request_31"><a class="link" href="#_http_request_31">HTTP Request</a></h4>
+<h4 id="_http_request_30"><a class="link" href="#_http_request_30">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviews HTTP/1.1
@@ -8296,7 +8184,7 @@ Content-Type: image/jpeg
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_33"><a class="link" href="#_http_response_33">HTTP Response</a></h4>
+<h4 id="_http_response_32"><a class="link" href="#_http_response_32">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
@@ -8309,13 +8197,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_32"><a class="link" href="#_response_fields_32">Response Fields</a></h4>
+<h4 id="_response_fields_31"><a class="link" href="#_response_fields_31">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -8369,7 +8257,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="review-update"><a class="link" href="#review-update">리뷰 수정</a></h3>
 <div class="sect3">
-<h4 id="_http_request_32"><a class="link" href="#_http_request_32">HTTP Request</a></h4>
+<h4 id="_http_request_31"><a class="link" href="#_http_request_31">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/reviews/1 HTTP/1.1
@@ -8419,7 +8307,7 @@ Content-Type: image/jpeg
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_34"><a class="link" href="#_http_response_34">HTTP Response</a></h4>
+<h4 id="_http_response_33"><a class="link" href="#_http_response_33">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -8431,13 +8319,13 @@ Content-Length: 95
   "data" : {
     "id" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_33"><a class="link" href="#_response_fields_33">Response Fields</a></h4>
+<h4 id="_response_fields_32"><a class="link" href="#_response_fields_32">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -8491,7 +8379,7 @@ Content-Length: 95
 <div class="sect2">
 <h3 id="_리뷰_상세_조회"><a class="link" href="#_리뷰_상세_조회">리뷰 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_33"><a class="link" href="#_http_request_33">HTTP Request</a></h4>
+<h4 id="_http_request_32"><a class="link" href="#_http_request_32">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/1 HTTP/1.1
@@ -8501,7 +8389,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. /api/v1/reviews/{reviewId}</caption>
+<caption class="title">Table 10. /api/v1/reviews/{reviewId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8521,7 +8409,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_35"><a class="link" href="#_http_response_35">HTTP Response</a></h4>
+<h4 id="_http_response_34"><a class="link" href="#_http_response_34">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -8553,15 +8441,15 @@ Content-Length: 781
       "uniqueName" : "B",
       "path" : "S3 이미지 주소B"
     } ],
-    "createdAt" : "2023-11-28T16:44:23"
+    "createdAt" : "2023-11-28T17:04:22"
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_34"><a class="link" href="#_response_fields_34">Response Fields</a></h4>
+<h4 id="_response_fields_33"><a class="link" href="#_response_fields_33">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -8727,7 +8615,7 @@ Content-Length: 781
 <div class="sect2">
 <h3 id="_리뷰_삭제"><a class="link" href="#_리뷰_삭제">리뷰 삭제</a></h3>
 <div class="sect3">
-<h4 id="_http_request_34"><a class="link" href="#_http_request_34">HTTP Request</a></h4>
+<h4 id="_http_request_33"><a class="link" href="#_http_request_33">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/reviews/1 HTTP/1.1
@@ -8736,7 +8624,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. /api/v1/reviews/{reviewId}</caption>
+<caption class="title">Table 11. /api/v1/reviews/{reviewId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8756,7 +8644,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_36"><a class="link" href="#_http_response_36">HTTP Response</a></h4>
+<h4 id="_http_response_35"><a class="link" href="#_http_response_35">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -8766,7 +8654,7 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
@@ -8775,7 +8663,7 @@ Content-Length: 81
 <div class="sect2">
 <h3 id="specific-user-received-reviews"><a class="link" href="#specific-user-received-reviews">특정 유저가 받은 리뷰 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_35"><a class="link" href="#_http_request_35">HTTP Request</a></h4>
+<h4 id="_http_request_34"><a class="link" href="#_http_request_34">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/reviews/users/1/receive?page=0&amp;size=5&amp;sort= HTTP/1.1
@@ -8786,7 +8674,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. /api/v1/reviews/users/{userId}/receive</caption>
+<caption class="title">Table 12. /api/v1/reviews/users/{userId}/receive</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8832,7 +8720,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_37"><a class="link" href="#_http_response_37">HTTP Response</a></h4>
+<h4 id="_http_response_36"><a class="link" href="#_http_response_36">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -8850,7 +8738,7 @@ Content-Length: 1142
       "categoryName" : "청소",
       "missionTitle" : "청소 미션",
       "starScore" : 4,
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:22"
     }, {
       "reviewId" : 2,
       "senderId" : 8,
@@ -8859,7 +8747,7 @@ Content-Length: 1142
       "categoryName" : "심부름",
       "missionTitle" : "심부름 미션",
       "starScore" : 3,
-      "createdAt" : "2023-11-28T16:44:23"
+      "createdAt" : "2023-11-28T17:04:22"
     } ],
     "pageable" : {
       "pageNumber" : 0,
@@ -8880,18 +8768,18 @@ Content-Length: 1142
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 2,
     "first" : true,
     "last" : false,
+    "numberOfElements" : 2,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_35"><a class="link" href="#_response_fields_35">Response Fields</a></h4>
+<h4 id="_response_fields_34"><a class="link" href="#_response_fields_34">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -9139,7 +9027,7 @@ Content-Length: 1142
 <div class="sect2">
 <h3 id="main-page"><a class="link" href="#main-page">메인 페이지를 조회한다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_36"><a class="link" href="#_http_request_36">HTTP Request</a></h4>
+<h4 id="_http_request_35"><a class="link" href="#_http_request_35">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/main?longitude=127.02880308004335&amp;latitude=37.49779692073204 HTTP/1.1
@@ -9190,7 +9078,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_38"><a class="link" href="#_http_response_38">HTTP Response</a></h4>
+<h4 id="_http_response_37"><a class="link" href="#_http_response_37">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -9253,13 +9141,13 @@ Content-Length: 1299
       "isBookmarked" : false
     } ]
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:21"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_36"><a class="link" href="#_response_fields_36">Response Fields</a></h4>
+<h4 id="_response_fields_35"><a class="link" href="#_response_fields_35">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -9451,7 +9339,7 @@ Content-Length: 1299
 <div class="sect2">
 <h3 id="sse-subscribe"><a class="link" href="#sse-subscribe">SSE 구독</a></h3>
 <div class="sect3">
-<h4 id="_http_request_37"><a class="link" href="#_http_request_37">HTTP Request</a></h4>
+<h4 id="_http_request_36"><a class="link" href="#_http_request_36">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/sse/subscribe HTTP/1.1
@@ -9480,7 +9368,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_39"><a class="link" href="#_http_response_39">HTTP Response</a></h4>
+<h4 id="_http_response_38"><a class="link" href="#_http_response_38">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -9500,7 +9388,7 @@ X-Accel-Buffering: no</code></pre>
 <div class="sect2">
 <h3 id="alarm-find"><a class="link" href="#alarm-find">알림 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_38"><a class="link" href="#_http_request_38">HTTP Request</a></h4>
+<h4 id="_http_request_37"><a class="link" href="#_http_request_37">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/alarms HTTP/1.1
@@ -9527,9 +9415,31 @@ Host: localhost:8080</code></pre>
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">데이터 크기</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_40"><a class="link" href="#_http_response_40">HTTP Response</a></h4>
+<h4 id="_http_response_39"><a class="link" href="#_http_response_39">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -9540,22 +9450,22 @@ Content-Length: 1245
   "status" : 200,
   "data" : {
     "content" : [ {
-      "id" : "886e0fc2-cd81-4e8b-8b26-d9c71a5699b5",
+      "id" : "a3129160-3570-4a0a-aeac-0520430d3c40",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-21T12:00:00"
     }, {
-      "id" : "90634568-274b-4bb4-a40d-ba0d1d7f9ce9",
+      "id" : "f989be31-dcf2-4072-8a28-8c35763c994d",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-21T10:00:00"
     }, {
-      "id" : "7d6606f5-708f-4ffc-847a-75d8acfa4762",
+      "id" : "38340b75-60e8-4307-a6e5-98153884a6dc",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-20T12:00:00"
     }, {
-      "id" : "e14e6bb2-6e75-41f6-8d5e-1286e46df179",
+      "id" : "00107b00-8564-4750-852d-fab95d017d46",
       "title" : "알림 제목",
       "content" : "알림 내용",
       "createdAt" : "2023-11-14T12:00:00"
@@ -9579,18 +9489,18 @@ Content-Length: 1245
       "sorted" : false,
       "unsorted" : true
     },
-    "numberOfElements" : 4,
     "first" : false,
     "last" : false,
+    "numberOfElements" : 4,
     "empty" : false
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:19"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_37"><a class="link" href="#_response_fields_37">Response Fields</a></h4>
+<h4 id="_response_fields_36"><a class="link" href="#_response_fields_36">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -9805,10 +9715,10 @@ Content-Length: 1245
 <div class="sect2">
 <h3 id="alarm-delete"><a class="link" href="#alarm-delete">알림 삭제</a></h3>
 <div class="sect3">
-<h4 id="_http_request_39"><a class="link" href="#_http_request_39">HTTP Request</a></h4>
+<h4 id="_http_request_38"><a class="link" href="#_http_request_38">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/alarms/56cf842a-34d5-414e-b9e2-c96672ef9cc4 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/alarms/50d4a508-d823-44a2-9bd3-c30ef961f471 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTY5OTk0MDA5NiwiZXhwIjoxNzU5OTQwMDk2fQ.7xyZyQIzbkp-FLxNOLXpSI3Yg0CZ8tAJvlHrgATzZB4
 Host: localhost:8080</code></pre>
@@ -9833,7 +9743,7 @@ Host: localhost:8080</code></pre>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. /api/v1/alarms/{alarmId}</caption>
+<caption class="title">Table 13. /api/v1/alarms/{alarmId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9853,7 +9763,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_41"><a class="link" href="#_http_response_41">HTTP Response</a></h4>
+<h4 id="_http_response_40"><a class="link" href="#_http_response_40">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -9863,13 +9773,13 @@ Content-Length: 81
 {
   "status" : 204,
   "data" : null,
-  "serverDateTime" : "2023-11-28T16:44:20"
+  "serverDateTime" : "2023-11-28T17:04:19"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_38"><a class="link" href="#_response_fields_38">Response Fields</a></h4>
+<h4 id="_response_fields_37"><a class="link" href="#_response_fields_37">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -9921,7 +9831,7 @@ Content-Length: 81
 <div class="sect2">
 <h3 id="chatroom-create"><a class="link" href="#chatroom-create">시민은 채팅방을 만들 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_40"><a class="link" href="#_http_request_40">HTTP Request</a></h4>
+<h4 id="_http_request_39"><a class="link" href="#_http_request_39">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/chat-rooms HTTP/1.1
@@ -9975,7 +9885,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_42"><a class="link" href="#_http_response_42">HTTP Response</a></h4>
+<h4 id="_http_response_41"><a class="link" href="#_http_response_41">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
@@ -9990,13 +9900,13 @@ Content-Length: 137
     "missionId" : 1,
     "headCount" : 2
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_39"><a class="link" href="#_response_fields_39">Response Fields</a></h4>
+<h4 id="_response_fields_38"><a class="link" href="#_response_fields_38">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -10064,7 +9974,7 @@ Content-Length: 137
 <div class="sect2">
 <h3 id="chatRoom-joined"><a class="link" href="#chatRoom-joined">유저는 현재 자신이 들어가 있는 채팅방을 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_41"><a class="link" href="#_http_request_41">HTTP Request</a></h4>
+<h4 id="_http_request_40"><a class="link" href="#_http_request_40">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/chat-rooms/me HTTP/1.1
@@ -10093,7 +10003,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_43"><a class="link" href="#_http_response_43">HTTP Response</a></h4>
+<h4 id="_http_response_42"><a class="link" href="#_http_response_42">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -10125,13 +10035,13 @@ Content-Length: 840
     "headCount" : 2,
     "lastSentMessageTime" : "2023-11-12T12:00:00"
   } ],
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_40"><a class="link" href="#_response_fields_40">Response Fields</a></h4>
+<h4 id="_response_fields_39"><a class="link" href="#_response_fields_39">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -10248,7 +10158,7 @@ Content-Length: 840
 <div class="sect2">
 <h3 id="chatRoom-find-messages"><a class="link" href="#chatRoom-find-messages">유저는 채팅방의 채팅 내역을 조회 할 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_42"><a class="link" href="#_http_request_42">HTTP Request</a></h4>
+<h4 id="_http_request_41"><a class="link" href="#_http_request_41">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/chat-rooms/1 HTTP/1.1
@@ -10258,7 +10168,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. /api/v1/chat-rooms/{chatRoomId}</caption>
+<caption class="title">Table 14. /api/v1/chat-rooms/{chatRoomId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10296,7 +10206,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_44"><a class="link" href="#_http_response_44">HTTP Response</a></h4>
+<h4 id="_http_response_43"><a class="link" href="#_http_response_43">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -10316,13 +10226,13 @@ Content-Length: 409
     "message" : "안녕하세요! 미션 내용 확인하고자합니다!",
     "sentMessageTime" : "2023-11-26T19:27:00"
   } ],
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_41"><a class="link" href="#_response_fields_41">Response Fields</a></h4>
+<h4 id="_response_fields_40"><a class="link" href="#_response_fields_40">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -10397,9 +10307,9 @@ Content-Length: 409
 <div class="sect2">
 <h3 id="chatRoom-exit"><a class="link" href="#chatRoom-exit">유저는 현재 자신이 들어가 있는 채팅방을 나갈 수 있다.</a></h3>
 <div class="sect3">
-<h4 id="_http_request_43"><a class="link" href="#_http_request_43">HTTP Request</a></h4>
+<h4 id="_http_request_42"><a class="link" href="#_http_request_42">HTTP Request</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. /api/v1/chat-rooms/{chatRoomId}/exit</caption>
+<caption class="title">Table 15. /api/v1/chat-rooms/{chatRoomId}/exit</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10448,7 +10358,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_45"><a class="link" href="#_http_response_45">HTTP Response</a></h4>
+<h4 id="_http_response_44"><a class="link" href="#_http_response_44">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -10462,13 +10372,13 @@ Content-Length: 134
     "userId" : 1,
     "missionId" : 1
   },
-  "serverDateTime" : "2023-11-28T16:44:21"
+  "serverDateTime" : "2023-11-28T17:04:20"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_42"><a class="link" href="#_response_fields_42">Response Fields</a></h4>
+<h4 id="_response_fields_41"><a class="link" href="#_response_fields_41">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -10541,7 +10451,7 @@ Content-Length: 134
 <div class="sect2">
 <h3 id="region-findAll"><a class="link" href="#region-findAll">모든 지역 조회</a></h3>
 <div class="sect3">
-<h4 id="_http_request_44"><a class="link" href="#_http_request_44">HTTP Request</a></h4>
+<h4 id="_http_request_43"><a class="link" href="#_http_request_43">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/regions HTTP/1.1
@@ -10551,7 +10461,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_46"><a class="link" href="#_http_response_46">HTTP Response</a></h4>
+<h4 id="_http_response_45"><a class="link" href="#_http_response_45">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -10582,13 +10492,13 @@ Content-Length: 472
       } ]
     } ]
   } ],
-  "serverDateTime" : "2023-11-28T16:44:23"
+  "serverDateTime" : "2023-11-28T17:04:22"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_43"><a class="link" href="#_response_fields_43">Response Fields</a></h4>
+<h4 id="_response_fields_42"><a class="link" href="#_response_fields_42">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
