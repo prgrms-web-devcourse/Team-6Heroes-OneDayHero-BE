@@ -34,6 +34,19 @@ public class JwtTokenManager {
         );
     }
 
+    public Long calculateRemainExpiryTimeMs(
+            String token
+    ) {
+        try {
+            var currentTimeMs = new Date().getTime();
+            var expirationDate = extractClaims(token).getExpiration();
+
+            return expirationDate.getTime() - currentTimeMs;
+        } catch (JwtException jwtException) {
+            return 0L;
+        }
+    }
+
     private Claims extractClaims(
             String token
     ) throws JwtException {
