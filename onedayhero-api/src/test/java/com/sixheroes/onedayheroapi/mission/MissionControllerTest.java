@@ -73,8 +73,8 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionCreateRequest = MissionCreateRequest.builder()
                 .missionCategoryId(1L)
                 .regionName("역삼1동")
-                .longitude(123.45)
-                .latitude(123.45)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .missionInfo(missionInfoRequest)
                 .build();
 
@@ -1201,8 +1201,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         .dong("역삼동")
                         .build())
                 .title("오전 서빙 파트타임 급하게 구합니다!")
-                .longitude(36.17542)
-                .latitude(127.1110230)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .missionDate(LocalDate.of(2023, 11, 26))
                 .startTime(LocalTime.of(9, 0, 0))
                 .endTime(LocalTime.of(13, 0, 0))
@@ -1224,8 +1224,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         .dong("역삼동")
                         .build())
                 .title("주방 설거지를 처리해주실 분 빠르게 모십니다.")
-                .longitude(36.17542)
-                .latitude(127.1110230)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .missionDate(LocalDate.of(2023, 11, 28))
                 .startTime(LocalTime.of(17, 0, 0))
                 .endTime(LocalTime.of(19, 0, 0))
@@ -1423,8 +1423,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .region(regionResponse)
-                .longitude(123.45)
-                .latitude(123.45)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .missionStatus("MATCHING")
                 .paths(paths)
                 .isBookmarked(true)
@@ -1497,8 +1497,8 @@ public class MissionControllerTest extends RestDocsSupport {
                 .missionInfo(missionInfoResponse)
                 .bookmarkCount(0)
                 .region(regionResponse)
-                .longitude(123.45)
-                .latitude(123.45)
+                .longitude(127.02880308004335)
+                .latitude(37.49779692073204)
                 .missionStatus("MISSION_COMPLETED")
                 .build();
     }
@@ -1540,8 +1540,8 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionCreateRequest.builder()
                 .missionCategoryId(1L)
                 .regionName("역삼1동")
-                .latitude(1234252.23)
-                .longitude(1234277.388)
+                .latitude(37.49779692073204)
+                .longitude(127.02880308004335)
                 .missionInfo(missionInfoRequest)
                 .build();
     }
@@ -1552,8 +1552,8 @@ public class MissionControllerTest extends RestDocsSupport {
         return MissionUpdateRequest.builder()
                 .missionCategoryId(1L)
                 .regionId(1L)
-                .latitude(1234252.23)
-                .longitude(1234277.388)
+                .latitude(37.49779692073204)
+                .longitude(127.02880308004335)
                 .missionInfo(missionInfoRequest)
                 .build();
     }
