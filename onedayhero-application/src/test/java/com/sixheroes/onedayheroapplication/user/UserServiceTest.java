@@ -7,7 +7,7 @@ import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadS
 import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -82,8 +81,8 @@ class UserServiceTest extends IntegrationApplicationTest {
         var userFavoriteWorkingDayServiceDto = createUserFavoriteWorkingDayServiceRequest(favoriteDate, favoriteStartTime, favoriteEndTime);
 
         var regionIds = regionRepository.findAll().stream()
-            .map(Region::getId)
-            .toList();
+                .map(Region::getId)
+                .toList();
 
         var userServiceUpdateRequest = createUserServiceUpdateRequest(userBasicInfoServiceDto, userFavoriteWorkingDayServiceDto, regionIds);
 
@@ -110,12 +109,11 @@ class UserServiceTest extends IntegrationApplicationTest {
         var notExistUserId = 2L;
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .build();
+                .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUser(notExistUserId, userServiceUpdateRequest, Collections.emptyList()))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("수정할 선호 지역에 존재하지 않는 지역이 있다면 예외가 발생한다.")
@@ -141,15 +139,14 @@ class UserServiceTest extends IntegrationApplicationTest {
         var userFavoriteWorkingDayServiceDto = createUserFavoriteWorkingDayServiceRequest(favoriteDate, favoriteStartTime, favoriteEndTime);
 
         var userServiceUpdateRequest = UserServiceUpdateRequest.builder()
-            .userBasicInfo(userBasicInfoServiceDto)
-            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-            .userFavoriteRegions(notExistRegions)
-            .build();
+                .userBasicInfo(userBasicInfoServiceDto)
+                .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+                .userFavoriteRegions(notExistRegions)
+                .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest, Collections.emptyList()))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.ER_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("유저의 프로필을 조회한다.")
@@ -163,14 +160,14 @@ class UserServiceTest extends IntegrationApplicationTest {
         userImageRepository.save(userImage);
 
         var regionIds = regionRepository.findAll().stream()
-            .map(Region::getId)
-            .toList();
+                .map(Region::getId)
+                .toList();
         var userRegions = regionIds.stream()
-            .map(regionId -> UserRegion.builder()
-                .regionId(regionId)
-                .user(user)
-                .build())
-            .toList();
+                .map(regionId -> UserRegion.builder()
+                        .regionId(regionId)
+                        .user(user)
+                        .build())
+                .toList();
         userRegionRepository.saveAll(userRegions);
 
         // when
@@ -187,8 +184,8 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
                 .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
         assertThat(userResponse.image())
-            .extracting("originalName", "uniqueName", "path")
-            .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+                .extracting("originalName", "uniqueName", "path")
+                .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
         assertThat(userResponse.favoriteRegions()).isNotEmpty();
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
         assertThat(userResponse.isHeroMode()).isEqualTo(user.getIsHeroMode());
@@ -203,8 +200,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> userService.findUser(notExistUserId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("유저의 히어로 모드를 활성화한다.")
@@ -230,8 +226,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(com.sixheroes.onedayherocommon.exception.EntityNotFoundException.class);
     }
 
     @DisplayName("유저의 히어로 모드를 비활성화한다.")
@@ -258,8 +253,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> userService.turnOnHeroMode(notExistUserId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("유저의 프로필 이미지를 삭제한다.")
@@ -298,8 +292,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> userService.deleteUserImage(userId, notExistUserImageId))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     private UserImage createUserImage(
@@ -352,36 +345,36 @@ class UserServiceTest extends IntegrationApplicationTest {
 
     private static MockMultipartFile createMockMultipartFile() {
         return new MockMultipartFile(
-            "images",
-            "imageA.jpeg",
-            "image/jpeg",
-            "<<jpeg data>>".getBytes()
+                "images",
+                "imageA.jpeg",
+                "image/jpeg",
+                "<<jpeg data>>".getBytes()
         );
     }
 
     private UserServiceUpdateRequest createUserServiceUpdateRequest(UserBasicInfoServiceRequest userBasicInfoServiceDto, UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDayServiceDto, List<Long> regionIds) {
         return UserServiceUpdateRequest.builder()
-            .userBasicInfo(userBasicInfoServiceDto)
-            .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
-            .userFavoriteRegions(regionIds)
-            .build();
+                .userBasicInfo(userBasicInfoServiceDto)
+                .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
+                .userFavoriteRegions(regionIds)
+                .build();
     }
 
     private UserFavoriteWorkingDayServiceRequest createUserFavoriteWorkingDayServiceRequest(List<String> favoriteDate, LocalTime favoriteStartTime, LocalTime favoriteEndTime) {
         return UserFavoriteWorkingDayServiceRequest.builder()
-            .favoriteDate(favoriteDate)
-            .favoriteStartTime(favoriteStartTime)
-            .favoriteEndTime(favoriteEndTime)
-            .build();
+                .favoriteDate(favoriteDate)
+                .favoriteStartTime(favoriteStartTime)
+                .favoriteEndTime(favoriteEndTime)
+                .build();
     }
 
     private UserBasicInfoServiceRequest createUserBasicInfoService(String nickname, String gender, LocalDate birth, String introduce) {
         return UserBasicInfoServiceRequest.builder()
-            .nickname(nickname)
-            .gender(gender)
-            .birth(birth)
-            .introduce(introduce)
-            .build();
+                .nickname(nickname)
+                .gender(gender)
+                .birth(birth)
+                .introduce(introduce)
+                .build();
     }
 
 }

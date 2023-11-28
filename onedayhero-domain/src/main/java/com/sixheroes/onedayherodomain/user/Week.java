@@ -1,11 +1,11 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,9 +22,9 @@ public enum Week {
 
     public static Week from(String week) {
         return Arrays.stream(Week.values())
-            .filter(w -> w.isEqual(week))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(ErrorCode.EU_008.name()));
+                .filter(w -> w.isEqual(week))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.INVALID_WEEK));
     }
 
     private boolean isEqual(String week) {

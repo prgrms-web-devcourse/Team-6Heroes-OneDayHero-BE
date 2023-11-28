@@ -2,7 +2,7 @@ package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import com.sixheroes.onedayherodomain.user.*;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -67,8 +66,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션 제안을 생성할 때 해당 히어로가 존재하지 않으면 예외가 발생한다.")
@@ -91,8 +89,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션 제안을 승낙한다.")
@@ -127,8 +124,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposalId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EMP_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -143,8 +139,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.approveMissionProposal(heroId, missionProposalId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션 제안을 거절한다.")
@@ -179,8 +174,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposalId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EMP_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션이 존재하지 않으면 미션 제안을 승낙할 때 예외가 발생한다.")
@@ -195,8 +189,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
 
         // when
         assertThatThrownBy(() -> missionProposalService.rejectMissionProposal(heroId, missionProposalId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EM_008.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("제안 받은 미션을 이미지와 함께 조회한다.")
@@ -238,23 +231,23 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
         var content = missionProposalResponses.getContent();
         assertThat(content).hasSize(4);
         assertThat(content).extracting("mission")
-            .filteredOn("id", mission1.getId())
-            .extracting("imagePath", "isBookmarked")
-            .containsExactly(Tuple.tuple(missionImage.getPath(), true));
+                .filteredOn("id", mission1.getId())
+                .extracting("imagePath", "isBookmarked")
+                .containsExactly(Tuple.tuple(missionImage.getPath(), true));
         assertThat(content).extracting("mission")
-            .filteredOn("id", mission2.getId())
-            .extracting("imagePath", "isBookmarked")
-            .containsExactly(Tuple.tuple(null, false));
+                .filteredOn("id", mission2.getId())
+                .extracting("imagePath", "isBookmarked")
+                .containsExactly(Tuple.tuple(null, false));
     }
 
     private MissionBookmark createMissionBookMark(
-        Long userId,
-        Mission mission
+            Long userId,
+            Mission mission
     ) {
         return MissionBookmark.builder()
-            .mission(mission)
-            .userId(userId)
-            .build();
+                .mission(mission)
+                .userId(userId)
+                .build();
     }
 
     private MissionProposal createMissionProposal(
@@ -268,23 +261,23 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     }
 
     private Mission createMission(
-        MissionCategory missionCategory,
-        Long regionId,
-        MissionStatus missionStatus
+            MissionCategory missionCategory,
+            Long regionId,
+            MissionStatus missionStatus
     ) {
         return Mission.builder()
-            .missionCategory(missionCategory)
-            .missionInfo(createMissionInfo())
-            .regionId(regionId)
-            .citizenId(1L)
-            .location(Mission.createPoint(123456.78, 123456.78))
-            .missionStatus(missionStatus)
-            .bookmarkCount(0)
-            .build();
+                .missionCategory(missionCategory)
+                .missionInfo(createMissionInfo())
+                .regionId(regionId)
+                .citizenId(1L)
+                .location(Mission.createPoint(123456.78, 123456.78))
+                .missionStatus(missionStatus)
+                .bookmarkCount(0)
+                .build();
     }
 
     private MissionImage createMissionImage(
-        Mission mission
+            Mission mission
     ) {
         var missionImage = MissionImage.createMissionImage("원본 이름", "고유 이름", "s3://image");
         mission.addMissionImages(List.of(missionImage));

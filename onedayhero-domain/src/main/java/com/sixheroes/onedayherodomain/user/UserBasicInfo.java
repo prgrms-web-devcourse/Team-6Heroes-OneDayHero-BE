@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -45,10 +46,10 @@ public class UserBasicInfo {
 
     @Builder
     private UserBasicInfo(
-        String nickname,
-        UserGender gender,
-        LocalDate birth,
-        String introduce
+            String nickname,
+            UserGender gender,
+            LocalDate birth,
+            String introduce
     ) {
         validCreateUserBasicInfo(nickname, introduce, birth);
 
@@ -59,9 +60,9 @@ public class UserBasicInfo {
     }
 
     private void validCreateUserBasicInfo(
-        String nickname,
-        String introduce,
-        LocalDate birth
+            String nickname,
+            String introduce,
+            LocalDate birth
     ) {
         validNicknameLength(nickname);
         validIntroduceLength(introduce);
@@ -70,22 +71,22 @@ public class UserBasicInfo {
 
     private void validNicknameLength(String nickname) {
         if (nickname.length() > 30) {
-            log.debug("nickname 길이가 30을 초과했습니다. nickname.length() : {}", nickname.length());
-            throw new IllegalArgumentException(ErrorCode.EU_003.name());
+            log.warn("nickname 길이가 30을 초과했습니다. nickname.length() : {}", nickname.length());
+            throw new BusinessException(ErrorCode.INVALID_USER_NICKNAME_LENGTH);
         }
     }
 
     private void validIntroduceLength(String introduce) {
         if (introduce.length() > 200) {
-            log.debug("introduce 길이가 200을 초과했습니다. introduce.length() : {}", introduce.length());
-            throw new IllegalArgumentException(ErrorCode.EU_004.name());
+            log.warn("introduce 길이가 200을 초과했습니다. introduce.length() : {}", introduce.length());
+            throw new BusinessException(ErrorCode.INVALID_USER_INTRODUCE_LENGTH);
         }
     }
 
     private void validBirthBeforeToday(LocalDate birth) {
         if (!birth.isBefore(LocalDate.now())) {
-            log.debug("태어난 날짜는 오늘보다 과거여야 합니다. birth : {}", birth);
-            throw new IllegalArgumentException(ErrorCode.EU_006.name());
+            log.warn("태어난 날짜는 오늘보다 과거여야 합니다. birth : {}", birth);
+            throw new BusinessException(ErrorCode.INVALID_BIRTH);
         }
     }
 }

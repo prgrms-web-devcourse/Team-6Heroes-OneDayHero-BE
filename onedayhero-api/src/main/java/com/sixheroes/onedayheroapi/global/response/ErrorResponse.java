@@ -31,10 +31,11 @@ public record ErrorResponse(
         LocalDateTime serverDateTime
 ) {
 
-    public static ErrorResponse from(final ErrorCode errorCode) {
+    public static ErrorResponse from(
+            final ErrorCode errorCode
+    ) {
         return ErrorResponse.builder()
                 .code(errorCode.name())
-                .status(errorCode.getStatus())
                 .message(errorCode.getMessage())
                 .serverDateTime(LocalDateTime.now())
                 .build();
@@ -46,7 +47,6 @@ public record ErrorResponse(
     ) {
         return ErrorResponse.builder()
                 .code(errorCode.name())
-                .status(errorCode.getStatus())
                 .message(errorCode.getMessage())
                 .errors(ValidationError.of(e.getBindingResult().getFieldErrors()))
                 .serverDateTime(LocalDateTime.now())

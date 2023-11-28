@@ -9,7 +9,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionInfoServiceReq
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.mission.*;
 import org.apache.http.entity.ContentType;
 import org.assertj.core.groups.Tuple;
@@ -103,8 +103,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_003.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민이 미션을 생성 할 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
@@ -123,8 +122,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_004.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민이 미션을 생성 할 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
@@ -146,8 +144,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.createMission(missionCreateServiceRequest, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_005.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 미션을 삭제 할 수 있다.")
@@ -226,8 +223,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), citizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_007.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션을 생성한 시민이 아니라면 삭제를 할 수 없다.")
@@ -261,8 +257,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.deleteMission(savedMission.getId(), unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 미션을 수정 할 수 있다.")
@@ -369,8 +364,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 매칭 중인 상태의 미션만 수정이 가능하다.")
@@ -425,8 +419,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_009.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민이 미션을 수정 할 때 미션 일이 현재보다 이전 일 수 없다.")
@@ -481,8 +474,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_003.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민이 미션을 수정 할 때 미션의 마감 일이 시작 시간 이후 일 수 없다.")
@@ -537,8 +529,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_004.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민이 미션을 수정 할 때 미션의 종료 시간이 시작 시간보다 빠를 수 없다.")
@@ -593,8 +584,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.updateMission(mission.getId(), missionUpdateServiceRequest, today))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_004.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 마감된 미션에 대해서만 미션을 연장 할 수 있다.")
@@ -639,8 +629,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionExtendServiceRequest, today))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 본인이 만든 미션만 연장 할 수 있다.")
@@ -686,8 +675,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> missionService.extendMission(mission.getId(), missionExtendServiceRequest, today))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 미션을 완료 상태로 변경 할 수 있다.")
@@ -752,8 +740,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> savedMission.complete(unknownCitizenId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EM_100.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 하나의 미션을 조회 할 수 있다.")

@@ -15,7 +15,9 @@ public class MissionProposalEventService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(readOnly = true)
-    public void notifyMissionProposalCreate(MissionProposalCreateEvent missionProposalCreateEvent) {
+    public void notifyMissionProposalCreate(
+            MissionProposalCreateEvent missionProposalCreateEvent
+    ) {
         var missionProposalId = missionProposalCreateEvent.missionProposalId();
         var missionProposalCreateEventDto = missionProposalReader.findCreateEvent(missionProposalId);
 

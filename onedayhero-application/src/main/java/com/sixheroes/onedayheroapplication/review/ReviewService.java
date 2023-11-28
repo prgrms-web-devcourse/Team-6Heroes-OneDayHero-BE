@@ -10,13 +10,16 @@ import com.sixheroes.onedayheroapplication.mission.MissionReader;
 import com.sixheroes.onedayheroapplication.review.repository.ReviewQueryRepository;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.review.reqeust.ReviewUpdateServiceRequest;
-import com.sixheroes.onedayheroapplication.review.response.*;
+import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
+import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
+import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
-import com.sixheroes.onedayherodomain.user.UserImage;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -65,8 +67,8 @@ public class ReviewService {
         var queryResponse = reviewQueryRepository.viewReviewDetail(reviewId);
 
         if (queryResponse.isEmpty()) {
-            log.debug("리뷰 상세 조회에 필요한 데이터가 존재하지 않습니다.");
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            log.warn("리뷰 상세 조회에 필요한 데이터가 존재하지 않습니다. reviewId : {}", reviewId);
+            throw new BusinessException(ErrorCode.NOT_FOUND_REVIEW);
         }
 
         return ReviewDetailResponse.of(

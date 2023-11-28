@@ -1,11 +1,11 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 @Getter
 @RequiredArgsConstructor
@@ -18,9 +18,9 @@ public enum UserGender {
 
     public static UserGender from(String userGender) {
         return Arrays.stream(UserGender.values())
-                    .filter(ug -> ug.isEqual(userGender))
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException(ErrorCode.EU_007.name()));
+                .filter(ug -> ug.isEqual(userGender))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.INVALID_GENDER));
     }
 
     private boolean isEqual(String userGender) {

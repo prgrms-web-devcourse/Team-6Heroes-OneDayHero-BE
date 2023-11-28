@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.missionchatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -56,7 +57,8 @@ public class UserMissionChatRoom extends BaseEntity {
 
     public void exit() {
         if (!isJoined) {
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            log.warn("채팅방에 접속해있는 상태에서만 퇴장이 가능합니다. {}", isJoined);
+            throw new BusinessException(ErrorCode.ABORT_CHATROOM_EXIT);
         }
 
         missionChatRoom.minusHeadCount();

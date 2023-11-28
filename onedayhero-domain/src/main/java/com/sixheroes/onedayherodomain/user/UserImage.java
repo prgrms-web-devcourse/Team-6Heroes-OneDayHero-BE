@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.user;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -73,29 +74,29 @@ public class UserImage extends BaseEntity {
     }
 
     public void validOwner(
-        Long userId
+            Long userId
     ) {
         user.validOwner(userId);
     }
 
     private void validOriginalNameLength(String originalName) {
         if (originalName.length() > 260) {
-            log.debug("original name이 260자를 초과했습니다. originalName.length() : {}", originalName.length());
-            throw new IllegalArgumentException(ErrorCode.EI_001.name());
+            log.warn("original name이 260자를 초과했습니다. originalName.length() : {}", originalName.length());
+            throw new BusinessException(ErrorCode.INVALID_ORIGINAL_LENGTH);
         }
     }
 
     private void validUniqueNameLength(String uniqueName) {
         if (uniqueName.length() > 100) {
-            log.debug("unique name이 100자를 초과했습니다. uniqueName.length() : {}", uniqueName.length());
-            throw new IllegalArgumentException(ErrorCode.EI_002.name());
+            log.warn("unique name이 100자를 초과했습니다. uniqueName.length() : {}", uniqueName.length());
+            throw new BusinessException(ErrorCode.INVALID_UNIQUE_LENGTH);
         }
     }
 
     private void validPathLength(String path) {
         if (path.length() > 250) {
-            log.debug("path가 250자를 초과했습니다. path.length() : {}", path.length());
-            throw new IllegalArgumentException(ErrorCode.EI_003.name());
+            log.warn("path가 250자를 초과했습니다. path.length() : {}", path.length());
+            throw new BusinessException(ErrorCode.INVALID_PATH_LENGTH);
         }
     }
 }

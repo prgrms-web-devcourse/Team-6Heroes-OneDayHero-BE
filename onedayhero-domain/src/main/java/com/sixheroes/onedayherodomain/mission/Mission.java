@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.mission;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,7 +19,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -152,32 +152,32 @@ public class Mission extends BaseEntity {
         validOwn(citizenId);
 
         if (missionStatus.isMatchingCompleted()) {
-            throw new IllegalStateException(ErrorCode.EM_007.name());
+            throw new BusinessException(ErrorCode.ABORT_MISSION_DELETE);
         }
     }
 
     private void validAbleExtend() {
         if (!missionStatus.isExpired()) {
-            log.debug("미션의 연장이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            log.warn("미션의 연장이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
+            throw new BusinessException(ErrorCode.ABORT_MISSION_EXTEND);
         }
     }
 
     private void validAbleComplete() {
         if (!missionStatus.isMatchingCompleted()) {
-            log.debug("미션을 완료 상태로 변경이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
-            throw new IllegalStateException(ErrorCode.T_001.name());
+            log.warn("미션을 완료 상태로 변경이 불가능한 상태입니다. 현재 상태 : {}", missionStatus.getDescription());
+            throw new BusinessException(ErrorCode.ABORT_MISSION_COMPLETE);
         }
     }
 
     public void completeMissionMatching(Long userId) {
-        validateMissionOwnerIsValid(userId);
+        validOwn(userId);
         validateCurrentMissionStatusIsMatching();
         this.missionStatus = MissionStatus.MATCHING_COMPLETED;
     }
 
     public void cancelMissionMatching(Long citizenId) {
-        validateMissionOwnerIsValid(citizenId);
+        validOwn(citizenId);
         validateCurrentMissionStatusIsMatchingCompleted();
         this.missionStatus = MissionStatus.MATCHING;
     }
@@ -193,7 +193,7 @@ public class Mission extends BaseEntity {
 
     public void validateMissionCompleted() {
         if (this.missionStatus != MissionStatus.MISSION_COMPLETED) {
-            throw new IllegalStateException(ErrorCode.EM_009.name());
+            throw new BusinessException(ErrorCode.INVALID_MISSION_UPDATE_REQUEST);
         }
     }
 
@@ -201,7 +201,7 @@ public class Mission extends BaseEntity {
     public void validMissionProposalPossible(
             Long userId
     ) {
-        validMissionOwner(userId);
+        validOwn(userId);
         validMissionStatusMatching();
     }
 
@@ -217,61 +217,47 @@ public class Mission extends BaseEntity {
     }
 
     private void validOwn(
-            Long citizenId
+            Long userId
     ) {
-        if (!this.citizenId.equals(citizenId)) {
-            log.debug("권한이 없는 사람이 시도하였습니다. id : {}", citizenId);
-            throw new IllegalStateException(ErrorCode.EM_100.name());
+        if (!this.citizenId.equals(userId)) {
+            log.warn("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
+            throw new BusinessException(ErrorCode.INVALID_MISSION_OWNER);
         }
     }
 
     private void validAbleUpdate() {
         if (!missionStatus.isMatching()) {
-            log.debug("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
-            throw new IllegalStateException(ErrorCode.EM_009.name());
-        }
-    }
-
-    private void validMissionOwner(
-            Long userId
-    ) {
-        if (!Objects.equals(this.citizenId, userId)) {
-            log.debug("미션 소유자가 아닙니다. userId : {}, citizenId : {}", userId, citizenId);
-            throw new IllegalArgumentException(ErrorCode.EM_007.name());
+            log.warn("미션을 수정할 수 없는 상태에서 시도하였습니다. missionStatus : {}", missionStatus.name());
+            throw new BusinessException(ErrorCode.ABORT_MISSION_UPDATE);
         }
     }
 
     // TODO validateBookmarkCountAddable과 행위가 같음
     private void validMissionStatusMatching() {
         if (!this.missionStatus.isMatching()) {
-            log.debug("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
-            throw new IllegalStateException(ErrorCode.EM_008.name());
-        }
-    }
-
-    private void validateMissionOwnerIsValid(Long citizenId) {
-        if (!Objects.equals(this.citizenId, citizenId)) {
-            throw new IllegalStateException(ErrorCode.EM_008.name());
+            log.warn("미션 상태가 매칭 중이 아닙니다. missionStatus : {}", missionStatus);
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
     }
 
     private void validateCurrentMissionStatusIsMatching() {
         if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
-            throw new IllegalStateException(ErrorCode.EM_007.name());
+            log.warn("매칭 중 상태인 미션에 대해서만 매칭완료 설정을 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
         }
     }
 
     private void validateCurrentMissionStatusIsMatchingCompleted() {
         if (this.missionStatus != MissionStatus.MATCHING_COMPLETED) {
-            log.debug("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
-            throw new IllegalStateException(ErrorCode.EM_009.name());
+            log.warn("매칭 완료인 상태의 미션만 포기/철회 상태로 설정할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
         }
     }
 
     private void validateBookmarkCountAddable() {
         if (this.missionStatus != MissionStatus.MATCHING) {
-            log.debug("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            log.warn("매칭중인 미션만 찜 할 수 있습니다. 미션 상태 : {}", this.missionStatus);
+            throw new BusinessException(ErrorCode.INVALID_STATUS_MISSION_BOOKMARK_REQUEST);
         }
     }
 }

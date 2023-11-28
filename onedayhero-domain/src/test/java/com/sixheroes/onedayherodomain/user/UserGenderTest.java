@@ -1,20 +1,19 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.NoSuchElementException;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class UserGenderTest {
 
     @DisplayName("올바른 성별 값이면 성별이 생성된다.")
-    @CsvSource(value = { "MALE", "FEMALE" })
+    @CsvSource(value = {"MALE", "FEMALE"})
     @ParameterizedTest
     void createGender(String gender) {
         // given
@@ -34,7 +33,6 @@ class UserGenderTest {
 
         // when & then
         assertThatThrownBy(() -> UserGender.from(gender))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessage(ErrorCode.EU_007.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }

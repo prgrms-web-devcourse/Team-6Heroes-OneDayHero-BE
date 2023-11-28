@@ -3,7 +3,7 @@ package com.sixheroes.onedayheroapplication.mission;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionBookmarkCreateServiceRequest;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
@@ -92,8 +92,7 @@ class MissionBookmarkServiceTest extends IntegrationApplicationTest {
         assertThatThrownBy(() -> missionBookmarkService.createMissionBookmark(
                 bookmarkUserId,
                 createMissionBookmarkCreateServiceRequest(mission.getId())
-        )).isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.T_001.name());
+        )).isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("시민은 찜했던 미션에 대해 찜 취소를 할 수 있다.")

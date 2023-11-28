@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,8 +52,7 @@ class ProfileServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> profileService.findCitizenProfile(notExistUserId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("상대의 히어로 프로필을 조회한다.")
@@ -69,12 +67,12 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         userImageRepository.save(userImage);
 
         var userRegions = regionRepository.findAll().stream()
-            .map(Region::getId)
-            .map(regionId -> UserRegion.builder()
-                .user(user)
-                .regionId(regionId)
-                .build())
-            .toList();
+                .map(Region::getId)
+                .map(regionId -> UserRegion.builder()
+                        .user(user)
+                        .regionId(regionId)
+                        .build())
+                .toList();
         userRegionRepository.saveAll(userRegions);
 
         // when
@@ -91,8 +89,8 @@ class ProfileServiceTest extends IntegrationApplicationTest {
                 .extracting("favoriteDate", "favoriteStartTime", "favoriteEndTime")
                 .containsExactly(favoriteDate, userFavoriteWorkingDay.getFavoriteStartTime(), userFavoriteWorkingDay.getFavoriteEndTime());
         assertThat(userResponse.image())
-            .extracting("originalName", "uniqueName", "path")
-            .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
+                .extracting("originalName", "uniqueName", "path")
+                .containsExactly(userImage.getOriginalName(), userImage.getUniqueName(), userImage.getPath());
         assertThat(userResponse.favoriteRegions()).isNotEmpty();
         assertThat(userResponse.heroScore()).isEqualTo(user.getHeroScore());
     }
@@ -106,15 +104,14 @@ class ProfileServiceTest extends IntegrationApplicationTest {
 
         // when & then
         assertThatThrownBy(() -> profileService.findHeroProfile(notExistUserId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage(ErrorCode.EUC_000.name());
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("히어로를 닉네임으로 검색한다.")
     @Test
     void searchHeroes() {
         // given
-        var user1= createUser("별님");
+        var user1 = createUser("별님");
         user1.changeHeroModeOn();
         userRepository.save(user1);
         var userImage1 = createUserImage(user1);
@@ -146,22 +143,22 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         var content = heroSearchResponses.getContent();
         assertThat(content).hasSize(3);
         assertThat(content)
-            .extracting("nickname")
-            .isSorted();
+                .extracting("nickname")
+                .isSorted();
         assertThat(content)
-            .filteredOn("nickname", "별님")
-            .extracting("favoriteMissionCategories")
-            .hasSize(1);
+                .filteredOn("nickname", "별님")
+                .extracting("favoriteMissionCategories")
+                .hasSize(1);
     }
 
     private UserMissionCategory createUserMissionCategory(
-        Long missionCategoryId,
-        User user
+            Long missionCategoryId,
+            User user
     ) {
         return UserMissionCategory.builder()
-            .missionCategoryId(missionCategoryId)
-            .user(user)
-            .build();
+                .missionCategoryId(missionCategoryId)
+                .user(user)
+                .build();
     }
 
     private UserImage createUserImage(
@@ -190,15 +187,15 @@ class ProfileServiceTest extends IntegrationApplicationTest {
     }
 
     private User createUser(
-        String nickname
+            String nickname
     ) {
         return User.builder()
-            .email(createEmail())
-            .userBasicInfo(createUserBasicInfo(nickname))
-            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .build();
+                .email(createEmail())
+                .userBasicInfo(createUserBasicInfo(nickname))
+                .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .build();
     }
 
     private Email createEmail() {
@@ -217,14 +214,14 @@ class ProfileServiceTest extends IntegrationApplicationTest {
     }
 
     private UserBasicInfo createUserBasicInfo(
-        String nickname
+            String nickname
     ) {
         return UserBasicInfo.builder()
-            .nickname(nickname)
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기 소개")
-            .build();
+                .nickname(nickname)
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기 소개")
+                .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {

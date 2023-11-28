@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheroapplication.chatroom;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.missionchatroom.UserMissionChatRoom;
 import com.sixheroes.onedayherodomain.missionchatroom.repository.UserMissionChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class UserMissionChatRoomReader {
         var userMissionChatRooms = userMissionChatRoomRepository.findByMissionChatRoom_Id(chatRoomId);
 
         if (userMissionChatRooms.isEmpty()) {
-            log.debug("이미 삭제 된 채팅방 아이디가 들어왔습니다.");
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            log.warn("채팅방을 찾을 수 없습니다. chatRoomId : {}", chatRoomId);
+            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_MISSION_CHATROOM);
         }
 
         return userMissionChatRooms;

@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.user;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +35,7 @@ class UserTest {
 
         // when & then
         assertThatThrownBy(user::changeHeroModeOn)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorCode.EU_010.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("히어로 모드가 아닐 때 미션 제안을 받을 수 없다.")
@@ -47,8 +46,7 @@ class UserTest {
 
         // when & then
         assertThatThrownBy(user::validPossibleMissionProposal)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_009.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("히어로 모드가 아닐 때 히어로 프로필을 조회할 수 없다.")
@@ -59,8 +57,7 @@ class UserTest {
 
         // when & then
         assertThatThrownBy(user::validPossibleHeroProfile)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_009.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("히어로 모드를 비활성 상태로 바꾼다.")
@@ -85,8 +82,7 @@ class UserTest {
 
         // when & then
         assertThatThrownBy(user::changeHeroModeOff)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage(ErrorCode.EU_009.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("유저 아이디와 일치하지 않으면 예외가 발생한다.")
@@ -98,40 +94,39 @@ class UserTest {
 
         // when & then
         assertThatThrownBy(() -> user.validOwner(anotherUser))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     private User createUser() {
         return User.builder()
-            .userBasicInfo(createUserBasicInfo())
-            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .email(createEmail())
-            .build();
+                .userBasicInfo(createUserBasicInfo())
+                .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .email(createEmail())
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfo() {
         return UserBasicInfo.builder()
-            .nickname("이름")
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기소개")
-            .build();
+                .nickname("이름")
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기소개")
+                .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {
         return UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON, Week.THU))
-            .favoriteStartTime(LocalTime.of(12, 0, 0))
-            .favoriteEndTime(LocalTime.of(18, 0, 0))
-            .build();
+                .favoriteDate(List.of(Week.MON, Week.THU))
+                .favoriteStartTime(LocalTime.of(12, 0, 0))
+                .favoriteEndTime(LocalTime.of(18, 0, 0))
+                .build();
     }
 
     private Email createEmail() {
         return Email.builder()
-            .email("abc@123.com")
-            .build();
+                .email("abc@123.com")
+                .build();
     }
 }

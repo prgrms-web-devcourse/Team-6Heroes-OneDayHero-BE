@@ -1,6 +1,7 @@
 package com.sixheroes.onedayherodomain.missionmatch;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -60,7 +61,7 @@ public class MissionMatch extends BaseEntity {
     private void validateCurrentMissionMatchStatusIsMatchingMatched() {
         if (this.missionMatchStatus != MissionMatchStatus.MATCHED) {
             log.debug("매칭된 상태의 미션만 취소할 수 있습니다. 미션 상태 : {}", this.missionMatchStatus);
-            throw new IllegalStateException(ErrorCode.EMM_001.name());
+            throw new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
         }
     }
 }

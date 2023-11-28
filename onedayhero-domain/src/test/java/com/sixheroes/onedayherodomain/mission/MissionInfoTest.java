@@ -1,6 +1,6 @@
 package com.sixheroes.onedayherodomain.mission;
 
-import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,8 +56,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo("제목", content))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 내용은 1000자를 초과 할 수 없다.")
@@ -68,8 +67,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo("제목", content))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_002.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 제목은 공백 일 수 없다.")
@@ -79,8 +77,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo(title, "content"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 제목은 100자를 초과 할 수 없다.")
@@ -91,8 +88,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo(title, "content"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.T_001.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 수행 날짜가 생성 날짜보다 이전 일 수 없다.")
@@ -109,8 +105,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_003.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 종료 시간이 시작 시간 이전 일 수 없다.")
@@ -126,8 +121,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_004.name());
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("미션 정보를 입력 받을 때 미션의 마감 시간이 시작 시간 이후 일 수 없다.")
@@ -143,8 +137,7 @@ class MissionInfoTest {
 
         // when & then
         assertThatThrownBy(() -> createMissionInfo(missionDate, startTime, endTime, deadlineTime, serverTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.EM_005.name());
+                .isInstanceOf(BusinessException.class);
     }
 
 

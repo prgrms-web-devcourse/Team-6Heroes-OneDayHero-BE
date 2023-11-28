@@ -1,6 +1,7 @@
 package com.sixheroes.onedayheromongo.alarm;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayheromongo.global.BaseDocument;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,10 +32,10 @@ public class Alarm extends BaseDocument {
 
     @Builder
     private Alarm(
-        AlarmTemplate alarmTemplate,
-        Long userId,
-        String title,
-        String content
+            AlarmTemplate alarmTemplate,
+            Long userId,
+            String title,
+            String content
     ) {
         this.alarmTemplate = alarmTemplate;
         this.userId = userId;
@@ -43,10 +44,10 @@ public class Alarm extends BaseDocument {
     }
 
     public void validOwner(
-        Long userId
+            Long userId
     ) {
         if (!Objects.equals(this.userId, userId)) {
-            throw new IllegalArgumentException(ErrorCode.T_001.name());
+            throw new BusinessException(ErrorCode.INVALID_ALARM_OWNER);
         }
     }
 }
