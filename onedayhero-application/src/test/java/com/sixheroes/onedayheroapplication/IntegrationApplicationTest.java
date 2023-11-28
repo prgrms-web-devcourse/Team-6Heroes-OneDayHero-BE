@@ -10,6 +10,7 @@ import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchReader;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
 import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalService;
+import com.sixheroes.onedayheroapplication.review.ReviewImageService;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.UserService;
@@ -25,6 +26,7 @@ import com.sixheroes.onedayherodomain.missionchatroom.repository.UserMissionChat
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.region.repository.RegionRepository;
+import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
@@ -116,6 +118,12 @@ public abstract class IntegrationApplicationTest {
 
     @Autowired
     protected MissionImageService missionImageService;
+
+    @Autowired
+    protected ReviewImageService reviewImageService;
+
+    @Autowired
+    protected ReviewImageRepository reviewImageRepository;
 
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;

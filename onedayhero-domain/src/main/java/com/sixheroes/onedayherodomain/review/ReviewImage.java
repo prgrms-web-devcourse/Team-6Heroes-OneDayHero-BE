@@ -1,12 +1,18 @@
 package com.sixheroes.onedayherodomain.review;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "review_images")
@@ -53,7 +59,18 @@ public class ReviewImage extends BaseEntity {
                 .build();
     }
 
-    public void setReview(Review review) {
+    public void setReview(
+            Review review
+    ) {
         this.review = review;
+    }
+
+    public void validOwn(
+            Long userId
+    ) {
+        if (!Objects.equals(review.getSenderId(), userId)) {
+            log.warn("리뷰 소유자가 아닙니다. userId : {}, senderId : {}", userId, review.getSenderId());
+            throw new BusinessException(ErrorCode.INVALID_REVIEW_OWNER);
+        }
     }
 }

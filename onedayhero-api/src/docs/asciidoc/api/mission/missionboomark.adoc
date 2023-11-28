@@ -24,4 +24,3 @@ include::{snippets}/mission-bookmark-cancel/request-fields.adoc[]
 ==== HTTP Response
 
 include::{snippets}/mission-bookmark-cancel/http-response.adoc[]
-include::{snippets}/mission-bookmark-cancel/response-fields.adoc[]

@@ -32,7 +32,7 @@ public class ReviewReader {
         return reviewRepository.findReviewCreateEventById(reviewId)
             .orElseThrow(() -> {
                 log.debug("존재하지 않는 리뷰입니다. reviewId : {}", reviewId);
-                return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
+                return new EntityNotFoundException(ErrorCode.NOT_FOUND_REVIEW);
             });
     }
 }

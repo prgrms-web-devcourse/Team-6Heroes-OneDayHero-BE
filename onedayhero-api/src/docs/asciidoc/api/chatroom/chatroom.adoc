@@ -45,7 +45,6 @@ include::{snippets}/chatroom-find-messages/response-fields.adoc[]
 
 include::{snippets}/chatRoom-exit/path-parameters.adoc[]
 include::{snippets}/chatRoom-exit/http-request.adoc[]
-include::{snippets}/chatRoom-exit/request-fields.adoc[]
 
 ==== HTTP Response
 

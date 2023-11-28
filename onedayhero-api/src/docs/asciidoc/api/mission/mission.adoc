@@ -45,7 +45,6 @@ include::{snippets}/mission-find-DynamicCondition/response-fields.adoc[]
 
 ==== Http Request
 
-include::{snippets}/mission-progress-find/path-parameters.adoc[]
 include::{snippets}/mission-progress-find/request-headers.adoc[]
 include::{snippets}/mission-progress-find/http-request.adoc[]
 
@@ -114,7 +113,6 @@ include::{snippets}/mission-extend/response-fields.adoc[]
 include::{snippets}/mission-complete/path-parameters.adoc[]
 include::{snippets}/mission-complete/request-headers.adoc[]
 include::{snippets}/mission-complete/http-request.adoc[]
-include::{snippets}/mission-complete/request-fields.adoc[]
 
 ==== HTTP Response
 
@@ -129,7 +127,6 @@ include::{snippets}/mission-complete/response-fields.adoc[]
 include::{snippets}/mission-delete/path-parameters.adoc[]
 include::{snippets}/mission-delete/request-headers.adoc[]
 include::{snippets}/mission-delete/http-request.adoc[]
-include::{snippets}/mission-delete/request-fields.adoc[]
 
 ==== HTTP Response
 

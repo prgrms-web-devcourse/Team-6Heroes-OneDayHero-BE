@@ -102,7 +102,8 @@ public enum ErrorCode {
     INVALID_MESSAGE("CC_001", "적절하지 않은 메시지가 도착하였습니다."),
 
     // REVIEW
-    NOT_FOUND_REVIEW("R_000", "존재하지 않는 리뷰입니다.");
+    NOT_FOUND_REVIEW("R_000", "존재하지 않는 리뷰입니다."),
+    INVALID_REVIEW_OWNER("R_001", "리뷰의 소유자가 아닙니다.");
 
     private final String code;
     private final String message;

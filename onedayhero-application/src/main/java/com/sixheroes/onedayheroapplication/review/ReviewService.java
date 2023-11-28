@@ -19,6 +19,7 @@ import com.sixheroes.onedayheroapplication.user.UserReader;
 import com.sixheroes.onedayheroapplication.user.UserService;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
+import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -60,7 +62,7 @@ public class ReviewService {
                     uploadServiceResponse.path()
             );
 
-    private final static Function<ReviewImage, S3ImageDeleteServiceRequest> s3DeleteRequestMapper = reviewImage ->
+    public final static Function<ReviewImage, S3ImageDeleteServiceRequest> s3DeleteRequestMapper = reviewImage ->
             S3ImageDeleteServiceRequest.builder()
                     .imageId(reviewImage.getId())
                     .uniqueName(reviewImage.getUniqueName())
@@ -169,11 +171,9 @@ public class ReviewService {
             return;
         }
 
-        var reviewImages = response.stream()
+        response.stream()
                 .map(reviewImageMapper)
-                .toList();
-
-        reviewImages.forEach(review::addImage);
+                .forEach(review::addImage);
     }
 
     private void deleteReviewImages(

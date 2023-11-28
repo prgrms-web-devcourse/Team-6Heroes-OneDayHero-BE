@@ -60,3 +60,17 @@ include::{snippets}/specific-user-received-reviews/query-parameters.adoc[]
 
 include::{snippets}/specific-user-received-reviews/http-response.adoc[]
 include::{snippets}/specific-user-received-reviews/response-fields.adoc[]
+
+[[review-image-delete]]
+=== 리뷰 이미지 제거
+
+==== Http Request
+
+include::{snippets}/review-image-delete/path-parameters.adoc[]
+include::{snippets}/review-image-delete/request-headers.adoc[]
+include::{snippets}/review-image-delete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-image-delete/http-response.adoc[]
+include::{snippets}/review-image-delete/response-fields.adoc[]
