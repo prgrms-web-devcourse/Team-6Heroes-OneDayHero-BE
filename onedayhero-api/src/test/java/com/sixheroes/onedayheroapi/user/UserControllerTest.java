@@ -130,6 +130,7 @@ class UserControllerTest extends RestDocsSupport {
                         .optional()
                         .description("자기 소개"),
                     fieldWithPath("data.image").type(JsonFieldType.OBJECT).description("프로필 이미지"),
+                    fieldWithPath("data.image.id").type(JsonFieldType.NUMBER).description("프로필 이미지 아이디"),
                     fieldWithPath("data.image.originalName")
                         .type(JsonFieldType.STRING)
                         .optional()
@@ -909,7 +910,7 @@ class UserControllerTest extends RestDocsSupport {
     }
 
     private UserImageResponse createUserImageResponse() {
-        return new UserImageResponse("profile.jpg", "unique.jpg", "http://");
+        return new UserImageResponse(1L, "profile.jpg", "unique.jpg", "http://");
     }
 
     private UserFavoriteWorkingDayResponse createUserFavoriteWorkingDayResponse() {

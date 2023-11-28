@@ -7,6 +7,7 @@ import java.util.Objects;
 
 @Builder
 public record UserImageResponse(
+    Long id,
     String originalName,
     String uniqueName,
     String path
@@ -22,6 +23,7 @@ public record UserImageResponse(
         }
 
         return UserImageResponse.builder()
+            .id(userImage.getId())
             .originalName(userImage.getOriginalName())
             .uniqueName(userImage.getUniqueName())
             .path(userImage.getPath())
