@@ -161,7 +161,6 @@ public class MissionControllerTest extends RestDocsSupport {
     void deleteMission() throws Exception {
         // given
         var missionId = 1L;
-        var citizenId = 1L;
 
         willDoNothing().given(missionService).deleteMission(any(Long.class), any(Long.class));
 

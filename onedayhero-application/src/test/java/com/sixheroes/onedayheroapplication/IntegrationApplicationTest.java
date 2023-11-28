@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageDeleteService;
 import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.main.MainService;
 import com.sixheroes.onedayheroapplication.mission.MissionBookmarkService;
+import com.sixheroes.onedayheroapplication.mission.MissionImageService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchReader;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
@@ -111,6 +112,9 @@ public abstract class IntegrationApplicationTest {
 
     @Autowired
     protected MainService mainService;
+
+    @Autowired
+    protected MissionImageService missionImageService;
 
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;

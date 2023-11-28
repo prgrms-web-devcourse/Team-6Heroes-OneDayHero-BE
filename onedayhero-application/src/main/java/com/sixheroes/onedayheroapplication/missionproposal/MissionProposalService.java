@@ -104,20 +104,20 @@ public class MissionProposalService {
     }
 
     private Slice<MissionProposalResponse> createMissionProposalResponseWithImage(
-        Slice<MissionProposalQueryDto> slice
+            Slice<MissionProposalQueryDto> slice
     ) {
         var missionIds = slice.getContent()
-            .stream()
-            .map(MissionProposalQueryDto::missionId)
-            .toList();
+                .stream()
+                .map(MissionProposalQueryDto::missionId)
+                .toList();
         var missionImageByMissionId = missionImageReader.findMissionImageByMissionId(missionIds);
 
         return slice.map(queryResult -> {
             var missionId = queryResult.missionId();
             var missionImagePath = Optional.ofNullable(missionImageByMissionId.get(missionId))
-                .filter(Predicate.not(List::isEmpty))
-                .map(list -> list.get(0).path())
-                .orElse(null);
+                    .filter(Predicate.not(List::isEmpty))
+                    .map(list -> list.get(0).path())
+                    .orElse(null);
             var isBookmarked = Objects.nonNull(queryResult.bookmarkId());
 
             return MissionProposalResponse.from(queryResult, missionImagePath, isBookmarked);
