@@ -16,7 +16,6 @@ public class SseEventListener {
     public void sendSseEmitter(SsePayload ssePaylod) {
         sseEmitters.send(
             ssePaylod.userId(),
-            "alarm",
             ssePaylod.data()
         );
     }
