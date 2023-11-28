@@ -31,12 +31,14 @@ public class RegionCacheTest {
     void regionCacheRead() {
         // given
         var regionA = Region.builder()
+                .id(1L)
                 .si("서울특별시")
                 .gu("강남구")
                 .dong("삼성1동")
                 .build();
 
         var regionB = Region.builder()
+                .id(2L)
                 .si("서울특별시")
                 .gu("서초구")
                 .dong("양재1동")

@@ -45,7 +45,7 @@ class MissionProposalServiceEventTest extends IntegrationApplicationEventTest {
         var missionProposalCreateResponse = missionProposalService.createMissionProposal(citizenId, missionProposalCreateServiceRequest);
 
         // then
-        var missionProposalCreateEventOptional= applicationEvents.stream(MissionProposalCreateEvent.class).findFirst();
+        var missionProposalCreateEventOptional = applicationEvents.stream(MissionProposalCreateEvent.class).findFirst();
         assertThat(missionProposalCreateEventOptional).isNotEmpty();
         var missionProposalCreateEvent = missionProposalCreateEventOptional.get();
         assertThat(missionProposalCreateEvent.missionProposalId()).isEqualTo(missionProposalCreateResponse.id());
@@ -65,12 +65,12 @@ class MissionProposalServiceEventTest extends IntegrationApplicationEventTest {
 
         // when
         var missionProposalApproveResponse = missionProposalService.approveMissionProposal(
-            heroId,
-            missionProposal.getId()
+                heroId,
+                missionProposal.getId()
         );
 
         // then
-        var missionProposalCreateEventOptional= applicationEvents.stream(MissionProposalApproveEvent.class).findFirst();
+        var missionProposalCreateEventOptional = applicationEvents.stream(MissionProposalApproveEvent.class).findFirst();
         assertThat(missionProposalCreateEventOptional).isNotEmpty();
         var missionProposalCreateEvent = missionProposalCreateEventOptional.get();
         assertThat(missionProposalCreateEvent.missionProposalId()).isEqualTo(missionProposalApproveResponse.id());
@@ -90,12 +90,12 @@ class MissionProposalServiceEventTest extends IntegrationApplicationEventTest {
 
         // when
         var missionProposalRejectResponse = missionProposalService.rejectMissionProposal(
-            heroId,
-            missionProposal.getId()
+                heroId,
+                missionProposal.getId()
         );
 
         // then
-        var missionProposalCreateEventOptional= applicationEvents.stream(MissionProposalRejectEvent.class).findFirst();
+        var missionProposalCreateEventOptional = applicationEvents.stream(MissionProposalRejectEvent.class).findFirst();
         assertThat(missionProposalCreateEventOptional).isNotEmpty();
         var missionProposalCreateEvent = missionProposalCreateEventOptional.get();
         assertThat(missionProposalCreateEvent.missionProposalId()).isEqualTo(missionProposalRejectResponse.id());
@@ -137,7 +137,7 @@ class MissionProposalServiceEventTest extends IntegrationApplicationEventTest {
     }
 
     private MissionCategory createMissionCategory() {
-        return MissionCategory.from(MissionCategoryCode.MC_001);
+        return MissionCategory.createMissionCategory(MissionCategoryCode.MC_001);
     }
 
     private User createUser() {

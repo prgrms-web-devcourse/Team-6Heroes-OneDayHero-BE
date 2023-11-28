@@ -12,7 +12,7 @@ import java.util.List;
 public record MissionCreateServiceRequest(
         Long missionCategoryId,
         Long citizenId,
-        Long regionId,
+        String regionName,
         Double latitude,
         Double longitude,
         List<S3ImageUploadServiceRequest> imageFiles,
@@ -21,6 +21,7 @@ public record MissionCreateServiceRequest(
 
     public Mission toEntity(
             MissionCategory missionCategory,
+            Long regionId,
             LocalDateTime serverTime
     ) {
         return Mission.createMission(

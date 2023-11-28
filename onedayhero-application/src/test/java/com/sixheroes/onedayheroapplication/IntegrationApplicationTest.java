@@ -31,6 +31,7 @@ import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryReposit
 import com.sixheroes.onedayherodomain.user.repository.UserRegionRepository;
 import com.sixheroes.onedayherodomain.user.repository.UserRepository;
 import com.sixheroes.onedayheromongo.chat.repository.ChatMessageMongoRepository;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -134,23 +135,41 @@ public abstract class IntegrationApplicationTest {
             @Autowired RegionRepository regionRepository
     ) {
         var missionCategories = Arrays.stream(MissionCategoryCode.values())
-                .map(MissionCategory::from)
+                .map(MissionCategory::createMissionCategory)
                 .toList();
 
         missionCategoryRepository.saveAll(missionCategories);
 
         var regionA = Region.builder()
+                .id(1L)
                 .si("서울시")
                 .gu("강남구")
                 .dong("역삼동")
                 .build();
 
         var regionB = Region.builder()
+                .id(2L)
                 .si("서울시")
                 .gu("강남구")
                 .dong("서초동")
                 .build();
 
-        regionRepository.saveAll(List.of(regionA, regionB));
+        var regionC = Region.builder()
+                .id(3L)
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼1동")
+                .build();
+
+        regionRepository.saveAll(List.of(regionA, regionB, regionC));
+    }
+
+    @AfterAll
+    public static void tearDown(
+            @Autowired MissionCategoryRepository missionCategoryRepository,
+            @Autowired RegionRepository regionRepository
+    ) {
+        missionCategoryRepository.deleteAllInBatch();
+        regionRepository.deleteAllInBatch();
     }
 }

@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "m_categories")
 @Entity
-public class MissionCategory{
+public class MissionCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -25,15 +24,20 @@ public class MissionCategory{
 
     @Builder
     private MissionCategory(
+            Long id,
             MissionCategoryCode missionCategoryCode,
             String name
     ) {
+        this.id = id;
         this.missionCategoryCode = missionCategoryCode;
         this.name = name;
     }
 
-    public static MissionCategory from(MissionCategoryCode missionCategoryCode) {
+    public static MissionCategory createMissionCategory(
+            MissionCategoryCode missionCategoryCode
+    ) {
         return MissionCategory.builder()
+                .id(missionCategoryCode.getCategoryId())
                 .missionCategoryCode(missionCategoryCode)
                 .name(missionCategoryCode.getDescription())
                 .build();

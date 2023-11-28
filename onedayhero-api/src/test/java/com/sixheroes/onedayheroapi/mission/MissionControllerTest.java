@@ -72,7 +72,7 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionInfoRequest = createMissionInfoRequest(missionDate, startTime, endTime, deadlineTime);
         var missionCreateRequest = MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .longitude(123.45)
                 .latitude(123.45)
                 .missionInfo(missionInfoRequest)
@@ -112,8 +112,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         requestPartFields("missionCreateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("regionId").type(JsonFieldType.NUMBER)
-                                        .description("지역 아이디"),
+                                fieldWithPath("regionName").type(JsonFieldType.STRING)
+                                        .description("동 이름"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
                                         .description("위도"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER)
@@ -1539,7 +1539,7 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionCreateRequest.builder()
                 .missionCategoryId(1L)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1234252.23)
                 .longitude(1234277.388)
                 .missionInfo(missionInfoRequest)

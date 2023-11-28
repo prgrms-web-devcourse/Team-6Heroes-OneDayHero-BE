@@ -56,92 +56,93 @@ class MissionProposalRepositoryTest extends IntegrationRepositoryTest {
         // then
         assertThat(missionProposalCreateEventDto).isNotEmpty();
         assertThat(missionProposalCreateEventDto.get())
-            .extracting("heroId", "citizenNickname", "missionId", "missionTitle")
-            .containsExactly(
-                missionProposal.getHeroId(),
-                citizen.getUserBasicInfo().getNickname(),
-                mission.getId(),
-                mission.getMissionInfo().getTitle()
-            );
+                .extracting("heroId", "citizenNickname", "missionId", "missionTitle")
+                .containsExactly(
+                        missionProposal.getHeroId(),
+                        citizen.getUserBasicInfo().getNickname(),
+                        mission.getId(),
+                        mission.getMissionInfo().getTitle()
+                );
     }
 
     public MissionProposal createMissionProposal(
-        Long missionId
+            Long missionId
     ) {
         return MissionProposal.builder()
-            .heroId(2L)
-            .missionId(missionId)
-            .build();
+                .heroId(2L)
+                .missionId(missionId)
+                .build();
     }
 
     private MissionCategory createMissionCategory() {
         return MissionCategory.builder()
-            .missionCategoryCode(MissionCategoryCode.MC_001)
-            .name(MissionCategoryCode.MC_001.getDescription())
-            .build();
+                .id(MissionCategoryCode.MC_001.getCategoryId())
+                .missionCategoryCode(MissionCategoryCode.MC_001)
+                .name(MissionCategoryCode.MC_001.getDescription())
+                .build();
     }
 
     private Mission createMission(
-        MissionCategory missionCategory,
-        Long citizenId
+            MissionCategory missionCategory,
+            Long citizenId
     ) {
         return Mission.builder()
-            .missionCategory(missionCategory)
-            .missionInfo(
-                MissionInfo.builder()
-                    .title("title")
-                    .content("content")
-                    .missionDate(LocalDate.of(2023, 11, 1))
-                    .startTime(LocalTime.of(12, 30))
-                    .endTime(LocalTime.of(14, 30))
-                    .deadlineTime(LocalDateTime.of(
-                        LocalDate.of(2023, 11, 1),
-                        LocalTime.of(12, 0)
-                    ))
-                    .price(1000)
-                    .serverTime(LocalDateTime.of(
-                        LocalDate.of(2023, 10, 31),
-                        LocalTime.MIDNIGHT
-                    ))
-                    .build())
-            .regionId(1L)
-            .citizenId(citizenId)
-            .location(Mission.createPoint(123456.78, 123456.78))
-            .missionStatus(MissionStatus.MATCHING)
-            .bookmarkCount(0)
-            .build();
+                .missionCategory(missionCategory)
+                .missionInfo(
+                        MissionInfo.builder()
+                                .title("title")
+                                .content("content")
+                                .missionDate(LocalDate.of(2023, 11, 1))
+                                .startTime(LocalTime.of(12, 30))
+                                .endTime(LocalTime.of(14, 30))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 0)
+                                ))
+                                .price(1000)
+                                .serverTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 10, 31),
+                                        LocalTime.MIDNIGHT
+                                ))
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(Mission.createPoint(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
+                .bookmarkCount(0)
+                .build();
     }
 
     private User createUser() {
         return User.builder()
-            .userBasicInfo(createUserBasicInfo())
-            .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
-            .userSocialType(UserSocialType.KAKAO)
-            .userRole(UserRole.MEMBER)
-            .email(createEmail())
-            .build();
+                .userBasicInfo(createUserBasicInfo())
+                .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
+                .userSocialType(UserSocialType.KAKAO)
+                .userRole(UserRole.MEMBER)
+                .email(createEmail())
+                .build();
     }
 
     private UserBasicInfo createUserBasicInfo() {
         return UserBasicInfo.builder()
-            .nickname("이름")
-            .birth(LocalDate.of(1990, 1, 1))
-            .gender(UserGender.MALE)
-            .introduce("자기소개")
-            .build();
+                .nickname("이름")
+                .birth(LocalDate.of(1990, 1, 1))
+                .gender(UserGender.MALE)
+                .introduce("자기소개")
+                .build();
     }
 
     private UserFavoriteWorkingDay createUserFavoriteWorkingDay() {
         return UserFavoriteWorkingDay.builder()
-            .favoriteDate(List.of(Week.MON, Week.THU))
-            .favoriteStartTime(LocalTime.of(12, 0, 0))
-            .favoriteEndTime(LocalTime.of(18, 0, 0))
-            .build();
+                .favoriteDate(List.of(Week.MON, Week.THU))
+                .favoriteStartTime(LocalTime.of(12, 0, 0))
+                .favoriteEndTime(LocalTime.of(18, 0, 0))
+                .build();
     }
 
     private Email createEmail() {
         return Email.builder()
-            .email("abc@123.com")
-            .build();
+                .email("abc@123.com")
+                .build();
     }
 }

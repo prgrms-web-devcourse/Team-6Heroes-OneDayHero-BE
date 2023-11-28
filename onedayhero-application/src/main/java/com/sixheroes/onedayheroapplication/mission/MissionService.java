@@ -14,6 +14,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.*;
+import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
@@ -43,6 +44,7 @@ public class MissionService {
     private static final Integer DISTANCE = 5000;
 
     private final MissionCategoryReader missionCategoryReader;
+    private final RegionReader regionReader;
     private final MissionReader missionReader;
     private final MissionRepository missionRepository;
     private final MissionImageRepository missionImageRepository;
@@ -58,7 +60,8 @@ public class MissionService {
             LocalDateTime serverTime
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
-        var mission = request.toEntity(missionCategory, serverTime);
+        var region = regionReader.findByDong(request.regionName());
+        var mission = request.toEntity(missionCategory, region.getId(), serverTime);
 
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());
 

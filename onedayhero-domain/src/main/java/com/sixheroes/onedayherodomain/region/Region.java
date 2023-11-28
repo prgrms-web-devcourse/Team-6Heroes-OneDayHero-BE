@@ -1,6 +1,9 @@
 package com.sixheroes.onedayherodomain.region;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class Region {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "si", length = 10, nullable = false)
@@ -27,10 +29,12 @@ public class Region {
 
     @Builder
     private Region(
-        String si,
-        String gu,
-        String dong
+            Long id,
+            String si,
+            String gu,
+            String dong
     ) {
+        this.id = id;
         this.si = si;
         this.gu = gu;
         this.dong = dong;

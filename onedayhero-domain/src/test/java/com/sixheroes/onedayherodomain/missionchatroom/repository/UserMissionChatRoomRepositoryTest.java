@@ -80,6 +80,7 @@ class UserMissionChatRoomRepositoryTest extends IntegrationRepositoryTest {
 
     private MissionCategory createMissionCategory() {
         return MissionCategory.builder()
+                .id(MissionCategoryCode.MC_001.getCategoryId())
                 .missionCategoryCode(MissionCategoryCode.MC_001)
                 .name("서빙")
                 .build();

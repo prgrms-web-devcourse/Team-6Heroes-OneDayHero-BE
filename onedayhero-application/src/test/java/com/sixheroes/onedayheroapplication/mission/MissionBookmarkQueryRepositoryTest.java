@@ -24,7 +24,7 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
     void viewMeBookmarkMissions() {
         // given
         var region = regionRepository.save(createRegion());
-        var missionCategory = missionCategoryRepository.save(MissionCategory.from(MissionCategoryCode.MC_001));
+        var missionCategory = missionCategoryRepository.save(MissionCategory.createMissionCategory(MissionCategoryCode.MC_001));
         var bookmarkUserId = 1L;
         var citizenId = 2L;
         createFiveBookmarks(
@@ -108,6 +108,7 @@ class MissionBookmarkQueryRepositoryTest extends IntegrationQueryDslTest {
 
     private Region createRegion() {
         return Region.builder()
+                .id(1L)
                 .si("서울시")
                 .gu("프로구")
                 .dong("래머동")

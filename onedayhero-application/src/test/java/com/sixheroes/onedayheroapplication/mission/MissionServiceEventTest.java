@@ -34,14 +34,14 @@ class MissionServiceEventTest extends IntegrationApplicationEventTest {
         var deadlineTime = LocalDateTime.of(missionDate, startTime);
 
         var mission = createMission(
-            missionCategory,
-            citizenId,
-            missionDate,
-            startTime,
-            endTime,
-            deadlineTime,
-            serverTime,
-            MissionStatus.MATCHING_COMPLETED
+                missionCategory,
+                citizenId,
+                missionDate,
+                startTime,
+                endTime,
+                deadlineTime,
+                serverTime,
+                MissionStatus.MATCHING_COMPLETED
         );
         var savedMission = missionRepository.save(mission);
 
@@ -51,38 +51,39 @@ class MissionServiceEventTest extends IntegrationApplicationEventTest {
         // then
         var missionCompletedEventOptional = applicationEvents.stream(MissionCompletedEvent.class).findFirst();
         assertThat(missionCompletedEventOptional).isNotEmpty();
+
         var missionCompletedEvent = missionCompletedEventOptional.get();
         assertThat(missionCompletedEvent.missionId()).isEqualTo(savedMission.getId());
     }
 
     private Mission createMission(
-        MissionCategory missionCategory,
-        Long citizenId,
-        LocalDate missionDate,
-        LocalTime startTime,
-        LocalTime endTime,
-        LocalDateTime deadlineTime,
-        LocalDateTime serverTime,
-        MissionStatus missionStatus
+            MissionCategory missionCategory,
+            Long citizenId,
+            LocalDate missionDate,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalDateTime deadlineTime,
+            LocalDateTime serverTime,
+            MissionStatus missionStatus
     ) {
         return Mission.builder()
-            .missionCategory(missionCategory)
-            .missionInfo(
-                MissionInfo.builder()
-                    .title("title")
-                    .content("content")
-                    .missionDate(missionDate)
-                    .startTime(startTime)
-                    .endTime(endTime)
-                    .deadlineTime(deadlineTime)
-                    .price(1000)
-                    .serverTime(serverTime)
-                    .build())
-            .regionId(1L)
-            .citizenId(citizenId)
-            .location(Mission.createPoint(123456.78, 123456.89))
-            .bookmarkCount(0)
-            .missionStatus(missionStatus)
-            .build();
+                .missionCategory(missionCategory)
+                .missionInfo(
+                        MissionInfo.builder()
+                                .title("title")
+                                .content("content")
+                                .missionDate(missionDate)
+                                .startTime(startTime)
+                                .endTime(endTime)
+                                .deadlineTime(deadlineTime)
+                                .price(1000)
+                                .serverTime(serverTime)
+                                .build())
+                .regionId(1L)
+                .citizenId(citizenId)
+                .location(Mission.createPoint(123456.78, 123456.89))
+                .bookmarkCount(0)
+                .missionStatus(missionStatus)
+                .build();
     }
 }

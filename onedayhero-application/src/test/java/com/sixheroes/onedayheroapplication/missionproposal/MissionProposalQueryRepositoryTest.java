@@ -62,6 +62,7 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
 
     private Region createRegion() {
         return Region.builder()
+                .id(1L)
                 .si("서울시")
                 .gu("프로구")
                 .dong("래머동")
@@ -69,7 +70,7 @@ class MissionProposalQueryRepositoryTest extends IntegrationQueryDslTest {
     }
 
     private MissionCategory createMissionCategory() {
-        return MissionCategory.from(MissionCategoryCode.MC_001);
+        return MissionCategory.createMissionCategory(MissionCategoryCode.MC_001);
     }
 
     private List<Mission> createMissions(
