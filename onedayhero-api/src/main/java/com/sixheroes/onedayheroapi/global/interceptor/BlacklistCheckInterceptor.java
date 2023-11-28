@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.global.interceptor;
 
 import com.sixheroes.onedayheroapplication.auth.BlacklistService;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.auth.InvalidAuthorizationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class BlacklistCheckInterceptor implements HandlerInterceptor {
 
         if (blacklistService.check(accessToken)) {
             log.warn("탈취된 액세스 토큰으로 접근을 시도했습니다. {}", accessToken);
-            throw new IllegalStateException(ErrorCode.A_001.name());
+            throw new InvalidAuthorizationException(ErrorCode.UNAUTHORIZED_TOKEN_REQUEST);
         }
 
         return true;

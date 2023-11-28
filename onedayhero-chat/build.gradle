@@ -8,7 +8,6 @@ dependencies {
     // test Container
     testImplementation 'org.testcontainers:testcontainers:1.19.1'
 
-
     // Project
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-common')
