@@ -2,7 +2,9 @@ package com.sixheroes.onedayheroapplication.missionproposal;
 
 import com.sixheroes.onedayheroapplication.mission.MissionImageReader;
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalApproveEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
+import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalRejectEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.MissionProposalQueryRepository;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.MissionProposalQueryDto;
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
@@ -68,6 +70,9 @@ public class MissionProposalService {
 
         missionProposal.changeMissionProposalStatusApprove(userId);
 
+        var missionProposalApproveEvent = MissionProposalApproveEvent.from(missionProposal);
+        applicationEventPublisher.publishEvent(missionProposalApproveEvent);
+
         return MissionProposalIdResponse.from(missionProposal);
     }
 
@@ -82,6 +87,9 @@ public class MissionProposalService {
         validMission(missionId);
 
         missionProposal.changeMissionProposalStatusReject(userId);
+
+        var missionProposalRejectEvent = MissionProposalRejectEvent.from(missionProposal);
+        applicationEventPublisher.publishEvent(missionProposalRejectEvent);
 
         return MissionProposalIdResponse.from(missionProposal);
     }

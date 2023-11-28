@@ -5,6 +5,7 @@ import com.sixheroes.onedayheroapplication.global.s3.S3ImageUploadService;
 import com.sixheroes.onedayheroapplication.global.util.SliceResultConverter;
 import com.sixheroes.onedayheroapplication.main.request.UserPositionServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.converter.PointConverter;
+import com.sixheroes.onedayheroapplication.mission.event.dto.MissionCompletedEvent;
 import com.sixheroes.onedayheroapplication.mission.mapper.MissionImageMapper;
 import com.sixheroes.onedayheroapplication.mission.repository.MissionQueryRepository;
 import com.sixheroes.onedayheroapplication.mission.repository.response.*;
@@ -21,6 +22,7 @@ import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageRespons
 import com.sixheroes.onedayherodomain.mission.repository.response.MissionAroundQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,7 @@ public class MissionService {
     private final MissionQueryRepository missionQueryRepository;
     private final S3ImageUploadService s3ImageUploadService;
     private final S3ImageDirectoryProperties directoryProperties;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public MissionIdResponse createMission(
@@ -154,6 +157,9 @@ public class MissionService {
     ) {
         var mission = missionReader.findOne(missionId);
         mission.complete(userId);
+
+        var missionCompletedEvent = MissionCompletedEvent.from(mission);
+        applicationEventPublisher.publishEvent(missionCompletedEvent);
 
         return MissionIdResponse.from(mission.getId());
     }

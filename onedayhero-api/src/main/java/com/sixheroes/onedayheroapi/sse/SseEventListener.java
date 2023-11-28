@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapi.sse;
 
-import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
+import com.sixheroes.onedayheroapplication.alarm.dto.SsePayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -13,7 +13,7 @@ public class SseEventListener {
     private final SseEmitters sseEmitters;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void sendSseEmitter(SsePaylod ssePaylod) {
+    public void sendSseEmitter(SsePayload ssePaylod) {
         sseEmitters.send(
             ssePaylod.userId(),
             "alarm",

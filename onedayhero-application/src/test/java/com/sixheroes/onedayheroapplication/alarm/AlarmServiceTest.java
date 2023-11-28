@@ -2,7 +2,7 @@ package com.sixheroes.onedayheroapplication.alarm;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationEventTest;
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
-import com.sixheroes.onedayheroapplication.alarm.dto.SsePaylod;
+import com.sixheroes.onedayheroapplication.alarm.dto.SsePayload;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherocommon.converter.StringConverter;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
@@ -65,7 +65,7 @@ class AlarmServiceTest extends IntegrationApplicationEventTest {
         verify(alarmTemplateRepository, times(1)).findByAlarmType(anyString());
         verify(alarmRepository, times(1)).save(any(Alarm.class));
 
-        var ssePaylodOptional = applicationEvents.stream(SsePaylod.class).findFirst();
+        var ssePaylodOptional = applicationEvents.stream(SsePayload.class).findFirst();
         assertThat(ssePaylodOptional).isNotEmpty();
         var ssePaylod = ssePaylodOptional.get();
         assertThat(ssePaylod.alarmType()).isEqualTo(MissionProposalAction.MISSION_PROPOSAL_CREATE.name());

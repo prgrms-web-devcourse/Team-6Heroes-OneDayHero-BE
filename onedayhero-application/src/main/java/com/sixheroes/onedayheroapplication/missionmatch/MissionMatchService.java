@@ -1,6 +1,8 @@
 package com.sixheroes.onedayheroapplication.missionmatch;
 
 import com.sixheroes.onedayheroapplication.mission.MissionReader;
+import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchCreateEvent;
+import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchRejectEvent;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.request.MissionMatchCancelServiceRequest;
 import com.sixheroes.onedayheroapplication.missionmatch.response.MissionMatchResponse;
@@ -8,6 +10,7 @@ import com.sixheroes.onedayherodomain.missionmatch.MissionMatch;
 import com.sixheroes.onedayherodomain.missionmatch.repository.MissionMatchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ public class MissionMatchService {
     private final MissionMatchRepository missionMatchRepository;
     private final MissionReader missionReader;
     private final MissionMatchReader missionMatchReader;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public MissionMatchResponse createMissionMatch(
             Long userId,
@@ -35,7 +39,8 @@ public class MissionMatchService {
         mission.completeMissionMatching(userId);
         var savedMissionMatch = missionMatchRepository.save(missionMatch);
 
-        //TODO: 시민, 히어로에게 미션매칭 성사 알람
+        var missionMatchCreateEvent = MissionMatchCreateEvent.from(missionMatch);
+        applicationEventPublisher.publishEvent(missionMatchCreateEvent);
 
         return MissionMatchResponse
                 .builder()
@@ -53,7 +58,8 @@ public class MissionMatchService {
         mission.cancelMissionMatching(userId);
         missionMatch.canceled();
 
-        //TODO: 히어로에게 미션매칭 취소 알람
+        var missionMatchRejectEvent = MissionMatchRejectEvent.from(missionMatch);
+        applicationEventPublisher.publishEvent(missionMatchRejectEvent);
 
         return MissionMatchResponse.builder()
                 .id(missionMatch.getId())

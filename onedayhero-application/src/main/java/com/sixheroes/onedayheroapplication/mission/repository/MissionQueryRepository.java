@@ -6,11 +6,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroapplication.mission.repository.request.MissionFindFilterQueryRequest;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedQueryResponse;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionMatchingQueryResponse;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionProgressQueryResponse;
-import com.sixheroes.onedayheroapplication.mission.repository.response.MissionQueryResponse;
+import com.sixheroes.onedayheroapplication.mission.repository.response.*;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
+import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +21,7 @@ import java.util.Optional;
 import static com.sixheroes.onedayherodomain.mission.QMission.mission;
 import static com.sixheroes.onedayherodomain.mission.QMissionBookmark.missionBookmark;
 import static com.sixheroes.onedayherodomain.mission.QMissionCategory.missionCategory;
+import static com.sixheroes.onedayherodomain.missionmatch.QMissionMatch.missionMatch;
 import static com.sixheroes.onedayherodomain.region.QRegion.region;
 
 @Slf4j
@@ -207,6 +206,23 @@ public class MissionQueryRepository {
                 .fetch();
     }
 
+    public Optional<MissionCompletedEventQueryResponse> findMissionCompletedEvent(
+        Long missionId
+    ) {
+        var missionCompletedEventQueryResponse = queryFactory.select(Projections.constructor(MissionCompletedEventQueryResponse.class,
+                missionMatch.heroId, mission.id, mission.missionInfo.title
+            ))
+            .from(mission)
+            .join(missionMatch)
+            .on(mission.id.eq(missionMatch.missionId))
+            .where(missionIdEq(missionId).and(missionMatchStatusMatched()))
+            .fetchOne();
+
+        return Optional.ofNullable(missionCompletedEventQueryResponse);
+    }
+
+    private BooleanExpression missionMatchStatusMatched() { return missionMatch.missionMatchStatus.eq(MissionMatchStatus.MATCHED); }
+
     private BooleanExpression missionStatusIsMatching() {
         return mission.missionStatus.eq(MissionStatus.MATCHING);
     }
@@ -218,6 +234,11 @@ public class MissionQueryRepository {
     private BooleanExpression missionStatusIsCompleted() {
         return mission.missionStatus.eq(MissionStatus.MISSION_COMPLETED);
     }
+
+    private BooleanBuilder missionIdEq(Long missionId) {
+        return new BooleanBuilder(mission.id.eq(missionId));
+    }
+
 
     private BooleanBuilder userIdEq(Long userId) {
         return new BooleanBuilder(mission.citizenId.eq(userId));

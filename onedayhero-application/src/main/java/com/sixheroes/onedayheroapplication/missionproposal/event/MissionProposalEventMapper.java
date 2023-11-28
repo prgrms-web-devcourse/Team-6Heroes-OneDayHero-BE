@@ -2,7 +2,9 @@ package com.sixheroes.onedayheroapplication.missionproposal.event;
 
 
 import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalCreateEventDto;
+import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalUpdateEventDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,5 +21,16 @@ public final class MissionProposalEventMapper {
             .userId(missionProposalCreateEventDto.heroId())
             .data(missionProposalCreateEventDto.toMap())
             .build();
+    }
+
+    public static AlarmPayload toAlarmPayload(
+            MissionProposalUpdateEventDto missionProposalUpdateEventDto,
+            MissionProposalAction missionProposalAction
+    ) {
+        return AlarmPayload.builder()
+                .alarmType(missionProposalAction.name())
+                .userId(missionProposalUpdateEventDto.citizenId())
+                .data(missionProposalUpdateEventDto.toMap())
+                .build();
     }
 }

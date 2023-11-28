@@ -312,7 +312,7 @@ class UserServiceTest extends IntegrationApplicationTest {
 
     private User createUser() {
         return User.builder()
-                .email(createEamil())
+                .email(createEmail())
                 .userBasicInfo(createUserBasicInfo())
                 .userFavoriteWorkingDay(createUserFavoriteWorkingDay())
                 .userSocialType(UserSocialType.KAKAO)
@@ -320,7 +320,7 @@ class UserServiceTest extends IntegrationApplicationTest {
                 .build();
     }
 
-    private Email createEamil() {
+    private Email createEmail() {
         return Email.builder()
                 .email("abc@123.com")
                 .build();
