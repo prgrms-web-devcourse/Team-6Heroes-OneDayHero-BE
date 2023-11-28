@@ -62,6 +62,7 @@ class ReviewControllerTest extends RestDocsSupport {
         var senderId = 1L;
         var senderNickname = "슈퍼 히어로 토끼";
         var receiverId = 2L;
+        var receiverNickname = "리시버 슈퍼 히어로 토끼";
         var missionTitle = "서빙 구함";
         var content = "리뷰 내용";
         var starScore = 5;
@@ -71,6 +72,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 senderId,
                 senderNickname,
                 receiverId,
+                receiverNickname,
                 missionTitle,
                 content,
                 starScore,
@@ -87,6 +89,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
                 .andExpect(jsonPath("$.data.senderNickname").value(response.senderNickname()))
                 .andExpect(jsonPath("$.data.receiverId").value(response.receiverId()))
+                .andExpect(jsonPath("$.data.receiverNickname").value(response.receiverNickname()))
                 .andExpect(jsonPath("$.data.categoryId").value(response.categoryId()))
                 .andExpect(jsonPath("$.data.categoryCode").value(response.categoryCode()))
                 .andExpect(jsonPath("$.data.categoryName").value(response.categoryName()))
@@ -113,6 +116,8 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .description("리뷰 작성 유저 닉네임"),
                                 fieldWithPath("data.receiverId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 대상 유저 아이디"),
+                                fieldWithPath("data.receiverNickname").type(JsonFieldType.STRING)
+                                        .description("리뷰 대상 유저 닉네임"),
                                 fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER)
                                         .description("미션 카테고리 아이디"),
                                 fieldWithPath("data.categoryCode").type(JsonFieldType.STRING)
@@ -483,6 +488,7 @@ class ReviewControllerTest extends RestDocsSupport {
             Long senderId,
             String senderNickname,
             Long receiverId,
+            String receiverNickname,
             String missionTitle,
             String content,
             Integer starScore,
@@ -509,6 +515,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .senderId(senderId)
                 .senderNickname(senderNickname)
                 .receiverId(receiverId)
+                .receiverNickname(receiverNickname)
                 .missionTitle(missionTitle)
                 .content(content)
                 .starScore(starScore)
