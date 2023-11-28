@@ -46,7 +46,7 @@ public class LogAspect {
         var methodName = joinPoint.getSignature().toShortString();
         Object result = joinPoint.proceed();
         var executeTime = System.currentTimeMillis() - beforeTime;
-        log.warn("[{}] methodName : [{}] time = [{}ms]", MDC.get(TRACE_ID_NAME), methodName, executeTime);
+        log.debug("[{}] methodName : [{}] time = [{}ms]", MDC.get(TRACE_ID_NAME), methodName, executeTime);
         return result;
     }
 
