@@ -6,7 +6,6 @@ import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProp
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalApproveEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalCreateEvent;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalRejectEvent;
-import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.mission.*;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
@@ -19,7 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -109,11 +107,11 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
         assertThat(alarmPayload.alarmType()).isEqualTo(MissionProposalAction.MISSION_PROPOSAL_APPROVE.name());
         assertThat(alarmPayload.userId()).isEqualTo(mission.getCitizenId());
         assertThat(alarmPayload.data())
-            .contains(
-                entry("heroNickname", hero.getUserBasicInfo().getNickname()),
-                entry("missionId", mission.getId()),
-                entry("missionTitle", mission.getMissionInfo().getTitle())
-            );
+                .contains(
+                        entry("heroNickname", hero.getUserBasicInfo().getNickname()),
+                        entry("missionId", mission.getId()),
+                        entry("missionTitle", mission.getMissionInfo().getTitle())
+                );
     }
 
     @DisplayName("미션 제안 승낙 알림을 위한 데이터를 조회할 때 존재하지 않는 미션 제안 아이디라면 예외가 발생한다.")
@@ -126,7 +124,7 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposalEventService.notifyMissionProposalApprove(missionProposalApproveEvent))
-            .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("미션 제안 거절 알림을 위한 데이터를 조회한 뒤 알림 이벤트를 발행한다.")
@@ -159,11 +157,11 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
         assertThat(alarmPayload.alarmType()).isEqualTo(MissionProposalAction.MISSION_PROPOSAL_REJECT.name());
         assertThat(alarmPayload.userId()).isEqualTo(mission.getCitizenId());
         assertThat(alarmPayload.data())
-            .contains(
-                entry("heroNickname", hero.getUserBasicInfo().getNickname()),
-                entry("missionId", mission.getId()),
-                entry("missionTitle", mission.getMissionInfo().getTitle())
-            );
+                .contains(
+                        entry("heroNickname", hero.getUserBasicInfo().getNickname()),
+                        entry("missionId", mission.getId()),
+                        entry("missionTitle", mission.getMissionInfo().getTitle())
+                );
     }
 
     @DisplayName("미션 제안 거절 알림을 위한 데이터를 조회할 때 존재하지 않는 미션 제안 아이디라면 예외가 발생한다.")
@@ -176,8 +174,9 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
 
         // when & then
         assertThatThrownBy(() -> missionProposalEventService.notifyMissionProposalReject(missionProposalRejectEvent))
-            .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
+
     public MissionProposal createMissionProposal(
             Long missionId
     ) {
@@ -188,17 +187,18 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
     }
 
     public MissionProposal createMissionProposal(
-        Long missionId,
-        Long heroId
+            Long missionId,
+            Long heroId
     ) {
         return MissionProposal.builder()
-            .heroId(heroId)
-            .missionId(missionId)
-            .build();
+                .heroId(heroId)
+                .missionId(missionId)
+                .build();
     }
 
     private MissionCategory createMissionCategory() {
         return MissionCategory.builder()
+                .id(MissionCategoryCode.MC_001.getCategoryId())
                 .missionCategoryCode(MissionCategoryCode.MC_001)
                 .name(MissionCategoryCode.MC_001.getDescription())
                 .build();
@@ -236,33 +236,33 @@ class MissionProposalEventServiceTest extends IntegrationApplicationEventTest {
     }
 
     private Mission createMission(
-        MissionCategory missionCategory
+            MissionCategory missionCategory
     ) {
         return Mission.builder()
-            .missionCategory(missionCategory)
-            .missionInfo(
-                MissionInfo.builder()
-                    .title("title")
-                    .content("content")
-                    .missionDate(LocalDate.of(2023, 11, 1))
-                    .startTime(LocalTime.of(12, 30))
-                    .endTime(LocalTime.of(14, 30))
-                    .deadlineTime(LocalDateTime.of(
-                        LocalDate.of(2023, 11, 1),
-                        LocalTime.of(12, 0)
-                    ))
-                    .price(1000)
-                    .serverTime(LocalDateTime.of(
-                        LocalDate.of(2023, 10, 31),
-                        LocalTime.MIDNIGHT
-                    ))
-                    .build())
-            .regionId(1L)
-            .citizenId(1L)
-            .location(Mission.createPoint(123456.78, 123456.78))
-            .missionStatus(MissionStatus.MATCHING)
-            .bookmarkCount(0)
-            .build();
+                .missionCategory(missionCategory)
+                .missionInfo(
+                        MissionInfo.builder()
+                                .title("title")
+                                .content("content")
+                                .missionDate(LocalDate.of(2023, 11, 1))
+                                .startTime(LocalTime.of(12, 30))
+                                .endTime(LocalTime.of(14, 30))
+                                .deadlineTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 11, 1),
+                                        LocalTime.of(12, 0)
+                                ))
+                                .price(1000)
+                                .serverTime(LocalDateTime.of(
+                                        LocalDate.of(2023, 10, 31),
+                                        LocalTime.MIDNIGHT
+                                ))
+                                .build())
+                .regionId(1L)
+                .citizenId(1L)
+                .location(Mission.createPoint(123456.78, 123456.78))
+                .missionStatus(MissionStatus.MATCHING)
+                .bookmarkCount(0)
+                .build();
     }
 
     private User createUser() {

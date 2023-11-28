@@ -22,6 +22,7 @@ public class MissionImageServiceTest extends IntegrationApplicationTest {
         var citizenId = 1L;
 
         var missionCategory = MissionCategory.builder()
+                .id(MissionCategoryCode.MC_001.getCategoryId())
                 .missionCategoryCode(MissionCategoryCode.MC_001)
                 .name("서빙")
                 .build();

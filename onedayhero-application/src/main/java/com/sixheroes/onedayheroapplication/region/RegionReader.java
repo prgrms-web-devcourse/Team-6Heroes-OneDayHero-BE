@@ -39,4 +39,14 @@ public class RegionReader {
     ) {
         return regionRepository.findByUser(user);
     }
+
+    public Region findByDong(
+            String dong
+    ) {
+        return regionRepository.findByDong(dong)
+                .orElseThrow(() -> {
+                    log.warn("일치하는 동 이름이 없습니다. dong : {}", dong);
+                    return new EntityNotFoundException(ErrorCode.NOT_FOUND_REGION);
+                });
+    }
 }

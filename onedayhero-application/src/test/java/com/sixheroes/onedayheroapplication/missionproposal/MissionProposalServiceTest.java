@@ -310,7 +310,7 @@ class MissionProposalServiceTest extends IntegrationApplicationTest {
     }
 
     private MissionCategory createMissionCategory() {
-        return MissionCategory.from(MissionCategoryCode.MC_001);
+        return MissionCategory.createMissionCategory(MissionCategoryCode.MC_001);
     }
 
     private User createUser() {

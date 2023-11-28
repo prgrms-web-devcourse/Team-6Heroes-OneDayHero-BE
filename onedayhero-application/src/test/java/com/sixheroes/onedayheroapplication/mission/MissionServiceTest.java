@@ -55,7 +55,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionCreateServiceRequest =
                 MissionCreateServiceRequest.builder()
                         .missionCategoryId(1L)
-                        .regionId(1L)
+                        .regionName("역삼1동")
                         .latitude(123.45)
                         .longitude(123.45)
                         .citizenId(1L)
@@ -993,7 +993,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         return MissionCreateServiceRequest.builder()
                 .missionCategoryId(1L)
                 .citizenId(1L)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1234252.23)
                 .longitude(1234277.388)
                 .missionInfo(missionInfoServiceRequest)

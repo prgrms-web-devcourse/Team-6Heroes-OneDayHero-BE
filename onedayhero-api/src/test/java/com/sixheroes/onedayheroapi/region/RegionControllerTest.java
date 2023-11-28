@@ -37,8 +37,6 @@ public class RegionControllerTest extends RestDocsSupport {
     @Test
     void findAllRegions() throws Exception {
         // given
-
-
         var gangnamGuDongList = List.of(AllRegionResponse.DongResponse.builder()
                         .id(1L)
                         .dong("삼성1동")
