@@ -2,11 +2,11 @@ package com.sixheroes.onedayherocommon.exception;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends BusinessException {
 
-    private final ErrorCode errorCode;
+    public EntityNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }
