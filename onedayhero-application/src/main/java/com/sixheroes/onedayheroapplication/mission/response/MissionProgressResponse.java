@@ -17,6 +17,12 @@ public record MissionProgressResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         LocalDate missionDate,
 
+        String si,
+
+        String gu,
+
+        String dong,
+
         Integer bookmarkCount,
 
         String missionStatus,
@@ -38,6 +44,9 @@ public record MissionProgressResponse(
                 .missionDate(response.missionDate())
                 .bookmarkCount(response.bookmarkCount())
                 .missionStatus(response.missionStatus().name())
+                .si(response.si())
+                .gu(response.gu())
+                .dong(response.dong())
                 .imagePath(imagePath)
                 .isBookmarked(isBookmarked)
                 .build();

@@ -613,6 +613,12 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("북마크 횟수"),
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
+                                fieldWithPath("data.content[].si").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (시)"),
+                                fieldWithPath("data.content[].gu").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (구)"),
+                                fieldWithPath("data.content[].dong").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (동)"),
                                 fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
                                         .optional()
                                         .description("이미지 사진 경로"),
@@ -671,6 +677,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionProgressResponse.missionDate())))
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionProgressResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionProgressResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.content[0].si").value(missionProgressResponse.si()))
+                .andExpect(jsonPath("$.data.content[0].gu").value(missionProgressResponse.gu()))
+                .andExpect(jsonPath("$.data.content[0].dong").value(missionProgressResponse.dong()))
                 .andExpect(jsonPath("$.data.content[0].imagePath").value(missionProgressResponse.imagePath()))
                 .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionProgressResponse.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
@@ -1615,6 +1624,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .bookmarkCount(1)
                 .missionStatus("MATCHING")
                 .imagePath("s3://path")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼1동")
                 .isBookmarked(true)
                 .build();
     }
