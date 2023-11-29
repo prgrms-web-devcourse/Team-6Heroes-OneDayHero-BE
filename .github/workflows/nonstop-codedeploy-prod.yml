@@ -1,5 +1,5 @@
 # workflow의 이름
-name: nonstop-codedeploy-develop
+name: nonstop-codedeploy-prod
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거 지정
 # workflow 수동 실행
@@ -12,7 +12,7 @@ on:
         default: '개발 서버 무중단 배포를 수행하기 위한 워크플로우 입니다.'
 
 env:
-  DEPLOY_TYPE: develop
+  DEPLOY_TYPE: prod
 
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
 jobs:
@@ -58,16 +58,15 @@ jobs:
         # 4. 상위 디렉토리로 이동후 deploy-develop 디렉토리 생성
         # 5. before-deploy에 있던 알집 파일을 deploy-develop으로 이동
         run: |
-          mkdir -p before-deploy-develop 
-          cp onedayhero-api/build/libs/*.jar before-deploy-develop/
-          cp appspec.yml before-deploy-develop/
-
-          cp scripts/dev/*.sh before-deploy-develop/
-          cp docker/Dockerfile before-deploy-develop/
-          cp docker/docker-compose.yml before-deploy-develop/
-          cd before-deploy-develop && zip -r before-deploy-develop * 
+          mkdir -p before-deploy-prod 
+          cp onedayhero-api/build/libs/*.jar before-deploy-prod/
+          cp appspec.yml before-deploy-prod/
+          cp scripts/prod/*.sh before-deploy-prod/
+          cp docker/Dockerfile before-deploy-prod/
+          cp docker/docker-compose.yml before-deploy-prod/
+          cd before-deploy-prod && zip -r before-deploy-prod * 
           cd ../ && mkdir -p $DEPLOY_TYPE 
-          mv before-deploy-develop/before-deploy-develop.zip $DEPLOY_TYPE/$GITHUB_SHA.zip
+          mv before-deploy-prod/before-deploy-prod.zip $DEPLOY_TYPE/$GITHUB_SHA.zip
 
         shell: bash
 
@@ -86,7 +85,7 @@ jobs:
           aws deploy create-deployment \
           --application-name ${{secrets.CODE_DEPLOY_NAME}} \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name ${{secrets.CODE_DEVELOP_DEPLOY_GROUP_USER}} \
+          --deployment-group-name ${{secrets.CODE_PROD_DEPLOY_GROUP_USER}} \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=${{secrets.S3_BUCKET_NAME}},bundleType=zip,key=$DEPLOY_TYPE/$GITHUB_SHA.zip \
           --region ${{secrets.AWS_REGION}}
