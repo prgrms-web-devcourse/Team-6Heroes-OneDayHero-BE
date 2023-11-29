@@ -422,8 +422,18 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionCategoryResponse = createMissionCategoryResponse();
         var missionInfoResponse = createMissionInfoResponse(missionInfoRequest);
 
-        var missionImagePaths = List.of("path://1", "path://2");
-        var missionResponse = createMissionResponse(missionId, regionResponse, missionCategoryResponse, missionInfoResponse, missionImagePaths);
+        var missionImageResponseA = MissionImageResponse.builder()
+                .id(1L)
+                .path("s3://path1")
+                .build();
+
+        var missionImageResponseB = MissionImageResponse.builder()
+                .id(2L)
+                .path("s3://path2")
+                .build();
+
+        var missionImageResponse = List.of(missionImageResponseA, missionImageResponseB);
+        var missionResponse = createMissionResponse(missionId, regionResponse, missionCategoryResponse, missionInfoResponse, missionImageResponse);
 
         given(missionService.findOne(any(Long.class), any(Long.class)))
                 .willReturn(missionResponse);
@@ -497,8 +507,12 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 찜 개수"),
                                 fieldWithPath("data.missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 진행 상태 (MATCHING)"),
-                                fieldWithPath("data.paths").type(JsonFieldType.ARRAY)
-                                        .description("미션에 등록된 사진들"),
+                                fieldWithPath("data.missionImage[]").type(JsonFieldType.ARRAY)
+                                        .description("미션에 등록된 사진 객체 배열"),
+                                fieldWithPath("data.missionImage[].id").type(JsonFieldType.NUMBER)
+                                        .description("미션에 등록된 사진 아이디"),
+                                fieldWithPath("data.missionImage[].path").type(JsonFieldType.STRING)
+                                        .description("미션에 등록된 사진 경로"),
                                 fieldWithPath("data.isBookmarked").type(JsonFieldType.BOOLEAN)
                                         .description("북마크 여부"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
@@ -529,6 +543,10 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.missionInfo.price").value(missionInfoResponse.price()))
                 .andExpect(jsonPath("$.data.bookmarkCount").value(missionResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.missionStatus").value(missionResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.missionImage[0].id").value(missionImageResponseA.id()))
+                .andExpect(jsonPath("$.data.missionImage[0].path").value(missionImageResponseA.path()))
+                .andExpect(jsonPath("$.data.missionImage[1].id").value(missionImageResponseB.id()))
+                .andExpect(jsonPath("$.data.missionImage[1].path").value(missionImageResponseB.path()))
                 .andExpect(jsonPath("$.data.isBookmarked").value(missionResponse.isBookmarked()))
                 .andExpect(jsonPath("$.serverDateTime").exists());
     }
@@ -838,10 +856,30 @@ public class MissionControllerTest extends RestDocsSupport {
         var missionInfoResponseA = createMissionInfoResponse(LocalDate.of(2023, 10, 21));
         var missionInfoResponseB = createMissionInfoResponse(LocalDate.of(2023, 10, 22));
 
-        var missionAImagePaths = List.of("path://1", "path://2");
-        var missionBImagePaths = List.of("path://3", "path://4");
-        var missionResponseA = createMissionResponse(1L, regionResponse, missionCategoryResponse, missionInfoResponseA, missionAImagePaths);
-        var missionResponseB = createMissionResponse(2L, regionResponse, missionCategoryResponse, missionInfoResponseB, missionBImagePaths);
+        var missionAImageA = MissionImageResponse.builder()
+                .id(1L)
+                .path("s3://path1")
+                .build();
+
+        var missionAImageB = MissionImageResponse.builder()
+                .id(2L)
+                .path("s3://path2")
+                .build();
+
+        var missionBImageA = MissionImageResponse.builder()
+                .id(3L)
+                .path("s3://path3")
+                .build();
+
+        var missionBImageB = MissionImageResponse.builder()
+                .id(4L)
+                .path("s3://path4")
+                .build();
+
+        var missionAImageResponse = List.of(missionAImageA, missionAImageB);
+        var missionBImageResponse = List.of(missionBImageA, missionBImageB);
+        var missionResponseA = createMissionResponse(1L, regionResponse, missionCategoryResponse, missionInfoResponseA, missionAImageResponse);
+        var missionResponseB = createMissionResponse(2L, regionResponse, missionCategoryResponse, missionInfoResponseB, missionBImageResponse);
         var missionResponseList = List.of(missionResponseA, missionResponseB);
 
         var sliceMissionResponses = new SliceImpl<>(missionResponseList, pageRequest, false);
@@ -938,7 +976,11 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("북마크 횟수"),
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
-                                fieldWithPath("data.content[].paths").type(JsonFieldType.ARRAY)
+                                fieldWithPath("data.content[].missionImage").type(JsonFieldType.ARRAY)
+                                        .description("이미지 사진 배열"),
+                                fieldWithPath("data.content[].missionImage[].id").type(JsonFieldType.NUMBER)
+                                        .description("이미지 사진 아이디"),
+                                fieldWithPath("data.content[].missionImage[].path").type(JsonFieldType.STRING)
                                         .description("이미지 사진 경로"),
                                 fieldWithPath("data.content[].isBookmarked").type(JsonFieldType.BOOLEAN)
                                         .description("북마크 여부"),
@@ -1007,8 +1049,10 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionInfo.price").value(missionResponseA.missionInfo().price()))
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionResponseA.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionResponseA.missionStatus()))
-                .andExpect(jsonPath("$.data.content[0].paths[0]").value(missionResponseA.paths().get(0)))
-                .andExpect(jsonPath("$.data.content[0].paths[1]").value(missionResponseA.paths().get(1)))
+                .andExpect(jsonPath("$.data.content[0].missionImage[0].id").value(missionResponseA.missionImage().get(0).id()))
+                .andExpect(jsonPath("$.data.content[0].missionImage[0].path").value(missionResponseA.missionImage().get(0).path()))
+                .andExpect(jsonPath("$.data.content[0].missionImage[1].id").value(missionResponseA.missionImage().get(1).id()))
+                .andExpect(jsonPath("$.data.content[0].missionImage[1].path").value(missionResponseA.missionImage().get(1).path()))
                 .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionResponseA.isBookmarked()))
                 .andExpect(jsonPath("$.data.content[1].id").value(missionResponseB.id()))
                 .andExpect(jsonPath("$.data.content[1].missionCategory.id").value(missionResponseB.missionCategory().id()))
@@ -1030,8 +1074,10 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[1].missionInfo.price").value(missionResponseB.missionInfo().price()))
                 .andExpect(jsonPath("$.data.content[1].bookmarkCount").value(missionResponseB.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[1].missionStatus").value(missionResponseB.missionStatus()))
-                .andExpect(jsonPath("$.data.content[1].paths[0]").value(missionResponseB.paths().get(0)))
-                .andExpect(jsonPath("$.data.content[1].paths[1]").value(missionResponseB.paths().get(1)))
+                .andExpect(jsonPath("$.data.content[1].missionImage[0].id").value(missionResponseB.missionImage().get(0).id()))
+                .andExpect(jsonPath("$.data.content[1].missionImage[0].path").value(missionResponseB.missionImage().get(0).path()))
+                .andExpect(jsonPath("$.data.content[1].missionImage[1].id").value(missionResponseB.missionImage().get(1).id()))
+                .andExpect(jsonPath("$.data.content[1].missionImage[1].path").value(missionResponseB.missionImage().get(1).path()))
                 .andExpect(jsonPath("$.data.content[1].isBookmarked").value(missionResponseB.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponses.getPageable().getPageNumber()))
                 .andExpect(jsonPath("$.data.pageable.pageSize").value(sliceMissionResponses.getPageable().getPageSize()))
@@ -1414,7 +1460,7 @@ public class MissionControllerTest extends RestDocsSupport {
             RegionResponse regionResponse,
             MissionCategoryResponse missionCategoryResponse,
             MissionResponse.MissionInfoResponse missionInfoResponse,
-            List<String> paths
+            List<MissionImageResponse> missionImageResponses
     ) {
         return MissionResponse.builder()
                 .id(id)
@@ -1426,7 +1472,7 @@ public class MissionControllerTest extends RestDocsSupport {
                 .longitude(127.02880308004335)
                 .latitude(37.49779692073204)
                 .missionStatus("MATCHING")
-                .paths(paths)
+                .missionImage(missionImageResponses)
                 .isBookmarked(true)
                 .build();
     }

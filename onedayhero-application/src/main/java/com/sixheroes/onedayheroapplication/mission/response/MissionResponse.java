@@ -25,7 +25,7 @@ public record MissionResponse(
         MissionInfoResponse missionInfo,
         Integer bookmarkCount,
         String missionStatus,
-        List<String> paths,
+        List<MissionImageResponse> missionImage,
         boolean isBookmarked
 ) {
 
@@ -50,8 +50,8 @@ public record MissionResponse(
                 )
                 .bookmarkCount(response.bookmarkCount())
                 .missionStatus(response.missionStatus().name())
-                .paths(missionImages.stream()
-                        .map(MissionImage::getPath)
+                .missionImage(missionImages.stream()
+                        .map(MissionImageResponse::from)
                         .toList())
                 .isBookmarked(isBookmarked)
                 .build();
@@ -76,8 +76,8 @@ public record MissionResponse(
                 .missionInfo(MissionInfoResponse.from(mission.getMissionInfo()))
                 .bookmarkCount(mission.getBookmarkCount())
                 .missionStatus(mission.getMissionStatus().name())
-                .paths(missionImages.stream()
-                        .map(MissionImage::getPath)
+                .missionImage(missionImages.stream()
+                        .map(MissionImageResponse::from)
                         .toList())
                 .build();
     }

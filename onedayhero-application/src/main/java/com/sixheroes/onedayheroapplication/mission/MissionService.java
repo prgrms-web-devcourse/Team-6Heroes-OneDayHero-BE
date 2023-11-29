@@ -19,7 +19,7 @@ import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionImageRepository;
 import com.sixheroes.onedayherodomain.mission.repository.MissionRepository;
-import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse;
+import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageQueryResponse;
 import com.sixheroes.onedayherodomain.mission.repository.response.MissionAroundQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -253,7 +253,7 @@ public class MissionService {
 
         var missionImageGroupingByMission = missionImageRepository.findByMissionIdIn(missionIds)
                 .stream()
-                .collect(Collectors.groupingBy(MissionImageResponse::missionId));
+                .collect(Collectors.groupingBy(MissionImageQueryResponse::missionId));
 
         return missionMatchingQueryResponses.stream()
                 .map(queryResponse -> {

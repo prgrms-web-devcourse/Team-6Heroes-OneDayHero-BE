@@ -1,7 +1,7 @@
 package com.sixheroes.onedayherodomain.mission.repository;
 
 import com.sixheroes.onedayherodomain.mission.MissionImage;
-import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse;
+import com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageQueryResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,13 +15,13 @@ public interface MissionImageRepository extends JpaRepository<MissionImage, Long
     List<MissionImage> findByIdIn(List<Long> ids);
 
     @Query("""  
-        select 
-            new com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageResponse(
-                m.id, mi.path
-            )
-        from MissionImage mi
-        join Mission m on mi.mission.id = m.id
-        where mi.mission.id in :missionIds
-    """)
-    List<MissionImageResponse> findByMissionIdIn(@Param("missionIds") List<Long> missionIds);
+                select 
+                    new com.sixheroes.onedayherodomain.mission.repository.dto.MissionImageQueryResponse(
+                        m.id, mi.path
+                    )
+                from MissionImage mi
+                join Mission m on mi.mission.id = m.id
+                where mi.mission.id in :missionIds
+            """)
+    List<MissionImageQueryResponse> findByMissionIdIn(@Param("missionIds") List<Long> missionIds);
 }
