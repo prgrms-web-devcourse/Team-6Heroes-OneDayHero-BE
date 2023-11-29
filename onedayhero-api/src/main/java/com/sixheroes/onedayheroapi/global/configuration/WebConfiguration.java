@@ -11,6 +11,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
+                        "http://localhost:8081",
+                        "http://localhost:8082",
                         "https://onedayhero.kro.kr",
                         "https://team-6-heroes-one-day-hero-fe-git-develop-howon-shin.vercel.app"
                 )
