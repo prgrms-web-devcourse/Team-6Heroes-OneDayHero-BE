@@ -8,7 +8,6 @@ import com.sixheroes.onedayheroapplication.main.response.MainResponse;
 import com.sixheroes.onedayheroapplication.main.response.MissionSoonExpiredResponse;
 import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryResponse;
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
-import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,10 +18,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
-import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateFormat;
-import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.getDateTimeFormat;
+import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
+import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -74,6 +74,13 @@ public class MainControllerTest extends RestDocsSupport {
                                 .build())
                 .missionStatus("MATCHING")
                 .missionDate(LocalDate.of(2023, 11, 22))
+                .startTime(LocalTime.of(9, 0, 0))
+                .endTime(LocalTime.of(13, 0, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 11, 22),
+                        LocalTime.of(9, 0, 0)
+                ))
+                .price(15000)
                 .bookmarkCount(3)
                 .imagePath("s3://path")
                 .isBookmarked(false)
@@ -96,6 +103,13 @@ public class MainControllerTest extends RestDocsSupport {
                                 .build())
                 .missionStatus("MATCHING")
                 .missionDate(LocalDate.of(2023, 11, 22))
+                .startTime(LocalTime.of(9, 0, 0))
+                .endTime(LocalTime.of(13, 0, 0))
+                .deadlineTime(LocalDateTime.of(
+                        LocalDate.of(2023, 11, 22),
+                        LocalTime.of(9, 0, 0)
+                ))
+                .price(15000)
                 .bookmarkCount(3)
                 .imagePath("s3://path")
                 .isBookmarked(false)
@@ -182,6 +196,17 @@ public class MainControllerTest extends RestDocsSupport {
                                 fieldWithPath("data.soonExpiredMissions[].missionDate").type(JsonFieldType.STRING)
                                         .attributes(getDateFormat())
                                         .description("미션 날짜"),
+                                fieldWithPath("data.soonExpiredMissions[].startTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 시작 시간"),
+                                fieldWithPath("data.soonExpiredMissions[].endTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
+                                        .description("미션 종료 시간"),
+                                fieldWithPath("data.soonExpiredMissions[].deadlineTime").type(JsonFieldType.STRING)
+                                        .attributes(getDateTimeFormat())
+                                        .description("미션 마감 날짜와 시간"),
+                                fieldWithPath("data.soonExpiredMissions[].price").type(JsonFieldType.NUMBER)
+                                        .description("미션 가격"),
                                 fieldWithPath("data.soonExpiredMissions[].bookmarkCount").type(JsonFieldType.NUMBER)
                                         .description("북마크 횟수"),
                                 fieldWithPath("data.soonExpiredMissions[].missionStatus").type(JsonFieldType.STRING)
@@ -210,7 +235,11 @@ public class MainControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.id").value(mainResponse.soonExpiredMissions().get(0).missionCategory().id()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.code").value(mainResponse.soonExpiredMissions().get(0).missionCategory().code()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionCategory.name").value(mainResponse.soonExpiredMissions().get(0).missionCategory().name()))
-                .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionDate").value(DateTimeConverter.convertDateToString(mainResponse.soonExpiredMissions().get(0).missionDate())))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionDate").value(convertDateToString(mainResponse.soonExpiredMissions().get(0).missionDate())))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].startTime").value(convertTimetoString(mainResponse.soonExpiredMissions().get(0).startTime())))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].endTime").value(convertTimetoString(mainResponse.soonExpiredMissions().get(0).endTime())))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].deadlineTime").value(convertLocalDateTimeToString(mainResponse.soonExpiredMissions().get(0).deadlineTime())))
+                .andExpect(jsonPath("$.data.soonExpiredMissions[0].price").value(mainResponse.soonExpiredMissions().get(0).price()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].missionStatus").value(mainResponse.soonExpiredMissions().get(0).missionStatus()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].imagePath").value(mainResponse.soonExpiredMissions().get(0).imagePath()))
                 .andExpect(jsonPath("$.data.soonExpiredMissions[0].isBookmarked").value(mainResponse.soonExpiredMissions().get(0).isBookmarked()))
