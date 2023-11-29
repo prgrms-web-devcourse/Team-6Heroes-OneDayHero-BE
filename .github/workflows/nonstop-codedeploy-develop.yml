@@ -50,7 +50,7 @@ jobs:
           mkdir -p before-deploy-develop 
           cp onedayhero-api/build/libs/*.jar before-deploy-develop/
           cp appspec.yml before-deploy-develop/
-          cp scripts/*.sh before-deploy-develop/
+          cp scripts/dev/*.sh before-deploy-develop/
           cp docker/Dockerfile before-deploy-develop/
           cp docker/docker-compose.yml before-deploy-develop/
           cd before-deploy-develop && zip -r before-deploy-develop * 
