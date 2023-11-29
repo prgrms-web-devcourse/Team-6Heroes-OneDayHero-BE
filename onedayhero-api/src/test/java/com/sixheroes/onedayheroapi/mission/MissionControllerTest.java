@@ -715,6 +715,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .bookmarkCount(1)
                 .missionStatus("MATCHING")
                 .imagePath("s3://path")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
                 .isBookmarked(true)
                 .build();
 
@@ -769,6 +772,12 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 날짜"),
                                 fieldWithPath("data.content[].bookmarkCount").type(JsonFieldType.NUMBER)
                                         .description("북마크 횟수"),
+                                fieldWithPath("data.content[].si").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (시)"),
+                                fieldWithPath("data.content[].gu").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (구)"),
+                                fieldWithPath("data.content[].dong").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (동)"),
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
                                 fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
@@ -829,6 +838,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionCompletedResponse.missionDate())))
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionCompletedResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionCompletedResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.content[0].si").value(missionCompletedResponse.si()))
+                .andExpect(jsonPath("$.data.content[0].gu").value(missionCompletedResponse.gu()))
+                .andExpect(jsonPath("$.data.content[0].dong").value(missionCompletedResponse.dong()))
                 .andExpect(jsonPath("$.data.content[0].imagePath").value(missionCompletedResponse.imagePath()))
                 .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionCompletedResponse.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
