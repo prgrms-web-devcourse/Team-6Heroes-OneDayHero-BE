@@ -14,11 +14,10 @@ services:
     ports:
       - 8081:8081
     volumes:
-      - ./:/root/
       - /home/ec2-user/yml/application.yml:/yml/application.yml
     environment:
-      LOCATION: /yml/application.yml
-      active: prod-blue  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정
+      location: /yml/application.yml
+      active: dev-blue  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정
   spring2:
     build: .   # Dockerfile 실행
     image: spring
@@ -26,8 +25,29 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - ./:/root/
       - /home/ec2-user/yml/application.yml:/yml/application.yml
     environment:
-      LOCATION: /yml/application.yml
-      active: prod-green  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정
+      location: /yml/application.yml
+      active: dev-green  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정
+  spring3:
+    build: .
+    image: spring
+    container_name: prod-blue
+    ports:
+      - 8083:8083
+    volumes:
+      - /home/ec2-user/yml/application.yml:/yml/application.yml
+    environment:
+      location: /yml/application.yml
+      active: prod-blue
+  spring4:
+    build: .
+    image: spring
+    container_name: prod-green
+    ports:
+      - 8084:8084
+    volumes:
+      - /home/ec2-user/yml/application.yml:/yml/application.yml
+    environment:
+      location: /yml/application.yml
+      active: prod-green

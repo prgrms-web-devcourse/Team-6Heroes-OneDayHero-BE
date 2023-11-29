@@ -1,0 +1,106 @@
+[[user-find]]
+=== 유저 정보 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find/http-request.adoc[]
+include::{snippets}/user-find/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find/http-response.adoc[]
+include::{snippets}/user-find/response-fields.adoc[]
+
+[[user-update]]
+=== 유저 정보 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-headers.adoc[]
+include::{snippets}/user-update/request-part-userUpdateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
+[[user-image-delete]]
+=== 유저 프로필 이미지 삭제
+
+==== HTTP Request
+
+include::{snippets}/user-image-delete/http-request.adoc[]
+include::{snippets}/user-image-delete/request-headers.adoc[]
+include::{snippets}/user-image-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-image-delete/http-response.adoc[]
+include::{snippets}/user-image-delete/response-fields.adoc[]
+
+[[mission-bookmark-cancel]]
+=== 내 미션 찜 조회
+
+==== HTTP Request
+include::{snippets}/user-bookmark/http-request.adoc[]
+include::{snippets}/user-bookmark/request-headers.adoc[]
+include::{snippets}/user-bookmark/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-bookmark/http-response.adoc[]
+include::{snippets}/user-bookmark/response-fields.adoc[]
+
+[[user-sent-reviews]]
+=== 내가 작성한 리뷰 조회
+
+==== HTTP Request
+include::{snippets}/user-sent-reviews/http-request.adoc[]
+include::{snippets}/user-sent-reviews/request-headers.adoc[]
+include::{snippets}/user-sent-reviews/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-sent-reviews/http-response.adoc[]
+include::{snippets}/user-sent-reviews/response-fields.adoc[]
+
+[[user-received-reviews]]
+=== 내가 받은 리뷰 조회
+
+==== HTTP Request
+include::{snippets}/user-received-reviews/http-request.adoc[]
+include::{snippets}/user-received-reviews/request-headers.adoc[]
+include::{snippets}/user-received-reviews/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-received-reviews/http-response.adoc[]
+include::{snippets}/user-received-reviews/response-fields.adoc[]
+
+
+[[user-change-hero]]
+=== 유저 히어로 모드 활성화
+
+==== HTTP Request
+
+include::{snippets}/user-change-hero/http-request.adoc[]
+include::{snippets}/user-change-hero/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-change-hero/http-response.adoc[]
+include::{snippets}/user-change-hero/response-fields.adoc[]
+
+[[user-change-citizen]]
+=== 유저 히어로 모드 비활성화
+
+==== HTTP Request
+
+include::{snippets}/user-change-citizen/http-request.adoc[]
+include::{snippets}/user-change-citizen/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-change-citizen/http-response.adoc[]
+include::{snippets}/user-change-citizen/response-fields.adoc[]

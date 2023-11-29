@@ -1,0 +1,54 @@
+[[mission-proposal-create]]
+=== 미션 제안 생성
+
+==== HTTP Request
+
+include::{snippets}/mission-proposal-create/http-request.adoc[]
+include::{snippets}/mission-proposal-create/request-headers.adoc[]
+include::{snippets}/mission-proposal-create/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-proposal-create/http-response.adoc[]
+include::{snippets}/mission-proposal-create/response-fields.adoc[]
+
+[[mission-proposal-approve]]
+=== 미션 제안 승낙
+
+==== HTTP Request
+
+include::{snippets}/mission-proposal-approve/http-request.adoc[]
+include::{snippets}/mission-proposal-approve/request-headers.adoc[]
+include::{snippets}/mission-proposal-approve/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-proposal-approve/http-response.adoc[]
+include::{snippets}/mission-proposal-approve/response-fields.adoc[]
+
+[[mission-proposal-reject]]
+=== 미션 제안 거절
+
+==== HTTP Request
+
+include::{snippets}/mission-proposal-reject/http-request.adoc[]
+include::{snippets}/mission-proposal-reject/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-proposal-reject/http-response.adoc[]
+include::{snippets}/mission-proposal-reject/response-fields.adoc[]
+
+[[mission-proposal-find]]
+=== 제안받은 미션 조회
+
+==== HTTP Request
+
+include::{snippets}/mission-proposal-find/http-request.adoc[]
+include::{snippets}/mission-proposal-find/request-headers.adoc[]
+include::{snippets}/mission-proposal-find/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-proposal-find/http-response.adoc[]
+include::{snippets}/mission-proposal-find/response-fields.adoc[]

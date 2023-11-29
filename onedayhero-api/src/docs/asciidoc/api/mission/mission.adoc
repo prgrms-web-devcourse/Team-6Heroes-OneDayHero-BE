@@ -1,0 +1,162 @@
+[[mission-create]]
+=== 시민은 미션을 생성 할 수 있다.
+
+==== HTTP Request
+
+include::{snippets}/mission-create/http-request.adoc[]
+include::{snippets}/mission-create/request-headers.adoc[]
+include::{snippets}/mission-create/request-part-missionCreateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-create/http-response.adoc[]
+include::{snippets}/mission-create/response-fields.adoc[]
+
+[[mission-findOne]]
+=== 유저는 미션을 단 건 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-findOne/path-parameters.adoc[]
+include::{snippets}/mission-findOne/request-headers.adoc[]
+include::{snippets}/mission-findOne/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-findOne/http-response.adoc[]
+include::{snippets}/mission-findOne/response-fields.adoc[]
+
+[[mission-find-DynamicCondition]]
+=== 유저는 미션을 필터 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-find-DynamicCondition/query-parameters.adoc[]
+include::{snippets}/mission-find-DynamicCondition/request-headers.adoc[]
+include::{snippets}/mission-find-DynamicCondition/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-find-DynamicCondition/http-response.adoc[]
+include::{snippets}/mission-find-DynamicCondition/response-fields.adoc[]
+
+[[mission-progress-find]]
+=== 유저는 진행중인 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-progress-find/request-headers.adoc[]
+include::{snippets}/mission-progress-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-progress-find/http-response.adoc[]
+include::{snippets}/mission-progress-find/response-fields.adoc[]
+
+[[mission-completed-find]]
+=== 유저는 완료된 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-completed-find/request-headers.adoc[]
+include::{snippets}/mission-completed-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-completed-find/http-response.adoc[]
+include::{snippets}/mission-completed-find/response-fields.adoc[]
+
+[[mission-matching-find]]
+=== 유저는 제안할 미션을 조회할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-matching-find/request-headers.adoc[]
+include::{snippets}/mission-matching-find/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-matching-find/http-response.adoc[]
+include::{snippets}/mission-matching-find/response-fields.adoc[]
+
+[[mission-update]]
+=== 시민은 미션을 수정 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-update/path-parameters.adoc[]
+include::{snippets}/mission-update/request-headers.adoc[]
+include::{snippets}/mission-update/http-request.adoc[]
+include::{snippets}/mission-update/request-part-missionUpdateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-update/http-response.adoc[]
+include::{snippets}/mission-update/response-fields.adoc[]
+
+[[mission-extend]]
+=== 시민은 미션을 연장 할 수 있다.
+
+include::{snippets}/mission-extend/path-parameters.adoc[]
+include::{snippets}/mission-extend/request-headers.adoc[]
+include::{snippets}/mission-extend/http-request.adoc[]
+include::{snippets}/mission-extend/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-extend/http-response.adoc[]
+include::{snippets}/mission-extend/response-fields.adoc[]
+
+[[mission-complete]]
+=== 시민은 미션을 완료 상태로 변경 할 수 있다.
+
+include::{snippets}/mission-complete/path-parameters.adoc[]
+include::{snippets}/mission-complete/request-headers.adoc[]
+include::{snippets}/mission-complete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-complete/http-response.adoc[]
+include::{snippets}/mission-complete/response-fields.adoc[]
+
+[[mission-delete]]
+=== 시민은 미션을 삭제 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-delete/path-parameters.adoc[]
+include::{snippets}/mission-delete/request-headers.adoc[]
+include::{snippets}/mission-delete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-delete/http-response.adoc[]
+include::{snippets}/mission-delete/response-fields.adoc[]
+
+[[mission-around]]
+=== 유저는 반경 5km 이내에 있는 매칭중인 미션을 조회 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-find-around/query-parameters.adoc[]
+include::{snippets}/mission-find-around/request-headers.adoc[]
+include::{snippets}/mission-find-around/http-request.adoc[]
+
+==== Http Response
+
+include::{snippets}/mission-find-around/http-response.adoc[]
+include::{snippets}/mission-find-around/response-fields.adoc[]
+
+[[mission-image]]
+=== 유저는 등록했던 미션 이미지를 삭제 할 수 있다.
+
+==== Http Request
+
+include::{snippets}/mission-image-delete/path-parameters.adoc[]
+include::{snippets}/mission-image-delete/request-headers.adoc[]
+include::{snippets}/mission-image-delete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-image-delete/http-response.adoc[]
+include::{snippets}/mission-image-delete/response-fields.adoc[]
