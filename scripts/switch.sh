@@ -17,5 +17,9 @@ function switch_proxy() {
     echo "> docker exec -d nginx nginx -s reload"
     echo "> application server upload 대기"
     sleep 30
-    sudo docker exec -d nginx nginx -s reload
+    echo "> docker 의 nginx가 서버로 이전되었습니다. "
+#    echo "> docker exec -d nginx nginx -s reload"
+#    echo "> sudo docker exec -d nginx nginx -s reload"
+    echo "> sudo systemctl restart nginx"
+    sudo systemctl restart nginx
 }

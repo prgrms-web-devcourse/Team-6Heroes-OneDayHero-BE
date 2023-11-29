@@ -7,7 +7,7 @@ source ${ABSDIR}/profile.sh
 IDLE_PORT=$(find_idle_port)
 REPOSITORY=/home/ec2-user/onedayhero/
 LOCATION=/yml/application.yml
-NGINX_NAME=nginx
+REDIS_NAME=redis
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY*.jar $REPOSITORY"
@@ -29,10 +29,10 @@ IDLE_PROFILE=$(find_idle_profile)
 
 echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
 
-if [ "$(docker ps -q -f name=$NGINX_NAME)" ]; then
-  echo "Docker 컨테이너 '$NGINX_NAME'가 이미 실행 중입니다."
+if [ "$(docker ps -q -f name=$REDIS_NAME)" ]; then
+  echo "Docker 컨테이너 '$REDIS_NAME'가 이미 실행 중입니다."
 else
-  # Nginx 가 올라와있지 않다면 첫 시도.
+  # redis 가 올라와있지 않다면 첫 시도.
   # find mongo port => mongo DB 포트가 비 정상적으로 종료되는 버그를 발견
   PID=$(sudo lsof -i :27017 -t)
 
@@ -43,10 +43,9 @@ else
   fi
 
   # Docker 컨테이너 실행
-  echo "> docker run -it --name nginx -d -v /etc/nginx/:/etc/nginx/ -p 80:80 nginx"
-  echo "> docker start nginx"
-  sudo docker start nginx
-  echo "Docker 컨테이너 '$NGINX_NAME'가 실행되었습니다."
+#  echo "> docker run -it --name nginx -d -v /etc/nginx/:/etc/nginx/ -p 80:80 nginx"
+#  echo "> docker start nginx"
+#  echo "> nginx 를 docker 로 실행하지 않습니다."
   echo "> sudo docker start redis"
   sudo docker start redis
   echo "Docker 컨테이너 redis 가 실행되었습니다."
