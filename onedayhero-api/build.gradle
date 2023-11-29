@@ -1,0 +1,72 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    asciidoctorExt
+}
+
+jar {
+    enabled = false
+}
+
+// 전역 변수 설정
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation project(':onedayhero-common')
+    implementation project(':onedayhero-application')
+    implementation project(':onedayhero-chat')
+
+    // RESTDOCS
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt'
+
+    baseDirFollowsSourceFile() // 다른 adoc 파일 include 시 경로를 baseDir로 맞춘다.
+
+    inputs.dir snippetsDir
+
+    // 특정 파일만 html로 생성
+    sources {
+        include("**/index.adoc")
+    }
+
+    dependsOn test
+    outputDir file('build/docs/asciidoc')
+}
+
+task copyAsciidoc(type: Copy) {
+    doFirst {
+        delete "src/main/resources/static/docs/index.html"
+    }
+    from "build/docs/asciidoc/"
+    into "src/main/resources/static/docs"
+    include "index.html"
+
+    dependsOn asciidoctor
+}
+
+build {
+    dependsOn copyAsciidoc
+}

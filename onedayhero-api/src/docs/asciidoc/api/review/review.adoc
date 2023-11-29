@@ -1,0 +1,76 @@
+[[review-create]]
+=== 리뷰 생성
+
+==== HTTP Request
+
+include::{snippets}/review-create/http-request.adoc[]
+include::{snippets}/review-create/request-part-reviewCreateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-create/http-response.adoc[]
+include::{snippets}/review-create/response-fields.adoc[]
+
+[[review-update]]
+=== 리뷰 수정
+
+==== HTTP Request
+
+include::{snippets}/review-update/http-request.adoc[]
+include::{snippets}/review-update/request-part-reviewUpdateRequest-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-update/http-response.adoc[]
+include::{snippets}/review-update/response-fields.adoc[]
+
+=== 리뷰 상세 조회
+
+==== HTTP Request
+
+include::{snippets}/review-detail/http-request.adoc[]
+include::{snippets}/review-detail/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-detail/http-response.adoc[]
+include::{snippets}/review-detail/response-fields.adoc[]
+
+=== 리뷰 삭제
+
+==== HTTP Request
+
+include::{snippets}/review-delete/http-request.adoc[]
+include::{snippets}/review-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-delete/http-response.adoc[]
+
+[[specific-user-received-reviews]]
+=== 특정 유저가 받은 리뷰 조회
+
+==== HTTP Request
+
+include::{snippets}/specific-user-received-reviews/http-request.adoc[]
+include::{snippets}/specific-user-received-reviews/path-parameters.adoc[]
+include::{snippets}/specific-user-received-reviews/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/specific-user-received-reviews/http-response.adoc[]
+include::{snippets}/specific-user-received-reviews/response-fields.adoc[]
+
+[[review-image-delete]]
+=== 리뷰 이미지 제거
+
+==== Http Request
+
+include::{snippets}/review-image-delete/path-parameters.adoc[]
+include::{snippets}/review-image-delete/request-headers.adoc[]
+include::{snippets}/review-image-delete/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/review-image-delete/http-response.adoc[]
+include::{snippets}/review-image-delete/response-fields.adoc[]

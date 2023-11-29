@@ -1,0 +1,31 @@
+version: "3"
+services:
+  web:
+    image: nginx  # 존재하는 nginx 이미지 사용
+    container_name: nginx   # Nginx Container 이름 지정
+    ports:
+      - 80:80
+    volumes:
+      - /etc/nginx/:/etc/nginx/      # EC2 Nginx와 Docker Nginx Container 를 매핑
+  spring1:
+    build: .   # Dockerfile 실행
+    image: spring   # 내가 만든 이미지 이름을 지정
+    container_name: dev-blue  # 컨테이너 이름 지정
+    ports:
+      - 8081:8081
+    volumes:
+      - /home/ec2-user/yml/application.yml:/yml/application.yml
+    environment:
+      location: /yml/application.yml
+      active: dev-blue  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정
+  spring2:
+    build: .   # Dockerfile 실행
+    image: spring
+    container_name: dev-green
+    ports:
+      - 8082:8082
+    volumes:
+      - /home/ec2-user/yml/application.yml:/yml/application.yml
+    environment:
+      location: /yml/application.yml
+      active: dev-green  # Dockerfile 실행될 때 환경변수를 사용할 수 있게 지정

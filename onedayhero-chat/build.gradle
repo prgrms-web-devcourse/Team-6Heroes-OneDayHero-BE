@@ -1,0 +1,27 @@
+dependencies {
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // test Container
+    testImplementation 'org.testcontainers:testcontainers:1.19.1'
+
+    // Project
+    implementation project(':onedayhero-domain')
+    implementation project(':onedayhero-common')
+    implementation project(':onedayhero-mongo')
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

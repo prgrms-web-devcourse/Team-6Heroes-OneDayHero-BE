@@ -1,0 +1,27 @@
+[[alarm-find]]
+=== 알림 조회
+
+==== HTTP Request
+
+include::{snippets}/alarm-find/http-request.adoc[]
+include::{snippets}/alarm-find/request-headers.adoc[]
+include::{snippets}/alarm-find/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/alarm-find/http-response.adoc[]
+include::{snippets}/alarm-find/response-fields.adoc[]
+
+[[alarm-delete]]
+=== 알림 삭제
+
+==== HTTP Request
+
+include::{snippets}/alarm-delete/http-request.adoc[]
+include::{snippets}/alarm-delete/request-headers.adoc[]
+include::{snippets}/alarm-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/alarm-delete/http-response.adoc[]
+include::{snippets}/alarm-delete/response-fields.adoc[]
