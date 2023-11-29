@@ -42,8 +42,10 @@ public class GlobalExceptionHandler {
             BusinessException exception
     ) {
         log.error("BusinessException 발생", exception);
+
+        var errorCode = exception.getErrorCode();
         return ResponseEntity.badRequest()
-                .body(ErrorResponse.from(exception.getErrorCode()));
+                .body(ErrorResponse.from(errorCode));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
