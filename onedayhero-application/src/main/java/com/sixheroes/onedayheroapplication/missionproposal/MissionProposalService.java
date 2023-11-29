@@ -10,7 +10,7 @@ import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.Missio
 import com.sixheroes.onedayheroapplication.missionproposal.request.MissionProposalCreateServiceRequest;
 import com.sixheroes.onedayheroapplication.missionproposal.response.MissionProposalIdResponse;
 import com.sixheroes.onedayheroapplication.missionproposal.response.dto.MissionProposalResponse;
-import com.sixheroes.onedayheroapplication.user.UserReader;
+import com.sixheroes.onedayheroapplication.user.reader.UserReader;
 import com.sixheroes.onedayherodomain.missionproposal.repository.MissionProposalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

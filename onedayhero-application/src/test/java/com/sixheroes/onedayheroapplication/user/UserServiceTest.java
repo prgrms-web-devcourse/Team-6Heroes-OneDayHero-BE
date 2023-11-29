@@ -2,7 +2,6 @@ package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
-import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageDeleteServiceResponse;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.user.request.UserBasicInfoServiceRequest;
 import com.sixheroes.onedayheroapplication.user.request.UserFavoriteWorkingDayServiceRequest;
@@ -24,7 +23,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,8 +67,6 @@ class UserServiceTest extends IntegrationApplicationTest {
         // given
         var user = createUser();
         var savedUser = userRepository.save(user);
-        var userImage = createUserImage(user);
-        userImageRepository.save(userImage);
 
         var nickname = "바뀐 이름";
         var gender = "FEMALE";
@@ -97,7 +95,6 @@ class UserServiceTest extends IntegrationApplicationTest {
         var changedPath = "https://changed";
         var s3ImageUploadServiceResponses = List.of(new S3ImageUploadServiceResponse(changedOriginalName, changedUniqueName, changedPath));
 
-        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(List.of(new S3ImageDeleteServiceResponse(1L)));
         given(s3ImageUploadService.uploadImages(anyList(), isNull())).willReturn(s3ImageUploadServiceResponses);
 
         // when
@@ -111,7 +108,6 @@ class UserServiceTest extends IntegrationApplicationTest {
         assertThat(userImageByUserId.get()).extracting("originalName", "uniqueName", "path")
                 .containsExactly(changedOriginalName, changedUniqueName, changedPath);
         verify(s3ImageUploadService, times(1)).uploadImages(anyList(), isNull());
-        verify(s3ImageDeleteService, times(1)).deleteImages(anyList());
     }
 
     @DisplayName("아이디가 일치하는 유저가 존재하지 않는다면 예외가 발생한다.")
@@ -159,6 +155,25 @@ class UserServiceTest extends IntegrationApplicationTest {
         // when & then
         assertThatThrownBy(() -> userService.updateUser(savedUserId, userServiceUpdateRequest, Collections.emptyList()))
                 .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    @DisplayName("유저 이미지를 삭제한다.")
+    @Test
+    void deleteUserImage() {
+        // given
+        var user = createUser();
+        var savedUser = userRepository.save(user);
+        var userImage = createUserImage(user);
+        var savedUserImage = userImageRepository.save(userImage);
+
+        given(s3ImageDeleteService.deleteImages(anyList())).willReturn(anyList());
+
+        // when
+        userService.deleteUserImage(savedUser.getId(), savedUserImage.getId());
+
+        // then
+        assertThat(userImageRepository.findUserImageByUser_Id(user.getId())).isEmpty();
+        verify(s3ImageDeleteService, times(1)).deleteImages(anyList());
     }
 
     @DisplayName("유저의 프로필을 조회한다.")
@@ -328,7 +343,6 @@ class UserServiceTest extends IntegrationApplicationTest {
     private UserServiceUpdateRequest createUserServiceUpdateRequest(UserBasicInfoServiceRequest userBasicInfoServiceDto, UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDayServiceDto, List<Long> regionIds) {
         return UserServiceUpdateRequest.builder()
             .userBasicInfo(userBasicInfoServiceDto)
-            .userImageId(null)
             .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
             .userFavoriteRegions(regionIds)
             .build();

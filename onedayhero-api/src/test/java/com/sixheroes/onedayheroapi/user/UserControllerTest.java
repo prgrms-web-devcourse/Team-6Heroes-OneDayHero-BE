@@ -40,13 +40,14 @@ import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convert
 import static com.sixheroes.onedayherocommon.converter.DateTimeConverter.convertTimetoString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -192,8 +193,7 @@ class UserControllerTest extends RestDocsSupport {
         var userBasicInfoRequest = new UserBasicInfoRequest("이름", "MALE", LocalDate.of(1990, 1, 1), "자기 소개");
         var userFavoriteWorkingDayRequest = new UserFavoriteWorkingDayRequest(List.of("MON", "THU"), LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
         var userFavoriteRegions = List.of(1L, 2L);
-        var userImageId = 1L;
-        var userUpdateRequest = new UserUpdateRequest(userBasicInfoRequest, userImageId, userFavoriteWorkingDayRequest, userFavoriteRegions);
+        var userUpdateRequest = new UserUpdateRequest(userBasicInfoRequest, userFavoriteWorkingDayRequest, userFavoriteRegions);
         var userUpdateRequestToMultipartFile = createUserUpdateRequestToMultipartFile(objectMapper.writeValueAsString(userUpdateRequest));
 
         var userImage = createUserImage();
@@ -230,9 +230,6 @@ class UserControllerTest extends RestDocsSupport {
                     fieldWithPath("basicInfo.introduce")
                         .optional()
                         .description("자기 소개"),
-                    fieldWithPath("userImageId")
-                        .optional()
-                        .description("유저의 이미지 아이디"),
                     fieldWithPath("favoriteWorkingDay").type(JsonFieldType.OBJECT).description("희망 근무 정보"),
                     fieldWithPath("favoriteWorkingDay.favoriteDate")
                         .optional()
@@ -262,6 +259,43 @@ class UserControllerTest extends RestDocsSupport {
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
                     fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 아이디")
+                )
+            ));
+    }
+
+    @DisplayName("유저 프로필 이미지를 삭제할 수 있다.")
+    @Test
+    void deleteUserImage() throws Exception {
+        // given
+        var userImageId = 1L;
+
+        doNothing().when(userService).deleteUserImage(anyLong(), anyLong());
+
+        // when & then
+        mockMvc.perform(
+                delete("/api/v1/me/profile-image/{userImageId}", userImageId)
+                    .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent())
+            .andExpect(jsonPath("$.status").value(204))
+            .andExpect(jsonPath("$.serverDateTime").exists())
+            .andExpect(jsonPath("$.data").doesNotExist())
+            .andDo(document("user-image-delete",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("Authorization: Bearer 액세스토큰")
+                ),
+                pathParameters(
+                    parameterWithName("userImageId").description("삭제할 유저 이미지 아이디")
+                ),
+                responseFields(
+                    fieldWithPath("status").type(JsonFieldType.NUMBER)
+                        .description("HTTP 응답 코드"),
+                    fieldWithPath("serverDateTime").type(JsonFieldType.STRING)
+                        .description("서버 응답 시간")
+                        .attributes(getDateTimeFormat()),
+                    fieldWithPath("data").type(JsonFieldType.NULL)
+                        .description("응답 데이터")
                 )
             ));
     }

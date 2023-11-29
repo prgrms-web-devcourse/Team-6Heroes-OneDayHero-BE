@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.user;
+package com.sixheroes.onedayheroapplication.user.reader;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;

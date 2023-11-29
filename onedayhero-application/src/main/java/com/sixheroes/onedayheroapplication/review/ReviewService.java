@@ -15,8 +15,7 @@ import com.sixheroes.onedayheroapplication.review.response.ReceivedReviewRespons
 import com.sixheroes.onedayheroapplication.review.response.ReviewDetailResponse;
 import com.sixheroes.onedayheroapplication.review.response.ReviewResponse;
 import com.sixheroes.onedayheroapplication.review.response.SentReviewResponse;
-import com.sixheroes.onedayheroapplication.user.UserReader;
-import com.sixheroes.onedayheroapplication.user.UserService;
+import com.sixheroes.onedayheroapplication.user.reader.UserReader;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
@@ -24,8 +23,6 @@ import com.sixheroes.onedayherodomain.review.Review;
 import com.sixheroes.onedayherodomain.review.ReviewImage;
 import com.sixheroes.onedayherodomain.review.repository.ReviewImageRepository;
 import com.sixheroes.onedayherodomain.review.repository.ReviewRepository;
-import com.sixheroes.onedayherodomain.user.User;
-import com.sixheroes.onedayherodomain.user.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

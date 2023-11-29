@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,5 +113,15 @@ public class UserController {
         var userUpdateResponse = userService.turnOffHeroMode(userId);
 
         return ResponseEntity.ok(ApiResponse.ok(userUpdateResponse));
+    }
+
+    @DeleteMapping("/profile-image/{userImageId}")
+    public ResponseEntity<ApiResponse<Void>> deleteUserImage(
+        @AuthUser Long userId,
+        @PathVariable Long userImageId
+    ) {
+        userService.deleteUserImage(userId, userImageId);
+
+        return new ResponseEntity<>(ApiResponse.noContent(), HttpStatus.NO_CONTENT);
     }
 }

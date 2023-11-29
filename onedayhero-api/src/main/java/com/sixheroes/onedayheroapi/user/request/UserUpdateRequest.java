@@ -12,8 +12,6 @@ public record UserUpdateRequest(
         @Valid
         UserBasicInfoRequest basicInfo,
 
-        Long userImageId,
-
         @Valid
         UserFavoriteWorkingDayRequest favoriteWorkingDay,
 
@@ -37,7 +35,6 @@ public record UserUpdateRequest(
 
         return UserServiceUpdateRequest.builder()
             .userBasicInfo(userBasicInfoServiceDto)
-            .userImageId(userImageId)
             .userFavoriteWorkingDay(userFavoriteWorkingDayServiceDto)
             .userFavoriteRegions(favoriteRegions)
             .build();

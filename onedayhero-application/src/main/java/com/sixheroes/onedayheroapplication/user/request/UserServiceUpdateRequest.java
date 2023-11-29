@@ -10,7 +10,6 @@ import java.util.Optional;
 @Builder
 public record UserServiceUpdateRequest(
     UserBasicInfoServiceRequest userBasicInfo,
-    Long userImageId,
     UserFavoriteWorkingDayServiceRequest userFavoriteWorkingDay,
     List<Long> userFavoriteRegions
 ) {

@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.user;
+package com.sixheroes.onedayheroapplication.user.reader;
 
 import com.sixheroes.onedayherodomain.user.User;
 import com.sixheroes.onedayherodomain.user.UserRegion;

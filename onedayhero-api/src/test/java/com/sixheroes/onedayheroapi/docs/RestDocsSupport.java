@@ -54,6 +54,7 @@ public abstract class RestDocsSupport {
                         "/api/v1/mission-matches/**",
                         "/api/v1/bookmarks",
                         "/api/v1/me",
+                        "/api/v1/me/profile-image/**",
                         "/api/v1/me/change-hero",
                         "/api/v1/me/change-citizen",
                         "/api/v1/me/user-images/*",

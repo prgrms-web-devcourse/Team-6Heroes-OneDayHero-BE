@@ -7,6 +7,9 @@ import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageDeleteSe
 import com.sixheroes.onedayheroapplication.global.s3.dto.request.S3ImageUploadServiceRequest;
 import com.sixheroes.onedayheroapplication.global.s3.dto.response.S3ImageUploadServiceResponse;
 import com.sixheroes.onedayheroapplication.region.RegionReader;
+import com.sixheroes.onedayheroapplication.user.reader.UserImageReader;
+import com.sixheroes.onedayheroapplication.user.reader.UserReader;
+import com.sixheroes.onedayheroapplication.user.reader.UserRegionReader;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
@@ -36,6 +39,7 @@ public class UserService {
     private final UserReader userReader;
     private final UserRegionReader userRegionReader;
     private final RegionReader regionReader;
+    private final UserImageReader userImageReader;
 
     private final UserRegionRepository userRegionRepository;
     private final UserImageRepository userImageRepository;
@@ -86,13 +90,22 @@ public class UserService {
         // 변경된 유저 선호 지역 모두 넣기
         insertUserRegions(user, userServiceUpdateRequest);
 
-        // 기존 유저 이미지 삭제
-        deleteUserImage(user, userServiceUpdateRequest);
-
         // 새로운 이미지 업로드
         uploadUserImage(s3ImageUploadServiceRequests, user);
 
         return UserUpdateResponse.from(user);
+    }
+
+    @Transactional
+    public void deleteUserImage(
+        Long userId,
+        Long userImageId
+    ) {
+        var userImage = userImageReader.findOne(userImageId);
+
+        userImage.validOwner(userId);
+
+        deleteUserImage(userImage);
     }
 
     @Transactional
@@ -139,18 +152,11 @@ public class UserService {
     }
 
     private void deleteUserImage(
-        User user,
-        UserServiceUpdateRequest userServiceUpdateRequest
+        UserImage userImage
     ) {
-        if (Objects.isNull(userServiceUpdateRequest.userImageId())) {
-            var userImages = user.getUserImages();
-            var s3ImageDeleteServiceRequests = userImages.stream()
-                .map(s3ImageDeleteServiceRequestMapper)
-                .toList();
-            s3ImageDeleteService.deleteImages(s3ImageDeleteServiceRequests);
-
-            userImageRepository.deleteAllInBatch(userImages);
-        }
+        var s3ImageDeleteServiceRequest = s3ImageDeleteServiceRequestMapper.apply(userImage);
+        s3ImageDeleteService.deleteImages(List.of(s3ImageDeleteServiceRequest));
+        userImageRepository.delete(userImage);
     }
 
     private void uploadUserImage(
