@@ -5,6 +5,7 @@ import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Transactional
 class UserValidationTest extends IntegrationApplicationTest {
 
     @DisplayName("닉네임이 중복되지만 동일한 유저이면 예외가 발생하지 않는다.")
