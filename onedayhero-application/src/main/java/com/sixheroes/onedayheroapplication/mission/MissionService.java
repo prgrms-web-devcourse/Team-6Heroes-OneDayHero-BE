@@ -125,8 +125,9 @@ public class MissionService {
     ) {
         var missionCategory = missionCategoryReader.findOne(request.missionCategoryId());
         var mission = missionReader.findOne(missionId);
+        var region = regionReader.findByDong(request.regionName());
 
-        var requestMission = request.toEntity(missionCategory, serverTime);
+        var requestMission = request.toEntity(missionCategory, serverTime, region.getId());
         mission.update(requestMission, request.userId());
 
         var imageResponse = s3ImageUploadService.uploadImages(request.imageFiles(), directoryProperties.getMissionDir());

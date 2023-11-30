@@ -14,8 +14,8 @@ public record MissionUpdateRequest(
         @NotNull(message = "미션의 카테고리 아이디는 필수 값 입니다.")
         Long missionCategoryId,
 
-        @NotNull(message = "지역 아이디는 필수 값 입니다.")
-        Long regionId,
+        @NotNull(message = "동 이름은 필수 값 입니다.")
+        String regionName,
 
         @NotNull(message = "위도는 필수 값 입니다.")
         Double latitude,
@@ -33,7 +33,7 @@ public record MissionUpdateRequest(
     ) {
         return MissionUpdateServiceRequest.builder()
                 .missionCategoryId(missionCategoryId)
-                .regionId(regionId)
+                .regionName(regionName)
                 .userId(userId)
                 .latitude(latitude)
                 .longitude(longitude)
