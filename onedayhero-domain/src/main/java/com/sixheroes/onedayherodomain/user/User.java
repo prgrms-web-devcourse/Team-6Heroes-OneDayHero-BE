@@ -21,7 +21,11 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
-@Table(name = "users")
+@Table(name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "nickname")
+    }
+)
 @Entity
 public class User extends BaseEntity {
 

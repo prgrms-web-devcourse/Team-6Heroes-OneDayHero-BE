@@ -17,14 +17,15 @@ public class SseEmitters {
 
     public SseEmitter add(Long userId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+
         this.emitters.put(userId, emitter);
         log.info("sse emitter를 등록했습니다. emitter : {}", emitter);
         emitter.onTimeout(() -> {
-            log.warn("onTimeout callback");
+            log.info("onTimeout callback");
             emitter.complete();
         });
         emitter.onCompletion(() -> {
-            log.warn("onCompletion callback");
+            log.info("onCompletion callback");
             this.emitters.remove(userId);
         });
         return emitter;

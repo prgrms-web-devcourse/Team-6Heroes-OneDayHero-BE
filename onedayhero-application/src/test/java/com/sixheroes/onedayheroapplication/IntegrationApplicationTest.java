@@ -14,6 +14,7 @@ import com.sixheroes.onedayheroapplication.review.ReviewImageService;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.UserService;
+import com.sixheroes.onedayheroapplication.user.validation.UserValidation;
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
 import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
@@ -124,6 +125,9 @@ public abstract class IntegrationApplicationTest {
 
     @Autowired
     protected ReviewImageRepository reviewImageRepository;
+
+    @Autowired
+    protected UserValidation userValidation;
 
     @MockBean
     protected S3ImageUploadService s3ImageUploadService;
