@@ -36,6 +36,7 @@ public enum ErrorCode {
     INVALID_WEEK("U_008", "올바른 요일 값이 아닙니다."),
     HERO_MODE_OFF("U_009", "히어로 모드가 비활성화 상태입니다"),
     HERO_MODE_ON("U_010", "히어로 모드가 활성 상태입니다."),
+    DUPLICATED_NICKNAME("U_011", "히어로 닉네임"),
 
     // IMAGE
     NOT_FOUND_IMAGE("I_000", "이미지가 존재하지 않습니다."),
