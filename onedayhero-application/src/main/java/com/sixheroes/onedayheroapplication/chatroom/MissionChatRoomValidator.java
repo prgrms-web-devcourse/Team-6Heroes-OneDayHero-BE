@@ -20,7 +20,7 @@ public class MissionChatRoomValidator {
             List<Long> userIds,
             Long missionId
     ) {
-        if (!userMissionChatRoomRepository.findByUserIdInAndMissionChatRoom_MissionId(userIds, missionId).isEmpty()) {
+        if (userMissionChatRoomRepository.findByUserIdInAndMissionChatRoom_MissionId(userIds, missionId).size() == 2) {
             log.warn("이미 존재하는 채팅방입니다. userId : {}, missionId : {}", userIds, missionId);
             throw new BusinessException(ErrorCode.DUPLICATE_MISSION_CHATROOM);
         }
