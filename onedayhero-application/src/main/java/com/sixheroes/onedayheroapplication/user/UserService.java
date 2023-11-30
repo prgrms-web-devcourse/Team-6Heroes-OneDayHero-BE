@@ -81,7 +81,7 @@ public class UserService {
             List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests
     ) {
         var user = userReader.findOne(userId);
-        userValidation.validUserNickname(userServiceUpdateRequest.userBasicInfo().nickname());
+        userValidation.validUserNickname(userId, userServiceUpdateRequest.userBasicInfo().nickname());
 
         var userBasicInfo = userServiceUpdateRequest.toUserBasicInfo();
         var userFavoriteWorkingDay = userServiceUpdateRequest.toUserFavoriteWorkingDay();

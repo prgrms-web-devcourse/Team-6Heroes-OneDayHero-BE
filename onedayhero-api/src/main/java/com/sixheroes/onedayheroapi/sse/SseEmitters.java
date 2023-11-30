@@ -19,15 +19,8 @@ public class SseEmitters {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
 
         this.emitters.put(userId, emitter);
-        log.info("sse emitter를 등록했습니다. emitter : {}", emitter);
-        emitter.onTimeout(() -> {
-            log.info("onTimeout callback");
-            emitter.complete();
-        });
-        emitter.onCompletion(() -> {
-            log.info("onCompletion callback");
-            this.emitters.remove(userId);
-        });
+        emitter.onTimeout(emitter::complete);
+        emitter.onCompletion(() -> this.emitters.remove(userId));
         return emitter;
     }
 
@@ -38,7 +31,6 @@ public class SseEmitters {
         var sseEmitter = get(userId);
         try {
             sseEmitter.send(data);
-            log.info("sse emiiter를 보내는데 성공했습니다.");
         } catch (IOException e) {
             log.error("SSE를 보내는 과정에서 오류가 발생했습니다.");
             throw new RuntimeException();

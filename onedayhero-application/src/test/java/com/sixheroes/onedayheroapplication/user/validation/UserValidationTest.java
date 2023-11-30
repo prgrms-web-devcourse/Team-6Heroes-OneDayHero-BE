@@ -14,9 +14,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserValidationTest extends IntegrationApplicationTest {
 
-    @DisplayName("닉네임이 중복되는 유저가 있으면 예외가 발생한다.")
+    @DisplayName("닉네임이 중복되지만 동일한 유저이면 예외가 발생하지 않는다.")
     @Test
-    void validNickname() {
+    void validNicknameWhenSameUser() {
         // given
         var user = createUser();
         userRepository.save(user);
@@ -24,7 +24,21 @@ class UserValidationTest extends IntegrationApplicationTest {
         var duplicatedNickname = user.getUserBasicInfo().getNickname();
 
         // when & then
-        assertThatThrownBy(() -> userValidation.validUserNickname(duplicatedNickname))
+        userValidation.validUserNickname(user.getId(), duplicatedNickname);
+    }
+
+    @DisplayName("닉네임이 중복되는 유저가 있으면 예외가 발생한다.")
+    @Test
+    void validNickname() {
+        // given
+        var user = createUser();
+        userRepository.save(user);
+
+        var anotherUser = user.getId() + 1L;
+        var duplicatedNickname = user.getUserBasicInfo().getNickname();
+
+        // when & then
+        assertThatThrownBy(() -> userValidation.validUserNickname(anotherUser, duplicatedNickname))
             .isInstanceOf(BusinessException.class);
     }
 
