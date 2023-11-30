@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public record MissionUpdateServiceRequest(
         Long missionCategoryId,
-        Long regionId,
+        String regionName,
         Long userId,
         Double latitude,
         Double longitude,
@@ -21,7 +21,8 @@ public record MissionUpdateServiceRequest(
 
     public Mission toEntity(
             MissionCategory missionCategory,
-            LocalDateTime serverTime
+            LocalDateTime serverTime,
+            Long regionId
     ) {
         return Mission.builder()
                 .missionCategory(missionCategory)
