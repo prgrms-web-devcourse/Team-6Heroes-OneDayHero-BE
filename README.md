@@ -16,7 +16,8 @@
 # 프로젝트 기술 스택 💡
 
 ## Backend
-<img width="607" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/cce74da8-48c5-4179-9351-f2b9db43e196">
+<img width="607" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/a6ad9f23-33b1-4270-9855-913963246c0c">
+
 
 ## Infra
 <img width="619" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/6602555c-7d2f-462a-9ed0-576b12c421d1">
