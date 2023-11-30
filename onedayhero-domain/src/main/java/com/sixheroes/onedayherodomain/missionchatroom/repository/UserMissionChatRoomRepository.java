@@ -28,4 +28,6 @@ public interface UserMissionChatRoomRepository extends JpaRepository<UserMission
     List<UserChatRoomQueryResponse> findReceiverChatRoomInfoInChatRoomIdsAndUserId(List<Long> chatRoomIds, Long userId);
 
     List<UserMissionChatRoom> findByUserIdAndIsJoinedTrue(Long userId);
+
+    List<UserMissionChatRoom> findByUserIdInAndMissionChatRoom_MissionId(List<Long> userIds, Long missionId);
 }
