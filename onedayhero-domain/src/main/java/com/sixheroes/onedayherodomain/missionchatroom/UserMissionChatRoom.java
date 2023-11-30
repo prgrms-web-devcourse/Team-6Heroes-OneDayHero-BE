@@ -13,7 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user_mission_chat_rooms")
+@Table(name = "user_mission_chat_rooms",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"mission_chat_room_id", "user_id"})
+        })
 @Entity
 public class UserMissionChatRoom extends BaseEntity {
 

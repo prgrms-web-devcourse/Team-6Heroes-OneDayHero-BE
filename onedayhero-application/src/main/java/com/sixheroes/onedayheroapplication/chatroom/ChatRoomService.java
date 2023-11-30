@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
 
     private static final int MAX_CAPACITY = 2;
+    private final MissionChatRoomValidator missionChatRoomValidator;
     private final MissionChatRoomReader missionChatRoomReader;
     private final MissionChatRoomRepository missionChatRoomRepository;
     private final UserMissionChatRoomRepository userMissionChatRoomRepository;
@@ -42,7 +43,9 @@ public class ChatRoomService {
     public MissionChatRoomCreateResponse createChatRoom(
             CreateMissionChatRoomServiceRequest request
     ) {
+        missionChatRoomValidator.duplicateMissionChatRoom(request.userIds(), request.missionId());
         var missionChatRoom = MissionChatRoom.createMissionChatRoom(request.missionId(), request.userIds());
+
         var savedMissionChatRoom = missionChatRoomRepository.save(missionChatRoom);
         missionChatRoomRedisRepository.create(MissionChatRoomRedisRequest.from(missionChatRoom));
 

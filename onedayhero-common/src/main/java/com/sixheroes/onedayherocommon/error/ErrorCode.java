@@ -94,8 +94,7 @@ public enum ErrorCode {
     ABORT_CHATROOM_EXIT("MCR_001", "채팅방에 입장한 상태에서만 채팅방 나가기가 가능합니다."),
     INVALID_CREATE_CHAT("MCR_002", "채팅방을 생성하기 위한 적절한 인원이 들어오지 않았습니다."),
     NOT_FOUND_CHAT_TOPIC("MCR_003", "저장되어있는 레디스 채팅 토픽을 찾지 못했습니다."),
-
-    // USER_MISSION_CHATROOM
+    DUPLICATE_MISSION_CHATROOM("MCR_004", "이미 생성되어 있는 채팅방입니다."),
 
     // CHAT
     NOT_FOUND_CHAT_TYPE("CC_000", "존재하지 않는 채팅타입입니다."),

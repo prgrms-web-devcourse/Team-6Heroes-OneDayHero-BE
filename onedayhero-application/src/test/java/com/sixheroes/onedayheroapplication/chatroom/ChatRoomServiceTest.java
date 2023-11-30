@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapplication.chatroom;
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
 import com.sixheroes.onedayheroapplication.chatroom.request.CreateMissionChatRoomServiceRequest;
 import com.sixheroes.onedayherochat.application.repository.request.MissionChatRoomRedisRequest;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.mission.Mission;
 import com.sixheroes.onedayherodomain.mission.MissionInfo;
 import com.sixheroes.onedayherodomain.mission.MissionStatus;
@@ -19,8 +20,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
@@ -51,6 +51,31 @@ class ChatRoomServiceTest extends IntegrationApplicationTest {
 
         // then
         assertThat(chatRoom.missionId()).isEqualTo(missionId);
+    }
+
+    @DisplayName("유저는 동일한 채팅방을 생성 할 수 없다.")
+    @Test
+    void createChatRoomWithDuplicate() {
+        // given
+        var missionId = 1L;
+        var userIds = List.of(1L, 2L);
+
+        var request = CreateMissionChatRoomServiceRequest.builder()
+                .missionId(missionId)
+                .userIds(userIds)
+                .build();
+
+        var missionChatRoom = MissionChatRoom.createMissionChatRoom(request.missionId(), request.userIds());
+        var redisRequest = MissionChatRoomRedisRequest.from(missionChatRoom);
+
+        given(missionChatRoomRedisRepository.create(any(MissionChatRoomRedisRequest.class)))
+                .willReturn(redisRequest);
+
+        chatRoomService.createChatRoom(request);
+
+        // when & then
+        assertThatThrownBy(() -> chatRoomService.createChatRoom(request))
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("유저가 둘 다 나가있지 않은 상태에서 채팅방을 나갈 수 있다.")
