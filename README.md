@@ -32,5 +32,8 @@
 ## CI/CD
 <img width="1068" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/98e4080d-7bdb-4cea-a9e8-affd3c52ed25">
 
+## ERD
+<img width="1068" alt="image" src="https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/assets/74203371/db2220cc-e949-406d-b3f4-3daf3ab1faa2">
+
 
 ## 📎 Wiki
