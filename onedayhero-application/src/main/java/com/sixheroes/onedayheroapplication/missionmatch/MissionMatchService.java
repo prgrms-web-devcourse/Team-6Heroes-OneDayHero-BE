@@ -63,7 +63,8 @@ public class MissionMatchService {
         mission.cancelMissionMatching(mission.getCitizenId());
 
         missionMatch.canceled();
-        var missionMatchRejectEvent = MissionMatchRejectEvent.from(missionMatch);
+
+        var missionMatchRejectEvent = MissionMatchRejectEvent.from(userId, missionMatch);
         applicationEventPublisher.publishEvent(missionMatchRejectEvent);
 
         return MissionMatchResponse.builder()

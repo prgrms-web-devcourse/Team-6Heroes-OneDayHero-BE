@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,6 +53,12 @@ public class MissionMatch extends BaseEntity {
                 .heroId(heroId)
                 .missionMatchStatus(MissionMatchStatus.MATCHED)
                 .build();
+    }
+
+    public boolean isMatchedHero(
+        Long userId
+    ) {
+        return Objects.equals(this.heroId, userId);
     }
 
     public void canceled() {
