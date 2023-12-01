@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +29,12 @@ public class MissionProposalReader {
                     log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
                     throw new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
+    }
+
+    public List<MissionProposal> findProposedMissions(
+        Long heroId
+    ) {
+        return missionProposalRepository.findByHeroId(heroId);
     }
 
     public MissionProposalCreateEventDto findCreateEvent(

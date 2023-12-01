@@ -73,6 +73,7 @@ include::{snippets}/mission-completed-find/response-fields.adoc[]
 
 include::{snippets}/mission-matching-find/request-headers.adoc[]
 include::{snippets}/mission-matching-find/http-request.adoc[]
+include::{snippets}/mission-matching-find/query-parameters.adoc[]
 
 ==== Http Response
 

@@ -223,8 +223,8 @@ public class MissionQueryRepository {
 
     private BooleanExpression missionMatchStatusMatched() { return missionMatch.missionMatchStatus.eq(MissionMatchStatus.MATCHED); }
 
-    private BooleanExpression missionStatusIsMatching() {
-        return mission.missionStatus.eq(MissionStatus.MATCHING);
+    private BooleanBuilder missionStatusIsMatching() {
+        return new BooleanBuilder(mission.missionStatus.eq(MissionStatus.MATCHING));
     }
 
     private BooleanExpression missionStatusIsProgress() {

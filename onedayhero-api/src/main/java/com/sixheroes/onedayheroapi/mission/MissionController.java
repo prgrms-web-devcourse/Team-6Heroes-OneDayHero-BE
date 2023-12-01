@@ -67,9 +67,10 @@ public class MissionController {
 
     @GetMapping("/matching")
     public ResponseEntity<ApiResponse<MissionMatchingResponses>> findProgressMission(
-            @AuthUser Long userId
+            @AuthUser Long userId,
+            @RequestParam Long heroId
     ) {
-        var result = missionService.findMatchingMissionsByUserId(userId);
+        var result = missionService.findMatchingMissionsByUserId(userId, heroId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
