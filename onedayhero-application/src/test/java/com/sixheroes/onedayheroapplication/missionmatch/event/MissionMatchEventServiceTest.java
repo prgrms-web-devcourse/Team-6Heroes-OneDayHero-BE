@@ -34,7 +34,8 @@ class MissionMatchEventServiceTest extends IntegrationApplicationEventTest {
 
         var mission = createMission(citizen.getId());
 
-        var missionMatch = createMissionMatch(mission.getId());
+        var heroId = 3L;
+        var missionMatch = createMissionMatch(mission.getId(), heroId);
         missionMatchRepository.save(missionMatch);
 
         var missionMatchCreateEvent = new MissionMatchCreateEvent(missionMatch.getId());
@@ -49,26 +50,27 @@ class MissionMatchEventServiceTest extends IntegrationApplicationEventTest {
         assertThat(alarmPayload.alarmType()).isEqualTo(MissionMatchAction.MISSION_MATCH_CREATE.name());
         assertThat(alarmPayload.userId()).isEqualTo(missionMatch.getHeroId());
         assertThat(alarmPayload.data()).contains(
-            entry("citizenNickname", citizen.getUserBasicInfo().getNickname()),
+            entry("senderNickname", citizen.getUserBasicInfo().getNickname()),
             entry("missionId", mission.getId()),
             entry("missionTitle", mission.getMissionInfo().getTitle())
         );
     }
 
-    @DisplayName("미션매칭 취소 알림 데이터를 조회하고 알림 이벤트를 발행한다.")
+    @DisplayName("미션매칭 취소 알림 데이터를 조회하고 시민에게 알림 이벤트를 발행한다.")
     @Transactional
     @Test
     void notifyMissionMatchReject() {
         // given
-        var citizen = createUser();
-        userRepository.save(citizen);
+        var hero = createUser();
+        userRepository.save(hero);
 
-        var mission = createMission(citizen.getId());
+        var citizenId = 3L;
+        var mission = createMission(citizenId);
 
-        var missionMatch = createMissionMatch(mission.getId());
+        var missionMatch = createMissionMatch(mission.getId(), hero.getId());
         missionMatchRepository.save(missionMatch);
 
-        var missionMatchRejectEvent = new MissionMatchRejectEvent(missionMatch.getId());
+        var missionMatchRejectEvent = MissionMatchRejectEvent.from(hero.getId(), missionMatch);
 
         // when
         missionMatchEventService.notifyMissionMatchReject(missionMatchRejectEvent);
@@ -78,18 +80,51 @@ class MissionMatchEventServiceTest extends IntegrationApplicationEventTest {
         assertThat(alarmPayloadOptional).isNotEmpty();
         var alarmPayload = alarmPayloadOptional.get();
         assertThat(alarmPayload.alarmType()).isEqualTo(MissionMatchAction.MISSION_MATCH_REJECT.name());
-        assertThat(alarmPayload.userId()).isEqualTo(missionMatch.getHeroId());
+        assertThat(alarmPayload.userId()).isEqualTo(citizenId);
         assertThat(alarmPayload.data()).contains(
-            entry("citizenNickname", citizen.getUserBasicInfo().getNickname()),
+            entry("senderNickname", hero.getUserBasicInfo().getNickname()),
+            entry("missionId", mission.getId()),
+            entry("missionTitle", mission.getMissionInfo().getTitle())
+        );
+    }
+
+    @DisplayName("미션매칭 취소 알림 데이터를 조회하고 히어로에게 알림 이벤트를 발행한다.")
+    @Transactional
+    @Test
+    void notifyMissionMatchRejectCitizen() {
+        // given
+        var citizen = createUser();
+        userRepository.save(citizen);
+
+        var mission = createMission(citizen.getId());
+
+        var heroId = 3L;
+        var missionMatch = createMissionMatch(mission.getId(), heroId);
+        missionMatchRepository.save(missionMatch);
+
+        var missionMatchRejectEvent = MissionMatchRejectEvent.from(citizen.getId(), missionMatch);
+
+        // when
+        missionMatchEventService.notifyMissionMatchReject(missionMatchRejectEvent);
+
+        // then
+        var alarmPayloadOptional = applicationEvents.stream(AlarmPayload.class).findFirst();
+        assertThat(alarmPayloadOptional).isNotEmpty();
+        var alarmPayload = alarmPayloadOptional.get();
+        assertThat(alarmPayload.alarmType()).isEqualTo(MissionMatchAction.MISSION_MATCH_REJECT.name());
+        assertThat(alarmPayload.userId()).isEqualTo(heroId);
+        assertThat(alarmPayload.data()).contains(
+            entry("senderNickname", citizen.getUserBasicInfo().getNickname()),
             entry("missionId", mission.getId()),
             entry("missionTitle", mission.getMissionInfo().getTitle())
         );
     }
 
     private MissionMatch createMissionMatch(
-        Long missionId
+        Long missionId,
+        Long heroId
     ) {
-        return MissionMatch.createMissionMatch(missionId, 1L);
+        return MissionMatch.createMissionMatch(missionId, heroId);
     }
 
     private Mission createMission(

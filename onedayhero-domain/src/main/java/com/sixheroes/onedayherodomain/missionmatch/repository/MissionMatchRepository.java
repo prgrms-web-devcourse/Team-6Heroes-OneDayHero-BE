@@ -23,7 +23,21 @@ public interface MissionMatchRepository extends JpaRepository<MissionMatch, Long
         join User u on u.id = m.citizenId
         where mm.id = :missionMatchId
     """)
-    Optional<MissionMatchEventDto> findMissionMatchEventDtoById(
+    Optional<MissionMatchEventDto> findMissionMatchEvenSendCitizenById(
+        @Param("missionMatchId") Long missionMatchId
+    );
+
+    @Query("""
+        select 
+            new com.sixheroes.onedayherodomain.missionmatch.repository.dto.MissionMatchEventDto(
+                m.citizenId, u.userBasicInfo.nickname, m.id, m.missionInfo.title
+            )
+        from MissionMatch mm
+        join Mission m on m.id = mm.missionId
+        join User u on u.id = mm.heroId
+        where mm.id = :missionMatchId
+    """)
+    Optional<MissionMatchEventDto> findMissionMatchEventSendHeroById(
         @Param("missionMatchId") Long missionMatchId
     );
 }

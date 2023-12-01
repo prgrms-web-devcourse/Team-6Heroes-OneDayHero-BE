@@ -3,7 +3,6 @@ package com.sixheroes.onedayheroapplication.missionmatch;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
-import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatch;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatchStatus;
 import com.sixheroes.onedayherodomain.missionmatch.repository.MissionMatchRepository;
@@ -24,17 +23,25 @@ public class MissionMatchReader {
 
     public MissionMatch findByMissionIdAndMatched(Long missionId) {
         return missionMatchRepository.findByMissionIdAndMissionMatchStatus(missionId, MissionMatchStatus.MATCHED)
-                .orElseThrow(() -> {
-                    log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
-                    return new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
-                });
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션입니다. missionId : {}", missionId);
+                return new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
+            });
     }
 
-    public MissionMatchEventDto findMissionMatchEvent(Long missionMatchId) {
-        return missionMatchRepository.findMissionMatchEventDtoById(missionMatchId)
+    public MissionMatchEventDto findMissionMatchEventSendCitizen(Long missionMatchId) {
+        return missionMatchRepository.findMissionMatchEvenSendCitizenById(missionMatchId)
             .orElseThrow(() -> {
-                log.debug("존재하지 않는 미션 매칭입니다. missionId : {}", missionMatchId);
-                return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
+                log.debug("존재하지 않는 미션 매칭입니다. missionMatchId : {}", missionMatchId);
+                return new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
+            });
+    }
+
+    public MissionMatchEventDto findMissionMatchEventSendHero(Long missionMatchId) {
+        return missionMatchRepository.findMissionMatchEventSendHeroById(missionMatchId)
+            .orElseThrow(() -> {
+                log.debug("존재하지 않는 미션 매칭입니다. missionMatchId : {}", missionMatchId);
+                return new BusinessException(ErrorCode.INVALID_MATCHING_STATUS);
             });
     }
 }
