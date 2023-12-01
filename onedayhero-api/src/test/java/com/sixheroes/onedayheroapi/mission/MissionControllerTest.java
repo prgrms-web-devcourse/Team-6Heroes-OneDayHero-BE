@@ -33,6 +33,7 @@ import java.util.List;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -1156,12 +1157,13 @@ public class MissionControllerTest extends RestDocsSupport {
 
         var missionMatchingResponses = new MissionMatchingResponses(List.of(missionMatchingResponse1, missionMatchingResponse2));
 
-        given(missionService.findMatchingMissionsByUserId(any(Long.class)))
+        given(missionService.findMatchingMissionsByUserId(anyLong(), anyLong()))
                 .willReturn(missionMatchingResponses);
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/matching")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .param("heroId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -1169,6 +1171,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andDo(document("mission-matching-find",
                         requestHeaders(
                                 headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
+                            parameterWithName("heroId").description("제안할 히어로 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)

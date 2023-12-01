@@ -14,6 +14,7 @@ import com.sixheroes.onedayheroapplication.mission.request.MissionExtendServiceR
 import com.sixheroes.onedayheroapplication.mission.request.MissionFindFilterServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.request.MissionUpdateServiceRequest;
 import com.sixheroes.onedayheroapplication.mission.response.*;
+import com.sixheroes.onedayheroapplication.missionproposal.MissionProposalReader;
 import com.sixheroes.onedayheroapplication.region.RegionReader;
 import com.sixheroes.onedayherodomain.mission.MissionBookmark;
 import com.sixheroes.onedayherodomain.mission.repository.MissionBookmarkRepository;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -43,15 +45,19 @@ public class MissionService {
 
     private static final Integer DISTANCE = 5000;
 
+    private final MissionProposalReader missionProposalReader;
     private final MissionCategoryReader missionCategoryReader;
     private final RegionReader regionReader;
     private final MissionReader missionReader;
+
     private final MissionRepository missionRepository;
     private final MissionImageRepository missionImageRepository;
     private final MissionBookmarkRepository missionBookmarkRepository;
     private final MissionQueryRepository missionQueryRepository;
+
     private final S3ImageUploadService s3ImageUploadService;
     private final S3ImageDirectoryProperties directoryProperties;
+
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
@@ -179,10 +185,18 @@ public class MissionService {
     }
 
     public MissionMatchingResponses findMatchingMissionsByUserId(
-            Long userId
+            Long userId,
+            Long heroId
     ) {
         var matchingMissions = missionQueryRepository.findMissionMatchingResponses(userId);
-        var missionMatchingResponses = makeMatchingMissionResponseWithImages(matchingMissions);
+        var proposedMissions = missionProposalReader.findProposedMissions(heroId);
+
+        var matchingMissionsFiltered = matchingMissions.stream()
+            .filter(mission -> proposedMissions.stream()
+                .noneMatch(missionProposal -> Objects.equals(mission.id(), missionProposal.getMissionId()))
+            )
+            .toList();
+        var missionMatchingResponses = makeMatchingMissionResponseWithImages(matchingMissionsFiltered);
 
         return new MissionMatchingResponses(missionMatchingResponses);
     }
