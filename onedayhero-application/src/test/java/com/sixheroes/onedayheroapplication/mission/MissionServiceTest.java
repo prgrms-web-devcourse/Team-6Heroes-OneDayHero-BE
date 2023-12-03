@@ -841,11 +841,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "imagePath",
                         "isBookmarked"
                 ).containsExactly(
-                        matchingMission.getMissionCategory().getId(),
-                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
-                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
-                        matchingMission.getBookmarkCount(),
-                        matchingMission.getMissionStatus().name(),
+                        matchedMission.getMissionCategory().getId(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchedMission.getBookmarkCount(),
+                        matchedMission.getMissionStatus().name(),
                         null,
                         false
                 );
@@ -859,11 +859,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "imagePath",
                         "isBookmarked"
                 ).containsExactly(
-                        matchedMission.getMissionCategory().getId(),
-                        matchedMission.getMissionCategory().getMissionCategoryCode().name(),
-                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
-                        matchedMission.getBookmarkCount(),
-                        matchedMission.getMissionStatus().name(),
+                        matchingMission.getMissionCategory().getId(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchingMission.getBookmarkCount(),
+                        matchingMission.getMissionStatus().name(),
                         null,
                         false
                 );
@@ -946,9 +946,9 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var heroId = 1L;
         var missionProposal = MissionProposal.builder()
-            .missionId(matchingMission3.getId())
-            .heroId(heroId)
-            .build();
+                .missionId(matchingMission3.getId())
+                .heroId(heroId)
+                .build();
         missionProposalRepository.save(missionProposal);
 
         // when
