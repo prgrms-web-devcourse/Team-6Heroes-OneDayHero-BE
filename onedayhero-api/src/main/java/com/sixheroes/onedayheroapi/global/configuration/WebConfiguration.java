@@ -10,6 +10,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     private static final String FRONT_LOCAL = "http://localhost:3000";
     private static final String FRONT_DEV = "https://team-6-heroes-one-day-hero-fe-git-develop-howon-shin.vercel.app";
+    private static final String FRONT_PROD = "https://one-day-hero.vercel.app/";
     private static final Integer PRE_FLIGHT_CACHE_TIME = 120;
 
     @Override
@@ -17,7 +18,7 @@ public class WebConfiguration implements WebMvcConfigurer {
             CorsRegistry registry
     ) {
         registry.addMapping("/**")
-                .allowedOrigins(FRONT_LOCAL, FRONT_DEV)
+                .allowedOrigins(FRONT_LOCAL, FRONT_DEV, FRONT_PROD)
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
