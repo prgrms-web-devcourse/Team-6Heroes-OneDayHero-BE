@@ -16,7 +16,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE reviews SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
-@Table(name = "reviews")
+@Table(
+        name = "reviews",
+        indexes = {
+                @Index(name = "reviews_receiver_id_idx", columnList = "receiver_id")
+        }
+)
 @Entity
 public class Review extends BaseEntity {
 
