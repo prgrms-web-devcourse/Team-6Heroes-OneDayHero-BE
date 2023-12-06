@@ -38,3 +38,7 @@
 
 
 ## 📎 Wiki
+[**위키**](https://github.com/prgrms-web-devcourse/Team-6Heroes-OneDayHero-BE/wiki)
+
+## Latest Update
+- **V1.0.0** 2023.12.06 
