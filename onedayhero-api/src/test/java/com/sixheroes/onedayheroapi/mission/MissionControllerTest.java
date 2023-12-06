@@ -33,6 +33,7 @@ import java.util.List;
 
 import static com.sixheroes.onedayheroapi.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -241,8 +242,8 @@ public class MissionControllerTest extends RestDocsSupport {
                         requestPartFields("missionUpdateRequest",
                                 fieldWithPath("missionCategoryId").type(JsonFieldType.NUMBER)
                                         .description("카테고리 아이디"),
-                                fieldWithPath("regionId").type(JsonFieldType.NUMBER)
-                                        .description("지역 아이디"),
+                                fieldWithPath("regionName").type(JsonFieldType.STRING)
+                                        .description("동 이름"),
                                 fieldWithPath("latitude").type(JsonFieldType.NUMBER)
                                         .description("위도"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER)
@@ -613,6 +614,12 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("북마크 횟수"),
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
+                                fieldWithPath("data.content[].si").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (시)"),
+                                fieldWithPath("data.content[].gu").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (구)"),
+                                fieldWithPath("data.content[].dong").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (동)"),
                                 fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
                                         .optional()
                                         .description("이미지 사진 경로"),
@@ -671,6 +678,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionProgressResponse.missionDate())))
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionProgressResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionProgressResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.content[0].si").value(missionProgressResponse.si()))
+                .andExpect(jsonPath("$.data.content[0].gu").value(missionProgressResponse.gu()))
+                .andExpect(jsonPath("$.data.content[0].dong").value(missionProgressResponse.dong()))
                 .andExpect(jsonPath("$.data.content[0].imagePath").value(missionProgressResponse.imagePath()))
                 .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionProgressResponse.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
@@ -706,6 +716,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .bookmarkCount(1)
                 .missionStatus("MATCHING")
                 .imagePath("s3://path")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
                 .isBookmarked(true)
                 .build();
 
@@ -760,6 +773,12 @@ public class MissionControllerTest extends RestDocsSupport {
                                         .description("미션 날짜"),
                                 fieldWithPath("data.content[].bookmarkCount").type(JsonFieldType.NUMBER)
                                         .description("북마크 횟수"),
+                                fieldWithPath("data.content[].si").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (시)"),
+                                fieldWithPath("data.content[].gu").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (구)"),
+                                fieldWithPath("data.content[].dong").type(JsonFieldType.STRING)
+                                        .description("미션 장소 (동)"),
                                 fieldWithPath("data.content[].missionStatus").type(JsonFieldType.STRING)
                                         .description("미션 상태"),
                                 fieldWithPath("data.content[].imagePath").type(JsonFieldType.STRING)
@@ -820,6 +839,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.content[0].missionDate").value(DateTimeConverter.convertDateToString(missionCompletedResponse.missionDate())))
                 .andExpect(jsonPath("$.data.content[0].bookmarkCount").value(missionCompletedResponse.bookmarkCount()))
                 .andExpect(jsonPath("$.data.content[0].missionStatus").value(missionCompletedResponse.missionStatus()))
+                .andExpect(jsonPath("$.data.content[0].si").value(missionCompletedResponse.si()))
+                .andExpect(jsonPath("$.data.content[0].gu").value(missionCompletedResponse.gu()))
+                .andExpect(jsonPath("$.data.content[0].dong").value(missionCompletedResponse.dong()))
                 .andExpect(jsonPath("$.data.content[0].imagePath").value(missionCompletedResponse.imagePath()))
                 .andExpect(jsonPath("$.data.content[0].isBookmarked").value(missionCompletedResponse.isBookmarked()))
                 .andExpect(jsonPath("$.data.pageable.pageNumber").value(sliceMissionResponse.getPageable().getPageNumber()))
@@ -1135,12 +1157,13 @@ public class MissionControllerTest extends RestDocsSupport {
 
         var missionMatchingResponses = new MissionMatchingResponses(List.of(missionMatchingResponse1, missionMatchingResponse2));
 
-        given(missionService.findMatchingMissionsByUserId(any(Long.class)))
+        given(missionService.findMatchingMissionsByUserId(anyLong(), anyLong()))
                 .willReturn(missionMatchingResponses);
 
         // when & then
         mockMvc.perform(get("/api/v1/missions/matching")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .param("heroId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -1148,6 +1171,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .andDo(document("mission-matching-find",
                         requestHeaders(
                                 headerWithName("Authorization").description("Auth Credential")
+                        ),
+                        queryParameters(
+                            parameterWithName("heroId").description("제안할 히어로 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
@@ -1597,7 +1623,7 @@ public class MissionControllerTest extends RestDocsSupport {
     ) {
         return MissionUpdateRequest.builder()
                 .missionCategoryId(1L)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(37.49779692073204)
                 .longitude(127.02880308004335)
                 .missionInfo(missionInfoRequest)
@@ -1615,6 +1641,9 @@ public class MissionControllerTest extends RestDocsSupport {
                 .bookmarkCount(1)
                 .missionStatus("MATCHING")
                 .imagePath("s3://path")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼1동")
                 .isBookmarked(true)
                 .build();
     }

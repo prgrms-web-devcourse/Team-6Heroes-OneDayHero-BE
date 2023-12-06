@@ -2,6 +2,7 @@ package com.sixheroes.onedayheroapi.global.handler;
 
 import com.sixheroes.onedayheroapi.global.response.ErrorResponse;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherocommon.exception.auth.ExpiredTokenException;
 import com.sixheroes.onedayherocommon.exception.auth.InvalidAuthorizationException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,17 @@ public class GlobalExceptionHandler {
         log.warn("예외 처리가 되지 않은 Error 발생", exception);
         return ResponseEntity.badRequest()
                 .body(ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    @ExceptionHandler(value = BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(
+            BusinessException exception
+    ) {
+        log.error("BusinessException 발생", exception);
+
+        var errorCode = exception.getErrorCode();
+        return ResponseEntity.badRequest()
+                .body(ErrorResponse.from(errorCode));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

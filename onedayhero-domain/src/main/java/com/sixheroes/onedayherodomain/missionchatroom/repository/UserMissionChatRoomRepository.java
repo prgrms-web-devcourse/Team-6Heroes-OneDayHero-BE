@@ -22,10 +22,12 @@ public interface UserMissionChatRoomRepository extends JpaRepository<UserMission
             join MissionChatRoom mr on um.missionChatRoom.id = mr.id
             join Mission m on mr.missionId = m.id
             join User u on u.id = um.userId
-            left join UserImage ui on um.userId = ui.id
-            where um.userId in :receiverIds
+            left join UserImage ui on um.userId = ui.user.id
+            where um.missionChatRoom.id IN :chatRoomIds AND um.userId != :userId
             """)
-    List<UserChatRoomQueryResponse> findReceiverChatRoomInfoInReceiverIds(List<Long> receiverIds);
+    List<UserChatRoomQueryResponse> findReceiverChatRoomInfoInChatRoomIdsAndUserId(List<Long> chatRoomIds, Long userId);
 
     List<UserMissionChatRoom> findByUserIdAndIsJoinedTrue(Long userId);
+
+    List<UserMissionChatRoom> findByUserIdInAndMissionChatRoom_MissionId(List<Long> userIds, Long missionId);
 }

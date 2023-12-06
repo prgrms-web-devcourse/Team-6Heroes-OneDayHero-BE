@@ -66,7 +66,7 @@ class UserMissionChatRoomRepositoryTest extends IntegrationRepositoryTest {
         var savedMissionChatroom = missionChatRoomRepository.save(missionChatRoom);
 
         // when
-        var receiverChatRoomInfo = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(List.of(savedUserA.getId()));
+        var receiverChatRoomInfo = userMissionChatRoomRepository.findReceiverChatRoomInfoInChatRoomIdsAndUserId(List.of(savedMissionChatroom.getId()), userB.getId());
 
         // then
         assertThat(receiverChatRoomInfo).isNotEmpty();

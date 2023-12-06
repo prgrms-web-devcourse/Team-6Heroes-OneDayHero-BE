@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 public class SseController {
 
-    private static final String DUMMY_DATA = "Sse subscribe success";
+    private static final String DUMMY_DATA = "sse";
     private final SseEmitters sseEmitters;
 
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

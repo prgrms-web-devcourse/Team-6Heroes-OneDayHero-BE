@@ -25,7 +25,7 @@ class MissionProposalTest {
 
     @DisplayName("요청한 유저가 제안 받은 히어로가 아니면 미션 제안을 승낙할 때 예외가 발생한다.")
     @Test
-    void doNotchangeMissionProposalStatusApproveWhenNotHero() {
+    void doNotChangeMissionProposalStatusApproveWhenNotHero() {
         // given
         var heroId = 1L;
         var requestUserId = 2L;

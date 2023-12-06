@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
 
     private static final int MAX_CAPACITY = 2;
+    private final MissionChatRoomValidator missionChatRoomValidator;
     private final MissionChatRoomReader missionChatRoomReader;
     private final MissionChatRoomRepository missionChatRoomRepository;
     private final UserMissionChatRoomRepository userMissionChatRoomRepository;
@@ -42,7 +43,9 @@ public class ChatRoomService {
     public MissionChatRoomCreateResponse createChatRoom(
             CreateMissionChatRoomServiceRequest request
     ) {
+        missionChatRoomValidator.duplicateMissionChatRoom(request.userIds(), request.missionId());
         var missionChatRoom = MissionChatRoom.createMissionChatRoom(request.missionId(), request.userIds());
+
         var savedMissionChatRoom = missionChatRoomRepository.save(missionChatRoom);
         missionChatRoomRedisRepository.create(MissionChatRoomRedisRequest.from(missionChatRoom));
 
@@ -52,13 +55,15 @@ public class ChatRoomService {
     public List<MissionChatRoomFindResponse> findJoinedChatRoom(
             Long userId
     ) {
+        // 유저가 입장 상태인 채팅방을 가져온다.
         var missionChatRooms = userMissionChatRoomRepository.findByUserIdAndIsJoinedTrue(userId);
 
         var chatRoomIds = getJoinedChatRoomIds(missionChatRooms);
-        var receiverIds = getReceiverIds(userId, chatRoomIds);
 
-        var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInReceiverIds(receiverIds);
+        // 유저가 입장 상태인 채팅방의 수신자 정보를 가지고 온다.
+        var receiverChatRoomInfos = userMissionChatRoomRepository.findReceiverChatRoomInfoInChatRoomIdsAndUserId(chatRoomIds, userId);
 
+        // 유저가 입장 상태인 채팅방의 마지막 메시지를 가지고 온다.
         var latestMessagesByChatRoomIds = chatMessageMongoRepository.findLatestMessagesByChatRoomIds(chatRoomIds);
 
         var missionChatRoomFindResponses = makeMissionChatRoomResponse(receiverChatRoomInfos, latestMessagesByChatRoomIds);
@@ -93,19 +98,6 @@ public class ChatRoomService {
     ) {
         return userMissionChatRooms.stream()
                 .mapToLong((userMissionChatRoom) -> userMissionChatRoom.getMissionChatRoom().getId())
-                .boxed()
-                .toList();
-    }
-
-    // 채팅 수신자에 대한 수신자 아이디를 가지고 온다.
-    private List<Long> getReceiverIds(
-            Long userId,
-            List<Long> chatRoomIds
-    ) {
-        return userMissionChatRoomRepository.findByMissionChatRoom_IdIn(chatRoomIds)
-                .stream()
-                .filter(userMissionChatRoom -> !userMissionChatRoom.isUserChatRoom(userId))
-                .mapToLong(UserMissionChatRoom::getUserId)
                 .boxed()
                 .toList();
     }

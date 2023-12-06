@@ -67,9 +67,10 @@ public class MissionController {
 
     @GetMapping("/matching")
     public ResponseEntity<ApiResponse<MissionMatchingResponses>> findProgressMission(
-            @AuthUser Long userId
+            @AuthUser Long userId,
+            @RequestParam Long heroId
     ) {
-        var result = missionService.findMatchingMissionsByUserId(userId);
+        var result = missionService.findMatchingMissionsByUserId(userId, heroId);
 
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
@@ -98,7 +99,7 @@ public class MissionController {
     public ResponseEntity<ApiResponse<MissionIdResponse>> createMission(
             @AuthUser Long userId,
             @Valid @RequestPart MissionCreateRequest missionCreateRequest,
-            @RequestPart List<MultipartFile> multipartFiles
+            @RequestPart(required = false) List<MultipartFile> multipartFiles
     ) {
         var registerDateTime = LocalDateTime.now();
         var result = missionService.createMission(missionCreateRequest.toService(multipartFiles, userId), registerDateTime);
@@ -112,7 +113,7 @@ public class MissionController {
             @PathVariable Long missionId,
             @AuthUser Long userId,
             @Valid @RequestPart MissionUpdateRequest missionUpdateRequest,
-            @RequestPart List<MultipartFile> multipartFiles
+            @RequestPart(required = false) List<MultipartFile> multipartFiles
     ) {
         var modifiedDateTime = LocalDateTime.now();
         var result = missionService.updateMission(missionId, missionUpdateRequest.toService(multipartFiles, userId), modifiedDateTime);

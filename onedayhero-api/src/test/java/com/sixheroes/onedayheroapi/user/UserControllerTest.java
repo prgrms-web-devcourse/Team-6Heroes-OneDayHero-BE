@@ -964,7 +964,7 @@ class UserControllerTest extends RestDocsSupport {
 
     private MockMultipartFile createUserImage() {
         return new MockMultipartFile(
-            "images",
+            "userImages",
             "imageA.jpeg",
             "image/jpeg",
             "<<jpeg data>>".getBytes()

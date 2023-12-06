@@ -106,6 +106,7 @@ public class ReviewQueryRepository {
                                         review.id,
                                         review.senderId,
                                         user.userBasicInfo.nickname,
+                                        userImage.path,
                                         review.receiverId,
                                         missionCategory.id,
                                         missionCategory.missionCategoryCode,
@@ -119,6 +120,7 @@ public class ReviewQueryRepository {
                         .from(review)
                         .join(user).on(review.senderId.eq(user.id))
                         .join(missionCategory).on(review.categoryId.eq(missionCategory.id))
+                        .leftJoin(userImage).on(userImage.user.id.eq(review.senderId))
                         .where(review.id.eq(reviewId))
                         .fetchOne()
         );

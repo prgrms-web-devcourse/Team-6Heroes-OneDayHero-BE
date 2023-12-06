@@ -13,6 +13,7 @@ import com.sixheroes.onedayheroapplication.user.reader.UserRegionReader;
 import com.sixheroes.onedayheroapplication.user.request.UserServiceUpdateRequest;
 import com.sixheroes.onedayheroapplication.user.response.UserResponse;
 import com.sixheroes.onedayheroapplication.user.response.UserUpdateResponse;
+import com.sixheroes.onedayheroapplication.user.validation.UserValidation;
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
 import com.sixheroes.onedayherodomain.region.Region;
@@ -35,6 +36,8 @@ import java.util.function.Function;
 @Transactional(readOnly = true)
 @Service
 public class UserService {
+
+    private final UserValidation userValidation;
 
     private final UserReader userReader;
     private final UserRegionReader userRegionReader;
@@ -78,6 +81,7 @@ public class UserService {
             List<S3ImageUploadServiceRequest> s3ImageUploadServiceRequests
     ) {
         var user = userReader.findOne(userId);
+        userValidation.validUserNickname(userId, userServiceUpdateRequest.userBasicInfo().nickname());
 
         var userBasicInfo = userServiceUpdateRequest.toUserBasicInfo();
         var userFavoriteWorkingDay = userServiceUpdateRequest.toUserFavoriteWorkingDay();

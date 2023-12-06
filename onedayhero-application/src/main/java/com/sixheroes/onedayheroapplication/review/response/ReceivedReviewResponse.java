@@ -42,7 +42,7 @@ public record ReceivedReviewResponse(
                         .build();
         }
 
-        private static List<String> imageMapper(String profileImage) {
+        public static List<String> imageMapper(String profileImage) {
                 if (profileImage == null) {
                         return Collections.emptyList();
                 }

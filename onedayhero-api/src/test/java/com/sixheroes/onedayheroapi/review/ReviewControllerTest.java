@@ -61,6 +61,7 @@ class ReviewControllerTest extends RestDocsSupport {
         // given
         var senderId = 1L;
         var senderNickname = "슈퍼 히어로 토끼";
+        var senderProfileImage = "슈퍼 히어로 토끼 프로필 주소";
         var receiverId = 2L;
         var receiverNickname = "리시버 슈퍼 히어로 토끼";
         var missionTitle = "서빙 구함";
@@ -71,6 +72,7 @@ class ReviewControllerTest extends RestDocsSupport {
         var response = createReviewDetailResponse(
                 senderId,
                 senderNickname,
+                senderProfileImage,
                 receiverId,
                 receiverNickname,
                 missionTitle,
@@ -88,6 +90,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .andExpect(jsonPath("$.data.id").value(response.id()))
                 .andExpect(jsonPath("$.data.senderId").value(response.senderId()))
                 .andExpect(jsonPath("$.data.senderNickname").value(response.senderNickname()))
+                .andExpect(jsonPath("$.data.senderProfileImage").isArray())
                 .andExpect(jsonPath("$.data.receiverId").value(response.receiverId()))
                 .andExpect(jsonPath("$.data.receiverNickname").value(response.receiverNickname()))
                 .andExpect(jsonPath("$.data.categoryId").value(response.categoryId()))
@@ -114,6 +117,9 @@ class ReviewControllerTest extends RestDocsSupport {
                                         .description("리뷰 작성 유저 아이디"),
                                 fieldWithPath("data.senderNickname").type(JsonFieldType.STRING)
                                         .description("리뷰 작성 유저 닉네임"),
+                                fieldWithPath("data.senderProfileImage[]").type(JsonFieldType.ARRAY)
+                                        .description("리뷰 작성 유저 프로필 사진")
+                                        .optional(),
                                 fieldWithPath("data.receiverId").type(JsonFieldType.NUMBER)
                                         .description("리뷰 대상 유저 아이디"),
                                 fieldWithPath("data.receiverNickname").type(JsonFieldType.STRING)
@@ -487,6 +493,7 @@ class ReviewControllerTest extends RestDocsSupport {
     private ReviewDetailResponse createReviewDetailResponse(
             Long senderId,
             String senderNickname,
+            String senderProfileImage,
             Long receiverId,
             String receiverNickname,
             String missionTitle,
@@ -514,6 +521,7 @@ class ReviewControllerTest extends RestDocsSupport {
                 .categoryCode("MC_001")
                 .senderId(senderId)
                 .senderNickname(senderNickname)
+                .senderProfileImage(List.of(senderProfileImage))
                 .receiverId(receiverId)
                 .receiverNickname(receiverNickname)
                 .missionTitle(missionTitle)

@@ -210,16 +210,16 @@ class MissionQueryRepositoryTest extends IntegrationQueryDslTest {
                         "bookmarkCount",
                         "missionStatus")
                 .containsExactly(
-                        mission.getMissionInfo().getTitle(),
-                        mission.getMissionCategory().getId(),
-                        mission.getMissionCategory().getMissionCategoryCode(),
-                        mission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchedMission.getMissionInfo().getTitle(),
+                        matchedMission.getMissionCategory().getId(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
                         region.getSi(),
                         region.getGu(),
                         region.getDong(),
-                        mission.getMissionInfo().getMissionDate(),
-                        mission.getBookmarkCount(),
-                        mission.getMissionStatus()
+                        matchedMission.getMissionInfo().getMissionDate(),
+                        matchedMission.getBookmarkCount(),
+                        matchedMission.getMissionStatus()
                 );
     }
 

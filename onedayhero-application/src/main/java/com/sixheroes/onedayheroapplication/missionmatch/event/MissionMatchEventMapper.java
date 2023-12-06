@@ -16,7 +16,7 @@ public final class MissionMatchEventMapper {
     ) {
         return AlarmPayload.builder()
             .alarmType(missionMatchAction.name())
-            .userId(missionMatchEventDto.heroId())
+            .userId(missionMatchEventDto.receiverId())
             .data(missionMatchEventDto.toMap())
             .build();
     }

@@ -12,6 +12,8 @@ public record ReviewDetailQueryResponse(
 
         String senderNickname,
 
+        String senderProfileImage,
+
         Long receiverId,
 
         Long categoryId,

@@ -15,7 +15,12 @@ import java.util.Objects;
 @Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "review_images")
+@Table(
+        name = "review_images",
+        indexes = {
+                @Index(name = "review_images_id_idx", columnList = "review_id")
+        }
+)
 @Entity
 public class ReviewImage extends BaseEntity {
 

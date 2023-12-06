@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.sixheroes.onedayheroapplication.review.response.ReceivedReviewResponse.imageMapper;
+
 @Builder
 public record ReviewDetailResponse(
         Long id,
@@ -21,6 +23,8 @@ public record ReviewDetailResponse(
         Long senderId,
 
         String senderNickname,
+
+        List<String> senderProfileImage,
 
         Long receiverId,
 
@@ -61,6 +65,7 @@ public record ReviewDetailResponse(
                         .id(queryResponse.id())
                         .senderId(queryResponse.senderId())
                         .senderNickname(queryResponse.senderNickname())
+                        .senderProfileImage(imageMapper(queryResponse.senderProfileImage()))
                         .receiverId(queryResponse.receiverId())
                         .receiverNickname(receiverNickname)
                         .categoryId(queryResponse.categoryId())

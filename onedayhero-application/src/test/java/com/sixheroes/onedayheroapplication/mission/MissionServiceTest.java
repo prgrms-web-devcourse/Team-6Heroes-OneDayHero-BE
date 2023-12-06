@@ -11,6 +11,7 @@ import com.sixheroes.onedayheroapplication.mission.response.MissionCategoryRespo
 import com.sixheroes.onedayheroapplication.region.response.RegionResponse;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
 import com.sixheroes.onedayherodomain.mission.*;
+import com.sixheroes.onedayherodomain.missionproposal.MissionProposal;
 import org.apache.http.entity.ContentType;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
@@ -299,7 +300,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(1L)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -356,7 +357,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(unknownCitizenId)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -411,7 +412,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(citizenId)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -466,7 +467,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(citizenId)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -521,7 +522,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(citizenId)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -576,7 +577,7 @@ class MissionServiceTest extends IntegrationApplicationTest {
         var missionUpdateServiceRequest = MissionUpdateServiceRequest.builder()
                 .missionCategoryId(updateCategoryId)
                 .userId(citizenId)
-                .regionId(1L)
+                .regionName("역삼1동")
                 .latitude(1235678.48)
                 .longitude(1235678.48)
                 .missionInfo(missionInfoServiceRequest)
@@ -840,11 +841,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "imagePath",
                         "isBookmarked"
                 ).containsExactly(
-                        matchingMission.getMissionCategory().getId(),
-                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
-                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
-                        matchingMission.getBookmarkCount(),
-                        matchingMission.getMissionStatus().name(),
+                        matchedMission.getMissionCategory().getId(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchedMission.getBookmarkCount(),
+                        matchedMission.getMissionStatus().name(),
                         null,
                         false
                 );
@@ -858,11 +859,11 @@ class MissionServiceTest extends IntegrationApplicationTest {
                         "imagePath",
                         "isBookmarked"
                 ).containsExactly(
-                        matchedMission.getMissionCategory().getId(),
-                        matchedMission.getMissionCategory().getMissionCategoryCode().name(),
-                        matchedMission.getMissionCategory().getMissionCategoryCode().getDescription(),
-                        matchedMission.getBookmarkCount(),
-                        matchedMission.getMissionStatus().name(),
+                        matchingMission.getMissionCategory().getId(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().name(),
+                        matchingMission.getMissionCategory().getMissionCategoryCode().getDescription(),
+                        matchingMission.getBookmarkCount(),
+                        matchingMission.getMissionStatus().name(),
                         null,
                         false
                 );
@@ -938,17 +939,25 @@ class MissionServiceTest extends IntegrationApplicationTest {
 
         var matchingMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
         var matchingMission2 = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
+        var matchingMission3 = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MATCHING);
         var completedMission = createMission(citizenId, missionCategory, missionInfo, region.getId(), MissionStatus.MISSION_COMPLETED);
 
-        missionRepository.saveAll(List.of(matchingMission, matchingMission2, completedMission));
+        missionRepository.saveAll(List.of(matchingMission, matchingMission2, matchingMission3, completedMission));
+
+        var heroId = 1L;
+        var missionProposal = MissionProposal.builder()
+                .missionId(matchingMission3.getId())
+                .heroId(heroId)
+                .build();
+        missionProposalRepository.save(missionProposal);
 
         // when
-        var findMatchingMission = missionService.findMatchingMissionsByUserId(citizenId);
+        var findMatchingMission = missionService.findMatchingMissionsByUserId(citizenId, heroId);
 
         // then
         var missionMatchingResponses = findMatchingMission.missionMatchingResponses();
-        assertThat(missionMatchingResponses).hasSize(2);
         assertThat(missionMatchingResponses)
+                .hasSize(2)
                 .filteredOn("id", matchingMission.getId())
                 .extracting(
                         "title",

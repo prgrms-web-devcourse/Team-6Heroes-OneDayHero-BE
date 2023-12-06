@@ -100,7 +100,7 @@ public class MissionQueryRepository {
                 .where(userIdEq(userId), missionStatusIsProgress())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
-                .orderBy(mission.createdAt.asc())
+                .orderBy(mission.createdAt.desc())
                 .fetch();
     }
 
@@ -207,24 +207,26 @@ public class MissionQueryRepository {
     }
 
     public Optional<MissionCompletedEventQueryResponse> findMissionCompletedEvent(
-        Long missionId
+            Long missionId
     ) {
         var missionCompletedEventQueryResponse = queryFactory.select(Projections.constructor(MissionCompletedEventQueryResponse.class,
-                missionMatch.heroId, mission.id, mission.missionInfo.title
-            ))
-            .from(mission)
-            .join(missionMatch)
-            .on(mission.id.eq(missionMatch.missionId))
-            .where(missionIdEq(missionId).and(missionMatchStatusMatched()))
-            .fetchOne();
+                        missionMatch.heroId, mission.id, mission.missionInfo.title
+                ))
+                .from(mission)
+                .join(missionMatch)
+                .on(mission.id.eq(missionMatch.missionId))
+                .where(missionIdEq(missionId).and(missionMatchStatusMatched()))
+                .fetchOne();
 
         return Optional.ofNullable(missionCompletedEventQueryResponse);
     }
 
-    private BooleanExpression missionMatchStatusMatched() { return missionMatch.missionMatchStatus.eq(MissionMatchStatus.MATCHED); }
+    private BooleanExpression missionMatchStatusMatched() {
+        return missionMatch.missionMatchStatus.eq(MissionMatchStatus.MATCHED);
+    }
 
-    private BooleanExpression missionStatusIsMatching() {
-        return mission.missionStatus.eq(MissionStatus.MATCHING);
+    private BooleanBuilder missionStatusIsMatching() {
+        return new BooleanBuilder(mission.missionStatus.eq(MissionStatus.MATCHING));
     }
 
     private BooleanExpression missionStatusIsProgress() {

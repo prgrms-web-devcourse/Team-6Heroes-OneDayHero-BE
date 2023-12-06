@@ -3,12 +3,16 @@ package com.sixheroes.onedayheroapplication.missionmatch.event.dto;
 import com.sixheroes.onedayherodomain.missionmatch.MissionMatch;
 
 public record MissionMatchRejectEvent(
-    Long missionMatchId
+    Long userId, // 보내는 사람
+    Long missionMatchId,
+    boolean isMatchedHero
 ) {
 
     public static MissionMatchRejectEvent from(
+        Long userId,
         MissionMatch missionMatch
     ) {
-        return new MissionMatchRejectEvent(missionMatch.getId());
+        var matchedHero = missionMatch.isMatchedHero(userId);
+        return new MissionMatchRejectEvent(userId, missionMatch.getId(), matchedHero);
     }
 }

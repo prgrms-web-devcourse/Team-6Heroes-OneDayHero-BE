@@ -23,6 +23,12 @@ public record MissionCompletedResponse(
 
         String imagePath,
 
+        String si,
+
+        String gu,
+
+        String dong,
+
         boolean isBookmarked
 ) {
 
@@ -39,6 +45,9 @@ public record MissionCompletedResponse(
                 .bookmarkCount(response.bookmarkCount())
                 .missionStatus(response.missionStatus().name())
                 .imagePath(imagePath)
+                .si(response.si())
+                .gu(response.gu())
+                .dong(response.dong())
                 .isBookmarked(isBookmarked)
                 .build();
     }

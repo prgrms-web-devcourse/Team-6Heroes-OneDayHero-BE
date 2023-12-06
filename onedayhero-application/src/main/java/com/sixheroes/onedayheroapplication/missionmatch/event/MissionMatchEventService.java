@@ -20,7 +20,7 @@ public class MissionMatchEventService {
     public void notifyMissionMatchCreate(
         MissionMatchCreateEvent missionMatchCreateEvent
     ) {
-        var missionMatchEvent = missionMatchReader.findMissionMatchEvent(missionMatchCreateEvent.missionMatchId());
+        var missionMatchEvent = missionMatchReader.findMissionMatchEventSendCitizen(missionMatchCreateEvent.missionMatchId());
 
         var alarmPayload = MissionMatchEventMapper.toAlarmPayload(missionMatchEvent, MissionMatchAction.MISSION_MATCH_CREATE);
 
@@ -30,7 +30,9 @@ public class MissionMatchEventService {
     public void notifyMissionMatchReject(
         MissionMatchRejectEvent missionMatchRejectEvent
     ) {
-        var missionMatchEventDto = missionMatchReader.findMissionMatchEvent(missionMatchRejectEvent.missionMatchId());
+        var missionMatchId = missionMatchRejectEvent.missionMatchId();
+        var missionMatchEventDto = missionMatchRejectEvent.isMatchedHero() ?
+            missionMatchReader.findMissionMatchEventSendHero(missionMatchId) : missionMatchReader.findMissionMatchEventSendCitizen(missionMatchId);
 
         var alarmPayload = MissionMatchEventMapper.toAlarmPayload(missionMatchEventDto, MissionMatchAction.MISSION_MATCH_REJECT);
 
