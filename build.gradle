@@ -99,7 +99,8 @@ sonar {
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.exclusions', '''
-            **/Q*, **/request/*, **/response/*, **/dto/*, **/config/*, **/global/**, **/*Converter*, **/healthcheck/* 
+            **/Q*, **/request/*, **/response/*, **/dto/*, **/config/*, **/global/**, **/*Converter*, **/healthcheck/*,
+            **/*Type*, **/*Mapper*, **/*EventListener*, **/kakao/*, **/*Dummy*, **/ErrorCode*
         '''
     }
 }

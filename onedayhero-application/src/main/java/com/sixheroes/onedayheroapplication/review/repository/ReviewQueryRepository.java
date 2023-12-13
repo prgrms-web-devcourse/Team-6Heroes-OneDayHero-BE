@@ -52,7 +52,7 @@ public class ReviewQueryRepository {
                 .where(review.senderId.eq(userId))
                 .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .fetch();
 
         return SliceResultConverter.consume(
@@ -86,7 +86,7 @@ public class ReviewQueryRepository {
                 .where(review.receiverId.eq(userId))
                 .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .fetch();
 
         return SliceResultConverter.consume(
