@@ -1,8 +1,8 @@
-package com.sixheroes.onedayheroapplication.alarm;
+package com.sixheroes.onedayheroapplication.notification;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationEventTest;
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
-import com.sixheroes.onedayheroapplication.alarm.dto.SsePayload;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.SsePayload;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherocommon.converter.StringConverter;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class AlarmServiceTest extends IntegrationApplicationEventTest {
+class NotificationServiceTest extends IntegrationApplicationEventTest {
 
     @DisplayName("알림 형식에 맞춰 알림을 생성한 뒤 SSE 이벤트를 발행한다.")
     @Test
@@ -59,7 +59,7 @@ class AlarmServiceTest extends IntegrationApplicationEventTest {
         given(alarmRepository.save(any(Alarm.class))).willReturn(alarm);
 
         // when
-        alarmService.notifyClient(alarmPayload);
+        notificationService.notifyClient(alarmPayload);
 
         // then
         verify(alarmTemplateRepository, times(1)).findByAlarmType(anyString());
@@ -89,7 +89,7 @@ class AlarmServiceTest extends IntegrationApplicationEventTest {
         given(alarmTemplateRepository.findByAlarmType(anyString())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> alarmService.notifyClient(alarmPayload))
+        assertThatThrownBy(() -> notificationService.notifyClient(alarmPayload))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

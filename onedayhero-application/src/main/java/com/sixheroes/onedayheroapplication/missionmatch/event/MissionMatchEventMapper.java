@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionmatch.event;
 
 
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchAction;
 import com.sixheroes.onedayherodomain.missionmatch.repository.dto.MissionMatchEventDto;
 import lombok.AccessLevel;

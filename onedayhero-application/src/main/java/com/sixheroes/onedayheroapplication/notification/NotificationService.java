@@ -1,18 +1,20 @@
-package com.sixheroes.onedayheroapplication.alarm;
+package com.sixheroes.onedayheroapplication.notification;
 
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
-import com.sixheroes.onedayheroapplication.alarm.dto.SsePayload;
-import com.sixheroes.onedayheroapplication.alarm.response.AlarmResponse;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.SsePayload;
+import com.sixheroes.onedayheroapplication.notification.response.AlarmResponse;
 import com.sixheroes.onedayheromongo.alarm.mongo.AlarmRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
-public class AlarmService {
+public class NotificationService {
 
     private final AlarmRepository alarmRepository;
 

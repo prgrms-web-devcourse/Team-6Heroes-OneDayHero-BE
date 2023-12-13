@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionmatch.event;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationEventTest;
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchAction;
 import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchCreateEvent;
 import com.sixheroes.onedayheroapplication.missionmatch.event.dto.MissionMatchRejectEvent;

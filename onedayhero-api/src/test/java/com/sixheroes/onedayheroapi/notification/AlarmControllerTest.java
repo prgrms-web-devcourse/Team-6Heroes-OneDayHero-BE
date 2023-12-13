@@ -1,8 +1,8 @@
-package com.sixheroes.onedayheroapi.alarm;
+package com.sixheroes.onedayheroapi.notification;
 
 import com.sixheroes.onedayheroapi.docs.RestDocsSupport;
-import com.sixheroes.onedayheroapplication.alarm.AlarmService;
-import com.sixheroes.onedayheroapplication.alarm.response.AlarmResponse;
+import com.sixheroes.onedayheroapplication.notification.NotificationService;
+import com.sixheroes.onedayheroapplication.notification.response.AlarmResponse;
 import com.sixheroes.onedayherocommon.converter.DateTimeConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,15 +35,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AlarmController.class)
+@WebMvcTest(NotificationController.class)
 class AlarmControllerTest extends RestDocsSupport {
 
     @MockBean
-    private AlarmService alarmService;
+    private NotificationService notificationService;
 
     @Override
     protected Object setController() {
-        return new AlarmController(alarmService);
+        return new NotificationController(notificationService);
     }
 
     @DisplayName("특정 유저의 알람을 최신 순으로 조회한다.")
@@ -55,7 +55,7 @@ class AlarmControllerTest extends RestDocsSupport {
 
         var slice = new SliceImpl<AlarmResponse>(alarmResponses, pageRequest, true);
 
-        given(alarmService.findAlarm(anyLong(), any(Pageable.class))).willReturn(slice);
+        given(notificationService.findAlarm(anyLong(), any(Pageable.class))).willReturn(slice);
 
         // when & then
         mockMvc.perform(get("/api/v1/alarms")
@@ -161,7 +161,7 @@ class AlarmControllerTest extends RestDocsSupport {
         // given
         var alarmId = UUID.randomUUID().toString();
 
-        doNothing().when(alarmService).deleteAlarm(anyLong(), anyString());
+        doNothing().when(notificationService).deleteAlarm(anyLong(), anyString());
 
         // when
         mockMvc.perform(delete("/api/v1/alarms/{alarmId}", alarmId)
