@@ -100,7 +100,8 @@ sonar {
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.exclusions', '''
             **/Q*, **/request/*, **/response/*, **/dto/*, **/config/*, **/global/**, **/*Converter*, **/healthcheck/*,
-            **/*Type*, **/*Mapper*, **/*EventListener*, **/kakao/*, **/*Dummy*, **/ErrorCode*
+            **/*Type*, **/*Mapper*, **/*EventListener*, **/kakao/*, **/*Dummy*, **/ErrorCode*, **/onedayheromongo/**,
+            **/auth/*
         '''
     }
 }
