@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication;
 
-import com.sixheroes.onedayheroapplication.alarm.AlarmService;
+import com.sixheroes.onedayheroapplication.notification.NotificationService;
 import com.sixheroes.onedayheroapplication.mission.MissionService;
 import com.sixheroes.onedayheroapplication.mission.event.MissionEventService;
 import com.sixheroes.onedayheroapplication.missionmatch.MissionMatchService;
@@ -48,7 +48,7 @@ public abstract class IntegrationApplicationEventTest {
     protected AlarmRepository alarmRepository;
 
     @Autowired
-    protected AlarmService alarmService;
+    protected NotificationService notificationService;
 
     @Autowired
     protected MissionProposalService missionProposalService;

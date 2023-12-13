@@ -1,7 +1,7 @@
 package com.sixheroes.onedayheroapplication.missionproposal.event;
 
 
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.missionproposal.event.dto.MissionProposalAction;
 import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalCreateEventDto;
 import com.sixheroes.onedayherodomain.missionproposal.repository.dto.MissionProposalUpdateEventDto;

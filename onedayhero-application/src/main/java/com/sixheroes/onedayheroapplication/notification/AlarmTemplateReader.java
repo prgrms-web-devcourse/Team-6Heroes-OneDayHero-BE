@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.alarm;
+package com.sixheroes.onedayheroapplication.notification;
 
 import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;

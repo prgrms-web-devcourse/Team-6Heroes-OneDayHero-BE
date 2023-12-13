@@ -1,6 +1,6 @@
 package com.sixheroes.onedayheroapplication.mission.converter;
 
-import com.sixheroes.onedayheroapplication.alarm.dto.AlarmPayload;
+import com.sixheroes.onedayheroapplication.notification.dto.AlarmPayload;
 import com.sixheroes.onedayheroapplication.mission.event.dto.MissionEventAction;
 import com.sixheroes.onedayheroapplication.mission.repository.response.MissionCompletedEventQueryResponse;
 import lombok.AccessLevel;

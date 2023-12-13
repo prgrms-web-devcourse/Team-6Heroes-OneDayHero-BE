@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.alarm;
+package com.sixheroes.onedayheroapplication.notification;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

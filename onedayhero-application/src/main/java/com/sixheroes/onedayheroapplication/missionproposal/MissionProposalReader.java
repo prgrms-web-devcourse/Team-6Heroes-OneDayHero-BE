@@ -27,7 +27,7 @@ public class MissionProposalReader {
         return missionProposalRepository.findById(missionProposalId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
-                    throw new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
+                    return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
     }
 
@@ -43,7 +43,7 @@ public class MissionProposalReader {
         return missionProposalRepository.findMissionProposalCreateEventDtoById(missionProposalId)
                 .orElseThrow(() -> {
                     log.debug("존재하지 않는 미션 제안입니다. id : {}", missionProposalId);
-                    throw new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
+                    return new EntityNotFoundException(ErrorCode.INVALID_REQUEST_VALUE);
                 });
     }
 

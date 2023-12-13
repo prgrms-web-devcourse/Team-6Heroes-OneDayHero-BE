@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.alarm.dto;
+package com.sixheroes.onedayheroapplication.notification.dto;
 
 import com.sixheroes.onedayherocommon.converter.StringConverter;
 import com.sixheroes.onedayheromongo.alarm.Alarm;

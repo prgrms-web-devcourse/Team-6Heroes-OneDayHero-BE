@@ -1,4 +1,4 @@
-package com.sixheroes.onedayheroapplication.alarm.response;
+package com.sixheroes.onedayheroapplication.notification.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sixheroes.onedayheromongo.alarm.Alarm;
