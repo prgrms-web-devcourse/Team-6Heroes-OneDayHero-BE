@@ -55,7 +55,7 @@ public class MissionBookmarkQueryRepository {
                 .where(missionBookmark.userId.eq(userId))
                 .orderBy(mission.missionInfo.missionDate.asc(), mission.missionInfo.startTime.asc())
                 .offset(pageable.getOffset()) //TODO: 인덱스 및 NO-OFFSET 적용 고려
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .fetch();
 
         return SliceResultConverter.consume(

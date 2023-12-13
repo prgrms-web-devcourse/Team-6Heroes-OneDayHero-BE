@@ -68,7 +68,7 @@ public class MissionQueryRepository {
                         regionIdsIn(request.regionIds()),
                         missionDatesIn(request.missionDates()))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .orderBy(mission.createdAt.asc())
                 .fetch();
     }
@@ -99,7 +99,7 @@ public class MissionQueryRepository {
                 .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
                 .where(userIdEq(userId), missionStatusIsProgress())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .orderBy(mission.createdAt.desc())
                 .fetch();
     }
@@ -168,7 +168,7 @@ public class MissionQueryRepository {
                 .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(userId))
                 .where(userIdEq(userId), missionStatusIsCompleted())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize() + 1L)
                 .orderBy(mission.missionInfo.missionDate.desc())
                 .fetch();
     }
