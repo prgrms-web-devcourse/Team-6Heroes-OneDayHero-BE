@@ -3,14 +3,12 @@ package com.sixheroes.onedayheromongo.alarm.mongo;
 import com.sixheroes.onedayheromongo.IntegrationMongoRepositoryTest;
 import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 class AlarmTemplateRepositoryTest extends IntegrationMongoRepositoryTest {
 
     @Autowired
