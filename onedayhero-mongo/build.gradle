@@ -1,5 +1,7 @@
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:mongodb'
 
     implementation project(':onedayhero-domain')
     implementation project(':onedayhero-common')
