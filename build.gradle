@@ -95,8 +95,7 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
         property 'sonar.exclusions', '''
             **/Q*, **/request/*, **/response/*, **/dto/*, **/config/*, **/global/**, **/*Converter*, **/healthcheck/*,
-            **/*Type*, **/*Mapper*, **/*EventListener*, **/kakao/*, **/*Dummy*, **/ErrorCode*, **/onedayheromongo/**,
-            **/auth/*
+            **/*Type*, **/*Mapper*, **/*EventListener*, **/kakao/*, **/*Dummy*, **/ErrorCode*, **/auth/*
         '''
     }
 }
