@@ -2,22 +2,12 @@ package com.sixheroes.onedayheromongo.alarm.mongo;
 
 import com.sixheroes.onedayheromongo.IntegrationMongoRepositoryTest;
 import com.sixheroes.onedayheromongo.alarm.AlarmTemplate;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AlarmTemplateRepositoryTest extends IntegrationMongoRepositoryTest {
-
-    @Autowired
-    private AlarmTemplateRepository alarmTemplateRepository;
-
-    @AfterEach
-    void teardown() {
-        alarmTemplateRepository.deleteAll();
-    }
 
     @DisplayName("알람 타입으로 알림 템플릿을 찾는다")
     @Test
