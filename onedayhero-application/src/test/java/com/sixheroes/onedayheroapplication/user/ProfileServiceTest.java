@@ -1,7 +1,10 @@
 package com.sixheroes.onedayheroapplication.user;
 
 import com.sixheroes.onedayheroapplication.IntegrationApplicationTest;
+import com.sixheroes.onedayheroapplication.user.request.HeroRankServiceRequest;
+import com.sixheroes.onedayheroapplication.user.response.HeroRankResponse;
 import com.sixheroes.onedayherocommon.exception.EntityNotFoundException;
+import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.region.Region;
 import com.sixheroes.onedayherodomain.user.*;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -149,6 +153,84 @@ class ProfileServiceTest extends IntegrationApplicationTest {
                 .filteredOn("nickname", "별님")
                 .extracting("favoriteMissionCategories")
                 .hasSize(1);
+    }
+
+    @DisplayName("히어로를 랭킹과 함께 조회한다.")
+    @Test
+    void findHeroesRank() {
+        // given
+        var users = createUsers();
+        var regionName = createUserRegion(users);
+        var missionCategoryCode = createUserMissionCategory(users);
+
+        var request = PageRequest.of(1, 2);
+        var heroRankServiceRequest = HeroRankServiceRequest.of(regionName, missionCategoryCode.name());
+
+        // when
+        var heroesRank = profileService.findHeroesRank(heroRankServiceRequest, request);
+
+        // then
+        var content = heroesRank.getContent();
+        assertThat(content)
+            .isSortedAccordingTo(Comparator.comparing(HeroRankResponse::heroScore).reversed())
+            .extracting("rank")
+            .contains(3, 4);
+    }
+
+    private List<User> createUsers() {
+        var email = Email.builder()
+            .email("abc@123.com")
+            .build();
+
+        var userBasicInfo1 = UserBasicInfo.initStatus(DefaultNicknameGenerator.generate());
+        var user1 = User.signUp(email, UserSocialType.KAKAO, UserRole.MEMBER, userBasicInfo1);
+
+        var userBasicInfo2 = UserBasicInfo.initStatus(DefaultNicknameGenerator.generate());
+        var user2 = User.signUp(email, UserSocialType.KAKAO, UserRole.MEMBER, userBasicInfo2);
+
+        var userBasicInfo3 = UserBasicInfo.initStatus(DefaultNicknameGenerator.generate());
+        var user3 = User.signUp(email, UserSocialType.KAKAO, UserRole.MEMBER, userBasicInfo3);
+
+        var userBasicInfo4 = UserBasicInfo.initStatus(DefaultNicknameGenerator.generate());
+        var user4 = User.signUp(email, UserSocialType.KAKAO, UserRole.MEMBER, userBasicInfo4);
+
+        var users = userRepository.saveAll(List.of(user1, user2, user3, user4));
+
+        user1.minusHeroScore(10);
+        user3.sumHeroScore(20);
+        user4.sumHeroScore(50);
+
+        return users;
+    }
+
+    private String createUserRegion(
+        List<User> users
+    ) {
+        var regions = regionRepository.findAll();
+        var region = regions.get(0);
+        for (User user : users) {
+            var userRegion = UserRegion.builder()
+                .user(user)
+                .regionId(region.getId())
+                .build();
+            userRegionRepository.save(userRegion);
+        }
+        return region.getDong();
+    }
+
+    private MissionCategoryCode createUserMissionCategory(
+        List<User> users
+    ) {
+        var missionCategories = missionCategoryRepository.findAll();
+        var missionCategory = missionCategories.get(0);
+        for (User user : users) {
+            var userMissionCategory = UserMissionCategory.builder()
+                .missionCategoryId(missionCategory.getId())
+                .user(user)
+                .build();
+            userMissionCategoryRepository.save(userMissionCategory);
+        }
+        return missionCategory.getMissionCategoryCode();
     }
 
     private UserMissionCategory createUserMissionCategory(

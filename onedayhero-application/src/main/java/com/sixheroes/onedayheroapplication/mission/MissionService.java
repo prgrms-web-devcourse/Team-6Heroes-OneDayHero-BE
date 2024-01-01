@@ -97,7 +97,7 @@ public class MissionService {
             MissionFindFilterServiceRequest request
     ) {
         var missionQueryResponses = missionQueryRepository.findByDynamicCondition(pageable, request.toQuery());
-        List<MissionResponse> result = makeMissionResponseWithImages(missionQueryResponses);
+        var result = makeMissionResponseWithImages(missionQueryResponses);
 
         return SliceResultConverter.consume(result, pageable);
     }
@@ -221,7 +221,7 @@ public class MissionService {
                     var missionImages = missionImageRepository.findByMission_Id(response.id());
                     var isBookmarked = response.bookmarkId() != null;
                     return MissionResponse.from(response, missionImages, isBookmarked);
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     private List<MissionAroundResponse> makeAroundMissionResponseWithImage(

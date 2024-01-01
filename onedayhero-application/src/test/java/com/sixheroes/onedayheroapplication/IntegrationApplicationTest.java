@@ -14,6 +14,7 @@ import com.sixheroes.onedayheroapplication.review.ReviewImageService;
 import com.sixheroes.onedayheroapplication.review.ReviewService;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
 import com.sixheroes.onedayheroapplication.user.UserService;
+import com.sixheroes.onedayheroapplication.user.repository.UserQueryRepository;
 import com.sixheroes.onedayheroapplication.user.validation.UserValidation;
 import com.sixheroes.onedayherochat.application.repository.MissionChatRoomRedisRepository;
 import com.sixheroes.onedayherodomain.mission.MissionCategory;
@@ -140,6 +141,9 @@ public abstract class IntegrationApplicationTest {
 
     @MockBean
     protected ChatMessageMongoRepository chatMessageMongoRepository;
+
+    @Autowired
+    protected UserQueryRepository userQueryRepository;
 
     @BeforeAll
     public static void setUp(

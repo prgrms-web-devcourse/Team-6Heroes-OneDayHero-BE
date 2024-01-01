@@ -3,11 +3,8 @@ package com.sixheroes.onedayheroapplication.missionproposal.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixheroes.onedayheroapplication.missionproposal.repository.dto.MissionProposalQueryDto;
-import com.sixheroes.onedayherodomain.mission.MissionStatus;
 import com.sixheroes.onedayherodomain.missionproposal.MissionProposalStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -74,7 +71,7 @@ public class MissionProposalQueryRepository {
                 .leftJoin(missionBookmark)
                 .on(missionBookmark.mission.id.eq(mission.id), missionBookmark.userId.eq(heroId))
                 .where(createBooleanBuilder(heroId))
-                .orderBy(buildMissionStatusCaseBuilder().desc(), missionProposal.createdAt.desc())
+                .orderBy(mission.priorityStatus.desc(), missionProposal.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1L)
                 .fetch();
@@ -86,17 +83,6 @@ public class MissionProposalQueryRepository {
         }
 
         return new SliceImpl<>(content, pageable, hasNext);
-    }
-
-    private NumberExpression<Integer> buildMissionStatusCaseBuilder() {
-        return new CaseBuilder()
-                .when(mission.missionStatus.eq(MissionStatus.EXPIRED))
-                .then(0)
-                .when(mission.missionStatus.eq(MissionStatus.MISSION_COMPLETED))
-                .then(1)
-                .when(mission.missionStatus.eq(MissionStatus.MATCHING_COMPLETED))
-                .then(2)
-                .otherwise(3);
     }
 
     private BooleanBuilder createBooleanBuilder(

@@ -1,10 +1,13 @@
 package com.sixheroes.onedayheroapi.user;
 
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
+import com.sixheroes.onedayheroapi.user.request.HeroRankRequest;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
+import com.sixheroes.onedayheroapplication.user.response.HeroRankResponse;
 import com.sixheroes.onedayheroapplication.user.response.HeroSearchResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -45,5 +48,13 @@ public class ProfileController {
         var heroSearchResponses = profileService.searchHeroes(nickname, pageable);
 
         return ResponseEntity.ok(ApiResponse.ok(heroSearchResponses));
+    }
+
+    @GetMapping("/hero-rank")
+    public ResponseEntity<ApiResponse<Slice<HeroRankResponse>>> findHeroesRank(
+        @PageableDefault Pageable pageable,
+        @Valid @ModelAttribute HeroRankRequest request
+    ) {
+        throw new UnsupportedOperationException();
     }
 }
