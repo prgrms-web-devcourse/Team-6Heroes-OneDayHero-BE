@@ -3,6 +3,7 @@ package com.sixheroes.onedayheroapi.user;
 import com.sixheroes.onedayheroapi.global.response.ApiResponse;
 import com.sixheroes.onedayheroapi.user.request.HeroRankRequest;
 import com.sixheroes.onedayheroapplication.user.ProfileService;
+import com.sixheroes.onedayheroapplication.user.request.HeroRankServiceRequest;
 import com.sixheroes.onedayheroapplication.user.response.HeroRankResponse;
 import com.sixheroes.onedayheroapplication.user.response.HeroSearchResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
@@ -55,6 +56,10 @@ public class ProfileController {
         @PageableDefault Pageable pageable,
         @Valid @ModelAttribute HeroRankRequest request
     ) {
-        throw new UnsupportedOperationException();
+        var heroRankServiceRequest = HeroRankServiceRequest.of(request.region(), request.missionCategoryCode());
+
+        var heroesRank = profileService.findHeroesRank(heroRankServiceRequest, pageable);
+
+        return ResponseEntity.ok(ApiResponse.ok(heroesRank));
     }
 }

@@ -36,3 +36,16 @@ include::{snippets}/hero-nickname-search/query-parameters.adoc[]
 
 include::{snippets}/hero-nickname-search/http-response.adoc[]
 include::{snippets}/hero-nickname-search/response-fields.adoc[]
+
+[[hero-rank-find]]
+=== 히어로 닉네임 검색
+
+==== HTTP Request
+
+include::{snippets}/hero-rank-find/http-request.adoc[]
+include::{snippets}/hero-rank-find/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/hero-rank-find/http-response.adoc[]
+include::{snippets}/hero-rank-find/response-fields.adoc[]
