@@ -1,7 +1,11 @@
 package com.sixheroes.onedayherodomain.mission;
 
+import com.sixheroes.onedayherocommon.error.ErrorCode;
+import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -17,4 +21,13 @@ public enum MissionCategoryCode {
 
     private final Long categoryId;
     private final String description;
+
+    public static MissionCategoryCode from(
+        String missionCategoryCode
+    ) {
+        return Arrays.stream(MissionCategoryCode.values())
+            .filter(mc -> Objects.equals(mc.name(), missionCategoryCode))
+            .findFirst()
+            .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_REQUEST_VALUE));
+    }
 }

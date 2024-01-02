@@ -10,6 +10,8 @@ import com.sixheroes.onedayheroapplication.user.response.HeroRankResponse;
 import com.sixheroes.onedayheroapplication.user.response.HeroSearchResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
+import com.sixheroes.onedayherodomain.mission.repository.dto.MissionCategoryDto;
+import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
@@ -27,6 +30,8 @@ public class ProfileService {
     private final UserReader userReader;
     private final RegionReader regionReader;
     private final MissionCategoryReader missionCategoryReader;
+
+    private final UserMissionCategoryRepository userMissionCategoryRepository;
 
     public ProfileCitizenResponse findCitizenProfile(
         Long userId
@@ -76,9 +81,17 @@ public class ProfileService {
         List<HeroRankQueryResponse> heroRankQueryResponses,
         Pageable pageable
     ) {
+        var userIds = heroRankQueryResponses.stream()
+            .map(HeroRankQueryResponse::userId)
+            .toList();
+        var missionCategories = userMissionCategoryRepository.findByUsers(userIds);
+        var missionCategoriesMapping = missionCategories.stream()
+            .collect(Collectors.groupingBy(MissionCategoryDto::userId));
+
         return IntStream.range(0, heroRankQueryResponses.size()).mapToObj(i -> {
             var heroRankQueryResponse = heroRankQueryResponses.get(i);
-            return HeroRankResponse.of(heroRankQueryResponse, pageable, i);
+            var favoriteMissionCategories = missionCategoriesMapping.get(heroRankQueryResponse.userId());
+            return HeroRankResponse.of(heroRankQueryResponse, favoriteMissionCategories, pageable, i);
         }).toList();
     }
 }

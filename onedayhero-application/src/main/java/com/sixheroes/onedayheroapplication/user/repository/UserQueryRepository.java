@@ -31,7 +31,6 @@ public class UserQueryRepository {
 
         return queryFactory.select(
                 Projections.constructor(HeroRankQueryResponse.class,
-                    missionCategory.name,
                     user.id,
                     user.userBasicInfo.nickname,
                     user.heroScore,

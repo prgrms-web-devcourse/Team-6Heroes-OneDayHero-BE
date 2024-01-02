@@ -177,6 +177,26 @@ class ProfileServiceTest extends IntegrationApplicationTest {
             .contains(3, 4);
     }
 
+    @DisplayName("히어로 랭킹을 조회할 때 유저 선호 미션 카테고리를 함께 가져온다.")
+    @Test
+    void findHeroesRankWithMissionCategory() {
+        // given
+        var users = createUsers();
+        var regionName = createUserRegion(users);
+        var missionCategoryCode = createUserMissionCategory(users);
+
+        var request = PageRequest.of(1, 2);
+        var heroRankServiceRequest = HeroRankServiceRequest.of(regionName, missionCategoryCode.name());
+
+        // when
+        var heroesRank = profileService.findHeroesRank(heroRankServiceRequest, request);
+
+        // then
+        var content = heroesRank.getContent();
+        assertThat(content).extracting("favoriteMissionCategories")
+            .hasSize(2);
+    }
+
     private List<User> createUsers() {
         var email = Email.builder()
             .email("abc@123.com")
@@ -222,15 +242,20 @@ class ProfileServiceTest extends IntegrationApplicationTest {
         List<User> users
     ) {
         var missionCategories = missionCategoryRepository.findAll();
-        var missionCategory = missionCategories.get(0);
+        var missionCategory1 = missionCategories.get(0);
+        var missionCategory2 = missionCategories.get(1);
         for (User user : users) {
-            var userMissionCategory = UserMissionCategory.builder()
-                .missionCategoryId(missionCategory.getId())
+            var userMissionCategory1 = UserMissionCategory.builder()
+                .missionCategoryId(missionCategory1.getId())
                 .user(user)
                 .build();
-            userMissionCategoryRepository.save(userMissionCategory);
+            var userMissionCategory2 = UserMissionCategory.builder()
+                .missionCategoryId(missionCategory2.getId())
+                .user(user)
+                .build();
+            userMissionCategoryRepository.saveAll(List.of(userMissionCategory1, userMissionCategory2));
         }
-        return missionCategory.getMissionCategoryCode();
+        return missionCategory1.getMissionCategoryCode();
     }
 
     private UserMissionCategory createUserMissionCategory(
