@@ -10,15 +10,18 @@ import com.sixheroes.onedayheroapplication.user.response.HeroRankResponse;
 import com.sixheroes.onedayheroapplication.user.response.HeroSearchResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileCitizenResponse;
 import com.sixheroes.onedayheroapplication.user.response.ProfileHeroResponse;
+import com.sixheroes.onedayherodomain.mission.MissionCategoryCode;
 import com.sixheroes.onedayherodomain.mission.repository.dto.MissionCategoryDto;
 import com.sixheroes.onedayherodomain.user.repository.UserMissionCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,12 +66,14 @@ public class ProfileService {
         return heroes.map(u -> HeroSearchResponse.of(u, missionCategories.get(u.getId())));
     }
 
+    @Cacheable("heroesRank")
     public Slice<HeroRankResponse> findHeroesRank(
         HeroRankServiceRequest request,
         Pageable pageable
     ) {
-        var categoryId = request.missionCategoryCode()
-            .getCategoryId();
+        var categoryId = Optional.ofNullable(request.missionCategoryCode())
+            .map(MissionCategoryCode::getCategoryId)
+            .orElse(null);
         var region = regionReader.findByDong(request.regionName());
 
         var heroesRank = userReader.findHeroesRank(region.getId(), categoryId, pageable);

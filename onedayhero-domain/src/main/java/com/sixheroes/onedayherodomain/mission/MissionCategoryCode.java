@@ -4,6 +4,7 @@ import com.sixheroes.onedayherocommon.error.ErrorCode;
 import com.sixheroes.onedayherocommon.exception.BusinessException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -25,6 +26,7 @@ public enum MissionCategoryCode {
     public static MissionCategoryCode from(
         String missionCategoryCode
     ) {
+        if (!StringUtils.hasText(missionCategoryCode)) return null;
         return Arrays.stream(MissionCategoryCode.values())
             .filter(mc -> Objects.equals(mc.name(), missionCategoryCode))
             .findFirst()

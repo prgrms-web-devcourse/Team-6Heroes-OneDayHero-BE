@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.sixheroes.onedayherodomain.mission.QMissionCategory.missionCategory;
 import static com.sixheroes.onedayherodomain.user.QUser.user;
@@ -69,6 +70,7 @@ public class UserQueryRepository {
     private BooleanBuilder missionCategoryIdEq(
         Long missionCategoryId
     ) {
+        if (Objects.isNull(missionCategoryId)) return new BooleanBuilder();
         return new BooleanBuilder(userMissionCategory.missionCategoryId.eq(missionCategoryId));
     }
 }
